@@ -11,3 +11,15 @@ C:\Users\Temaran-KTG\recellection\Recellection\bin\x86\Debug\nunit.framework.dll
 C:\Users\Temaran-KTG\recellection\Recellection\obj\x86\Debug\Recellection.exe
 C:\Users\Temaran-KTG\recellection\Recellection\obj\x86\Debug\Recellection.pdb
 C:\Users\Temaran-KTG\recellection\Recellection\bin\x86\Debug\Content\Fonts\ScreenFont.xnb
+C:\Users\mikolan\Documents\Breensoft\recellection\Recellection\bin\x86\Debug\Content\Sounds\Songs\Castlevania.xnb
+C:\Users\mikolan\Documents\Breensoft\recellection\Recellection\bin\x86\Debug\Content\Fonts\ScreenFont.xnb
+C:\Users\mikolan\Documents\Breensoft\recellection\Recellection\bin\x86\Debug\Content\Sounds\Songs\Castlevania.wma
+C:\Users\mikolan\Documents\Breensoft\recellection\Recellection\bin\x86\Debug\Content\Sounds\RecellectionSounds.xgs
+C:\Users\mikolan\Documents\Breensoft\recellection\Recellection\bin\x86\Debug\Content\Sounds\Wave Bank.xwb
+C:\Users\mikolan\Documents\Breensoft\recellection\Recellection\bin\x86\Debug\Content\Sounds\Sound Bank.xsb
+C:\Users\mikolan\Documents\Breensoft\recellection\Recellection\bin\x86\Debug\Recellection.exe
+C:\Users\mikolan\Documents\Breensoft\recellection\Recellection\bin\x86\Debug\Recellection.pdb
+C:\Users\mikolan\Documents\Breensoft\recellection\Recellection\obj\x86\Debug\ResolveAssemblyReference.cache
+C:\Users\mikolan\Documents\Breensoft\recellection\Recellection\obj\x86\Debug\Microsoft.Xna.Framework.RuntimeProfile.txt
+C:\Users\mikolan\Documents\Breensoft\recellection\Recellection\obj\x86\Debug\Recellection.exe
+C:\Users\mikolan\Documents\Breensoft\recellection\Recellection\obj\x86\Debug\Recellection.pdb
