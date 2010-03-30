@@ -1,0 +1,63 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Sections>
+  <WaveBank Name="Wave Bank">Wave Bank
+{
+    Name = Wave Bank;
+    Xbox File = Wave Bank.xwb;
+    Windows File = Wave Bank.xwb;
+    Xbox Bank Path Edited = 1;
+    Windows Bank Path Edited = 1;
+    Seek Tables = 1;
+    Compression Preset Name = &lt;none&gt;;
+    Bank Last Revised Low = 1915066083;
+    Bank Last Revised High = 30068776;
+
+    Wave
+    {
+        Name = boom;
+        File = kaboom.wav;
+        Build Settings Last Modified Low = 2528465945;
+        Build Settings Last Modified High = 29891191;
+
+        Cache
+        {
+            Format Tag = 0;
+            Channels = 1;
+            Sampling Rate = 44100;
+            Bits Per Sample = 1;
+            Play Region Offset = 4108;
+            Play Region Length = 316962;
+            Loop Region Offset = 0;
+            Loop Region Length = 0;
+            File Type = 1;
+            Last Modified Low = 2260179544;
+            Last Modified High = 29891191;
+        }
+    }
+
+    Wave
+    {
+        Name = acid;
+        File = acid.wav;
+        Build Settings Last Modified Low = 1883945492;
+        Build Settings Last Modified High = 30068776;
+
+        Cache
+        {
+            Format Tag = 0;
+            Channels = 2;
+            Sampling Rate = 44100;
+            Bits Per Sample = 1;
+            Play Region Offset = 44;
+            Play Region Length = 1328136;
+            Loop Region Offset = 0;
+            Loop Region Length = 0;
+            File Type = 1;
+            Last Modified Low = 972497649;
+            Last Modified High = 30068744;
+        }
+    }
+}
+
+</WaveBank>
+</Sections>

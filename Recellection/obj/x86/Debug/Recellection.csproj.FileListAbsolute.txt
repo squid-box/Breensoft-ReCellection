@@ -1,0 +1,12 @@
+C:\Users\Temaran-KTG\recellection\Recellection\obj\x86\Debug\ResolveAssemblyReference.cache
+C:\Users\Temaran-KTG\recellection\Recellection\obj\x86\Debug\Microsoft.Xna.Framework.RuntimeProfile.txt
+C:\Users\Temaran-KTG\recellection\Recellection\bin\x86\Debug\Content\Sounds\Songs\Castlevania.xnb
+C:\Users\Temaran-KTG\recellection\Recellection\bin\x86\Debug\Content\Sounds\Songs\Castlevania.wma
+C:\Users\Temaran-KTG\recellection\Recellection\bin\x86\Debug\Content\Sounds\RecellectionSounds.xgs
+C:\Users\Temaran-KTG\recellection\Recellection\bin\x86\Debug\Content\Sounds\Wave Bank.xwb
+C:\Users\Temaran-KTG\recellection\Recellection\bin\x86\Debug\Content\Sounds\Sound Bank.xsb
+C:\Users\Temaran-KTG\recellection\Recellection\bin\x86\Debug\Recellection.exe
+C:\Users\Temaran-KTG\recellection\Recellection\bin\x86\Debug\Recellection.pdb
+C:\Users\Temaran-KTG\recellection\Recellection\bin\x86\Debug\nunit.framework.dll
+C:\Users\Temaran-KTG\recellection\Recellection\obj\x86\Debug\Recellection.exe
+C:\Users\Temaran-KTG\recellection\Recellection\obj\x86\Debug\Recellection.pdb
