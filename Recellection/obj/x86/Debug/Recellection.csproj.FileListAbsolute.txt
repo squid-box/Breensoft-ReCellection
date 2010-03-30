@@ -10,3 +10,4 @@ C:\Users\Temaran-KTG\recellection\Recellection\bin\x86\Debug\Recellection.pdb
 C:\Users\Temaran-KTG\recellection\Recellection\bin\x86\Debug\nunit.framework.dll
 C:\Users\Temaran-KTG\recellection\Recellection\obj\x86\Debug\Recellection.exe
 C:\Users\Temaran-KTG\recellection\Recellection\obj\x86\Debug\Recellection.pdb
+C:\Users\Temaran-KTG\recellection\Recellection\bin\x86\Debug\Content\Fonts\ScreenFont.xnb

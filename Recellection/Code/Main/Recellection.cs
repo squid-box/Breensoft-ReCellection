@@ -26,6 +26,7 @@ namespace Recellection
     public class Recellection : Microsoft.Xna.Framework.Game
     {
         GraphicsDeviceManager graphics;
+        SpriteFont screenFont;
         SpriteBatch spriteBatch;
         static Color breen = new Color(new Vector3(0.4f, 0.3f, 0.1f));
         
@@ -56,6 +57,8 @@ namespace Recellection
         protected override void LoadContent()
         {
             spriteBatch = new SpriteBatch(GraphicsDevice);
+
+            screenFont = Content.Load<SpriteFont>("Fonts/ScreenFont");
 
             audioPlayer = new AudioPlayer(Content);
             audioPlayer.PlaySong(Globals.Songs.Theme);
@@ -124,7 +127,17 @@ namespace Recellection
         {
             GraphicsDevice.Clear(breen);
 
+            PrintHelp();
+
             base.Draw(gameTime);
         }
+
+        private void PrintHelp()
+        {
+            spriteBatch.Begin();
+            spriteBatch.DrawString(screenFont, "M-> Toggle music\nI-> Turn SFX off\nO-> Turn SFX on\nA-> Acid sound\nB-> Explosion sound", Vector2.Zero, Color.White);
+            spriteBatch.End();
+        }
+
     }
 }

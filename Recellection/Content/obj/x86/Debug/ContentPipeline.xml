@@ -11,6 +11,15 @@
       <Extra>C:\Users\Temaran-KTG\recellection\Recellection\bin\x86\Debug\Content\Sounds\Songs\Castlevania.wma</Extra>
       <Time>2010-03-30T16:31:12.7354486+02:00</Time>
     </Item>
+    <Item>
+      <Source>Fonts\ScreenFont.spritefont</Source>
+      <Name>Fonts\ScreenFont</Name>
+      <Importer>FontDescriptionImporter</Importer>
+      <Processor>FontDescriptionProcessor</Processor>
+      <Options>None</Options>
+      <Output>C:\Users\Temaran-KTG\recellection\Recellection\bin\x86\Debug\Content\Fonts\ScreenFont.xnb</Output>
+      <Time>2010-03-30T19:41:45.6583992+02:00</Time>
+    </Item>
     <BuildSuccessful>true</BuildSuccessful>
     <Settings>
       <TargetPlatform>Windows</TargetPlatform>
