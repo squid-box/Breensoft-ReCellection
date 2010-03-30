@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Microsoft.XNA.Vector2D;
 
 namespace Recellection.Models
 {
@@ -11,10 +10,14 @@ namespace Recellection.Models
         /**
          * Variables 'n stuff.
          */
-        private Player player;
+        // Simple values
         private string name;
         private int posX;
         private int posY;
+
+        // References
+        private Player owner;
+        private List<Unit> units;
 
         /**
          * Methods 'n things.
@@ -22,12 +25,26 @@ namespace Recellection.Models
 
         // Part of visitor pattern
         public void Accept(BaseBuilding visitor);
-        public Player GetPlayer();
-        public Unit[] GetUnits();
-        public void AddUnits(Unit[] units);
+        
+        public Player GetPlayer()
+        {
+            return this.owner;
+        }
+
+        public List<Unit> GetUnits()
+        {
+            return this.units;
+        }
+        public void AddUnits(Unit[] units)
+        {
+            
+        }
 
         // Properties
-        public string GetName();
+        public string GetName()
+        {
+            return this.name;
+        }
         public Globals.BuildingType GetType();
         public Globals.Texture GetSprite();
 
