@@ -11,6 +11,13 @@ using Microsoft.Xna.Framework.Media;
 using Microsoft.Xna.Framework.Net;
 using Microsoft.Xna.Framework.Storage;
 
+/*
+ * BREENSOFT GAME OMG OMG OMG
+ * 
+ * Authors:
+ */
+
+
 namespace Recellection
 {
     /// <summary>
@@ -19,8 +26,12 @@ namespace Recellection
     public class Recellection : Microsoft.Xna.Framework.Game
     {
         GraphicsDeviceManager graphics;
+        SpriteFont screenFont;
         SpriteBatch spriteBatch;
         static Color breen = new Color(new Vector3(0.4f, 0.3f, 0.1f));
+        
+        //Sounds and music
+        AudioPlayer audioPlayer;
 
         //Debug Input 
         KeyboardState lastKBState, kBState;
@@ -46,6 +57,11 @@ namespace Recellection
         protected override void LoadContent()
         {
             spriteBatch = new SpriteBatch(GraphicsDevice);
+
+            screenFont = Content.Load<SpriteFont>("Fonts/ScreenFont");
+
+            audioPlayer = new AudioPlayer(Content);
+            audioPlayer.PlaySong(Globals.Songs.Theme);
         }
 
         /// <summary>
@@ -62,8 +78,23 @@ namespace Recellection
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Update(GameTime gameTime)
         {
-            #region Input
+            HandleDebugInput();
 
+
+            audioPlayer.Update();
+
+            base.Update(gameTime);
+        }
+
+        /// <summary>
+        /// This method allows us to use the keyboard and mouse to test functionality in the program
+        /// </summary>
+        private void HandleDebugInput()
+        {
+            #region Update input states
+
+            lastKBState = kBState;
+            lastMouseState = mouseState;
             kBState = Keyboard.GetState();
             mouseState = Mouse.GetState();
 
@@ -72,14 +103,20 @@ namespace Recellection
             if (kBState.IsKeyDown(Keys.Escape))
                 this.Exit();
 
-            #region Input
+            if (kBState.IsKeyDown(Keys.A) && lastKBState.IsKeyUp(Keys.A))
+                audioPlayer.PlaySound("acid");
 
-            lastKBState = Keyboard.GetState();
-            lastMouseState = Mouse.GetState();
+            if (kBState.IsKeyDown(Keys.B) && lastKBState.IsKeyUp(Keys.B))
+                audioPlayer.PlaySound("boom");
 
-            #endregion
+            if (kBState.IsKeyDown(Keys.M) && lastKBState.IsKeyUp(Keys.M))
+                audioPlayer.ToggleMusicMute();
 
-            base.Update(gameTime);
+            if (kBState.IsKeyDown(Keys.O) && lastKBState.IsKeyUp(Keys.O))
+                audioPlayer.SetSoundVolume(1f);
+
+            if (kBState.IsKeyDown(Keys.I) && lastKBState.IsKeyUp(Keys.I))
+                audioPlayer.SetSoundVolume(0);
         }
 
         /// <summary>
@@ -90,7 +127,17 @@ namespace Recellection
         {
             GraphicsDevice.Clear(breen);
 
+            PrintHelp();
+
             base.Draw(gameTime);
         }
+
+        private void PrintHelp()
+        {
+            spriteBatch.Begin();
+            spriteBatch.DrawString(screenFont, "M-> Toggle music\nI-> Turn SFX off\nO-> Turn SFX on\nA-> Acid sound\nB-> Explosion sound", Vector2.Zero, Color.White);
+            spriteBatch.End();
+        }
+
     }
 }

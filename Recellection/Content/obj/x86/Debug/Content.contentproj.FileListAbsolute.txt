@@ -1,1 +1,3 @@
 C:\Temaran\School\MVK\Breensoft\recellection\Recellection\Recellection\Content\obj\x86\Debug\ResolveAssemblyReference.cache
+C:\Users\Temaran-KTG\recellection\Recellection\Content\obj\x86\Debug\ResolveAssemblyReference.cache
+C:\Users\Temaran-KTG\recellection\Recellection\Content\obj\x86\Debug\Sounds\RecellectionSounds.xml
