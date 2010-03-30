@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Recellection.Code.Models;
 
 namespace Recellection.Code.Models
 {
@@ -15,7 +16,7 @@ namespace Recellection.Code.Models
 
         // Unspecified
         private List<Unit> units;
-        private Building building;
+        //private Building building;
 
         /**
          * Methods
@@ -27,14 +28,14 @@ namespace Recellection.Code.Models
             this.type = new TerrainType();
             this.visibleTo = new List<Player>();
             this.units = new List<Unit>();
-            this.building = null;
+            //this.building = null;
         }
         public Tile(TerrainType type)
         {
             this.type = type;
             this.visibleTo = new List<Player>();
             this.units = new List<Unit>();
-            this.building = null;
+            //this.building = null;
         }
 
         public void SetTerrainType(TerrainType type)
@@ -58,23 +59,24 @@ namespace Recellection.Code.Models
             return this.units;
         }
 
-        public bool SetBuilding(Building building)
-        {
-            if (this.building != null)
-            {
-                // Already occupied tile.
-                return false;
-            }
-            else
-            {
-                // Building placed.
-                this.building = building;
-                return true;
-            }
-        }
-        public Building GetBuilding()
-        {
-            return this.building;
-        }
+        //public bool SetBuilding(Building building)
+        //{
+        //    if (this.building != null)
+        //    {
+        //        // Already occupied tile.
+        //        return false;
+        //    }
+        //    else
+        //    {
+        //        // Building placed.
+        //        this.building = building;
+        //        return true;
+        //    }
+        //}
+        //public Building GetBuilding()
+        //{
+        //    return this.building;
+        //    return null;
+        //}
     }
 }
