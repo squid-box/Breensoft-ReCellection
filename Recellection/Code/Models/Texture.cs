@@ -7,5 +7,6 @@ namespace Recellection.Code.Models
 {
     class Texture
     {
+
     }
 }

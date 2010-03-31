@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 
 namespace Recellection.Code.Models
 {
@@ -10,12 +11,14 @@ namespace Recellection.Code.Models
     {
         Texture2D[] textures;
 
-        public Texture2D GetTexture(Globals.Texture texture, int curFrame, 
+/*      TODO Fininish Texture before doing this.
+        public Texture2D GetTexture(Texture texture, int curFrame, 
             int size)
         {
+            
             return new Texture(textures[(int)texture], 
                 new Rectangle(curFrame * size, 0, size, size));
         }
-
+        */
     }
 }
