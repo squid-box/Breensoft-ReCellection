@@ -1,0 +1,8 @@
+# Ignore shit
+
+Recellection/bin
+Recellection/obj
+*.user
+*.suo
+_ReSharper.*
+*.sln.cache
