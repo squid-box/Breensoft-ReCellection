@@ -1,5 +1,0 @@
-C:\Temaran\School\MVK\Breensoft\recellection\Recellection\Recellection\Content\obj\x86\Debug\ResolveAssemblyReference.cache
-C:\Users\Temaran-KTG\recellection\Recellection\Content\obj\x86\Debug\ResolveAssemblyReference.cache
-C:\Users\Temaran-KTG\recellection\Recellection\Content\obj\x86\Debug\Sounds\RecellectionSounds.xml
-C:\Users\Martin Nycander\Documents\Kurser\mvk09\gitrepo\recellection\Recellection\Content\obj\x86\Debug\ResolveAssemblyReference.cache
-C:\Users\Martin Nycander\Documents\Kurser\mvk09\gitrepo\recellection\Recellection\Content\obj\x86\Debug\Sounds\RecellectionSounds.xml
