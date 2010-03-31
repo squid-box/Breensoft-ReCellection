@@ -6,3 +6,4 @@ Recellection/obj
 *.suo
 _ReSharper.*
 *.sln.cache
+*.Debug.cachefile
