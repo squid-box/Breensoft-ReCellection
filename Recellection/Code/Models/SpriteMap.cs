@@ -6,7 +6,7 @@ using Microsoft.Xna.Framework;
 
 namespace Recellection.Code.Models
 {
-    class SpiteMap
+    class SpriteMap
     {
         Texture2D[] textures;
 
