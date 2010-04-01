@@ -33,22 +33,64 @@ namespace Recellection.Code.Models
         }
 
         // Properites
-        public boolean IsDead();
-        public Player GetPlayer();
-        public int GetTargetX();
-        public int GetTargetY();
-        public void SetTargetX(int tx);
-        public void SetTargetY(int ty);
-        public int GetXTile();
-        public int GetYTile();
-        public void SetDispersed(bool set);
-        public bool IsDispersed();
+        public bool IsDead()
+        {
+            return isDead;
+        }
+        public Player GetPlayer()
+        {
+            return null;
+        }
+        public int GetTargetX()
+        {
+            return 0;
+        }
+        public int GetTargetY()
+        {
+            return 0;
+        }
+        public void SetTargetX(int tx)
+        {
+
+        }
+        public void SetTargetY(int ty)
+        {
+
+        }
+        public int GetXTile()
+        {
+            return 0;
+        }
+        public int GetYTile()
+        {
+            return 0;
+        }
+        public void SetDispersed(bool set)
+        {
+
+        }
+        public bool IsDispersed()
+        {
+            return isDispersed;
+        }
         
         // Graphical representation
-        public Texture GetSprite();
-        public int GetXOffset();
-        public int GetYOffset();
-        public int GetAngle();
+        public Texture GetSprite()
+        {
+            return null;
+        }
+        public int GetXOffset()
+        {
+            return 0;
+        }
+        public int GetYOffset()
+        {
+            return 0;
+        }
+        public int GetAngle()
+        {
+            return 0;
+        }
         
         // Modifiers
         public void Kill()
