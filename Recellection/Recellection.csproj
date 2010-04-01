@@ -105,7 +105,6 @@
     <Compile Include="Code\Models\Building.cs" />
     <Compile Include="Code\Models\BuildingType.cs" />
     <Compile Include="Code\Models\Graph.cs" />
-    <Compile Include="Code\Models\GraphTest.cs" />
     <Compile Include="Code\Models\Player.cs" />
     <Compile Include="Code\Models\SpriteMap.cs" />
     <Compile Include="Code\Models\TerrainType.cs" />
