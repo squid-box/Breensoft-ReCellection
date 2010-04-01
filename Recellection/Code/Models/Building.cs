@@ -2,9 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Recellection.Code.Models;
 
-namespace Recellection.Models
+namespace Recellection.Code.Models
 {
     abstract class Building
     {
@@ -59,12 +58,12 @@ namespace Recellection.Models
             return this.name;
         }
 
-        public Globals.BuildingType GetType()
+        public BuildingType GetType()
         {
             return this.type;
         }
 
-        public Globals.Texture GetSprite()
+        public Texture GetSprite()
         {
             //TODO When the sprite map is done add code here
             return null;
