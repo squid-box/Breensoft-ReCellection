@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Recellection.Code.Models
 {
-    class BaseBuilding : Building
+    public class BaseBuilding : Building
     {
 
         public void Visit(Building building)

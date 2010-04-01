@@ -1,19 +1,33 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 10.00
-# Visual Studio 2008
+# Visual C# Express 2008
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Recellection", "Recellection\Recellection.csproj", "{F6D91C58-7522-448F-97A1-5E9F5CD7FDF4}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Debug|Mixed Platforms = Debug|Mixed Platforms
 		Debug|x86 = Debug|x86
+		Release|Any CPU = Release|Any CPU
+		Release|Mixed Platforms = Release|Mixed Platforms
 		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{F6D91C58-7522-448F-97A1-5E9F5CD7FDF4}.Debug|Any CPU.ActiveCfg = Debug|x86
+		{F6D91C58-7522-448F-97A1-5E9F5CD7FDF4}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
+		{F6D91C58-7522-448F-97A1-5E9F5CD7FDF4}.Debug|Mixed Platforms.Build.0 = Debug|x86
 		{F6D91C58-7522-448F-97A1-5E9F5CD7FDF4}.Debug|x86.ActiveCfg = Debug|x86
 		{F6D91C58-7522-448F-97A1-5E9F5CD7FDF4}.Debug|x86.Build.0 = Debug|x86
+		{F6D91C58-7522-448F-97A1-5E9F5CD7FDF4}.Release|Any CPU.ActiveCfg = Release|x86
+		{F6D91C58-7522-448F-97A1-5E9F5CD7FDF4}.Release|Mixed Platforms.ActiveCfg = Release|x86
+		{F6D91C58-7522-448F-97A1-5E9F5CD7FDF4}.Release|Mixed Platforms.Build.0 = Release|x86
 		{F6D91C58-7522-448F-97A1-5E9F5CD7FDF4}.Release|x86.ActiveCfg = Release|x86
 		{F6D91C58-7522-448F-97A1-5E9F5CD7FDF4}.Release|x86.Build.0 = Release|x86
+		{F853E593-7B74-460D-918D-C8AD6E73A211}.Debug|Any CPU.ActiveCfg = Debug|x86
+		{F853E593-7B74-460D-918D-C8AD6E73A211}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
 		{F853E593-7B74-460D-918D-C8AD6E73A211}.Debug|x86.ActiveCfg = Debug|x86
+		{F853E593-7B74-460D-918D-C8AD6E73A211}.Release|Any CPU.ActiveCfg = Release|x86
+		{F853E593-7B74-460D-918D-C8AD6E73A211}.Release|Mixed Platforms.ActiveCfg = Release|x86
 		{F853E593-7B74-460D-918D-C8AD6E73A211}.Release|x86.ActiveCfg = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution

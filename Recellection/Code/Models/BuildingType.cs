@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Recellection.Code.Models
 {
-    class BuildingType
+    public class BuildingType
     {
     }
 }
