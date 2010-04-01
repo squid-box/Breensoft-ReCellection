@@ -14,7 +14,10 @@ namespace Recellection.Code.Models
         private int spdMod;
         private int rscMod;
 
-        private enum type {Default, Water, Slow, Poisoned};
+        private enum type
+        {
+            Mucus, Membrane, Water, Slow, Poisoned
+        }
 
         /**
          * Methods
