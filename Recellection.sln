@@ -3,8 +3,6 @@ Microsoft Visual Studio Solution File, Format Version 10.00
 # Visual C# Express 2008
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Recellection", "Recellection\Recellection.csproj", "{F6D91C58-7522-448F-97A1-5E9F5CD7FDF4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RecellectionTests", "RecellectionTests\RecellectionTests.csproj", "{BDA3676D-454D-4013-B463-F28FFEAD1947}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -31,16 +29,6 @@ Global
 		{F853E593-7B74-460D-918D-C8AD6E73A211}.Release|Any CPU.ActiveCfg = Release|x86
 		{F853E593-7B74-460D-918D-C8AD6E73A211}.Release|Mixed Platforms.ActiveCfg = Release|x86
 		{F853E593-7B74-460D-918D-C8AD6E73A211}.Release|x86.ActiveCfg = Release|x86
-		{BDA3676D-454D-4013-B463-F28FFEAD1947}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{BDA3676D-454D-4013-B463-F28FFEAD1947}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{BDA3676D-454D-4013-B463-F28FFEAD1947}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
-		{BDA3676D-454D-4013-B463-F28FFEAD1947}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
-		{BDA3676D-454D-4013-B463-F28FFEAD1947}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{BDA3676D-454D-4013-B463-F28FFEAD1947}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{BDA3676D-454D-4013-B463-F28FFEAD1947}.Release|Any CPU.Build.0 = Release|Any CPU
-		{BDA3676D-454D-4013-B463-F28FFEAD1947}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
-		{BDA3676D-454D-4013-B463-F28FFEAD1947}.Release|Mixed Platforms.Build.0 = Release|Any CPU
-		{BDA3676D-454D-4013-B463-F28FFEAD1947}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
