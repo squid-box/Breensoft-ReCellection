@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Recellection.Code.Models
 {
-    abstract class Building
+    public abstract class Building
     {
         /**
          * Variables 'n stuff.

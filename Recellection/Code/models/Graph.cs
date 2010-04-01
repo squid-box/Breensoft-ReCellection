@@ -8,7 +8,7 @@ namespace Recellection.Code.Models
 	/**
 	* The Graph component is a storage class for buildings and their weights.
 	*/
-	class Graph
+	public class Graph
 	{
 		private static int defaultWeight = 1;
 
@@ -29,7 +29,7 @@ namespace Recellection.Code.Models
 			buildings.Remove(building);
 		}
 
-		public void setWeight(Building building, int weight)
+		public void SetWeight(Building building, int weight)
 		{
 			if (! buildings.ContainsKey(building))
 			{
@@ -39,16 +39,22 @@ namespace Recellection.Code.Models
 			buildings[building] = weight;
 		}
 
-		public int getWeight(Building building)
+		public int GetWeight(Building building)
 		{
 			int weight;
 			
 			if (! buildings.TryGetValue(building, out weight))
 			{
-				throw new ArgumentException("That building does not exist.");
+				//throw new ArgumentException("That building does not exist.");
+				weight = 0;
 			}
 			
 			return weight;
+		}
+		
+		public int CountBuildings()
+		{
+			return buildings.Count();
 		}
 	}
 }
