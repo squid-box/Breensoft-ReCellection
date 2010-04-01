@@ -105,6 +105,7 @@ namespace Recellection.Code.Models
         private void Move()
         {
             //TODO: Move unit towards target.
+            // Cool trigonometrical functions 'n shit.
         }
     }
 }
