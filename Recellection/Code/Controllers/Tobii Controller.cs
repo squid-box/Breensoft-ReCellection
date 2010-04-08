@@ -47,7 +47,7 @@ namespace Recellection.Code.Controllers
         }
 
         //will return the currently focused region, if any.
-        public GUIRegion? GetRegion()
+        public GUIRegion GetRegion()
         {
             foreach(GUIRegion region in regions)
             {
