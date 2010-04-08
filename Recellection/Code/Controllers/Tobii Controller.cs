@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Windows;
 //using System.Windows.Media.Geometry;
 using Tobii.TecSDK.Client.Presentation;
 using Recellection.Code.Models;
@@ -24,6 +25,7 @@ namespace Recellection.Code.Controllers
         //can only be instantiated with a handle to a window
         public TobiiController(IntPtr handle){
             XNAHandle = handle;
+            Init();
         }
     
         /*
@@ -41,11 +43,11 @@ namespace Recellection.Code.Controllers
             {
                 return false;
             }
-
             return true;        
         }
 
-        public GUIRegion GetRegion()
+        //will return the currently focused region, if any.
+        public GUIRegion? GetRegion()
         {
             foreach(GUIRegion region in regions)
             {
@@ -57,10 +59,16 @@ namespace Recellection.Code.Controllers
             return null;
         }
 
+        //Attempts to add a region, will return false if the region was already added, otherwise true
         public bool AddRegion(GUIRegion newRegion)
         {
-            foreach (GUIRegion region in regions) { 
-            
+            try
+            {
+                Interaction.AddRegion(newRegion);
+            }
+            catch (Exception)
+            {
+                return false;
             }
             regions.Add(newRegion);
             return false;
@@ -75,17 +83,19 @@ namespace Recellection.Code.Controllers
 
 
 
-
-
-//WindowBoundInteractionRegionIdentifier testId = new WindowBoundInteractionRegionIdentifier(handle,new Rect(200,0,200,200));
+//WindowBoundInteractionRegionIdentifier testId = new WindowBoundInteractionRegionIdentifier(XNAHandle, new Rect(0, 0, 200, 200));
 //WindowBoundInteractionRegion testWindow = new WindowBoundInteractionRegion(testId);
 //testWindow.Enabled = true;
 //testWindow.CanActivate = true;
 //testWindow.AlwaysInteractive = true;
-//activationHandler = new EventHandler<Tobii.TecSDK.Client.Interaction.ActivateEventArgs>(testWindow_Activate);
-//testWindow.Activate += activationHandler;
 //testWindow.DwellTime = new System.TimeSpan(0, 0, 2);
 //Interaction.AddRegion(testWindow);
 //Interaction.Regions.ElementAt(0).Value.Enabled = true;
 //Interaction.Regions.ElementAt(0).Value.CanActivate = true;
 //Interaction.Regions.ElementAt(0).Value.AlwaysInteractive = true;
+
+
+
+
+
+
