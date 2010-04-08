@@ -14,9 +14,12 @@ namespace Recellection.Code.Models
      * Ovannämnda klasser finns i "Tobii.TecSDK.Client.Interaction.RegionImplementations"
      * andra paket kanske behövs
      * Det är inte mitt jobb att skriva den här klassen, men ovan är säkert till någon form av hjälp.
+     *
      * */
-    class GUIRegion
+    class GUIRegion : WindowBoundInteractionRegion
     {
-
+        public GUIRegion(WindowBoundInteractionRegionIdentifier id ):base(id){ 
+        
+        }
     }
 }
