@@ -1,10 +1,10 @@
 ﻿using System;
-using System.Windows;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 //using System.Windows.Media.Geometry;
 using Tobii.TecSDK.Client.Presentation;
+using Recellection.Code.Models;
 using Tobii.TecSDK.Client.Utilities;
 using Tobii.TecSDK.Client.Interaction.RegionImplementations;
 using Tobii.TecSDK.Client.Interaction.Presentation;
@@ -17,7 +17,7 @@ namespace Recellection.Code.Controllers
     class TobiiController
     {
         //System.IO.StreamWriter myStream;
-        List<GUIRegion>
+        List<GUIRegion> regions;
         EventHandler<Tobii.TecSDK.Client.Interaction.ActivateEventArgs> activationHandler;
         public TobiiController(IntPtr handle){
             
@@ -37,7 +37,7 @@ namespace Recellection.Code.Controllers
                     Environment.NewLine,
                     ex.Message
                 );
-                TecMessageBox.ShowError(errorMessage);
+               
                 return;
             }
             //WindowBoundInteractionRegionIdentifier testId = new WindowBoundInteractionRegionIdentifier(handle,new Rect(200,0,200,200));
@@ -57,10 +57,7 @@ namespace Recellection.Code.Controllers
 
         public void testWindow_Activate(object sender, Tobii.TecSDK.Client.Interaction.ActivateEventArgs e)
         {
-            if (activationHandler != null)
-            {
-                isActivated = !isActivated;
-            }
+            throw new NotImplementedException();
         }
 
     
@@ -76,7 +73,7 @@ namespace Recellection.Code.Controllers
 
         public bool listen()
         {
-            return isActivated;                
+            return false;
         }
     }
 }
