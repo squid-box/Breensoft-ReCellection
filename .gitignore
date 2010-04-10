@@ -4,6 +4,7 @@ Recellection/bin
 Recellection/obj
 RecellectionTests/bin
 RecellectionTests/obj
+RecellectionTests/TestResult.xml
 *.user
 *.suo
 _ReSharper.*
