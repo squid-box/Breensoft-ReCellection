@@ -90,7 +90,7 @@ namespace Recellection.Code.Main
 		private Logger(string name)
 		{
 			this.name = name;
-			this.threshold = Logger.TRACE;
+			this.threshold = Level.TRACE;
 			this.target = Logger.globalTarget;
 		}
 				
