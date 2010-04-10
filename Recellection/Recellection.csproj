@@ -110,6 +110,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Code\Controllers\Tobii Controller.cs" />
+    <Compile Include="Code\Controllers\WorldGenerator.cs" />
     <Compile Include="Code\Main\Globals.cs" />
     <Compile Include="Code\Main\Program.cs" />
     <Compile Include="Code\Main\Recellection.cs" />
