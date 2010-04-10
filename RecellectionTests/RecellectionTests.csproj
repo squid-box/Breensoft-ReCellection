@@ -49,8 +49,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="GraphTest.cs" />
-    <Compile Include="LoggerTest.cs" />
+    <Compile Include="Code\Models\GraphTest.cs" />
+    <Compile Include="Code\Main\LoggerTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -58,6 +58,9 @@
       <Project>{F6D91C58-7522-448F-97A1-5E9F5CD7FDF4}</Project>
       <Name>Recellection</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Code\Controllers\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

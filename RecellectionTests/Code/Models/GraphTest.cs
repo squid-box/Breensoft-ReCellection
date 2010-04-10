@@ -4,9 +4,8 @@ using System.Linq;
 using System.Text;
 
 using NUnit.Framework;
-using Recellection.Code.Models;
 
-namespace RecellectionTests
+namespace Recellection.Code.Models
 {
 	[TestFixture]
 	public class GraphTest

@@ -4,9 +4,7 @@ using System.Linq;
 using System.Text;
 using NUnit.Framework;
 
-using Recellection.Code.Main;
-
-namespace RecellectionTests
+namespace Recellection.Code.Main
 {
 	[TestFixture]
 	class LoggerTest
@@ -29,7 +27,7 @@ namespace RecellectionTests
 		public void GetLoggerAuto()
 		{
 			l = Logger.getLogger();
-			Assert.AreEqual("RecellectionTests.LoggerTest", l.GetName());
+			Assert.AreEqual("Recellection.Code.Main.LoggerTest", l.GetName());
 		}
 	}
 }
