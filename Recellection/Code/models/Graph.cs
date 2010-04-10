@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
+using Recellection.Code.Main;
+
 namespace Recellection.Code.Models
 {
 	/**
@@ -14,8 +16,8 @@ namespace Recellection.Code.Models
 	 */
 	public class Graph
 	{
+		private static Logger logger = Logger.getLogger();
 		private static int defaultWeight = 1;
-
 		private Dictionary<Building, int> buildings;
 
 		/**
@@ -23,6 +25,7 @@ namespace Recellection.Code.Models
 		 */
 		public Graph()
 		{
+			logger.Trace("Constructing new graph.");
 			buildings = new Dictionary<Building, int>();
 		}
 
@@ -36,6 +39,7 @@ namespace Recellection.Code.Models
 		{
 			if (buildings.ContainsKey(building))
 			{
+				logger.Debug("Can not add building to graph. The building '"+building+"' already exists.");
 				return;
 			}
 			
