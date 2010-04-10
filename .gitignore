@@ -10,3 +10,4 @@ RecellectionTests/TestResult.xml
 _ReSharper.*
 *.sln.cache
 *.Debug.cachefile
+*.VisualState.xml
