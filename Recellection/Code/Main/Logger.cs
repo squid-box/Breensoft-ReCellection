@@ -26,15 +26,15 @@ namespace Recellection.Code.Main
 		private static TextWriter globalTarget = System.Console.Out;
 
 		/**
-		 * Initializes a logger with the provided name.
-		 * 
-		 * TODO: Use Dictionary for loggers?
+		 * Retrieves a logger with the provided name.
+		 * Loggers are re-used and identified by name.
 		 * 
 		 * @return an new instance of a Logger
 		 */
 		public static Logger getLogger(string name)
 		{
 			// Try re-using a logger with that name
+			// TODO: Use Dictionary for loggers?
 			foreach(Logger l in loggers)
 			{
 				if (l.GetName() == name)
@@ -90,7 +90,7 @@ namespace Recellection.Code.Main
 		private Logger(string name)
 		{
 			this.name = name;
-			this.threshold = Level.TRACE;
+			this.threshold = Logger.TRACE;
 			this.target = Logger.globalTarget;
 		}
 				
