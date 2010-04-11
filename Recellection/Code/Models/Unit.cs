@@ -5,11 +5,14 @@ using System.Text;
 
 namespace Recellection.Code.Models
 {
+    /* The representation of a Unit in the game world.
+     * 
+     * Author: Joel Ahlgren
+     * Date: 2010-04-11
+     */
     public class Unit
     {
-        /**
-         * DATA
-         */
+        // DATA
         private int tileX;
         private int tileY;
         private int targetX;
@@ -20,10 +23,8 @@ namespace Recellection.Code.Models
         private bool isDispersed;
         private bool isDead;
 
-        
-        /**
-         * METHODS
-         */
+
+        // METHODS
         
         // Constructors
         public Unit()
@@ -99,7 +100,10 @@ namespace Recellection.Code.Models
         }
         public void Update(int systemTime)
         {
-            this.Move();
+            if (!this.isDead)
+            {
+                this.Move();
+            }
         }
 
         private void Move()
