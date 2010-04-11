@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace Recellection
+namespace Recellection.Code.Models
 {
     /* Contains information about traits of different Terrain Types.
      * 
@@ -18,6 +18,7 @@ namespace Recellection
         private int dmgMod; // Damage modifier
         private int spdMod; // Speed modifier
         private int rscMod; // Resource modifier
+        private Globals.TerrainTypes type;
 
         /*
          * Methods
@@ -25,12 +26,14 @@ namespace Recellection
         public TerrainType()
         {
             // Assume default type.
+            type = Globals.TerrainTypes.Membrane;
             this.dmgMod = 0;
             this.spdMod = 10;
             this.rscMod = 10;
         }
         public TerrainType(Globals.TerrainTypes t)
         {
+            this.type = t;
             switch (t)
             {
                 case(Globals.TerrainTypes.Membrane):
@@ -62,6 +65,15 @@ namespace Recellection
                     break;
                 }
             }
+        }
+
+        public Globals.TerrainTypes getType()
+        {
+            return this.type;
+        }
+        public void setType(Globals.TerrainTypes newType)
+        {
+            this.type = newType;
         }
     }
 }
