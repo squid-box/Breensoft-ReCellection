@@ -109,7 +109,9 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Code\Controllers\AIPlayer.cs" />
     <Compile Include="Code\Controllers\Tobii Controller.cs" />
+    <Compile Include="Code\Main\Logger.cs" />
     <Compile Include="Code\Controllers\WorldGenerator.cs" />
     <Compile Include="Code\Main\Globals.cs" />
     <Compile Include="Code\Main\Program.cs" />
@@ -117,6 +119,7 @@
     <Compile Include="Code\Models\BaseBuilding.cs" />
     <Compile Include="Code\Models\Building.cs" />
     <Compile Include="Code\Models\BuildingType.cs" />
+    <Compile Include="Code\Models\Coordinate.cs" />
     <Compile Include="Code\Models\Graph.cs" />
     <Compile Include="Code\Models\GUIRegion.cs" />
     <Compile Include="Code\Models\Player.cs" />
@@ -126,6 +129,7 @@
     <Compile Include="Code\Models\Tile.cs" />
     <Compile Include="Code\Models\Unit.cs" />
     <Compile Include="Code\Sounds\AudioPlayer.cs" />
+    <Compile Include="Code\Views\AIView.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -167,7 +171,7 @@
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\XNA Game Studio\Microsoft.Xna.GameStudio.targets" />
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
   </Target>
