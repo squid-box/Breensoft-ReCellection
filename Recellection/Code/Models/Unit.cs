@@ -13,15 +13,17 @@ namespace Recellection.Code.Models
     public class Unit
     {
         // DATA
-        private int tileX;
-        private int tileY;
-        private int targetX;
-        private int targetY;
-        private int x;
+        private int tileX;  // Current tile
+        private int tileY;  // Current tile
+        private int targetX;    // Target coordinate
+        private int targetY;    // Target coordinate
+        private int x;  
         private int y;
         private int angle;
         private bool isDispersed;
         private bool isDead;
+
+        //private Sprite sprite;
 
 
         // METHODS
@@ -32,6 +34,26 @@ namespace Recellection.Code.Models
             this.tileX = this.tileY = this.targetX = this.targetY = this.x = this.y = this.angle = 0;
             this.isDispersed = this.isDead = false;
         }
+        public Unit(int posX, int posY)
+        {
+
+            this.isDispersed = this.isDead = false;
+        }
+        public Unit(int posX, int posY, int angle)
+        {
+
+            this.isDispersed = this.isDead = false;
+        }
+        //public Unit()
+        //{
+
+        //    this.isDispersed = this.isDead = false;
+        //}
+        //public Unit()
+        //{
+
+        //    this.isDispersed = this.isDead = false;
+        //}
 
         // Properites
         public bool IsDead()
