@@ -3,27 +3,40 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using NUnit.Framework;
-using Recellection;
 
-namespace RecellectionTests
+namespace Recellection.Code.Models
 {
     [TestFixture]
     class TerrainTypeTest
     {
+        TerrainType tp1, tp2;
+        
         [SetUp]
         public void init()
         {
-            //TerrainType tp1 = new TerrainType();
-            //TerrainType tp1 = new TerrainType(Globals.TerrainTypes.Infected);
+            tp1 = new TerrainType();
+            tp2 = new TerrainType(Globals.TerrainTypes.Infected);
         }
 
         [Test]
         public void getTerrainType()
         {
-            //Assert.AreEqual(Globals.TerrainTypes.Membrane, tp1.getType());
-            //Assert.AreNotEqual(Globals.TerrainTypes.Infected, tp1.getType());
-            //tp1.setType(Globals.TerrainTypes.Slow);
-            //Assert.AreEqual(Globals.TerrainTypes.Slow, tp1.getType());
+            Assert.AreEqual(Globals.TerrainTypes.Membrane, tp1.getType());
+            Assert.AreNotEqual(Globals.TerrainTypes.Infected, tp1.getType());
+            tp1.setType(Globals.TerrainTypes.Slow);
+            Assert.AreEqual(Globals.TerrainTypes.Slow, tp1.getType());
+        }
+
+        [Test]
+        public void getModifiers()
+        {
+            Assert.AreEqual(0, tp1.getDamageModifier());
+            Assert.AreEqual(10, tp1.getSpeedModifier());
+            Assert.AreEqual(10, tp1.getResourceModifier());
+
+            Assert.AreEqual(5, tp2.getDamageModifier());
+            Assert.AreEqual(10, tp2.getSpeedModifier());
+            Assert.AreEqual(5, tp2.getResourceModifier());
         }
     }
 }

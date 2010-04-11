@@ -11,37 +11,44 @@ namespace Recellection.Code.Models
      * Author: Joel Ahlgren
      * Date: 2010-04-11
      */
-    class Tile
+    public class Tile
     {
-        /**
-         * Data
-         */
+        // Data
         private TerrainType type;
-        private List<Player> visibleTo;
-
-        // Unspecified
+        private HashSet<Player> visibleTo;
         private List<Unit> units;
         private Building building;
 
-        /**
-         * Methods
-         */
-        
-        // Constructors
+
+        // Methods
+
+        #region Constructors
+
         public Tile()
         {
             this.type = new TerrainType();
-            this.visibleTo = new List<Player>();
+            this.visibleTo = new HashSet<Player>();
             this.units = new List<Unit>();
             this.building = null;
         }
-        public Tile(TerrainType type)
+        public Tile(TerrainType t)
         {
-            this.type = type;
-            this.visibleTo = new List<Player>();
+            this.type = t;
+            this.visibleTo = new HashSet<Player>();
             this.units = new List<Unit>();
             this.building = null;
         }
+        public Tile(Globals.TerrainTypes type)
+        {
+            this.type = new TerrainType(type);
+            this.visibleTo = new HashSet<Player>();
+            this.units = new List<Unit>();
+            this.building = null;
+        }
+
+        #endregion
+
+        #region Getters/Setters
 
         public void SetTerrainType(TerrainType type)
         {
@@ -81,6 +88,17 @@ namespace Recellection.Code.Models
         public Building GetBuilding()
         {
             return this.building;
+        }
+        
+        #endregion
+
+        public void addPlayerAbleToSee(Player p)
+        {
+            this.visibleTo.Add(p);
+        }
+        public void removePlayerAbleToSee(Player p)
+        {
+            this.visibleTo.Remove(p);
         }
     }
 }
