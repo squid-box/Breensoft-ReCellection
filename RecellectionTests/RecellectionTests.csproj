@@ -49,8 +49,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Code\Main\Utility\LoggerFactoryTest.cs" />
     <Compile Include="Code\Models\GraphTest.cs" />
-    <Compile Include="Code\Main\LoggerTest.cs" />
+    <Compile Include="Code\Main\Utility\LoggerTest.cs" />
     <Compile Include="Code\Models\TerrainTypeTest.cs" />
     <Compile Include="Code\Models\TileTest.cs" />
     <Compile Include="Code\Models\UnitTest.cs" />
@@ -64,7 +65,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Code\Controllers\" />
-    <Folder Include="Code\Main\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
