@@ -5,7 +5,7 @@ using System.Text;
 using NUnit.Framework;
 using System.IO;
 
-namespace Recellection.Code.Main
+namespace Recellection.Code.Main.Utility
 {
 	[TestFixture]
 	class LoggerTest
@@ -21,7 +21,7 @@ namespace Recellection.Code.Main
 			output = target.GetStringBuilder();
 			
 			l = Logger.getLogger("Test");
-			l.SetThreshold(Logger.Level.TRACE);
+			l.SetThreshold(LogLevel.TRACE);
 			l.SetTarget(target);
 		}
 		
@@ -36,17 +36,17 @@ namespace Recellection.Code.Main
 		public void GetLoggerAuto()
 		{
 			l = Logger.getLogger();
-			Assert.AreEqual("Recellection.Code.Main.LoggerTest", l.GetName());
+			Assert.AreEqual("Recellection.Code.Main.Utility.LoggerTest", l.GetName());
 		}
 		
 		[Test]
 		public void LoggersAreReused()
 		{
-			l.SetThreshold(Logger.Level.FATAL);
+			l.SetThreshold(LogLevel.FATAL);
 			
 			Logger l2 = Logger.getLogger(l.GetName());
 			
-			Assert.AreEqual(Logger.Level.FATAL, l2.GetThreshold());
+			Assert.AreEqual(LogLevel.FATAL, l2.GetThreshold());
 		}
 		
 		[Test]
@@ -62,7 +62,7 @@ namespace Recellection.Code.Main
 		[Test]
 		public void SetThreshold()
 		{
-			l.SetThreshold(Logger.Level.DEBUG);
+			l.SetThreshold(LogLevel.DEBUG);
 			
 			l.Trace("abc");
 			Assert.False(output.ToString().Contains("abc"));
@@ -70,7 +70,7 @@ namespace Recellection.Code.Main
 			l.Debug("abc");
 			Assert.True(output.ToString().Contains("abc"));
 
-			l.SetThreshold(Logger.Level.TRACE);
+			l.SetThreshold(LogLevel.TRACE);
 
 			l.Trace("def");
 			Assert.True(output.ToString().Contains("abc"));
@@ -110,7 +110,7 @@ namespace Recellection.Code.Main
 			l2.Trace("def");
 			
 			// Change target for all
-			Logger.setTargetGlobally(target);
+			Logger.setGlobalTarget(target);
 
 			l.Trace("123");
 			l2.Trace("456");
