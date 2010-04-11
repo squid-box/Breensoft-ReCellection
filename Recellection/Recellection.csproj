@@ -58,6 +58,10 @@
     <XnaCompressContent>true</XnaCompressContent>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="adodb, Version=7.0.3300.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\..\..\Program Files\Microsoft Visual Studio 10.0\Visual Studio Tools for Office\PIA\Common\adodb.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.Xna.Framework, Version=3.1.0.0, Culture=neutral, PublicKeyToken=6d5c3888ef60e27d, processorArchitecture=x86">
       <Private>False</Private>
       <SpecificVersion>True</SpecificVersion>
@@ -73,10 +77,14 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\..\..\..\..\Program Files\Tobii\Tobii Eye Control SDK\Assemblies\nunit.framework.dll</HintPath>
     </Reference>
+    <Reference Include="PresentationCore">
+      <RequiredTargetFramework>3.0</RequiredTargetFramework>
+    </Reference>
     <Reference Include="System">
       <Private>False</Private>
     </Reference>
     <Reference Include="System.Data" />
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml">
       <Private>False</Private>
     </Reference>
@@ -96,8 +104,12 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\..\..\..\..\Program Files\Tobii\Tobii Eye Control SDK\Assemblies\Tobii.TecSDK.Core.dll</HintPath>
     </Reference>
+    <Reference Include="WindowsBase">
+      <RequiredTargetFramework>3.0</RequiredTargetFramework>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Code\Controllers\Tobii Controller.cs" />
     <Compile Include="Code\Main\Globals.cs" />
     <Compile Include="Code\Main\Program.cs" />
     <Compile Include="Code\Main\Recellection.cs" />
@@ -105,6 +117,7 @@
     <Compile Include="Code\Models\Building.cs" />
     <Compile Include="Code\Models\BuildingType.cs" />
     <Compile Include="Code\Models\Graph.cs" />
+    <Compile Include="Code\Models\GUIRegion.cs" />
     <Compile Include="Code\Models\Player.cs" />
     <Compile Include="Code\Models\SpriteMap.cs" />
     <Compile Include="Code\Models\TerrainType.cs" />
