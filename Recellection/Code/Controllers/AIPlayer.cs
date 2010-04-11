@@ -13,7 +13,7 @@ namespace Recellection.Code.Controllers
         /**
          * Variables
          */
-        private AIView view;
+        private AIView View;
         private Coordinate[] InterrestPoints;
         private Coordinate[] EnemyPoints;
         private int Threshold;
