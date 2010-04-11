@@ -6,6 +6,11 @@ using Recellection.Code.Models;
 
 namespace Recellection.Code.Models
 {
+    /* The representation of a Tile in the game world.
+     * 
+     * Author: Joel Ahlgren
+     * Date: 2010-04-11
+     */
     class Tile
     {
         /**

@@ -13,5 +13,10 @@ namespace Recellection
         {
             Theme
         }
+
+        public enum TerrainTypes
+        {
+            Mucus, Membrane, Water, Slow, Infected
+        }
     }
 }
