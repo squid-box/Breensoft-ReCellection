@@ -6,7 +6,7 @@ using System.Text;
 using NUnit.Framework;
 using Recellection.Code.Models;
 
-namespace RecellectionTests
+namespace Recellection
 {
 	[TestFixture]
 	public class GraphTest
