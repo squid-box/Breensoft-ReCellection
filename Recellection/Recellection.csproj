@@ -116,6 +116,7 @@
     <Compile Include="Code\Main\Globals.cs" />
     <Compile Include="Code\Main\Program.cs" />
     <Compile Include="Code\Main\Recellection.cs" />
+    <Compile Include="Code\Main\Utility\LoggerFactory.cs" />
     <Compile Include="Code\Main\Utility\LogLevel.cs" />
     <Compile Include="Code\Models\BaseBuilding.cs" />
     <Compile Include="Code\Models\Building.cs" />
