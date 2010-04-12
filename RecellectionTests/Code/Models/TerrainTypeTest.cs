@@ -10,7 +10,7 @@ namespace Recellection.Code.Models
     class TerrainTypeTest
     {
         TerrainType tp1, tp2;
-        
+
         [SetUp]
         public void init()
         {
@@ -21,10 +21,10 @@ namespace Recellection.Code.Models
         [Test]
         public void getTerrainType()
         {
-            Assert.AreEqual(Globals.TerrainTypes.Membrane, tp1.getType());
-            Assert.AreNotEqual(Globals.TerrainTypes.Infected, tp1.getType());
+            Assert.AreEqual(Globals.TerrainTypes.Membrane, tp1.GetTerrainType());
+            Assert.AreNotEqual(Globals.TerrainTypes.Infected, tp1.GetTerrainType());
             tp1.setType(Globals.TerrainTypes.Slow);
-            Assert.AreEqual(Globals.TerrainTypes.Slow, tp1.getType());
+            Assert.AreEqual(Globals.TerrainTypes.Slow, tp1.GetTerrainType());
         }
 
         [Test]

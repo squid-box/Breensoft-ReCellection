@@ -107,20 +107,22 @@
   <ItemGroup>
     <Compile Include="Code\Controllers\AIPlayer.cs" />
     <Compile Include="Code\Controllers\Tobii Controller.cs" />
-    <Compile Include="Code\Utility\Logger.cs" />
+    <Compile Include="Code\Models\GameOptions.cs" />
+    <Compile Include="Code\Utility\Logger\Logger.cs" />
     <Compile Include="Code\Controllers\WorldGenerator.cs" />
     <Compile Include="Code\Main\Globals.cs" />
     <Compile Include="Code\Main\Program.cs" />
     <Compile Include="Code\Main\Recellection.cs" />
-    <Compile Include="Code\Utility\LoggerFactory.cs" />
-    <Compile Include="Code\Utility\LoggerSetup.cs" />
-    <Compile Include="Code\Utility\LogLevel.cs" />
+    <Compile Include="Code\Utility\Logger\LoggerFactory.cs" />
+    <Compile Include="Code\Utility\Logger\LoggerSetup.cs" />
+    <Compile Include="Code\Utility\Logger\LogLevel.cs" />
     <Compile Include="Code\Models\BaseBuilding.cs" />
     <Compile Include="Code\Models\Building.cs" />
     <Compile Include="Code\Models\BuildingType.cs" />
     <Compile Include="Code\Models\Coordinate.cs" />
     <Compile Include="Code\Models\Graph.cs" />
     <Compile Include="Code\Models\GUIRegion.cs" />
+    <Compile Include="Code\Models\Menu.cs" />
     <Compile Include="Code\Models\Player.cs" />
     <Compile Include="Code\Models\SpriteMap.cs" />
     <Compile Include="Code\Models\TerrainType.cs" />

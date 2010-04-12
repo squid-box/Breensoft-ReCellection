@@ -8,7 +8,7 @@ namespace Recellection.Code.Models
     /* Contains information about traits of different Terrain Types.
      * 
      * Author: Joel Ahlgren
-     * Date: 2010-04-11
+     * Date: 2010-04-12
      */
     public class TerrainType
     {
@@ -18,7 +18,7 @@ namespace Recellection.Code.Models
         private int rscMod; // Resource modifier
         private Globals.TerrainTypes type;
 
-        
+
         // Methods
 
         #region Constructors
@@ -43,34 +43,34 @@ namespace Recellection.Code.Models
             this.type = t;
             switch (t)
             {
-                case(Globals.TerrainTypes.Membrane):
-                {
-                    this.dmgMod = 0;
-                    this.spdMod = 10;
-                    this.rscMod = 10;
-                    break;
-                }
+                case (Globals.TerrainTypes.Membrane):
+                    {
+                        this.dmgMod = 0;
+                        this.spdMod = 10;
+                        this.rscMod = 10;
+                        break;
+                    }
                 case (Globals.TerrainTypes.Mucus):
-                {
-                    this.dmgMod = 0;
-                    this.spdMod = 8;
-                    this.rscMod = 12;
-                    break;
-                }
+                    {
+                        this.dmgMod = 0;
+                        this.spdMod = 8;
+                        this.rscMod = 12;
+                        break;
+                    }
                 case (Globals.TerrainTypes.Slow):
-                {
-                    this.dmgMod = 0;
-                    this.spdMod = 5;
-                    this.rscMod = 10;
-                    break;
-                }
+                    {
+                        this.dmgMod = 0;
+                        this.spdMod = 5;
+                        this.rscMod = 10;
+                        break;
+                    }
                 case (Globals.TerrainTypes.Infected):
-                {
-                    this.dmgMod = 5;
-                    this.spdMod = 10;
-                    this.rscMod = 5;
-                    break;
-                }
+                    {
+                        this.dmgMod = 5;
+                        this.spdMod = 10;
+                        this.rscMod = 5;
+                        break;
+                    }
             }
         }
 
@@ -80,7 +80,7 @@ namespace Recellection.Code.Models
         /// Gets the type of this TerrainType.
         /// </summary>
         /// <returns>Enum of the TerrainType-type</returns>
-        public Globals.TerrainTypes getType()
+        public Globals.TerrainTypes GetTerrainType()
         {
             return this.type;
         }
