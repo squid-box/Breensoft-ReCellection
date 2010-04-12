@@ -13,7 +13,7 @@ namespace Recellection.Code.Models
 {
     class Menu
     {
-        private List<Region> regions;
+        private List<GUIRegion> regions;
         private Texture menuPic;
         private Menu helpMenu; //om denna Menu är en helpmenu eller inte ska ha en helpMenu sets denna variabel till null duh.
 
@@ -29,21 +29,19 @@ namespace Recellection.Code.Models
          * */
 
 
-        //place holders dem riktiga funktionerna ska faktiskt göra något :)
+        //place holders, dem riktiga funktionerna ska faktiskt göra något :)
         public Menu()
         {
-            return null;
         }
 
         //här kommer menyerna hårdkodas, mest kod här
         public Menu(String menuType)
         {
-            return null;
         }
 
 
         //och så några get metoder:
-        public List<Region> GetRegions()
+        public List<GUIRegion> GetRegions()
         {
             return regions;
         }
