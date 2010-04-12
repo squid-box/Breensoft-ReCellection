@@ -1,5 +1,5 @@
 using System;
-using Recellection.Code.Utility;
+using Recellection.Code.Utility.Logger;
 
 namespace Recellection
 {
