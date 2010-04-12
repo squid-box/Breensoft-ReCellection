@@ -24,6 +24,44 @@ namespace Recellection.Code.Models
         private BaseBuilding baseBuilding;
 
         /**
+         * Creates an unusable building with everything set at defualt values.
+         */
+        public Building()
+        {
+            this.name = "noName";
+            this.posX = -1;
+            this.posY = -1;
+            this.currentHealth = -1;
+            this.maxHealth = -1;
+            this.owner = null;
+            this.units = new List<Unit>();
+            this.type = null;
+            this.baseBuilding = null;
+        }
+
+        /**
+         * Creates a building with specified parameters, the unit list will
+         * be initated but empty and the current health will be set at 
+         * maxHealth.
+         */
+        public Building(String name, int posX, int posY, int maxHealth,
+            Player owner, BuildingType type, BaseBuilding baseBuilding)
+        {
+
+            this.name = name;
+            this.posX = posX;
+            this.maxHealth = maxHealth;
+            this.currentHealth = maxHealth;
+
+            this.owner = owner;
+            this.units = new List<Unit>();
+            this.type = type;
+
+            this.baseBuilding = baseBuilding;
+
+
+        }
+        /**
          * Methods 'n things.
          */
 
@@ -32,24 +70,58 @@ namespace Recellection.Code.Models
         {
             visitor.Visit(this);
         }
-        
+        /**
+         *Returns the owner of the building
+         */
         public Player GetPlayer()
         {
             return this.owner;
         }
 
-        public List<Unit> GetUnits()
+        public bool isAlive()
         {
-            return this.units;
+            return GetHealth() > 0;
         }
 
+        /**
+         * Returns a list of units if the building is alive
+         * else it returns null
+         */
+        public List<Unit> GetUnits()
+        {
+            if (isAlive())
+            {
+                return this.units;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /**
+         * Add one unig to the unit list if the building is alive
+         */
         public void AddUnit(Unit unit)
         {
-            units.Add(unit);
+            if (isAlive())
+            {
+                units.Add(unit);
+            }
         }
+
         public void AddUnits(Unit[] units)
         {
-            //TODO Find someone who knows how to do this?
+            if (!isAlive())
+            {
+                return;
+            }
+            else
+            {
+                foreach(Unit u in units){
+                    this.units.Add(u);
+                }
+            }
         }
 
         // Properties
@@ -58,6 +130,7 @@ namespace Recellection.Code.Models
             return this.name;
         }
 
+        //TODO Rename due to overloading
         public BuildingType GetType()
         {
             return this.type;
@@ -99,14 +172,38 @@ namespace Recellection.Code.Models
 
 
         // Modifiers
+
+        /**
+         * Reduces health for a building by the ammount specified in the 
+         * parameter
+         */
         public void damage(int dmgHealth)
         {
             //TODO Verify if there should be logic here to detirmine if it dies
-            this.currentHealth -= dmgHealth;
+            if (isAlive())
+            {
+                this.currentHealth -= dmgHealth;
+            }
+            else
+            {
+                return;
+            }
         }
+
+        /**
+         * Increases health for a building by the ammount specified in the 
+         * parameter
+         */
         public void repair(int health)
         {
-            this.currentHealth += health;
+            if (isAlive())
+            {
+                this.currentHealth += health;
+            }
+            else
+            {
+                return;
+            }
         }
     }
 }
