@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 
 using Recellection.Code.Main;
+using Recellection.Code.Main.Utility;
 
 namespace Recellection.Code.Models
 {
@@ -16,7 +17,7 @@ namespace Recellection.Code.Models
 	 */
 	public class Graph
 	{
-		private static Logger logger = Logger.getLogger();
+		private static Logger logger = LoggerFactory.getLogger();
 		private static int defaultWeight = 1;
 		private Dictionary<Building, int> buildings;
 

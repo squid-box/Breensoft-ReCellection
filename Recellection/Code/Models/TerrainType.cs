@@ -10,27 +10,34 @@ namespace Recellection.Code.Models
      * Author: Joel Ahlgren
      * Date: 2010-04-11
      */
-    class TerrainType
+    public class TerrainType
     {
-        /*
-         * Data
-         */
+        // Data
         private int dmgMod; // Damage modifier
         private int spdMod; // Speed modifier
         private int rscMod; // Resource modifier
         private Globals.TerrainTypes type;
 
-        /*
-         * Methods
-         */
+        
+        // Methods
+
+        #region Constructors
+
+        /// <summary>
+        /// Creates a TerrainType of the type Membrane.
+        /// </summary>
         public TerrainType()
         {
             // Assume default type.
-            type = Globals.TerrainTypes.Membrane;
+            this.type = Globals.TerrainTypes.Membrane;
             this.dmgMod = 0;
             this.spdMod = 10;
             this.rscMod = 10;
         }
+        /// <summary>
+        /// Creates a TerrainType of the type specified in t.
+        /// </summary>
+        /// <param name="t">A type of Globals.TerrainTypes.</param>
         public TerrainType(Globals.TerrainTypes t)
         {
             this.type = t;
@@ -67,13 +74,48 @@ namespace Recellection.Code.Models
             }
         }
 
+        #endregion
+
+        /// <summary>
+        /// Gets the type of this TerrainType.
+        /// </summary>
+        /// <returns>Enum of the TerrainType-type</returns>
         public Globals.TerrainTypes getType()
         {
             return this.type;
         }
+        /// <summary>
+        /// Change the type of this TerrainType.
+        /// </summary>
+        /// <param name="newType">Enum of the new type of type.</param>
         public void setType(Globals.TerrainTypes newType)
         {
             this.type = newType;
+        }
+
+        /// <summary>
+        /// Returns the damage modifier of this TerrainType.
+        /// </summary>
+        /// <returns>Integer-modifier</returns>
+        public int getDamageModifier()
+        {
+            return this.dmgMod;
+        }
+        /// <summary>
+        /// Returns the speed modifier of this TerrainType.
+        /// </summary>
+        /// <returns>Integer-modifier</returns>
+        public int getSpeedModifier()
+        {
+            return this.spdMod;
+        }
+        /// <summary>
+        /// Returns the resource modifier of this TerrainType.
+        /// </summary>
+        /// <returns>Integer-modifier</returns>
+        public int getResourceModifier()
+        {
+            return this.rscMod;
         }
     }
 }

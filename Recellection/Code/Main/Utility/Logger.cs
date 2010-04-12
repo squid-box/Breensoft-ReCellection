@@ -5,93 +5,29 @@ using System.Text;
 using System.Diagnostics;
 using System.IO;
 
-namespace Recellection.Code.Main
+namespace Recellection.Code.Main.Utility
 {
 	/**
 	 * Provides a re-usable logging interface for the whole application.
-	 * 
-	 * TODO: This class is a little long. Extract creation to a factory-class?
 	 * 
 	 * @author Martin Nycander
 	 */
 	public class Logger
 	{
-		public enum Level
-		{
-			TRACE = 1, DEBUG = 2, INFO = 3, WARN = 4, ERROR = 5, FATAL = 6 
-		};
-		
-		private static LinkedList<Logger> loggers = new LinkedList<Logger>();
-		private static Level globalThreshold = Level.TRACE;
-		private static TextWriter globalTarget = System.Console.Out;
-
-		/**
-		 * Retrieves a logger with the provided name.
-		 * Loggers are re-used and identified by name.
-		 * 
-		 * @return an new instance of a Logger
-		 */
-		public static Logger getLogger(string name)
-		{
-			// Try re-using a logger with that name
-			// TODO: Use Dictionary for loggers?
-			foreach(Logger l in loggers)
-			{
-				if (l.GetName() == name)
-				{
-					return l;
-				}
-			}
-			
-			Logger newLogger = new Logger(name);
-			loggers.AddLast(newLogger);
-			return newLogger;
-		}
-		
-		/**
-		 * Initializes a logger with the current class as name.
-		 * It searches the stackframe for this name, use getLogger(string) for better performance.
-		 * 
-		 * @return an new instance of a Logger
-		 */
-		public static Logger getLogger()
-		{
-			// Get the caller of this method
-			StackFrame stackFrame = new StackTrace().GetFrame(1);
-			
-			// Use the name of that class as this loggers name
-			string className = stackFrame.GetMethod().ReflectedType.FullName;
-			
-			return getLogger(className);
-		}
-		
-		/**
-		 * Will change target of all current and new loggers.
-		 * 
-		 * @param newTarget the new target for all loggers.
-		 */
-		public static void setTargetGlobally(TextWriter newTarget)
-		{
-			Logger.globalTarget = newTarget;
-			
-			foreach( Logger l in loggers)
-			{
-				l.SetTarget(newTarget);
-			}
-		}
+		private static LogLevel globalThreshold = LogLevel.TRACE;
 		
 		private string name;
-		private Level threshold;
+		private LogLevel threshold;
 		private TextWriter target;
-
+		
 		/**
-		 * Private constructor, use getLogger to get an instance.
+		 * Internal constructor, use getLogger to get an instance.
 		 */
-		private Logger(string name)
+		internal Logger(string name, LogLevel threshold, TextWriter target)
 		{
 			this.name = name;
-			this.threshold = Level.TRACE;
-			this.target = Logger.globalTarget;
+			this.threshold = threshold;
+			this.target = target;
 		}
 				
 		/**
@@ -105,7 +41,7 @@ namespace Recellection.Code.Main
 		/**
 		 * @param threshold the logging threshold for this logger.
 		 */
-		public void SetThreshold(Level threshold)
+		public void SetThreshold(LogLevel threshold)
 		{
 			this.threshold = threshold;
 		}
@@ -113,7 +49,7 @@ namespace Recellection.Code.Main
 		/**
 		 * @return the current threshold for this logger.
 		 */
-		public Level GetThreshold()
+		public LogLevel GetThreshold()
 		{
 			return threshold;
 		}
@@ -132,7 +68,7 @@ namespace Recellection.Code.Main
 		 * @param message the message to log
 		 * @param level the level of importance
 		 */
-		private void Log(string message, Level level)
+		private void Log(string message, LogLevel level)
 		{
 			if (level < this.threshold)
 				return;
@@ -155,7 +91,7 @@ namespace Recellection.Code.Main
 		 */
 		public void Trace(string message)
 		{
-			Log(message, Level.TRACE);
+			Log(message, LogLevel.TRACE);
 		}
 
 		/**
@@ -166,7 +102,7 @@ namespace Recellection.Code.Main
 		 */
 		public void Debug(string message)
 		{
-			Log(message, Level.DEBUG);
+			Log(message, LogLevel.DEBUG);
 		}
 
 		/**
@@ -177,7 +113,7 @@ namespace Recellection.Code.Main
 		 */
 		public void Info(string message)
 		{
-			Log(message, Level.INFO);
+			Log(message, LogLevel.INFO);
 		}
 
 		/**
@@ -188,7 +124,7 @@ namespace Recellection.Code.Main
 		 */
 		public void Warn(string message)
 		{
-			Log(message, Level.WARN);
+			Log(message, LogLevel.WARN);
 		}
 
 		/**
@@ -198,7 +134,7 @@ namespace Recellection.Code.Main
 		 */
 		public void Error(string message)
 		{
-			Log(message, Level.ERROR);
+			Log(message, LogLevel.ERROR);
 		}
 
 		/**
@@ -209,7 +145,7 @@ namespace Recellection.Code.Main
 		 */
 		public void Fatal(string message)
 		{
-			Log(message, Level.FATAL);
+			Log(message, LogLevel.FATAL);
 		}
 		#endregion
 	}
