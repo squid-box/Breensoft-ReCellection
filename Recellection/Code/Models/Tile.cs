@@ -46,6 +46,15 @@ namespace Recellection.Code.Models
             this.building = null;
         }
 
+        [Obsolete]
+        public Tile(TerrainType t)
+        {
+            this.type = new TerrainType();
+            this.visibleTo = new HashSet<Player>();
+            this.units = new HashSet<Unit>();
+            this.building = null;
+        }
+
         #endregion
 
         #region Getters/Setters
