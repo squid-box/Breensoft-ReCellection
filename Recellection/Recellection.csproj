@@ -107,14 +107,14 @@
   <ItemGroup>
     <Compile Include="Code\Controllers\AIPlayer.cs" />
     <Compile Include="Code\Controllers\Tobii Controller.cs" />
-    <Compile Include="Code\Main\Utility\Logger.cs" />
+    <Compile Include="Code\Utility\Logger.cs" />
     <Compile Include="Code\Controllers\WorldGenerator.cs" />
     <Compile Include="Code\Main\Globals.cs" />
     <Compile Include="Code\Main\Program.cs" />
     <Compile Include="Code\Main\Recellection.cs" />
-    <Compile Include="Code\Main\Utility\LoggerFactory.cs" />
-    <Compile Include="Code\Main\Utility\LoggerSetup.cs" />
-    <Compile Include="Code\Main\Utility\LogLevel.cs" />
+    <Compile Include="Code\Utility\LoggerFactory.cs" />
+    <Compile Include="Code\Utility\LoggerSetup.cs" />
+    <Compile Include="Code\Utility\LogLevel.cs" />
     <Compile Include="Code\Models\BaseBuilding.cs" />
     <Compile Include="Code\Models\Building.cs" />
     <Compile Include="Code\Models\BuildingType.cs" />
@@ -128,8 +128,8 @@
     <Compile Include="Code\Models\Tile.cs" />
     <Compile Include="Code\Models\Unit.cs" />
     <Compile Include="Code\Sounds\AudioPlayer.cs" />
-    <Compile Include="Code\Util\Observable.cs" />
-    <Compile Include="Code\Util\IObserver.cs" />
+    <Compile Include="Code\Utility\Publisher.cs" />
+    <Compile Include="Code\Utility\IObserver.cs" />
     <Compile Include="Code\Views\AIView.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

@@ -2,26 +2,25 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Recellection.Code.Util;
 
-namespace Recellection.Code.Util
+namespace Recellection.Code.Utility
 {
     
    /// <summary>
-   /// The super class of all classes that implement the Observable functionality.
+   /// The super class of all classes that implement the Publisher functionality.
    ///  
-   /// An Observable object may have a number of subscribed Observer objects which 
+   /// An Publisher object may have a number of subscribed Observer objects which 
    /// are notified when changes are made.
    /// 
    /// Observers may define what method will be invoked upon notification by providing
    /// a delegate, but will default on the void Update() function required by the 
-   /// Observable interface.
+   /// Publisher interface.
    /// </summary>
-   public class Observable
+   public class Publisher
     {
         
         /// <summary>
-        /// The internal list of observers that have subscribed for updates on this Observable.
+        /// The internal list of observers that have subscribed for updates on this Publisher.
         /// </summary>
         private Dictionary<IObserver, ObserverDelegate> observers;
         
@@ -31,19 +30,19 @@ namespace Recellection.Code.Util
         /// </summary>
         /// <param name="observable">The observable that will invokde this delegate</param>
         /// <param name="argument">The argument tha twill be passed on upon invokation</param>
-        public delegate void ObserverDelegate(Observable observable, Object argument);
+        public delegate void ObserverDelegate(Publisher observable, Object argument);
 
         /// <summary>
-        /// The constructor for Observable objects. Intializes the internal dictionary
+        /// The constructor for Publisher objects. Intializes the internal dictionary
         /// of observers.
         /// </summary>
-        public Observable()
+        public Publisher()
         {
             observers = new Dictionary<IObserver, ObserverDelegate>();
         }
 
         /// <summary>
-        /// Allows an Observer o to subscribe for updates from this Observable.
+        /// Allows an Observer o to subscribe for updates from this Publisher.
         /// Any Observers that subscribed using this method will have their 
         /// Update-method invoked when being notified.
         /// </summary>
@@ -56,7 +55,7 @@ namespace Recellection.Code.Util
 
         
         /// <summary>
-        /// Allows an IObserver o to subscribe for updates from this Observable.
+        /// Allows an IObserver o to subscribe for updates from this Publisher.
         /// Any IObservers that subscribes using this method provides 
         /// Update-method invoked when being notified.
         /// </summary>
