@@ -8,10 +8,10 @@ namespace Recellection.Code.Main.Utility
 {
 	public static class LoggerSetup
 	{
-		/**
-		 * Initializes the testing environment for this specific application.
-		 * Individual settings can be adjusted here.
-		 */
+		/// <summary>
+		/// Initializes the testing environment for this specific application.
+		/// Individual settings can be adjusted here.
+		/// </summary>
 		public static void Initialize()
 		{
 			LoggerFactory.SetGlobalTarget(GetLogFileTarget("recellection.log"));
@@ -21,10 +21,11 @@ namespace Recellection.Code.Main.Utility
 			l.Trace("Initialized Logger.");
 		}
 		
-		/**
-		 * Creates and opens a new file for writing and returns a TextWriter for the file.
-		 * @return a textWriter to be used for a logger.
-		 */
+		/// <summary>
+		/// Creates and opens a new file for writing and returns a TextWriter for the file.
+		/// </summary>
+		/// <param name="filename">The path to the logfile.</param>
+		/// <returns>A textWriter to be used for a logger.</returns>
 		public static TextWriter GetLogFileTarget(string filename)
 		{
 			FileStream file = new FileStream(filename, FileMode.Create, FileAccess.Write);
