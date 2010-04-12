@@ -131,7 +131,7 @@ namespace Recellection.Code.Models
         }
 
         //TODO Rename due to overloading
-        public BuildingType GetType()
+        public BuildingType GetBuildingType()
         {
             return this.type;
         }

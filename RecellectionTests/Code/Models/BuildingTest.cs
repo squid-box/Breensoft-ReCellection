@@ -11,10 +11,6 @@ namespace Recellection.Code.Models
     [TestFixture]
     class BuildingTest
     {
-        private Building testBuilding1;
-        private Building testBuilding2;
-        private Building testBuilding3;
-
         [SetUp]
         public void Init(){
 
