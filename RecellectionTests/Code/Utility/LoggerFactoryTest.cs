@@ -23,7 +23,7 @@ namespace Recellection.Code.Utility.Logger
 		public void GetLoggerAuto()
 		{
 			l = LoggerFactory.GetLogger();
-			Assert.AreEqual("Recellection.Code.Utility.LoggerFactoryTest", l.GetName());
+			Assert.AreEqual("Recellection.Code.Utility.Logger.LoggerFactoryTest", l.GetName());
 		}
 		[Test]
 		public void LoggersAreReused()
