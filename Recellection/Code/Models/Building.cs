@@ -119,7 +119,7 @@ namespace Recellection.Code.Models
             else
             {
                 foreach(Unit u in units){
-                    AddUnit(u);
+                    this.units.Add(u);
                 }
             }
         }
