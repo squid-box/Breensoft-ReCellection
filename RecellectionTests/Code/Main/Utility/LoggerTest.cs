@@ -20,7 +20,7 @@ namespace Recellection.Code.Main.Utility
 			target = new StringWriter();
 			output = target.GetStringBuilder();
 			
-			l = LoggerFactory.getLogger("Test");
+			l = LoggerFactory.GetLogger("Test");
 			l.SetThreshold(LogLevel.TRACE);
 			l.SetTarget(target);
 		}

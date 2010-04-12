@@ -9,10 +9,10 @@ namespace Recellection.Code.Controllers
     class WorldGenerator
     {
         public const int MINIMUM = 100;
-        public const int MAXIMUM = 100;
+        public const int MAXIMUM = 200;
 
 
-        public void GenerateWorld(int mapSeed) 
+        public static Tile[][] GenerateWorld(int mapSeed) 
         {
             Tile[][] tileMatrix = GenerateTileMatrixFromSeed(mapSeed);
             //TODO make a world from the tiles.
@@ -20,8 +20,10 @@ namespace Recellection.Code.Controllers
 
             //TODO Set spawnpoint, easiest if it is, 10 tiles from the corner
             //For a 100,100 map that means it is at 10,10 and 90,90
-        }  
-        private Tile[][] GenerateTileMatrixFromSeed(int mapSeed)
+
+            return tileMatrix;
+        }
+        private static Tile[][] GenerateTileMatrixFromSeed(int mapSeed)
         {
             //Initiate the random number generator
             Random randomer = new Random(mapSeed);
@@ -50,10 +52,16 @@ namespace Recellection.Code.Controllers
         }
 
 
-        private Tile RandomTile(Random randomer)
+        private static Tile RandomTile(Random randomer)
         {
+
+            Array terrainTypes = Enum.GetValues(typeof(Globals.TerrainTypes));
+            
             //TODO Use random to create diffrent types.
-            return new Tile(new TerrainType());
+            int randomTile = randomer.Next(
+                Enum.GetValues(typeof(Globals.TerrainTypes)).Length);
+
+            return new Tile(new TerrainType());//new TerrainType(terrainTypes.GetValue[randomTile]));
         }
             
     }
