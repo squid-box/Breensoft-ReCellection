@@ -54,7 +54,7 @@ namespace Recellection.Code.Models
         public Menu GetHelp() //seriously dude, you need help...
         {
             return helpMenu;
-        }+
+        }
         
     }
 }
