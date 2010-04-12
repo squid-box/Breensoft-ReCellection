@@ -128,7 +128,7 @@
     <Compile Include="Code\Models\Tile.cs" />
     <Compile Include="Code\Models\Unit.cs" />
     <Compile Include="Code\Sounds\AudioPlayer.cs" />
-    <Compile Include="Code\Utility\Observable.cs" />
+    <Compile Include="Code\Utility\Publisher.cs" />
     <Compile Include="Code\Utility\IObserver.cs" />
     <Compile Include="Code\Views\AIView.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
