@@ -14,7 +14,7 @@ namespace Recellection.Code.Models
     public class Unit
     {
         // DATA
-        private Vector2 pos;       // Current tile
+        private Vector2 pos;        // Current tile
         private Vector2 target;     // Target coordinate
         private Vector2 offset;     // The y-offset in pixels of this unit in the world
         private int angle;          // Angle of unit, for drawing
@@ -24,6 +24,7 @@ namespace Recellection.Code.Models
         private Player owner;
         //private Sprite sprite;
 
+        private const int MOVEMENT_SPEED = 1;
 
         // METHODS
 
@@ -35,8 +36,8 @@ namespace Recellection.Code.Models
         public Unit()
         {
             this.pos = new Vector2(0, 0);
-            this.target = new Vector2();    // No target
-            this.offset = new Vector2();    // No offset.
+            this.target = new Vector2(-1,-1);    // No target.
+            this.offset = new Vector2(-1,-1);    // No offset.
             this.angle = 0;
             this.isDispersed = this.isDead = false;
         }
@@ -48,8 +49,8 @@ namespace Recellection.Code.Models
         public Unit(int posX, int posY)
         {
             this.pos = new Vector2(posX, posY);
-            this.target = new Vector2();    // No target
-            this.offset = new Vector2();    // No offset
+            this.target = new Vector2(-1, -1);    // No target.
+            this.offset = new Vector2(-1, -1);    // No offset.
             this.angle = 0;
             this.isDispersed = this.isDead = false;
         }
@@ -62,8 +63,8 @@ namespace Recellection.Code.Models
         public Unit(int posX, int posY, int angle)
         {
             this.pos = new Vector2(posX, posY);
-            this.target = new Vector2();    // No target
-            this.offset = new Vector2();    // No offset
+            this.target = new Vector2(-1, -1);    // No target.
+            this.offset = new Vector2(-1, -1);    // No offset.
             this.angle = angle;
             this.isDispersed = this.isDead = false;
         }
@@ -203,7 +204,36 @@ namespace Recellection.Code.Models
         private void Move()
         {
             //TODO: Move unit towards target.
-            // Cool trigonometrical functions 'n shit.
+            if (this.target.X != -1)
+            {
+                if (this.target.X > this.pos.X)
+                {
+                    this.pos.X += MOVEMENT_SPEED;
+                }
+                else if (this.target.X < this.pos.X)
+                {
+                    this.pos.X += MOVEMENT_SPEED;
+                }
+                else
+                {
+                    this.target.X = -1;
+                }
+            }
+            if (this.target.Y != -1)
+            {
+                if (this.target.Y > this.pos.Y)
+                {
+                    this.pos.Y += MOVEMENT_SPEED;
+                }
+                else if (this.target.Y < this.pos.Y)
+                {
+                    this.pos.Y += MOVEMENT_SPEED;
+                }
+            }
+            if (this.pos.X == this.target.X && this.pos.Y == this.target.Y)
+            {
+                this.target = new Vector2(-1, -1);
+            }
         }
     }
 }

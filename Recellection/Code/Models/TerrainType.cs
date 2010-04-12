@@ -80,7 +80,7 @@ namespace Recellection.Code.Models
         /// Gets the type of this TerrainType.
         /// </summary>
         /// <returns>Enum of the TerrainType-type</returns>
-        public Globals.TerrainTypes GetTerrainType()
+        public Globals.TerrainTypes GetEnum()
         {
             return this.type;
         }

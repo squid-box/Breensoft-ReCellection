@@ -6,11 +6,11 @@ using Recellection.Code.Models;
 
 namespace Recellection.Code.Models
 {
-    /* The representation of a Tile in the game world.
-     * 
-     * Author: Joel Ahlgren
-     * Date: 2010-04-12
-     */
+    /// <summary>
+    /// Representation of a tile in the game world.
+    /// </summary>
+    /// <author>Joel Ahlgren</author>
+    /// <date>2010-04-12</date>
     public class Tile
     {
         // Data
@@ -65,7 +65,7 @@ namespace Recellection.Code.Models
         /// <param name="type">Enum of the terrain type.</param>
         public void ChangeTerrainType(Globals.TerrainTypes type)
         {
-            if (this.type.GetTerrainType() != type)
+            if (this.type.GetEnum() != type)
             {
                 this.type = new TerrainType(type);
             }
@@ -83,7 +83,7 @@ namespace Recellection.Code.Models
         /// Adds a list of units to this Tile.
         /// </summary>
         /// <param name="units">Units to be added to this Tile.</param>
-        public void SetUnits(List<Unit> units)
+        public void AddUnit(List<Unit> units)
         {
             foreach (Unit u in units)
             {
@@ -91,9 +91,29 @@ namespace Recellection.Code.Models
             }
         }
         /// <summary>
+        /// Add a unit to this Tile.
+        /// </summary>
+        /// <param name="units">Units to be added to this Tile.</param>
+        public void AddUnit(Unit u)
+        {
+            this.units.Add(u);
+        }
+        /// <summary>
         /// Get the list of units on this tile.
         /// </summary>
         /// <returns>HashSet of units in this tile.</returns>
+
+        public void RemoveUnit(Unit u)
+        {
+            this.units.Remove(u);
+        }
+        public void RemoveUnit(List<Unit> units)
+        {
+            foreach (Unit u in units)
+            {
+                this.units.Remove(u);
+            }
+        }
         public HashSet<Unit> GetUnits()
         {
             return this.units;
@@ -106,7 +126,7 @@ namespace Recellection.Code.Models
         /// <returns>True iff building was placed, False if this Tile already is occupied.</returns>
         public bool SetBuilding(Building building)
         {
-            if (this.building != null)
+            if (this.building != null || building == null)
             {
                 // Already occupied tile.
                 return false;
@@ -144,6 +164,57 @@ namespace Recellection.Code.Models
         public void MakeInvisibleTo(Player p)
         {
             this.visibleTo.Remove(p);
+        }
+
+        /// <summary>
+        /// Checks if this tile is visible to player 'p'.
+        /// </summary>
+        /// <param name="p">Player to check against.</param>
+        public bool IsVisible(Player p)
+        {
+            if (visibleTo.Contains(p))
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// Removes building in this tile.
+        /// </summary>
+        public void RemoveBuilding()
+        {
+            this.building = null;
+        }
+
+        /// <summary>
+        /// Checks to see if this Tile is the same as another one.
+        /// (Overrides default Equals-check.)
+        /// </summary>
+        /// <param name="obj">Other tile object</param>
+        /// <returns>True if of the same terrain type.</returns>
+        public override bool Equals(System.Object obj)
+        {
+            Tile t = (Tile) obj;
+            return this.GetTerrainType().GetEnum().Equals(t.GetTerrainType().GetEnum());
+        }
+
+        /// <summary>
+        /// Overrides the == operator.
+        /// </summary>
+        public static bool operator==(Tile obj1, Tile obj2)
+        {
+            return obj1.Equals(obj2);
+        }
+        /// <summary>
+        /// Overrides the != operator.
+        /// </summary>
+        public static bool operator !=(Tile obj1, Tile obj2)
+        {
+            return !obj1.Equals(obj2);
         }
     }
 }
