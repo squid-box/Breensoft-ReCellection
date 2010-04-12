@@ -6,6 +6,7 @@ using System.Text;
 using NUnit.Framework;
 using Recellection.Code.Controllers;
 using Recellection.Code.Models;
+using Recellection.Code.Utility.Logger;
 
 namespace Recellection.Code.Controllers
 {
@@ -14,38 +15,70 @@ namespace Recellection.Code.Controllers
     {
 
         Tile[][] tileMatrix;
-        Tile defaultTile;
-        Random randomer;
 
-        public const int MINIMUM = 100;
-        public const int MAXIMUM = 200;
+        Random randomer;
+        Logger myLogger;
+
+        public const int SEED = 0xC00FEE;
+
+        int width;
 
 
         [SetUp]
         public void Init()
         {
-            randomer = new Random(1337);
-           /* tileMatrix = new Tile[randomer.Next(MINIMUM, MAXIMUM)][];
+            myLogger = LoggerFactory.GetLogger();
 
-            defaultTile = new Tile(
+            randomer = new Random(SEED);
+            tileMatrix = new Tile[randomer.Next(WorldGenerator.MINIMUM,
+                WorldGenerator.MAXIMUM)][];
+
+            width = randomer.Next(WorldGenerator.MINIMUM,
+                    WorldGenerator.MAXIMUM);
+
+            myLogger.Trace("Test map consists of " + tileMatrix.Length +
+                " times " + width + " tiles.");
 
             for (int i = 0; i < tileMatrix.Length; i++)
             {
-                tileMatrix[i] = new Tile[randomer.Next(MINIMUM, MAXIMUM)];
+                tileMatrix[i] = new Tile[width];
             }
-            foreach (Tile[] tileRow in tileMatrix)
+
+            for (int i = 0; i < tileMatrix.Length; i++)
             {
-                for (int i = 0; i < tileRow.Length; i++)
+                for (int j = 0; j < width; j++)
                 {
-                    tileRow[i] = 
+                    tileMatrix[i][j] = RandomTile();
                 }
 
-            }*/
+            }
         }
 
         [Test]
-        public void RandomTile()
+        public void GenerateWorld()
         {
+            Tile[][] toTest = WorldGenerator.GenerateWorld(SEED);
+            for (int i = 0; i < tileMatrix.Length; i++)
+            {
+                for (int j = 0; j < width; j++)
+                {
+                    Assert.IsNotNull(toTest[i][j]);
+
+                }
+            }
+
+        }
+        public Tile RandomTile()
+        {
+
+            int randomTile = randomer.Next(
+                Enum.GetValues(typeof(Globals.TerrainTypes)).Length - 1);
+
+            Type enumType = typeof(Globals.TerrainTypes);
+
+
+            return new Tile(new TerrainType((Globals.TerrainTypes)
+                Enum.ToObject(enumType, randomTile)));
 
         }
     }
