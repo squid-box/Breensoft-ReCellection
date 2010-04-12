@@ -7,65 +7,59 @@ using System.IO;
 
 namespace Recellection.Code.Main.Utility
 {
-	/**
-	 * Provides a re-usable logging interface for the whole application.
-	 * 
-	 * @author Martin Nycander
-	 */
+	/// <summary>
+	/// Provides a re-usable logging interface for the whole application.
+	/// 
+	/// Author: Martin Nycander
+	/// </summary>
 	public class Logger
 	{	
 		private string name;
 		private LogLevel threshold;
 		private TextWriter target;
 		
-		/**
-		 * Internal constructor, use GetLogger to get an instance.
-		 */
+		/// <summary>
+		/// Internal constructor, use GetLogger to get an instance.
+		/// </summary>
+		/// <param name="name">The name of the logger.</param>
+		/// <param name="threshold">The threshold for the logger.</param>
+		/// <param name="target">The target to write to.</param>
 		internal Logger(string name, LogLevel threshold, TextWriter target)
 		{
 			this.name = name;
 			this.threshold = threshold;
 			this.target = target;
 		}
-				
-		/**
-		 * @return the name of this logger.
-		 */
+		
+		/// <returns>The name of the logger.</returns>
 		public string GetName()
 		{
 			return name;
 		}
 		
-		/**
-		 * @param threshold the logging threshold for this logger.
-		 */
+		/// <param name="threshold">The new logging threshold for the logger.</param>
 		public void SetThreshold(LogLevel threshold)
 		{
 			this.threshold = threshold;
 		}
 		
-		/**
-		 * @return the current threshold for this logger.
-		 */
+		/// <returns>The current threshold for this logger.</returns>
 		public LogLevel GetThreshold()
 		{
 			return threshold;
 		}
 		
-		/**
-		 * @param newTarget the new output for this logger.
-		 */
+		/// <param name="newTarget">The new output target for this logger.</param>
 		public void SetTarget(TextWriter newTarget)
 		{
 			this.target = newTarget;
 		}
-		
-		/**
-		 * Logs a message to the target if it's above the threshold.
-		 * 
-		 * @param message the message to log
-		 * @param level the level of importance
-		 */
+
+		/// <summary>
+		/// Logs a message to the target if it's above the threshold.
+		/// </summary>
+		/// <param name="message">The message to log.</param>
+		/// <param name="level">The level of importance.</param>
 		private void Log(string message, LogLevel level)
 		{
 			if (level < this.threshold)
@@ -81,66 +75,61 @@ namespace Recellection.Code.Main.Utility
 		
 		#region Logging methods
 
-		/**
-		 * Submits a trace log message to the logger.
-		 * A trace message is a very detailed log messages, potentially of a high frequency and volume.
-		 * 
-		 * @param message the message to log.
-		 */
+		/// <summary>
+		/// Submits a trace log message to the logger.
+		/// A trace message is a very detailed log messages, potentially of a high frequency and volume.
+		/// </summary>
+		/// <param name="message">The message to log.</param>
 		public void Trace(string message)
 		{
 			Log(message, LogLevel.TRACE);
 		}
 
-		/**
-		 * Submits a debug log message to the logger.
-		 * A debug message is a less detailed and/or less frequent debugging messages
-		 * 
-		 * @param message the message to log.
-		 */
+		/// <summary>
+		/// Submits a debug log message to the logger.
+		/// A debug message is a less detailed and/or less frequent debugging messages
+		/// </summary>
+		/// <param name="message">The message to log.</param>
 		public void Debug(string message)
 		{
 			Log(message, LogLevel.DEBUG);
 		}
 
-		/**
-		 * Submits an info log message to the logger.
-		 * An info message is an informal message.
-		 * 
-		 * @param message the message to log.
-		 */
+		/// <summary>
+		/// Submits an info log message to the logger.
+		/// An info message is an informal message.
+		/// </summary>
+		/// <param name="message">The message to log.</param>
 		public void Info(string message)
 		{
 			Log(message, LogLevel.INFO);
 		}
 
-		/**
-		 * Submits a warning log message to the logger.
-		 * A warning message is for warnings which doesn't appear to the user of the application.
-		 * 
-		 * @param message the message to log.
-		 */
+		/// <summary>
+		/// Submits a warning log message to the logger.
+		/// A warning message is for warnings which doesn't appear to the user of the application.
+		/// </summary>
+		/// <param name="message">The message to log.</param>
 		public void Warn(string message)
 		{
 			Log(message, LogLevel.WARN);
 		}
 
-		/**
-		 * Submits an error log message to the logger.
-		 *
-		 * @param message the message to log.
-		 */
+
+		/// <summary>
+		/// Submits an error log message to the logger.
+		/// </summary>
+		/// <param name="message">The message to log.</param>
 		public void Error(string message)
 		{
 			Log(message, LogLevel.ERROR);
 		}
 
-		/**
-		 * Submits a fatal log message to the logger.
-		 * After a fatal error the application usually terminates.
-		 * 
-		 * @param message the message to log.
-		 */
+		/// <summary>
+		/// Submits a fatal log message to the logger.
+		/// After a fatal error the application usually terminates.
+		/// </summary>
+		/// <param name="message">The message to log.</param>
 		public void Fatal(string message)
 		{
 			Log(message, LogLevel.FATAL);
