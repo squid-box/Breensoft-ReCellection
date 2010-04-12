@@ -56,7 +56,7 @@ namespace Recellection.Code.Main.Utility
 			l2.Trace("def");
 
 			// Change target for all
-			LoggerFactory.setGlobalTarget(target);
+			LoggerFactory.SetGlobalTarget(target);
 
 			l.Trace("123");
 			l2.Trace("456");
