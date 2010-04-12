@@ -8,34 +8,32 @@ using Recellection.Code.Main.Utility;
 
 namespace Recellection.Code.Models
 {
-	/**
-	 * The Graph component is a storage class for buildings and their weights.
-	 * 
-	 * TODO: Implement Publisher-pattern.
-	 * 
-	 * @author Martin Nycander
-	 */
+	/// <summary>
+	/// The Graph component is a storage class for buildings and their weights.
+	/// TODO: Implement Publisher-pattern.
+	/// 
+	/// Author: Martin Nycander
+	/// </summary>
 	public class Graph
 	{
 		private static Logger logger = LoggerFactory.GetLogger();
 		private static int defaultWeight = 1;
 		private Dictionary<Building, int> buildings;
 
-		/**
-		 * Constructs and initializes an empty graph.
-		 */
+		/// <summary>
+		/// Constructs and initializes an empty graph.
+		/// </summary>
 		public Graph()
 		{
 			logger.Trace("Constructing new graph.");
 			buildings = new Dictionary<Building, int>();
 		}
 
-		/**
-		 * Adds a building to the graph.
-		 * A building that has already been added will be ignored.
-		 * 
-		 * @param building the building to add
-		 */
+		/// <summary>
+		/// Adds a building to the graph.
+		/// A building that has already been added will be ignored.
+		/// </summary>
+		/// <param name="building">The building to add.</param>
 		public void Add(Building building)
 		{
 			if (buildings.ContainsKey(building))
@@ -47,23 +45,21 @@ namespace Recellection.Code.Models
 			buildings.Add(building, defaultWeight);
 		}
 
-		/**
-		 * Removes a building from the graph.
-		 * 
-		 * @param building the building to remove
-		 */
+		/// <summary>
+		/// Removes a building from the graph.
+		/// </summary>
+		/// <param name="building">The building to remove.</param>
 		public void Remove(Building building)
 		{
 			buildings.Remove(building);
 		}
 
-		/**
-		 * Sets the weight of a building node in the graph.
-		 * The building is added to the graph, if it is not a part of the graph.
-		 * 
-		 * @param building the building to set weight for.
-		 * @param weight the new weight.
-		 */
+		/// <summary>
+		/// Sets the weight of a building node in the graph.
+		/// The building is added to the graph, if it is not a part of the graph.
+		/// </summary>
+		/// <param name="building">The building to set weight for.</param>
+		/// <param name="weight">The new weight.</param>
 		public void SetWeight(Building building, int weight)
 		{
 			if (! buildings.ContainsKey(building))
@@ -74,10 +70,9 @@ namespace Recellection.Code.Models
 			buildings[building] = weight;
 		}
 
-		/**
-		 * @return the weight of the building.
-		 * @throws ArgumentException if the building is not a part of the graph.
-		 */
+		/// <param name="building">The building to get weight for.</param>
+		/// <returns>the weight of the building.</returns>
+		/// <exception cref="ArgumentException">if the building is not a part of the graph.</exception>
 		public int GetWeight(Building building)
 		{
 			int weight;
@@ -89,10 +84,8 @@ namespace Recellection.Code.Models
 			
 			return weight;
 		}
-		
-		/**
-		 * @return the number of buildings in this graph.
-		 */
+
+		/// <returns>The number of buildings in this graph.</returns>
 		public int CountBuildings()
 		{
 			return buildings.Count();
