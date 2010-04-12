@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Recellection.Code.Models;
-using Recellection.Code.Utility;
+using Recellection.Code.Utility.Logger;
 
 namespace Recellection.Code.Controllers
 {
