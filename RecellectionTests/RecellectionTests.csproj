@@ -8,7 +8,7 @@
     <ProjectGuid>{24FC33BD-7778-4783-A7BC-77AD3C75C3E9}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>RecellectionTests</RootNamespace>
+    <RootNamespace>Recellection</RootNamespace>
     <AssemblyName>RecellectionTests</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
@@ -49,7 +49,14 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="GraphTest.cs" />
+    <Compile Include="Code\Controllers\WorldGeneratorTest.cs" />
+    <Compile Include="Code\Utility\LoggerFactoryTest.cs" />
+    <Compile Include="Code\Models\BuildingTest.cs" />
+    <Compile Include="Code\Models\GraphTest.cs" />
+    <Compile Include="Code\Utility\LoggerTest.cs" />
+    <Compile Include="Code\Models\TerrainTypeTest.cs" />
+    <Compile Include="Code\Models\TileTest.cs" />
+    <Compile Include="Code\Models\UnitTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -58,8 +65,11 @@
       <Name>Recellection</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Code\Main\" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
   </Target>
