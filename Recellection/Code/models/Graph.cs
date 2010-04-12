@@ -3,17 +3,17 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
+using Recellection.Code.Utility.Logger;
 using Recellection.Code.Utility;
 
 namespace Recellection.Code.Models
 {
 	/// <summary>
 	/// The Graph component is a storage class for buildings and their weights.
-	/// TODO: Implement Publisher-pattern.
 	/// 
 	/// Author: Martin Nycander
 	/// </summary>
-	public class Graph
+	public class Graph : Publisher
 	{
 		private static Logger logger = LoggerFactory.GetLogger();
 		private static int defaultWeight = 1;
@@ -42,6 +42,7 @@ namespace Recellection.Code.Models
 			}
 			
 			buildings.Add(building, defaultWeight);
+			this.Notify(this);
 		}
 
 		/// <summary>
@@ -51,6 +52,7 @@ namespace Recellection.Code.Models
 		public void Remove(Building building)
 		{
 			buildings.Remove(building);
+			this.Notify(this);
 		}
 
 		/// <summary>
@@ -67,6 +69,7 @@ namespace Recellection.Code.Models
 			}
 			
 			buildings[building] = weight;
+			this.Notify(this);
 		}
 
 		/// <param name="building">The building to get weight for.</param>

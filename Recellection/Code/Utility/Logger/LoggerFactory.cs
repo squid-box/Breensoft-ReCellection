@@ -5,7 +5,7 @@ using System.Text;
 using System.IO;
 using System.Diagnostics;
 
-namespace Recellection.Code.Utility
+namespace Recellection.Code.Utility.Logger
 {
 	/// <summary>
 	/// Factory class, provides methods for supplying Loggers to the people.
