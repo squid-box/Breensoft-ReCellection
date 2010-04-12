@@ -15,6 +15,7 @@ namespace Recellection.Code.Main.Utility
 	{
 		private static LinkedList<Logger> loggers = new LinkedList<Logger>();
 		private static TextWriter globalTarget = System.Console.Out;
+		internal static LogLevel globalThreshold = LogLevel.TRACE;
 
 		/**
 		 * Retrieves a logger with the provided name.
@@ -69,6 +70,16 @@ namespace Recellection.Code.Main.Utility
 			{
 				l.SetTarget(newTarget);
 			}
+		}
+		
+		/**
+		 * Sets the global threshold. No logs will have a loglevel below this threshold.
+		 * 
+		 * @param newThreshold the new threshold for the application.
+		 */
+		public static void setGlobalThreshold(LogLevel newThreshold)
+		{
+			LoggerFactory.globalThreshold = newThreshold;
 		}
 		
 	}
