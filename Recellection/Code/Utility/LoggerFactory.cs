@@ -5,24 +5,24 @@ using System.Text;
 using System.IO;
 using System.Diagnostics;
 
-namespace Recellection.Code.Main.Utility
+namespace Recellection.Code.Utility
 {
-	/**
-	 * Factory class, provides methods for supplying Loggers to the people.
-	 * @author Martin Nycander
-	 */
+	/// <summary>
+	/// Factory class, provides methods for supplying Loggers to the people.
+	/// Author: Martin Nycander
+	/// </summary>
 	public class LoggerFactory
 	{
 		private static LinkedList<Logger> loggers = new LinkedList<Logger>();
 		private static TextWriter globalTarget = System.Console.Out;
 		internal static LogLevel globalThreshold = LogLevel.TRACE;
 
-		/**
-		 * Retrieves a logger with the provided name.
-		 * Loggers are re-used and identified by name.
-		 * 
-		 * @return an new instance of a Logger
-		 */
+		/// <summary>
+		/// Retrieves a logger with the provided name.
+		/// Loggers are re-used and identified by name.
+		/// </summary>
+		/// <param name="name">The name of the logger.</param>
+		/// <returns>A new instance of a Logger.</returns>
 		public static Logger GetLogger(string name)
 		{
 			// Try re-using a logger with that name
@@ -40,12 +40,11 @@ namespace Recellection.Code.Main.Utility
 			return newLogger;
 		}
 
-		/**
-		 * Initializes a logger with the current class as name.
-		 * It searches the stackframe for this name, use GetLogger(string) for better performance.
-		 * 
-		 * @return an new instance of a Logger
-		 */
+		/// <summary>
+		/// Initializes a logger with the current class as name.
+		/// It searches the stackframe for this name, use GetLogger(string) for better performance.
+		/// </summary>
+		/// <returns>A new instance of a Logger.</returns>
 		public static Logger GetLogger()
 		{
 			// Get the caller of this method
@@ -56,12 +55,11 @@ namespace Recellection.Code.Main.Utility
 
 			return GetLogger(className);
 		}
-		
-		/**
-		 * Will change target of all current and new loggers.
-		 * 
-		 * @param newTarget the new target for all loggers.
-		 */
+
+		/// <summary>
+		/// Will change target of all current and new loggers.
+		/// </summary>
+		/// <param name="newTarget">The new target for all loggers.</param>
 		public static void SetGlobalTarget(TextWriter newTarget)
 		{
 			LoggerFactory.globalTarget = newTarget;
@@ -71,12 +69,11 @@ namespace Recellection.Code.Main.Utility
 				l.SetTarget(newTarget);
 			}
 		}
-		
-		/**
-		 * Sets the global threshold. No logs will have a loglevel below this threshold.
-		 * 
-		 * @param newThreshold the new threshold for the application.
-		 */
+
+		/// <summary>
+		/// Sets the global threshold. No logs will have a loglevel below this threshold.
+		/// </summary>
+		/// <param name="newThreshold">The new threshold for the application.</param>
 		public static void SetGlobalThreshold(LogLevel newThreshold)
 		{
 			LoggerFactory.globalThreshold = newThreshold;
