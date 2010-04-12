@@ -15,14 +15,14 @@ namespace Recellection.Code.Main.Utility
 		[Test]
 		public void GetLoggerName()
 		{
-			l = LoggerFactory.getLogger("Test");
+			l = LoggerFactory.GetLogger("Test");
 			Assert.AreEqual("Test", l.GetName());
 		}
 
 		[Test]
 		public void GetLoggerAuto()
 		{
-			l = LoggerFactory.getLogger();
+			l = LoggerFactory.GetLogger();
 			Assert.AreEqual("Recellection.Code.Main.Utility.LoggerFactoryTest", l.GetName());
 		}
 		[Test]
@@ -30,7 +30,7 @@ namespace Recellection.Code.Main.Utility
 		{
 			l.SetThreshold(LogLevel.FATAL);
 
-			Logger l2 = LoggerFactory.getLogger(l.GetName());
+			Logger l2 = LoggerFactory.GetLogger(l.GetName());
 
 			Assert.AreEqual(LogLevel.FATAL, l2.GetThreshold());
 		}
@@ -38,7 +38,7 @@ namespace Recellection.Code.Main.Utility
 		[Test]
 		public void SetTargetGlobally()
 		{
-			l = LoggerFactory.getLogger("Test");
+			l = LoggerFactory.GetLogger("Test");
 			StringWriter target = new StringWriter();
 			StringBuilder output = target.GetStringBuilder();
 
@@ -46,7 +46,7 @@ namespace Recellection.Code.Main.Utility
 			l.SetTarget(target);
 			
 			// Setup second logger
-			Logger l2 = LoggerFactory.getLogger("Test2");
+			Logger l2 = LoggerFactory.GetLogger("Test2");
 			StringWriter target2 = new StringWriter();
 			StringBuilder output2 = target2.GetStringBuilder();
 			l2.SetTarget(target2);

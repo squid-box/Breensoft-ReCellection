@@ -19,7 +19,7 @@ namespace Recellection.Code.Main.Utility
 		private TextWriter target;
 		
 		/**
-		 * Internal constructor, use getLogger to get an instance.
+		 * Internal constructor, use GetLogger to get an instance.
 		 */
 		internal Logger(string name, LogLevel threshold, TextWriter target)
 		{

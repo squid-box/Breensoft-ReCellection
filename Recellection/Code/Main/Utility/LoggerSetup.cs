@@ -17,7 +17,7 @@ namespace Recellection.Code.Main.Utility
 			LoggerFactory.setGlobalTarget(GetLogFileTarget("recellection.log"));
 			LoggerFactory.setGlobalThreshold(LogLevel.TRACE);
 			
-			Logger l = LoggerFactory.getLogger();
+			Logger l = LoggerFactory.GetLogger();
 			l.Trace("Initialized Logger.");
 		}
 		
