@@ -5,7 +5,7 @@ using System.Text;
 using System.Diagnostics;
 using System.IO;
 
-namespace Recellection.Code.Main.Utility
+namespace Recellection.Code.Utility
 {
 	/// <summary>
 	/// Provides a re-usable logging interface for the whole application.

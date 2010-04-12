@@ -5,7 +5,7 @@ using System.Text;
 using NUnit.Framework;
 using System.IO;
 
-namespace Recellection.Code.Main.Utility
+namespace Recellection.Code.Utility
 {
 	[TestFixture]
 	class LoggerTest

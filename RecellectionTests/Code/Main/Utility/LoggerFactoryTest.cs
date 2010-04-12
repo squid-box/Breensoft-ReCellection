@@ -5,7 +5,7 @@ using System.Text;
 using NUnit.Framework;
 using System.IO;
 
-namespace Recellection.Code.Main.Utility
+namespace Recellection.Code.Utility
 {
 	[TestFixture]
 	class LoggerFactoryTest
@@ -23,7 +23,7 @@ namespace Recellection.Code.Main.Utility
 		public void GetLoggerAuto()
 		{
 			l = LoggerFactory.GetLogger();
-			Assert.AreEqual("Recellection.Code.Main.Utility.LoggerFactoryTest", l.GetName());
+			Assert.AreEqual("Recellection.Code.Utility.LoggerFactoryTest", l.GetName());
 		}
 		[Test]
 		public void LoggersAreReused()
