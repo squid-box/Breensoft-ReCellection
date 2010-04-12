@@ -111,11 +111,13 @@
   <ItemGroup>
     <Compile Include="Code\Controllers\AIPlayer.cs" />
     <Compile Include="Code\Controllers\Tobii Controller.cs" />
-    <Compile Include="Code\Main\Logger.cs" />
+    <Compile Include="Code\Main\Utility\Logger.cs" />
     <Compile Include="Code\Controllers\WorldGenerator.cs" />
     <Compile Include="Code\Main\Globals.cs" />
     <Compile Include="Code\Main\Program.cs" />
     <Compile Include="Code\Main\Recellection.cs" />
+    <Compile Include="Code\Main\Utility\LoggerFactory.cs" />
+    <Compile Include="Code\Main\Utility\LogLevel.cs" />
     <Compile Include="Code\Models\BaseBuilding.cs" />
     <Compile Include="Code\Models\Building.cs" />
     <Compile Include="Code\Models\BuildingType.cs" />
