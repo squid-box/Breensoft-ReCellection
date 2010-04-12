@@ -3,8 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-using Recellection.Code.Main;
-using Recellection.Code.Main.Utility;
+using Recellection.Code.Utility;
 
 namespace Recellection.Code.Models
 {

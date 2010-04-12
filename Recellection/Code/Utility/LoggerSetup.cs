@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.IO;
 
-namespace Recellection.Code.Main.Utility
+namespace Recellection.Code.Utility
 {
 	public static class LoggerSetup
 	{
