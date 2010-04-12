@@ -6,7 +6,7 @@ using System.Text;
 using NUnit.Framework;
 using Recellection.Code.Controllers;
 using Recellection.Code.Models;
-using Recellection.Code.Main.Utility;
+using Recellection.Code.Utility;
 
 namespace Recellection.Code.Controllers
 {
