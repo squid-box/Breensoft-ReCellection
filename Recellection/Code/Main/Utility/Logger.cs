@@ -13,9 +13,7 @@ namespace Recellection.Code.Main.Utility
 	 * @author Martin Nycander
 	 */
 	public class Logger
-	{
-		private static LogLevel globalThreshold = LogLevel.TRACE;
-		
+	{	
 		private string name;
 		private LogLevel threshold;
 		private TextWriter target;
@@ -73,12 +71,12 @@ namespace Recellection.Code.Main.Utility
 			if (level < this.threshold)
 				return;
 			
-			if (level < Logger.globalThreshold)
+			if (level < LoggerFactory.globalThreshold)
 				return;
 			
 			string time = DateTime.Now.ToString("HH:mm:ss");
 			
-			target.WriteLine(time+" "+name+": "+message);
+			target.WriteLine(time+" "+name+"["+level+"]: "+message);
 		}
 		
 		#region Logging methods
