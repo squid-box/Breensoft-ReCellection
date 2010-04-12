@@ -62,7 +62,7 @@ namespace Recellection.Code.Main.Utility
 		 * 
 		 * @param newTarget the new target for all loggers.
 		 */
-		public static void setGlobalTarget(TextWriter newTarget)
+		public static void SetGlobalTarget(TextWriter newTarget)
 		{
 			LoggerFactory.globalTarget = newTarget;
 
@@ -77,7 +77,7 @@ namespace Recellection.Code.Main.Utility
 		 * 
 		 * @param newThreshold the new threshold for the application.
 		 */
-		public static void setGlobalThreshold(LogLevel newThreshold)
+		public static void SetGlobalThreshold(LogLevel newThreshold)
 		{
 			LoggerFactory.globalThreshold = newThreshold;
 		}
