@@ -3,9 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
+using Recellection.Code.Utility;
+
 namespace Recellection.Code.Models
 {
-    public abstract class Building
+    public abstract class Building : Publisher
     {
         /**
          * Variables 'n stuff.
@@ -107,6 +109,11 @@ namespace Recellection.Code.Models
             if (isAlive())
             {
                 units.Add(unit);
+
+            }
+            else
+            {
+                //TODO Add a notify to notify that it failed.
             }
         }
 
