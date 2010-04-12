@@ -50,10 +50,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Code\Controllers\WorldGeneratorTest.cs" />
-    <Compile Include="Code\Main\Utility\LoggerFactoryTest.cs" />
+    <Compile Include="Code\Utility\LoggerFactoryTest.cs" />
     <Compile Include="Code\Models\BuildingTest.cs" />
     <Compile Include="Code\Models\GraphTest.cs" />
-    <Compile Include="Code\Main\Utility\LoggerTest.cs" />
+    <Compile Include="Code\Utility\LoggerTest.cs" />
     <Compile Include="Code\Models\TerrainTypeTest.cs" />
     <Compile Include="Code\Models\TileTest.cs" />
     <Compile Include="Code\Models\UnitTest.cs" />
@@ -64,6 +64,9 @@
       <Project>{F6D91C58-7522-448F-97A1-5E9F5CD7FDF4}</Project>
       <Name>Recellection</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Code\Main\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it.

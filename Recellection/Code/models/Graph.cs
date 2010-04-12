@@ -13,11 +13,15 @@ namespace Recellection.Code.Models
 	/// 
 	/// Author: Martin Nycander
 	/// </summary>
-	public class Graph : Publisher
+	public class Graph
 	{
 		private static Logger logger = LoggerFactory.GetLogger();
 		private static int defaultWeight = 1;
 		private Dictionary<Building, int> buildings;
+
+		private Publisher newBuildingPublisher = new Publisher();
+		private Publisher removedBuildingPublisher = new Publisher();
+		private Publisher updatedBuildingPublisher = new Publisher();
 
 		/// <summary>
 		/// Constructs and initializes an empty graph.
@@ -42,7 +46,8 @@ namespace Recellection.Code.Models
 			}
 			
 			buildings.Add(building, defaultWeight);
-			this.Notify(this);
+			
+			this.newBuildingPublisher.Notify(building);
 		}
 
 		/// <summary>
@@ -52,7 +57,7 @@ namespace Recellection.Code.Models
 		public void Remove(Building building)
 		{
 			buildings.Remove(building);
-			this.Notify(this);
+			this.removedBuildingPublisher.Notify(building);
 		}
 
 		/// <summary>
@@ -69,7 +74,6 @@ namespace Recellection.Code.Models
 			}
 			
 			buildings[building] = weight;
-			this.Notify(this);
 		}
 
 		/// <param name="building">The building to get weight for.</param>
