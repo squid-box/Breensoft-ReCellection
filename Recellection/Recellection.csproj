@@ -131,6 +131,8 @@
     <Compile Include="Code\Models\Tile.cs" />
     <Compile Include="Code\Models\Unit.cs" />
     <Compile Include="Code\Sounds\AudioPlayer.cs" />
+    <Compile Include="Code\Util\Observable.cs" />
+    <Compile Include="Code\Util\IObserver.cs" />
     <Compile Include="Code\Views\AIView.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
