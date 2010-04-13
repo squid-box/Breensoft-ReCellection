@@ -45,7 +45,11 @@ namespace Recellection.Code.Models
 			}
 
 			buildings.Add(building, defaultWeight);
-			weightChanged(this, new GraphEvent(building, defaultWeight, EventType.ADD));
+			
+			if (weightChanged != null)
+			{
+				weightChanged(this, new GraphEvent(building, defaultWeight, EventType.ADD));
+			}
 		}
 
 		/// <summary>
@@ -55,7 +59,10 @@ namespace Recellection.Code.Models
 		public void Remove(Building building)
 		{
 			buildings.Remove(building);
-			weightChanged(this, new GraphEvent(building, 0, EventType.REMOVE));
+			if (weightChanged != null)
+			{
+				weightChanged(this, new GraphEvent(building, 0, EventType.REMOVE));
+			}
 		}
 
 		/// <summary>
@@ -70,9 +77,13 @@ namespace Recellection.Code.Models
 			{
 				Add(building);
 			}
-			
+
 			buildings[building] = weight;
-			weightChanged(this, new GraphEvent(building, weight, EventType.ALTER));
+			
+			if (weightChanged != null)
+			{
+				weightChanged(this, new GraphEvent(building, weight, EventType.ALTER));
+			}
 		}
 
 		/// <param name="building">The building to get weight for.</param>
