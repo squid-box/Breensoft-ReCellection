@@ -13,7 +13,10 @@ namespace Recellection
         {
             Theme
         }
-
+        public enum RegionCategories
+        {
+            MainMenu = 0, HelpMenu = 1
+        }
         public enum TerrainTypes
         {
             Mucus, Membrane, Water, Slow, Infected
@@ -21,7 +24,12 @@ namespace Recellection
 
         public enum BuildingTypes
         {
-            NoType,Aggressive, Barrier, Base, Resource
+            NoType, Aggressive, Barrier, Base, Resource
+        }
+
+        public enum Languages
+        {
+            English, Swedish
         }
     }
 }

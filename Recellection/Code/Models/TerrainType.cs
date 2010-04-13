@@ -5,12 +5,12 @@ using System.Text;
 
 namespace Recellection.Code.Models
 {
-    /* Contains information about traits of different Terrain Types.
-     * 
-     * Author: Joel Ahlgren
-     * Date: 2010-04-12
-     */
-    public class TerrainType
+    /// <summary>
+    /// Contains information about traits of different Terrain Types.
+    /// </summary>
+    /// <author>Joel Ahlgren</author>
+    /// <date>2010-04-12</date>
+    public class TerrainType : IModel
     {
         // Data
         private int dmgMod; // Damage modifier
@@ -80,7 +80,7 @@ namespace Recellection.Code.Models
         /// Gets the type of this TerrainType.
         /// </summary>
         /// <returns>Enum of the TerrainType-type</returns>
-        public Globals.TerrainTypes GetTerrainType()
+        public Globals.TerrainTypes GetEnum()
         {
             return this.type;
         }

@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Recellection.Code.Models
 {
-    public class Player
+    public class Player : IModel
     {
         // Empty class, get to writing!
     }

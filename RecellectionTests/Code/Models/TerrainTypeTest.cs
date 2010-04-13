@@ -21,14 +21,14 @@ namespace Recellection.Code.Models
         [Test]
         public void getTerrainType()
         {
-            Assert.AreEqual(Globals.TerrainTypes.Membrane, tp1.GetTerrainType());
-            Assert.AreNotEqual(Globals.TerrainTypes.Infected, tp1.GetTerrainType());
+            Assert.AreEqual(Globals.TerrainTypes.Membrane, tp1.GetEnum());
+            Assert.AreNotEqual(Globals.TerrainTypes.Infected, tp1.GetEnum());
             tp1.setType(Globals.TerrainTypes.Slow);
-            Assert.AreEqual(Globals.TerrainTypes.Slow, tp1.GetTerrainType());
+            Assert.AreEqual(Globals.TerrainTypes.Slow, tp1.GetEnum());
         }
 
         [Test]
-        public void getModifiers()
+        public void GetModifiers()
         {
             Assert.AreEqual(0, tp1.getDamageModifier());
             Assert.AreEqual(10, tp1.getSpeedModifier());
