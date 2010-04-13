@@ -1,8 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using Recellection.Code.Models;
+using Microsoft.Xna.Framework;
 
 namespace Recellection.Code.Controllers
 {
@@ -93,19 +92,84 @@ namespace Recellection.Code.Controllers
 		{
 			foreach(Graph g in components)
 			{
+				List<Building> buildings = g.GetBuildings();
+				
+				// Calculate total number of units
 				int totalUnits = 0;
-				g.ForEachBuilding(delegate(Building b)
+				foreach(Building b in buildings)
 				{
 					totalUnits += b.GetUnits().Count;
-				});
-				
-				
-				g.ForEachBuilding(delegate(Building b)
+				}
+
+				// Figure out the unit balance for each building
+				LinkedList<BuildingBalance> inNeed = new LinkedList<BuildingBalance>();
+				LinkedList<BuildingBalance> withExcess = new LinkedList<BuildingBalance>();
+				foreach(Building b in buildings)
 				{
 					int unitGoal = totalUnits / g.GetWeight(new BaseBuilding());
 					int unitBalance = b.GetUnits().Count - unitGoal;
 					
-				});
+					if (unitBalance > 0)
+					{
+						withExcess.AddLast(new BuildingBalance(b, unitBalance));
+					}
+					else if (unitBalance < 0)
+					{
+						inNeed.AddLast(new BuildingBalance(b, unitBalance));
+					}
+				}
+				
+				// If there is no need, don't balance.
+				if (inNeed.Count == 0)
+					return;
+				
+				// If there is nothing to give, don't balance.
+				if (withExcess.Count == 0)
+					return;
+				
+				// Try to even out the unit count in every building
+				bool balancingIsPossible = inNeed.Count > 0 && withExcess.Count > 0;
+				while (balancingIsPossible)
+				{
+					BuildingBalance want = inNeed.First.Value;
+					BuildingBalance has = withExcess.First.Value;
+					
+					int transferableUnits = Math.Min(has.balance, Math.Abs(want.balance));
+					
+					has.balance -= transferableUnits;
+					want.balance += transferableUnits;
+					
+					if (has.balance == 0)
+					{
+						withExcess.Remove(has);
+					}
+					
+					if (want.balance == 0)
+					{
+						inNeed.Remove(want);
+					}
+					
+					MoveUnits(transferableUnits, want.building, has.building);
+					
+					balancingIsPossible = (inNeed.Count > 0 && withExcess.Count > 0);
+				}
+			}
+		}
+		
+		private struct BuildingBalance : IComparer<BuildingBalance>
+		{
+			public Building building;
+			public int balance;
+			
+			public BuildingBalance(Building b, int bal)
+			{
+				building = b;
+				balance = bal;
+			}
+			
+			int IComparer<BuildingBalance>.Compare(BuildingBalance bb1, BuildingBalance bb2)
+			{
+				return bb1.balance - bb2.balance;
 			}
 		}
 		
@@ -115,7 +179,7 @@ namespace Recellection.Code.Controllers
 		/// <param name="number"></param>
 		/// <param name="x"></param>
 		/// <param name="y"></param>
-		private void MoveUnits(int number, int x, int y)
+		private void MoveUnits(int numberOfUnits, Building from, Building to)
 		{
 		}
 	}
