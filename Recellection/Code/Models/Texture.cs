@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Recellection.Code.Models
 {
-    public class Texture
+    public class Texture : IModel
     {
 
     }

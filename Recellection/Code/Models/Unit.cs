@@ -11,7 +11,7 @@ namespace Recellection.Code.Models
      * Author: Joel Ahlgren
      * Date: 2010-04-11
      */
-    public class Unit
+    public class Unit : IModel
     {
         // DATA
         private Vector2 pos;        // Current tile

@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Recellection.Code.Models
 {
-    class Coordinate
+    class Coordinate : IModel
     {
         public int x;
         public int y;
