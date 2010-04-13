@@ -22,12 +22,12 @@ namespace Recellection.Code.Models
         // References
         private Player owner;
         private List<Unit> units;
-        private BuildingType type;
+        private Globals.BuildingTypes type;
         private BaseBuilding baseBuilding;
 
-        /**
-         * Creates an unusable building with everything set at defualt values.
-         */
+        /// <summary>
+        /// Creates an unusable building with everything set at defualt values.
+        /// </summary>
         public Building()
         {
             this.name = "noName";
@@ -37,17 +37,23 @@ namespace Recellection.Code.Models
             this.maxHealth = -1;
             this.owner = null;
             this.units = new List<Unit>();
-            this.type = null;
+            this.type = Globals.BuildingTypes.NoType;
             this.baseBuilding = null;
         }
 
-        /**
-         * Creates a building with specified parameters, the unit list will
-         * be initated but empty and the current health will be set at 
-         * maxHealth.
-         */
+        /// <summary>
+        /// Creates a building with specified parameters, the unit list will
+        /// be initated but empty and the current health will be set at maxHealth.
+        /// </summary>
+        /// <param name="name">The name for the building TODO Decide if this is needded</param>
+        /// <param name="posX">The x tile koordinate</param>
+        /// <param name="posY">The y tile koordinate</param>
+        /// <param name="maxHealth">The max health of this building</param>
+        /// <param name="owner">The player that owns the building</param>
+        /// <param name="type">The </param>
+        /// <param name="baseBuilding"></param>
         public Building(String name, int posX, int posY, int maxHealth,
-            Player owner, BuildingType type, BaseBuilding baseBuilding)
+            Player owner, Globals.BuildingTypes type, BaseBuilding baseBuilding)
         {
 
             this.name = name;
@@ -135,12 +141,6 @@ namespace Recellection.Code.Models
         public string GetName()
         {
             return this.name;
-        }
-
-        //TODO Rename due to overloading
-        public BuildingType GetBuildingType()
-        {
-            return this.type;
         }
 
         public Texture GetSprite()

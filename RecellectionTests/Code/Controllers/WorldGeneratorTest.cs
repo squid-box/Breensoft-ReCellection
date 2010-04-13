@@ -77,8 +77,8 @@ namespace Recellection.Code.Controllers
             Type enumType = typeof(Globals.TerrainTypes);
 
 
-            return new Tile(new TerrainType((Globals.TerrainTypes)
-                Enum.ToObject(enumType, randomTile)));
+            return new Tile((Globals.TerrainTypes)
+                Enum.ToObject(enumType, randomTile));
 
         }
     }

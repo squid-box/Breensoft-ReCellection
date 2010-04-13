@@ -18,5 +18,10 @@ namespace Recellection
         {
             Mucus, Membrane, Water, Slow, Infected
         }
+
+        public enum BuildingTypes
+        {
+            NoType,Aggressive, Barrier, Base, Resource
+        }
     }
 }
