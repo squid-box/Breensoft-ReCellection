@@ -112,6 +112,7 @@
     <Compile Include="Code\Utility\Events\Event.cs" />
     <Compile Include="Code\Models\GameOptions.cs" />
     <Compile Include="Code\Models\Language.cs" />
+    <Compile Include="Code\Utility\Events\GraphEvent.cs" />
     <Compile Include="Code\Utility\Events\IPublisher.cs" />
     <Compile Include="Code\Utility\Logger\Logger.cs" />
     <Compile Include="Code\Controllers\WorldGenerator.cs" />

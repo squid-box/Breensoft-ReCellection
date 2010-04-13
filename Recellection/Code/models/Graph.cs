@@ -5,6 +5,7 @@ using System.Text;
 
 using Recellection.Code.Utility.Logger;
 using Recellection.Code.Utility;
+using Recellection.Code.Utility.Events;
 
 namespace Recellection.Code.Models
 {
@@ -18,7 +19,9 @@ namespace Recellection.Code.Models
 		private static Logger logger = LoggerFactory.GetLogger();
 		private static int defaultWeight = 1;
 		private Dictionary<Building, int> buildings;
-
+		
+		public event Publish<Graph> weightChanged;
+		
 		/// <summary>
 		/// Constructs and initializes an empty graph.
 		/// </summary>
@@ -67,6 +70,7 @@ namespace Recellection.Code.Models
 			}
 			
 			buildings[building] = weight;
+			weightChanged(this, new Event<Graph>(this, Event<Graph>.Type.ALTER));
 		}
 
 		/// <param name="building">The building to get weight for.</param>
