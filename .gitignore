@@ -4,8 +4,10 @@ Recellection/bin
 Recellection/obj
 RecellectionTests/bin
 RecellectionTests/obj
+TestResult.xml
 *.user
 *.suo
 _ReSharper.*
 *.sln.cache
 *.Debug.cachefile
+*.VisualState.xml
