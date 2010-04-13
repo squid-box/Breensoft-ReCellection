@@ -113,7 +113,7 @@ namespace Recellection.Code.Models
             }
             else
             {
-                //TODO Add a notify to notify that it failed.
+                //TODO Add a Notify to Notify that it failed.
             }
         }
 

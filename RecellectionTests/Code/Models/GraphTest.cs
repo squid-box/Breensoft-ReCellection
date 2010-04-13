@@ -10,12 +10,14 @@ namespace Recellection.Code.Models
 	class TestBuilding : Building
 	{
 	}
-	
+
+	/// TODO: Unit tests for events
 	[TestFixture]
 	public class GraphTest
 	{
 		private Graph g;
 		
+		private BaseBuilding bb = new BaseBuilding();
 		private Building b1 = new TestBuilding();
 		private Building b2 = new TestBuilding();
 		private Building b3 = new TestBuilding();
@@ -23,7 +25,7 @@ namespace Recellection.Code.Models
 		[SetUp]
 		public void Init()
 		{
-			g = new Graph();
+			g = new Graph(bb);
 		}
 	
 		[Test]
