@@ -29,6 +29,8 @@ namespace Recellection.Code.Models
         //private Sprite sprite;
 
         private const float MOVEMENT_SPEED = 0.01f;
+        private const float NO_TARGET = -1;
+        private const float TARGET_THRESHOLD = 0.01f;
 
         // METHODS
 
@@ -40,32 +42,32 @@ namespace Recellection.Code.Models
         public Unit()
         {
             this.pos = new Vector2(0, 0);
-            this.target = new Vector2(-1,-1);    // No target.
+            this.target = new Vector2(NO_TARGET,NO_TARGET);
             this.angle = 0;
             this.isDispersed = this.isDead = false;
         }
         /// <summary>
         /// Creates a unit.
         /// </summary>
-        /// <param name="posX">Tile x-coordinate.</param>
-        /// <param name="posY">Tile y-coordinate.</param>
+        /// <param name="posX">Unit x-coordinate.</param>
+        /// <param name="posY">Unit y-coordinate.</param>
         public Unit(float posX, float posY)
         {
             this.pos = new Vector2(posX, posY);
-            this.target = new Vector2(-1, -1);    // No target.
+            this.target = new Vector2(NO_TARGET, NO_TARGET);
             this.angle = 0;
             this.isDispersed = this.isDead = false;
         }
         /// <summary>
         /// Creates a unit.
         /// </summary>
-        /// <param name="posX">Tile x-coordinate.</param>
-        /// <param name="posY">Tile y-coordinate.</param>
+        /// <param name="posX">Unit x-coordinate.</param>
+        /// <param name="posY">Unit y-coordinate.</param>
         /// <param name="angle">Draw-angle if this unit.</param>
         public Unit(float posX, float posY, int angle)
         {
             this.pos = new Vector2(posX, posY);
-            this.target = new Vector2(-1, -1);    // No target.
+            this.target = new Vector2(NO_TARGET, NO_TARGET);
             this.angle = angle;
             this.isDispersed = this.isDead = false;
         }
@@ -187,7 +189,7 @@ namespace Recellection.Code.Models
         private void Move(float deltaTime)
         {
             //TODO: Move unit towards target.
-            if (this.target.X != -1)
+            if (this.target.X != NO_TARGET)
             {
                 if (this.target.X > this.pos.X)
                 {
@@ -199,10 +201,10 @@ namespace Recellection.Code.Models
                 }
                 else
                 {
-                    this.target.X = -1;
+                    this.target.X = NO_TARGET;
                 }
             }
-            if (this.target.Y != -1)
+            if (this.target.Y != NO_TARGET)
             {
                 if (this.target.Y > this.pos.Y)
                 {
@@ -213,9 +215,10 @@ namespace Recellection.Code.Models
                     this.pos.Y += MOVEMENT_SPEED * deltaTime;
                 }
             }
-            if ((this.pos.X - this.target.X <  0.1) && (this.pos.Y - this.target.Y < 0.1))
+            // Reasonably close to target.
+            if ((Math.Abs(this.pos.X - this.target.X) < TARGET_THRESHOLD) && (Math.Abs(this.pos.Y - this.target.Y) < TARGET_THRESHOLD))
             {
-                this.target = new Vector2(-1, -1);
+                this.target = new Vector2(NO_TARGET, NO_TARGET);
             }
         }
     }
