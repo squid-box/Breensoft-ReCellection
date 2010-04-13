@@ -117,13 +117,9 @@ namespace Recellection.Code.Models
 			return buildings.Count();
 		}
 		
-		public delegate void BuildingMethod(Building b);
-		public void ForEachBuilding(BuildingMethod method)
+		public List<Building> GetBuildings()
 		{
-			foreach(KeyValuePair<Building, int> entry in buildings)
-			{
-				method(entry.Key);
-			}
+			return buildings.Keys.ToList();
 		}
 
 		/// <summary>
