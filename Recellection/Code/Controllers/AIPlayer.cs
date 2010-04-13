@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using Recellection.Code;
 using Recellection.Code.Models;
+using Microsoft.Xna.Framework;
 
 namespace Recellection.Code.Controllers
 {
@@ -14,8 +15,8 @@ namespace Recellection.Code.Controllers
          * Variables
          */
         private AIView View;
-        private Coordinate[] InterrestPoints;
-        private Coordinate[] EnemyPoints;
+        private Vector2[] InterrestPoints;
+        private Vector2[] EnemyPoints;
         private int Threshold;
 
 
@@ -28,7 +29,7 @@ namespace Recellection.Code.Controllers
 
             for (int i = 0; i < InterrestPoints.Length; i++)
             {
-                Coordinate Current = InterrestPoints[i];
+                Vector2 Current = InterrestPoints[i];
 
                 if (containsResourcePoint(Current))
                 {
@@ -48,8 +49,8 @@ namespace Recellection.Code.Controllers
             {
                 for (int i = 0; i < EnemyPoints.Length; i++)
                 {
-                    Coordinate Current = EnemyPoints[i];
-                    Coordinate Nearby = getClosestInterrestPoint(Current);
+                    Vector2 Current = EnemyPoints[i];
+                    Vector2 Nearby = getClosestInterrestPoint(Current);
                     if (distanceBetween(Current, Nearby) > Threshold)
                     {
                         Nearby = calculatePointNear(Current);
@@ -60,12 +61,12 @@ namespace Recellection.Code.Controllers
             }
         }
 
-        private bool containsResourcePoint(Coordinate Current)
+        private bool containsResourcePoint(Vector2 Current)
         {
             throw new NotImplementedException();
         }
 
-        private void calculateWeight(Coordinate Current)
+        private void calculateWeight(Vector2 Current)
         {
             throw new NotImplementedException();
         }
@@ -80,22 +81,22 @@ namespace Recellection.Code.Controllers
             throw new NotImplementedException();
         }
 
-        private Coordinate getClosestInterrestPoint(Coordinate Current)
+        private Vector2 getClosestInterrestPoint(Vector2 Current)
         {
             throw new NotImplementedException();
         }
 
-        private int distanceBetween(Coordinate Current, Coordinate Nearby)
+        private int distanceBetween(Vector2 Current, Vector2 Nearby)
         {
             throw new NotImplementedException();
         }
 
-        private Coordinate calculatePointNear(Coordinate Current)
+        private Vector2 calculatePointNear(Vector2 Current)
         {
             throw new NotImplementedException();
         }
 
-        private void evaluateResourcePoint(Coordinate Point)
+        private void evaluateResourcePoint(Vector2 Point)
         {
             //Resource point but we already have it.
             if (harvesting(Point))
@@ -111,22 +112,22 @@ namespace Recellection.Code.Controllers
             }
         }
 
-        private bool harvesting(Coordinate Point)
+        private bool harvesting(Vector2 Point)
         {
             throw new NotImplementedException();
         }
 
-        private bool canHoldPoint(Coordinate Point)
+        private bool canHoldPoint(Vector2 Point)
         {
             throw new NotImplementedException();
         }
 
-        private void issueBuildOrder(Coordinate Point, string p)
+        private void issueBuildOrder(Vector2 Point, string p)
         {
             throw new NotImplementedException();
         }
 
-        private void sendUnits(Coordinate Point)
+        private void sendUnits(Vector2 Point)
         {
             throw new NotImplementedException();
         }
