@@ -6,17 +6,16 @@ using Microsoft.Xna.Framework;
 
 namespace Recellection.Code.Models
 {
-    /* The representation of a Unit in the game world.
-     * 
-     * Author: Joel Ahlgren
-     * Date: 2010-04-11
-     */
+    /// <summary>
+    /// The representation of a Unit in the game world.
+    /// </summary>
+    /// <author>Joel Ahlgren</author>
+    /// <date>2010-04-13</date>
     public class Unit
     {
         // DATA
         private Vector2 pos;        // Current tile
         private Vector2 target;     // Target coordinate
-        private Vector2 offset;     // The y-offset in pixels of this unit in the world
         private int angle;          // Angle of unit, for drawing
         private bool isDispersed;   // Whether or not this unit should recieve a new target from the dispersion procedure
         private bool isDead;        // Status of unit
@@ -24,7 +23,7 @@ namespace Recellection.Code.Models
         private Player owner;
         //private Sprite sprite;
 
-        private const int MOVEMENT_SPEED = 1;
+        private const float MOVEMENT_SPEED = 0.01f;
 
         // METHODS
 
@@ -37,7 +36,6 @@ namespace Recellection.Code.Models
         {
             this.pos = new Vector2(0, 0);
             this.target = new Vector2(-1,-1);    // No target.
-            this.offset = new Vector2(-1,-1);    // No offset.
             this.angle = 0;
             this.isDispersed = this.isDead = false;
         }
@@ -46,11 +44,10 @@ namespace Recellection.Code.Models
         /// </summary>
         /// <param name="posX">Tile x-coordinate.</param>
         /// <param name="posY">Tile y-coordinate.</param>
-        public Unit(int posX, int posY)
+        public Unit(float posX, float posY)
         {
             this.pos = new Vector2(posX, posY);
             this.target = new Vector2(-1, -1);    // No target.
-            this.offset = new Vector2(-1, -1);    // No offset.
             this.angle = 0;
             this.isDispersed = this.isDead = false;
         }
@@ -60,11 +57,10 @@ namespace Recellection.Code.Models
         /// <param name="posX">Tile x-coordinate.</param>
         /// <param name="posY">Tile y-coordinate.</param>
         /// <param name="angle">Draw-angle if this unit.</param>
-        public Unit(int posX, int posY, int angle)
+        public Unit(float posX, float posY, int angle)
         {
             this.pos = new Vector2(posX, posY);
             this.target = new Vector2(-1, -1);    // No target.
-            this.offset = new Vector2(-1, -1);    // No offset.
             this.angle = angle;
             this.isDispersed = this.isDead = false;
         }
@@ -97,15 +93,6 @@ namespace Recellection.Code.Models
         public Vector2 GetTarget()
         {
             return this.target;
-        }
-        /// <summary>
-        /// Change target.
-        /// </summary>
-        /// <param name="x">X coordinates of new target.</param>
-        /// <param name="y">Y coordinates of new target.</param>
-        public void SetTargetX(int x, int y)
-        {
-            this.target = new Vector2(x, y);
         }
         /// <summary>
         /// Change target.
@@ -162,17 +149,8 @@ namespace Recellection.Code.Models
             return null;
         }
         /// <summary>
-        /// 
+        /// Get current angle of this unit.
         /// </summary>
-        /// <returns></returns>
-        public Vector2 GetOffset()
-        {
-            return this.offset;
-        }
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <returns></returns>
         public int GetAngle()
         {
             return this.angle;
@@ -194,25 +172,25 @@ namespace Recellection.Code.Models
         {
             if (!this.isDead)
             {
-                this.Move();
+                this.Move(systemTime);
             }
         }
 
         /// <summary>
         /// Internal move logic.
         /// </summary>
-        private void Move()
+        private void Move(float deltaTime)
         {
             //TODO: Move unit towards target.
             if (this.target.X != -1)
             {
                 if (this.target.X > this.pos.X)
                 {
-                    this.pos.X += MOVEMENT_SPEED;
+                    this.pos.X += MOVEMENT_SPEED * deltaTime;
                 }
                 else if (this.target.X < this.pos.X)
                 {
-                    this.pos.X += MOVEMENT_SPEED;
+                    this.pos.X += MOVEMENT_SPEED * deltaTime;
                 }
                 else
                 {
@@ -223,14 +201,14 @@ namespace Recellection.Code.Models
             {
                 if (this.target.Y > this.pos.Y)
                 {
-                    this.pos.Y += MOVEMENT_SPEED;
+                    this.pos.Y += MOVEMENT_SPEED * deltaTime;
                 }
                 else if (this.target.Y < this.pos.Y)
                 {
-                    this.pos.Y += MOVEMENT_SPEED;
+                    this.pos.Y += MOVEMENT_SPEED * deltaTime;
                 }
             }
-            if (this.pos.X == this.target.X && this.pos.Y == this.target.Y)
+            if ((this.pos.X - this.target.X <  0.1) && (this.pos.Y - this.target.Y < 0.1))
             {
                 this.target = new Vector2(-1, -1);
             }

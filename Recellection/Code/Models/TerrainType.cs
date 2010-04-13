@@ -5,11 +5,11 @@ using System.Text;
 
 namespace Recellection.Code.Models
 {
-    /* Contains information about traits of different Terrain Types.
-     * 
-     * Author: Joel Ahlgren
-     * Date: 2010-04-12
-     */
+    /// <summary>
+    /// Contains information about traits of different Terrain Types.
+    /// </summary>
+    /// <author>Joel Ahlgren</author>
+    /// <date>2010-04-12</date>
     public class TerrainType
     {
         // Data
