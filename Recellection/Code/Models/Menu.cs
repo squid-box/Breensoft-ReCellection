@@ -11,7 +11,7 @@ using System.Text;
 
 namespace Recellection.Code.Models
 {
-    class Menu
+    class Menu : IModel
     {
         private List<GUIRegion> regions;
         private Texture menuPic;
