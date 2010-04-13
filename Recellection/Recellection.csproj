@@ -137,7 +137,6 @@
     <Compile Include="Code\Models\Tile.cs" />
     <Compile Include="Code\Models\Unit.cs" />
     <Compile Include="Code\Sounds\AudioPlayer.cs" />
-    <Compile Include="Code\Utility\Pair.cs" />
     <Compile Include="Code\Views\AIView.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
