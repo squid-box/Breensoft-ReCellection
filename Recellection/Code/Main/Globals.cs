@@ -13,5 +13,9 @@ namespace Recellection
         {
             Theme
         }
+        public enum RegionCategories
+        {
+            MainMenu = 0, HelpMenu = 1
+        }
     }
 }
