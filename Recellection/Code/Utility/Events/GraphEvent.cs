@@ -10,7 +10,7 @@ namespace Recellection.Code.Utility.Events
 	{
 		public int weight { get; private set; }
 		
-		public GraphEvent(Building building, int weight, Type type) : base(building, type)
+		public GraphEvent(Building building, int weight, EventType type) : base(building, type)
 		{
 			this.weight = weight;
 		}
