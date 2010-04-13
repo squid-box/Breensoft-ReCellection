@@ -93,13 +93,8 @@ namespace Recellection.Code.Controllers
 			foreach(Graph g in components)
 			{
 				List<Building> buildings = g.GetBuildings();
-				
-				// Calculate total number of units
-				int totalUnits = 0;
-				foreach(Building b in buildings)
-				{
-					totalUnits += b.GetUnits().Count;
-				}
+
+				int totalUnits = SumUnitsInGraph(g);
 
 				// Figure out the unit balance for each building
 				LinkedList<BuildingBalance> inNeed = new LinkedList<BuildingBalance>();
@@ -155,6 +150,18 @@ namespace Recellection.Code.Controllers
 				}
 			}
 		}
+
+		private static int SumUnitsInGraph(Graph g)
+		{
+			List<Building> buildings = g.GetBuildings();
+			// Calculate total number of units
+			int totalUnits = 0;
+			foreach (Building b in buildings)
+			{
+				totalUnits += b.GetUnits().Count;
+			}
+			return totalUnits;
+		}
 		
 		private struct BuildingBalance : IComparer<BuildingBalance>
 		{
@@ -174,13 +181,13 @@ namespace Recellection.Code.Controllers
 		}
 		
 		/// <summary>
-		/// The Graph Controller will call the Unit Controller with orders about changes in unit positioning.
 		/// </summary>
 		/// <param name="number"></param>
 		/// <param name="x"></param>
 		/// <param name="y"></param>
 		private void MoveUnits(int numberOfUnits, Building from, Building to)
 		{
+			// TODO: call the Unit Controller with orders about changes in unit positioning.
 		}
 	}
 
