@@ -6,10 +6,13 @@ using Recellection.Code.Models;
 
 namespace Recellection.Code.Utility.Events
 {
-	public class GraphEvent : Event<Graph>
+	public class GraphEvent : Event<Building>
 	{
-		public GraphEvent(Graph subject, Type type) : base(subject, type)
+		public int weight { get; private set; }
+		
+		public GraphEvent(Building building, int weight, Type type) : base(building, type)
 		{
+			this.weight = weight;
 		}
 	}
 }

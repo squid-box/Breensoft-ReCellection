@@ -20,7 +20,7 @@ namespace Recellection.Code.Models
 		private static int defaultWeight = 1;
 		private Dictionary<Building, int> buildings;
 		
-		public event Publish<Graph> weightChanged;
+		public event Publish<Building> weightChanged;
 		
 		/// <summary>
 		/// Constructs and initializes an empty graph.
@@ -43,8 +43,9 @@ namespace Recellection.Code.Models
 				logger.Debug("Can not add building to graph. The building '"+building+"' already exists.");
 				return;
 			}
-			
+
 			buildings.Add(building, defaultWeight);
+			weightChanged(this, new GraphEvent(building, defaultWeight, Event<Building>.Type.ADD));
 		}
 
 		/// <summary>
@@ -54,6 +55,7 @@ namespace Recellection.Code.Models
 		public void Remove(Building building)
 		{
 			buildings.Remove(building);
+			weightChanged(this, new GraphEvent(building, 0, Event<Building>.Type.REMOVE));
 		}
 
 		/// <summary>
@@ -70,7 +72,7 @@ namespace Recellection.Code.Models
 			}
 			
 			buildings[building] = weight;
-			weightChanged(this, new Event<Graph>(this, Event<Graph>.Type.ALTER));
+			weightChanged(this, new GraphEvent(building, weight, Event<Building>.Type.ALTER));
 		}
 
 		/// <param name="building">The building to get weight for.</param>
