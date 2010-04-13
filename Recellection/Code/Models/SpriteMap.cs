@@ -7,7 +7,7 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace Recellection.Code.Models
 {
-    class SpriteMap
+    class SpriteMap : IModel
     {
         Texture2D[] textures;
 

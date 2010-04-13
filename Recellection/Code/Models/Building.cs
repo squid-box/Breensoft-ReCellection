@@ -4,10 +4,11 @@ using System.Linq;
 using System.Text;
 
 using Recellection.Code.Utility;
+using Recellection.Code.Utility.Events;
 
 namespace Recellection.Code.Models
 {
-    public abstract class Building : Publisher
+    public abstract class Building : IModel
     {
         /**
          * Variables 'n stuff.
@@ -24,6 +25,10 @@ namespace Recellection.Code.Models
         private List<Unit> units;
         private Globals.BuildingTypes type;
         private BaseBuilding baseBuilding;
+
+        //Events
+        public event Publish<Building> healthChanged;
+        public event Publish<Building> unitsChanged;
 
         /// <summary>
         /// Creates an unusable building with everything set at defualt values.
@@ -116,11 +121,19 @@ namespace Recellection.Code.Models
             {
                 units.Add(unit);
 
+                unitsChanged(this, new Event<Building>(this, EventType.ALTER));
             }
             else
             {
                 //TODO Add a notify to notify that it failed.
             }
+        }
+
+        public void RemoveUnit(Unit unit)
+        {
+            this.units.Remove(unit);
+
+            unitsChanged(this, new Event<Building>(this, EventType.ALTER));
         }
 
         public void AddUnits(Unit[] units)
@@ -134,7 +147,19 @@ namespace Recellection.Code.Models
                 foreach(Unit u in units){
                     this.units.Add(u);
                 }
+
+                unitsChanged(this, new Event<Building>(this, EventType.ALTER));
             }
+        }
+
+        public void RemoveUnits(Unit[] units)
+        {
+            foreach (Unit u in units)
+            {
+                this.units.Remove(u);
+            }
+
+            unitsChanged(this, new Event<Building>(this, EventType.ALTER));
         }
 
         // Properties
@@ -190,6 +215,8 @@ namespace Recellection.Code.Models
             if (isAlive())
             {
                 this.currentHealth -= dmgHealth;
+
+                healthChanged(this, new Event<Building>(this, EventType.ALTER));
             }
             else
             {
@@ -206,6 +233,8 @@ namespace Recellection.Code.Models
             if (isAlive())
             {
                 this.currentHealth += health;
+
+                healthChanged(this, new Event<Building>(this, EventType.ALTER));
             }
             else
             {

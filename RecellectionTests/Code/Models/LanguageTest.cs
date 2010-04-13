@@ -5,8 +5,13 @@ using System.Text;
 
 namespace Recellection.Code.Models
 {
-    public class Player : IModel
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <author>Joel Ahlgren</author>
+    /// <date>2010-04-13</date>
+    class LanguageTest
     {
-        // Empty class, get to writing!
+
     }
 }
