@@ -212,7 +212,7 @@ namespace Recellection
         {
             GUIRegion s = (GUIRegion)sender;
             Console.Write("hello from: ");
-            Console.WriteLine(s.Name);
+            
         }
 
         /// <summary>

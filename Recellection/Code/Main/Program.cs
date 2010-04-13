@@ -1,4 +1,5 @@
 using System;
+using Recellection.Code.Utility.Logger;
 
 namespace Recellection
 {
@@ -9,6 +10,7 @@ namespace Recellection
         /// </summary>
         static void Main(string[] args)
         {
+			LoggerSetup.Initialize();
             using (Recellection game = new Recellection())
             {
                 game.Run();
