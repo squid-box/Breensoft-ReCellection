@@ -7,7 +7,7 @@ using Recellection.Code.Utility;
 
 namespace Recellection.Code.Models
 {
-    public abstract class Building : Publisher
+    public abstract class Building : IModel
     {
         /**
          * Variables 'n stuff.

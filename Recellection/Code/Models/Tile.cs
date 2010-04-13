@@ -11,7 +11,7 @@ namespace Recellection.Code.Models
     /// </summary>
     /// <author>Joel Ahlgren</author>
     /// <date>2010-04-12</date>
-    public class Tile
+    public class Tile : IModel
     {
         // Data
         private TerrainType type;

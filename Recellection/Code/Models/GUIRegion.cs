@@ -16,7 +16,7 @@ namespace Recellection.Code.Models
      * Det är inte mitt jobb att skriva den här klassen, men ovan är säkert till någon form av hjälp.
      *
      * */
-    public class GUIRegion : WindowBoundInteractionRegion
+    public class GUIRegion : WindowBoundInteractionRegion, IModel
     {
         public GUIRegion(WindowBoundInteractionRegionIdentifier id ):base(id){ 
         

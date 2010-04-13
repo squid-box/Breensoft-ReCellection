@@ -10,7 +10,7 @@ namespace Recellection.Code.Models
     /// </summary>
     /// <author>Joel Ahlgren</author>
     /// <date>2010-04-13</date>
-    public class Language
+    public class Language : IModel
     {
 
     }

@@ -10,7 +10,7 @@ namespace Recellection.Code.Models
     /// </summary>
     /// <author>Joel Ahlgren</author>
     /// <date>2010-04-12</date>
-    public class TerrainType
+    public class TerrainType : IModel
     {
         // Data
         private int dmgMod; // Damage modifier

@@ -5,6 +5,7 @@ using System.Text;
 
 using Recellection.Code.Utility.Logger;
 using Recellection.Code.Utility;
+using Recellection.Code.Utility.Events;
 
 namespace Recellection.Code.Models
 {
@@ -13,16 +14,14 @@ namespace Recellection.Code.Models
 	/// 
 	/// Author: Martin Nycander
 	/// </summary>
-	public class Graph
+	public class Graph : IModel
 	{
 		private static Logger logger = LoggerFactory.GetLogger();
 		private static int defaultWeight = 1;
 		private Dictionary<Building, int> buildings;
-
-		private Publisher newBuildingPublisher = new Publisher();
-		private Publisher removedBuildingPublisher = new Publisher();
-		private Publisher updatedBuildingPublisher = new Publisher();
-
+		
+		public event Publish<Building> weightChanged;
+		
 		/// <summary>
 		/// Constructs and initializes an empty graph.
 		/// </summary>
@@ -44,10 +43,13 @@ namespace Recellection.Code.Models
 				logger.Debug("Can not add building to graph. The building '"+building+"' already exists.");
 				return;
 			}
-			
+
 			buildings.Add(building, defaultWeight);
 			
-			this.newBuildingPublisher.Notify(building);
+			if (weightChanged != null)
+			{
+				weightChanged(this, new GraphEvent(building, defaultWeight, EventType.ADD));
+			}
 		}
 
 		/// <summary>
@@ -57,7 +59,10 @@ namespace Recellection.Code.Models
 		public void Remove(Building building)
 		{
 			buildings.Remove(building);
-			this.removedBuildingPublisher.Notify(building);
+			if (weightChanged != null)
+			{
+				weightChanged(this, new GraphEvent(building, 0, EventType.REMOVE));
+			}
 		}
 
 		/// <summary>
@@ -72,8 +77,13 @@ namespace Recellection.Code.Models
 			{
 				Add(building);
 			}
-			
+
 			buildings[building] = weight;
+			
+			if (weightChanged != null)
+			{
+				weightChanged(this, new GraphEvent(building, weight, EventType.ALTER));
+			}
 		}
 
 		/// <param name="building">The building to get weight for.</param>
