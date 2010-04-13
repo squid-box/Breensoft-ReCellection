@@ -11,7 +11,7 @@ using System.Text;
 
 namespace Recellection.Code.Models
 {
-    class GameOptions
+    class GameOptions : IModel
     {
         /**
          * 

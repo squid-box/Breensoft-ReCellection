@@ -108,8 +108,12 @@
     <Compile Include="Code\Controllers\AIPlayer.cs" />
     <Compile Include="Code\Controllers\Tobii Controller.cs" />
     <Compile Include="Code\Controllers\UnitAccountant.cs" />
+    <Compile Include="Code\Models\IModel.cs" />
+    <Compile Include="Code\Utility\Events\Event.cs" />
     <Compile Include="Code\Models\GameOptions.cs" />
     <Compile Include="Code\Models\Language.cs" />
+    <Compile Include="Code\Utility\Events\GraphEvent.cs" />
+    <Compile Include="Code\Utility\Events\IPublisher.cs" />
     <Compile Include="Code\Utility\Logger\Logger.cs" />
     <Compile Include="Code\Controllers\WorldGenerator.cs" />
     <Compile Include="Code\Main\Globals.cs" />
@@ -132,8 +136,6 @@
     <Compile Include="Code\Models\Tile.cs" />
     <Compile Include="Code\Models\Unit.cs" />
     <Compile Include="Code\Sounds\AudioPlayer.cs" />
-    <Compile Include="Code\Utility\Publisher.cs" />
-    <Compile Include="Code\Utility\IObserver.cs" />
     <Compile Include="Code\Views\AIView.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

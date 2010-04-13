@@ -11,7 +11,12 @@ namespace Recellection.Code.Models
     /// </summary>
     /// <author>Joel Ahlgren</author>
     /// <date>2010-04-13</date>
-    public class Unit
+    /* The representation of a Unit in the game world.
+     * 
+     * Author: Joel Ahlgren
+     * Date: 2010-04-11
+     */
+    public class Unit : IModel
     {
         // DATA
         private Vector2 pos;        // Current tile
