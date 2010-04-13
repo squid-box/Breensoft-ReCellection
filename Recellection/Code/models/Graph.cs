@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
 using Recellection.Code.Utility.Logger;
-using Recellection.Code.Utility;
 using Recellection.Code.Utility.Events;
 
 namespace Recellection.Code.Models
@@ -19,16 +17,20 @@ namespace Recellection.Code.Models
 		private static Logger logger = LoggerFactory.GetLogger();
 		private static int defaultWeight = 1;
 		private Dictionary<Building, int> buildings;
-		
 		public event Publish<Building> weightChanged;
 		
-		/// <summary>
-		/// Constructs and initializes an empty graph.
-		/// </summary>
-		public Graph()
+		private Graph()
 		{
 			logger.Trace("Constructing new graph.");
 			buildings = new Dictionary<Building, int>();
+		}
+		
+		/// <summary>
+		/// Constructs and initializes a graph with a single basebuilding.
+		/// </summary>
+		public Graph(BaseBuilding baseBuilding) : this()
+		{
+			buildings.Add(baseBuilding, defaultWeight);
 		}
 
 		/// <summary>
@@ -36,20 +38,23 @@ namespace Recellection.Code.Models
 		/// A building that has already been added will be ignored.
 		/// </summary>
 		/// <param name="building">The building to add.</param>
+		/// <exception cref="ArgumentException">If the building is a base building.</exception>
 		public void Add(Building building)
 		{
+			if (building is BaseBuilding)
+			{
+				throw new ArgumentException("BaseBuildings can not be added to graphs.");
+			}
+			
 			if (buildings.ContainsKey(building))
 			{
-				logger.Debug("Can not add building to graph. The building '"+building+"' already exists.");
-				return;
+				logger.Debug("Can not add building to graph. The building '" + building + "' already exists.");
+				throw new ArgumentException("The building '" + building + "' already exists in a graph.");
 			}
 
 			buildings.Add(building, defaultWeight);
-			
-			if (weightChanged != null)
-			{
-				weightChanged(this, new GraphEvent(building, defaultWeight, EventType.ADD));
-			}
+
+			Publish(building, defaultWeight, EventType.ADD);
 		}
 
 		/// <summary>
@@ -59,10 +64,8 @@ namespace Recellection.Code.Models
 		public void Remove(Building building)
 		{
 			buildings.Remove(building);
-			if (weightChanged != null)
-			{
-				weightChanged(this, new GraphEvent(building, 0, EventType.REMOVE));
-			}
+			
+			Publish(building, 0, EventType.REMOVE);
 		}
 
 		/// <summary>
@@ -80,10 +83,7 @@ namespace Recellection.Code.Models
 
 			buildings[building] = weight;
 			
-			if (weightChanged != null)
-			{
-				weightChanged(this, new GraphEvent(building, weight, EventType.ALTER));
-			}
+			Publish(building, weight, EventType.ALTER);
 		}
 
 		/// <param name="building">The building to get weight for.</param>
@@ -100,11 +100,44 @@ namespace Recellection.Code.Models
 			
 			return weight;
 		}
+		
+		/// <summary>
+		/// Checks if a building exists in this graph.
+		/// </summary>
+		/// <param name="b">The building to check existance for.</param>
+		/// <returns>True if the building exists, false if not.</returns>
+		public bool HasBuilding(Building b)
+		{
+			return buildings.ContainsKey(b);
+		}
 
 		/// <returns>The number of buildings in this graph.</returns>
 		public int CountBuildings()
 		{
 			return buildings.Count();
+		}
+		
+		public delegate void BuildingMethod(Building b);
+		public void ForEachBuilding(BuildingMethod method)
+		{
+			foreach(KeyValuePair<Building, int> entry in buildings)
+			{
+				method(entry.Key);
+			}
+		}
+
+		/// <summary>
+		/// Publishes an event of change to all subscribers.
+		/// </summary>
+		/// <param name="building">The building that has changed.</param>
+		/// <param name="weight">The weight of that building.</param>
+		/// <param name="t">Type of event.</param>
+		private void Publish(Building building, int weight, EventType t)
+		{
+			if (weightChanged != null)
+			{
+				weightChanged(this, new GraphEvent(building, weight, t));
+			}
 		}
 	}
 }
