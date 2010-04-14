@@ -108,6 +108,7 @@
     <Compile Include="Code\Controllers\AIPlayer.cs" />
     <Compile Include="Code\Controllers\Tobii Controller.cs" />
     <Compile Include="Code\Controllers\UnitAccountant.cs" />
+    <Compile Include="Code\Models\Coordinate.cs" />
     <Compile Include="Code\Models\IModel.cs" />
     <Compile Include="Code\Utility\Events\Event.cs" />
     <Compile Include="Code\Models\GameOptions.cs" />
@@ -124,8 +125,6 @@
     <Compile Include="Code\Utility\Logger\LogLevel.cs" />
     <Compile Include="Code\Models\BaseBuilding.cs" />
     <Compile Include="Code\Models\Building.cs" />
-    <Compile Include="Code\Models\BuildingType.cs" />
-    <Compile Include="Code\Models\Coordinate.cs" />
     <Compile Include="Code\Models\Graph.cs" />
     <Compile Include="Code\Models\GUIRegion.cs" />
     <Compile Include="Code\Models\Menu.cs" />
