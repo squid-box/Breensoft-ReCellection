@@ -32,7 +32,7 @@ namespace Recellection
             English, Swedish
         }
 
-        public enum Texture
+        public enum TextureTypes
         { 
             Mucus, Membrane, Water, Slow, Infected
         }
