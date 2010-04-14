@@ -7,41 +7,25 @@ using Recellection.Code.Utility.Events;
 
 namespace Recellection.Code.Models
 {
+    /// <summary>
+    /// Part of the model describing the game world. Contains a list of the players and the matrix
+    /// of tiles that make up the game map.
+    /// </summary>
     class World : IModel
     {
         /// <summary>
-        /// Event for buildings created and deleted
-        /// </summary>
-        public event Publish<Building> BuildingEvent;
-        /// <summary>
-        /// Event for players created and deleted
-        /// </summary>
-        public event Publish<Player> PlayerEvent;
-        /// <summary>
         /// Event for tiles created and deleted 
         /// </summary>
-        public event Publish<Tile> MapEventE;
-        /// <summary>
-        /// Event for units created and deleted
-        /// </summary>
-        public event Publish<Unit> UnitEvent;
+        public event Publish<World> EMapEvent;
 
-        /// <summary>
-        /// The world's internal list of players
-        /// </summary>
-        private List<Player> players;
-        /// <summary>
-        /// The world's internal list of buildings
-        /// </summary>
-        private List<Building> buildings;
-        /// <summary>
-        /// The world's internal list of units
-        /// </summary>
-        private List<Unit> units;
+        public event Publish<Player> PlayerEvent;
+        
         /// <summary>
         /// The tiles of the world arranged in a row-column matrix
         /// </summary>
-        private Tile[ , ] map;
+        private Tile[,] map { get; private set; }
+
+        private List<Player> players { get; private set; }
 
         /// <summary>
         /// The number of columns in the map
@@ -53,16 +37,15 @@ namespace Recellection.Code.Models
         public int mapRows { get; private set; }
 
         /// <summary>
-        /// Constructor of the game world. Creates containers for all game entities
-        /// as well as the map of the world.
+        /// Constructor of the game world. Creates an empty list of players
+        /// as well as an empty matrix of the given dimensions.
         /// </summary>
         /// <param name="rows">Number of rows in the map of the world</param>
         /// <param name="cols">Number of columns in the map of the world</param>
         public World(int rows, int cols)
         {
             players = new List<Player>();
-            buildings = new List<Building>();
-            units = new List<Unit>();
+            map = new Tile[rows, cols];
         }
 
         /// <summary>
@@ -86,47 +69,6 @@ namespace Recellection.Code.Models
         }
 
         /// <summary>
-        /// Add a unit to the game world. Invokes the UnitEvent event.
-        /// </summary>
-        /// <param name="u">The unit to be added</param>
-        public void AddUnit(Unit u)
-        {
-            units.Add(u);
-            UnitEvent(this, new Event<Unit>(u, EventType.ADD));
-        }
-
-        /// <summary>
-        /// Remove a unit from the game world. Invokes the UnitEvent event.
-        /// </summary>
-        /// <param name="u">The unit to be removed</param>
-        public void RemoveUnit(Unit u)
-        {
-            units.Remove(u);
-            UnitEvent(this, new Event<Unit>(u, EventType.REMOVE));
-        }
-
-        /// <summary>
-        /// Add a building to the game world. Invokes the BuildingEvent event.
-        /// </summary>
-        /// <param name="u">The building to be added</param>
-        public void AddBuilding(Building b)
-        {
-            buildings.Add(b);
-            BuildingEvent(this, new Event<Building>(b, EventType.ADD));
-        }
-
-        /// <summary>
-        /// Remove a building from the game world. Invokes the BuildingEvent event.
-        /// </summary>
-        /// <param name="u">The building to be removed</param>
-        public void RemoveBuilding(Building b)
-        {
-            buildings.Remove(b);
-            BuildingEvent(this, new Event<Building>(b, EventType.REMOVE));
-        }
-
-
-        /// <summary>
         /// Set a tile in the world. Invokes the MapEvent event. Will throw 
         /// IndexOutOfRangeException if placement of a tile was attempted outside
         /// the range of the map.
@@ -141,9 +83,15 @@ namespace Recellection.Code.Models
                 throw new IndexOutOfRangeException("Attempted to set a tile outside the range of the map.");
             }
             map[row, col] = t;
-            MapEventE(this, new MapEvent(map, row, col, EventType.ALTER));
+            EMapEvent(this, new MapEvent(this, row, col, EventType.ALTER));
         }
 
+        /// <summary>
+        /// Retrieve the tile at row row and column col in the map. Invokes an EMapEvent.
+        /// </summary>
+        /// <param name="row">The row of the tile to be retrieved</param>
+        /// <param name="col">The column of the tile to be retrieved</param>
+        /// <returns></returns>
         public Tile GetTile(int row, int col)
         {
             if (row < mapRows || col < mapColumns)
@@ -153,10 +101,40 @@ namespace Recellection.Code.Models
             return map[row, col];
         }
 
-
-        public void setMap(Tile[,] map)
+        /// <summary>
+        /// Sets the game map to a specific Tile-matrix. Dimensions are required.
+        /// Invokes two EMapEvents.
+        /// </summary>
+        /// <param name="map">The Tilematrix to be the new map</param>
+        /// <param name="rows">The number of rows in the new map</param>
+        /// <param name="cols">The number of columns in the new map</param>
+        public void SetMap(Tile[,] map, int rows, int cols)
         {
+            ClearMap();
             this.map = map;
+            this.mapColumns = rows;
+            this.mapRows = cols;
+            EMapEvent(this, new MapEvent(this, -1, -1, EventType.ADD));
+        }
+
+        /// <summary>
+        /// Empty the game map. Invokes an EMapEvent.
+        /// </summary>
+        public void ClearMap()
+        {
+            this.map = null;
+            this.mapColumns = 0;
+            this.mapRows = 0;
+            EMapEvent(this, new MapEvent(this, -1, -1, EventType.REMOVE));
+        }
+
+        /// <summary>
+        /// Returns the matrix of Tiles that is the game map
+        /// </summary>
+        /// <returns></returns>
+        public Tile[,] GetMap()
+        {
+            return map;
         }
 
     }
