@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Recellection.Code.Models
 {
-    [Obsolete("This is retarded, use Vector2 instead. It won't correctly work either.")]
+    [Obsolete("This is utterly useless, use Vector2 instead. The world map will use floats anyway.")]
     class Coordinate : IModel
     {
         public int x;
