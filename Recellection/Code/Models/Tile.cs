@@ -216,5 +216,15 @@ namespace Recellection.Code.Models
         {
             return !obj1.Equals(obj2);
         }
+
+        /// <summary>
+        /// Override that doesn't actually override things.
+        /// Just because I had to write one.
+        /// </summary>
+        /// <returns>Unique hash code for this object.</returns>
+        public override int GetHashCode()
+        {
+            return base.GetHashCode();
+        }
     }
 }

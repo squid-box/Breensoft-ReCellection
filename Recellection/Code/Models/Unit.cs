@@ -45,6 +45,7 @@ namespace Recellection.Code.Models
             this.target = new Vector2(NO_TARGET,NO_TARGET);
             this.angle = 0;
             this.isDispersed = this.isDead = false;
+            this.owner = null;
         }
         /// <summary>
         /// Creates a unit.
@@ -57,6 +58,21 @@ namespace Recellection.Code.Models
             this.target = new Vector2(NO_TARGET, NO_TARGET);
             this.angle = 0;
             this.isDispersed = this.isDead = false;
+            this.owner = null;
+        }
+        /// <summary>
+        /// Creates a unit.
+        /// </summary>
+        /// <param name="posX">Unit x-coordinate.</param>
+        /// <param name="posY">Unit y-coordinate.</param>7
+        /// <param name="owner">Owner of this unit.</param>
+        public Unit(float posX, float posY, Player owner)
+        {
+            this.pos = new Vector2(posX, posY);
+            this.target = new Vector2(NO_TARGET, NO_TARGET);
+            this.angle = 0;
+            this.isDispersed = this.isDead = false;
+            this.owner = owner;
         }
         /// <summary>
         /// Creates a unit.
@@ -70,6 +86,7 @@ namespace Recellection.Code.Models
             this.target = new Vector2(NO_TARGET, NO_TARGET);
             this.angle = angle;
             this.isDispersed = this.isDead = false;
+            this.owner = null;
         }
 
         #endregion
