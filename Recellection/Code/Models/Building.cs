@@ -5,6 +5,7 @@ using System.Text;
 
 using Recellection.Code.Utility;
 using Recellection.Code.Utility.Events;
+using Microsoft.Xna.Framework.Graphics;
 
 namespace Recellection.Code.Models
 {
@@ -202,7 +203,7 @@ namespace Recellection.Code.Models
             return this.name;
         }
 
-        public Texture GetSprite()
+        public Texture2D GetSprite()
         {
             //TODO When the sprite map is done add code here
             return null;

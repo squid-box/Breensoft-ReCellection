@@ -31,5 +31,10 @@ namespace Recellection
         {
             English, Swedish
         }
+
+        public enum Texture
+        { 
+            Mucus, Membrane, Water, Slow, Infected
+        }
     }
 }

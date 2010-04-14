@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Microsoft.Xna.Framework.Graphics;
 
 /**
  * 
@@ -14,7 +15,7 @@ namespace Recellection.Code.Models
     class Menu : IModel
     {
         private List<GUIRegion> regions;
-        private Texture menuPic;
+        private Texture2D menuPic;
         private Menu helpMenu; //om denna Menu är en helpmenu eller inte ska ha en helpMenu sets denna variabel till null duh.
 
 
@@ -45,7 +46,7 @@ namespace Recellection.Code.Models
         {
             return regions;
         }
-        public Texture GetMenuPic()
+        public Texture2D GetMenuPic()
         {
             return menuPic;
         }
