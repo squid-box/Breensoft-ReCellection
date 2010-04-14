@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 
 namespace Recellection.Code.Models
 {
@@ -149,7 +150,7 @@ namespace Recellection.Code.Models
         /// Not Yet Implemented, waiting for Sprite-class?
         /// </summary>
         /// <returns>null</returns>
-        public Texture GetSprite()
+        public Texture2D GetSprite()
         {
             return null;
         }
