@@ -36,7 +36,7 @@ namespace Recellection.Code.Models
             Assert.AreEqual(-1, u2.GetTarget().X);
             Assert.AreEqual(-1, u2.GetTarget().Y);
 
-            u2.SetTargetX(5,5);
+            u2.SetTargetX(new Vector2(5,5));
 
             for (int i = 0; i < 5; i++)
             {

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 
 using Recellection.Code.Utility;
+using Recellection.Code.Utility.Events;
 
 namespace Recellection.Code.Models
 {
@@ -22,12 +23,16 @@ namespace Recellection.Code.Models
         // References
         private Player owner;
         private List<Unit> units;
-        private BuildingType type;
+        private Globals.BuildingTypes type;
         private BaseBuilding baseBuilding;
 
-        /**
-         * Creates an unusable building with everything set at defualt values.
-         */
+        //Events
+        public event Publish<Building> healthChanged;
+        public event Publish<Building> unitsChanged;
+
+        /// <summary>
+        /// Creates an unusable building with everything set at defualt values.
+        /// </summary>
         public Building()
         {
             this.name = "noName";
@@ -37,17 +42,23 @@ namespace Recellection.Code.Models
             this.maxHealth = -1;
             this.owner = null;
             this.units = new List<Unit>();
-            this.type = null;
+            this.type = Globals.BuildingTypes.NoType;
             this.baseBuilding = null;
         }
 
-        /**
-         * Creates a building with specified parameters, the unit list will
-         * be initated but empty and the current health will be set at 
-         * maxHealth.
-         */
+        /// <summary>
+        /// Creates a building with specified parameters, the unit list will
+        /// be initated but empty and the current health will be set at maxHealth.
+        /// </summary>
+        /// <param name="name">The name for the building TODO Decide if this is needded</param>
+        /// <param name="posX">The x tile koordinate</param>
+        /// <param name="posY">The y tile koordinate</param>
+        /// <param name="maxHealth">The max health of this building</param>
+        /// <param name="owner">The player that owns the building</param>
+        /// <param name="type">The </param>
+        /// <param name="baseBuilding"></param>
         public Building(String name, int posX, int posY, int maxHealth,
-            Player owner, BuildingType type, BaseBuilding baseBuilding)
+            Player owner, Globals.BuildingTypes type, BaseBuilding baseBuilding)
         {
 
             this.name = name;
@@ -110,11 +121,19 @@ namespace Recellection.Code.Models
             {
                 units.Add(unit);
 
+                unitsChanged(this, new Event<Building>(this, EventType.ALTER));
             }
             else
             {
                 //TODO Add a notify to notify that it failed.
             }
+        }
+
+        public void RemoveUnit(Unit unit)
+        {
+            this.units.Remove(unit);
+
+            unitsChanged(this, new Event<Building>(this, EventType.ALTER));
         }
 
         public void AddUnits(Unit[] units)
@@ -128,19 +147,25 @@ namespace Recellection.Code.Models
                 foreach(Unit u in units){
                     this.units.Add(u);
                 }
+
+                unitsChanged(this, new Event<Building>(this, EventType.ALTER));
             }
+        }
+
+        public void RemoveUnits(Unit[] units)
+        {
+            foreach (Unit u in units)
+            {
+                this.units.Remove(u);
+            }
+
+            unitsChanged(this, new Event<Building>(this, EventType.ALTER));
         }
 
         // Properties
         public string GetName()
         {
             return this.name;
-        }
-
-        //TODO Rename due to overloading
-        public BuildingType GetBuildingType()
-        {
-            return this.type;
         }
 
         public Texture GetSprite()
@@ -190,6 +215,8 @@ namespace Recellection.Code.Models
             if (isAlive())
             {
                 this.currentHealth -= dmgHealth;
+
+                healthChanged(this, new Event<Building>(this, EventType.ALTER));
             }
             else
             {
@@ -206,6 +233,8 @@ namespace Recellection.Code.Models
             if (isAlive())
             {
                 this.currentHealth += health;
+
+                healthChanged(this, new Event<Building>(this, EventType.ALTER));
             }
             else
             {

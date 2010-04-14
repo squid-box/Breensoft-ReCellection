@@ -17,9 +17,19 @@ namespace Recellection
         {
             MainMenu = 0, HelpMenu = 1
         }
-         public enum TerrainTypes
+        public enum TerrainTypes
         {
             Mucus, Membrane, Water, Slow, Infected
+        }
+
+        public enum BuildingTypes
+        {
+            NoType, Aggressive, Barrier, Base, Resource
+        }
+
+        public enum Languages
+        {
+            English, Swedish
         }
     }
 }
