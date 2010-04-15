@@ -129,8 +129,8 @@ namespace Recellection.Code.Models
         /// </summary>
         /// <returns>A possitive integer representing the number of units
         /// in the list.</returns>
-        public int CountUnits()
-        {
+        public virtual int CountUnits()
+		{
             return units.Count;
         }
 

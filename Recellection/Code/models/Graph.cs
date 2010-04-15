@@ -16,14 +16,16 @@ namespace Recellection.Code.Models
 	{
 		private static Logger logger = LoggerFactory.GetLogger();
 		private static int defaultWeight = 1;
-		private Dictionary<Building, int> buildings;
 		
 		public event Publish<Building> weightChanged;
+		private Dictionary<Building, int> buildings;
+		public int TotalWeight { get; private set; }
 		
 		private Graph()
 		{
 			logger.Trace("Constructing new graph.");
 			buildings = new Dictionary<Building, int>();
+			TotalWeight = 0;
 		}
 		
 		/// <summary>
@@ -32,6 +34,7 @@ namespace Recellection.Code.Models
 		public Graph(BaseBuilding baseBuilding) : this()
 		{
 			buildings.Add(baseBuilding, defaultWeight);
+			TotalWeight += defaultWeight;
 		}
 
 		/// <summary>
@@ -54,6 +57,7 @@ namespace Recellection.Code.Models
 			}
 
 			buildings.Add(building, defaultWeight);
+			TotalWeight += defaultWeight;
 
 			Publish(building, defaultWeight, EventType.ADD);
 		}
@@ -81,8 +85,10 @@ namespace Recellection.Code.Models
 			{
 				Add(building);
 			}
-
+			
+			TotalWeight -= buildings[building];
 			buildings[building] = weight;
+			TotalWeight += weight;
 			
 			Publish(building, weight, EventType.ALTER);
 		}
