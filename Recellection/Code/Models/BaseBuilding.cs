@@ -25,7 +25,7 @@ namespace Recellection.Code.Models
         public void Visit(Building building)
         {
             childBuildings.AddLast(building);
-            buildingsChanged(this, new BuildingAddedEvent(this, this.childBuildings,EventType.ADD));
+            buildingsChanged(this, new BuildingAddedEvent(this,EventType.ADD));
         }
 
         ///// <summary>
