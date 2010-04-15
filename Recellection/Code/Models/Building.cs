@@ -28,8 +28,8 @@ namespace Recellection.Code.Models
         private BaseBuilding baseBuilding;
 
         //Events
-        public event Publish<Building> healthChanged;
-        public event Publish<Building> unitsChanged;
+		public event Publish<Building, Event<Building>> healthChanged;
+		public event Publish<Building, Event<Building>> unitsChanged;
 
         /// <summary>
         /// Creates an unusable building with everything set at defualt values.
@@ -63,7 +63,6 @@ namespace Recellection.Code.Models
         public Building(String name, int posX, int posY, int maxHealth,
             Player owner, Globals.BuildingTypes type, BaseBuilding baseBuilding)
         {
-
             this.name = name;
             this.posX = posX;
             this.maxHealth = maxHealth;
@@ -74,8 +73,6 @@ namespace Recellection.Code.Models
             this.type = type;
 
             this.baseBuilding = baseBuilding;
-
-
         }
 
        /// <summary>
@@ -227,6 +224,7 @@ namespace Recellection.Code.Models
         {
             return this.posX;
         }
+        
         public int GetY()
         {
             return this.posY;
@@ -236,6 +234,7 @@ namespace Recellection.Code.Models
         {
             return this.baseBuilding;
         }
+        
         public int GetHealth()
         {
             return this.currentHealth;
@@ -245,6 +244,7 @@ namespace Recellection.Code.Models
         {
             return this.maxHealth;
         }
+        
         public int GetHealthPercentage()
         {
             //TODO Check if it really should be an int that is returned.

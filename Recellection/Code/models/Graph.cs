@@ -17,7 +17,7 @@ namespace Recellection.Code.Models
 		private static Logger logger = LoggerFactory.GetLogger();
 		private static int defaultWeight = 1;
 		
-		public event Publish<Building> weightChanged;
+		public event Publish<Building, GraphEvent> weightChanged;
 		private Dictionary<Building, int> buildings;
 		public int TotalWeight { get; private set; }
 		
@@ -106,6 +106,18 @@ namespace Recellection.Code.Models
 			}
 			
 			return weight;
+		}
+		
+		/// <summary>
+		/// Returns the weight factor for a building. 
+		/// It' pretty much weight / total weight.
+		/// </summary>
+		/// <param name="building"></param>
+		/// <returns></returns>
+		public double GetWeightFactor(Building building)
+		{
+			double weight = GetWeight(building);
+			return weight / (double)TotalWeight;
 		}
 		
 		/// <summary>

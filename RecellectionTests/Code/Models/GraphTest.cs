@@ -5,6 +5,8 @@ using System.Text;
 
 using NUnit.Framework;
 
+using Recellection.Code.Utility.Events;
+
 namespace Recellection.Code.Models
 {
 	class TestBuilding : Building
@@ -82,6 +84,26 @@ namespace Recellection.Code.Models
 		}
 		
 		[Test]
+		public void GetWeightFactor()
+		{
+			g.SetWeight(b1, 10);
+			g.SetWeight(b2, 20);
+			g.SetWeight(b3, 70);
+			
+			Assert.AreEqual(0.1, Math.Round(g.GetWeightFactor(b1), 1));
+			Assert.AreEqual(0.2, Math.Round(g.GetWeightFactor(b2), 1));
+			Assert.AreEqual(0.7, Math.Round(g.GetWeightFactor(b3), 1));
+		}
+		
+		[Test]
+		public void HasBuilding()
+		{
+			Assert.False(g.HasBuilding(b1));
+			g.Add(b1);
+			Assert.True(g.HasBuilding(b1));
+		}
+		
+		[Test]
 		public void GetWeightOfNonExistingBuilding()
 		{
 			Assert.Throws<ArgumentException>(delegate{ g.GetWeight(b1); });
@@ -90,6 +112,21 @@ namespace Recellection.Code.Models
 			g.Remove(b1);
 			
 			Assert.Throws<ArgumentException>(delegate { g.GetWeight(b1); });
+		}
+
+		public void observed(Object g, Event<Building> e)
+		{
+			wasNotified = true;
+		}
+		
+		private bool wasNotified = false;
+		
+		[Test]
+		public void Publish()
+		{
+			g.weightChanged += this.observed;
+			g.SetWeight(b1, 150);
+			Assert.IsTrue(wasNotified);
 		}
 	}
 }
