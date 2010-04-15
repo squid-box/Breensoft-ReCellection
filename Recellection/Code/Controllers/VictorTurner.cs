@@ -40,8 +40,11 @@ namespace Recellection.Code.Controllers
                     {
 
                         finished = true;
+                        break;  
                     }
+                   // WorldController(player);
                 }
+                //UnitController();
 
             }
 
@@ -49,25 +52,30 @@ namespace Recellection.Code.Controllers
 
         private Boolean HasLost(Player player)
         {
+            /*if (player.CountGraphs() == 0)
+            {
+                return true;
 
-            return false;
+            }
+            else
+            {*/
+                return false;
+            //}
         }
 
         private Boolean HasWon(Player player)
         {
-
+            /*if (world.GetPlayers().Length() == 1)
+            {
+                return true;
+            }*/
 
             return false;
         }
 
         private void PlayerAct(Player player)
         {
-
-        }
-
-        private void WorldAct()
-        {
-
+            //PlayerController(player);
         }
     }
 }
