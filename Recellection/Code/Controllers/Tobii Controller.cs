@@ -28,6 +28,8 @@ namespace Recellection
         //TODO: senare bör den mappa mot en lista av GUIRegions
         Dictionary<Globals.RegionCategories,List<WindowBoundInteractionRegionIdentifier>> regionCategories;
 
+        private readonly int DEFAULT_TIME_SPAN = 1;
+
         /// <summary>
         /// Main constructor for the controller, 
         /// Important: only instantiate it once as it uses
@@ -64,7 +66,7 @@ namespace Recellection
             try
             {
                 TecClient.Init("Recellection");
-                TecClient.IsMouseEngineOverrideEnabled = true;
+                //TecClient.IsMouseEngineOverrideEnabled = true;
                 //TecClient.BroadcastActivate();
                 //probably more stuff to do here, like loading eye tracking preferences e.t.c
             }
@@ -101,15 +103,22 @@ namespace Recellection
         {
             List<GUIRegion> ret = new List<GUIRegion>();
             for (int i = 0; i < regionCategories[regionID].Count; i++)
-            {
-                //TODO this row is just waiting to be finished, oh yes
-                //ret.Add(Interaction.FindRegion(regionCategories[regionID].ElementAt(i)));
+            {                
+                ret.Add((GUIRegion)Interaction.FindRegion(regionCategories[regionID].ElementAt(i)));
             }
             return ret;
         }
 
+        /// <summary>
+        /// Will return a region given it's identifier        
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns>
+        /// The region asked for
+        /// </returns>
         public WindowBoundInteractionRegion GetRegionByIdentifier(WindowBoundInteractionRegionIdentifier id){
             return (WindowBoundInteractionRegion)Interaction.Regions[id];
+            //uncertain if this will return a WindowBoundInteractionRegionIdentifier or a GUIRegion
         }
 
         #region subscribers, wrong place for these though?
@@ -159,8 +168,12 @@ namespace Recellection
             //TODO will have to change to something like
                 //newRegion.GetWindowBoundInteractionRegion
                 newRegion.CanActivate = true;
-                newRegion.DwellTime = new TimeSpan(0, 0, 1);
+                if (newRegion.DwellTime == null)
+                {
+                    newRegion.DwellTime = new TimeSpan(0, 0, DEFAULT_TIME_SPAN);
+                }
                 newRegion.Enabled = false;
+
                 newRegion.AlwaysInteractive = true; //what does this call really mean?
                 //newRegion.IsActivating = true; //and this one?
                 newRegion.UsesCoordinate = true; //and this one?
@@ -184,7 +197,7 @@ namespace Recellection
             {
                 Interaction.AddRegion(newRegion); //this is what actually makes tobii start tracking our region
             }
-            catch (Exception e) //will occur if the region was already added, Interaction.AddRegion can throw stuff
+            catch (Exception) //will occur if the region was already added, Interaction.AddRegion can throw stuff
             {
                 return false;
             }
@@ -196,8 +209,9 @@ namespace Recellection
         /// But if one need to be removed then so be it
         /// </summary>
         /// <param name="id"></param>
-        public void RemoveRegionsByIdentifier(WindowBoundInteractionRegionIdentifier id) {
-            Interaction.RemoveRegion(id);
+        public void RemoveRegionByIdentifier(WindowBoundInteractionRegionIdentifier id) {
+            Interaction.RemoveRegion(id); 
+            //assuming nothing funky happens if trying to remove a non existing region
         }
 
         #region dummymethods
@@ -233,8 +247,9 @@ namespace Recellection
         /// will this be handled elsewhere?
         /// </summary>
         /// <returns></returns>
-        public GUIRegion GetActivatedRegions()
+        public List<GUIRegion> GetActivatedRegions()
         {
+            //will implement if this function is needed here, 
             return null;           
         }
     }
