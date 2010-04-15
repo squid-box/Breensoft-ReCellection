@@ -12,6 +12,12 @@ namespace Recellection.Code.Controllers
 	{
 		private class TestBuilding : Building
 		{
+			public int numberOfUnits = 5;
+			
+			public override int CountUnits()
+			{
+				return numberOfUnits;
+			}
 		}
 		
 		GraphController gc;
@@ -19,12 +25,12 @@ namespace Recellection.Code.Controllers
 		Graph g2;
 		
 		BaseBuilding b1;
-		Building b2;
-		Building b3;
+		TestBuilding b2;
+		TestBuilding b3;
 		
 		BaseBuilding ba;
-		Building bb;
-		Building bc;
+		TestBuilding bb;
+		TestBuilding bc;
 		
 		[SetUp]
 		public void Init()
@@ -76,25 +82,53 @@ namespace Recellection.Code.Controllers
 		[Test]
 		public void SetWeight()
 		{
-			// TODO
+			AddBaseBuildings();
+			
+			gc.AddBuilding(b1, b2);
+			gc.SetWeight(b1, 200);
+			Assert.AreEqual(200, g1.GetWeight(b1));
 		}
 		
 		[Test]
 		public void CalculateWeights()
 		{
-			// TODO
+			AddBaseBuildings();
+			b2.numberOfUnits = 10; gc.AddBuilding(b1, b2);
+			b3.numberOfUnits = 10; gc.AddBuilding(b1, b3);
+			bb.numberOfUnits = 10; gc.AddBuilding(b1, bb);
+			bc.numberOfUnits = 10; gc.AddBuilding(b1, bc);
+			
+			gc.CalculateWeights();
+
+			// TODO: Finish this test when Unit controller is present
+			bool UnitControllerIsPresent = false;
+			Assert.IsTrue(UnitControllerIsPresent, "Unit Controller must be present.");
 		}
 		
 		[Test]
 		public void SumUnitsInGraph()
 		{
-			// TODO
+			AddBaseBuildings();
+			b2.numberOfUnits = 5;
+			b3.numberOfUnits = 5;
+			gc.AddBuilding(b1, b2);
+			gc.AddBuilding(b1, b3);
+			
+			Graph g = gc.GetGraph(b1);
+			
+			Assert.AreEqual(5+5, GraphController.SumUnitsInGraph(g));
+			
+			b2.numberOfUnits = 10;
+			
+			Assert.AreEqual(5+10, GraphController.SumUnitsInGraph(g));
 		}
-		
+
 		[Test]
 		public void MoveUnits()
 		{
-			// TODO
+			// TODO: Do when Unit Controller is present
+			bool UnitControllerIsPresent = false;
+			Assert.IsTrue(UnitControllerIsPresent, "Unit Controller must be present.");
 		}
 	}
 }

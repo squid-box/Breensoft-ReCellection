@@ -101,7 +101,8 @@ namespace Recellection.Code.Controllers
 				LinkedList<BuildingBalance> withExcess = new LinkedList<BuildingBalance>();
 				foreach(Building b in buildings)
 				{
-					int unitGoal = totalUnits / g.GetWeight(new BaseBuilding());
+					float factor = g.GetWeight(b) / g.TotalWeight;
+					int unitGoal = (int)(totalUnits * factor);
 					int unitBalance = b.CountUnits() - unitGoal;
 					
 					if (unitBalance > 0)
@@ -151,7 +152,7 @@ namespace Recellection.Code.Controllers
 			}
 		}
 
-		private static int SumUnitsInGraph(Graph g)
+		internal static int SumUnitsInGraph(Graph g)
 		{
 			List<Building> buildings = g.GetBuildings();
 			// Calculate total number of units
@@ -197,7 +198,7 @@ namespace Recellection.Code.Controllers
 	/// </summary>
 	public class GraphLessBuildingException : Exception
 	{
-		private static string msg = "A building does not belong to a graph."+
+		private static string msg = "A building does not belong to a graph. "+
 									"All buildings should belong to a graph.";
 		
 		public GraphLessBuildingException() : base(msg)
