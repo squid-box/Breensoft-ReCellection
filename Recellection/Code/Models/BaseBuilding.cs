@@ -2,12 +2,14 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Recellection.Code.Utility.Events;
 
 namespace Recellection.Code.Models
 {
     public class BaseBuilding : ResourceBuilding // note that I inherit ResourceBuilding,
     {                                            // this makes sense as a BaseBuilding 
         LinkedList<Building> childBuildings;     // will have it's own production
+        public event Publish<Building> buildingsChanged;
 
         BaseBuilding(String name, int posX, int posY, int maxHealth,
             Player owner)
@@ -22,7 +24,8 @@ namespace Recellection.Code.Models
         /// <param name="building"></param>
         public void Visit(Building building)
         {
-            childBuildings.AddLast(building);    
+            childBuildings.AddLast(building);
+            buildingsChanged(this, new BuildingAddedEvent(this, this.childBuildings,EventType.ADD));
         }
 
         ///// <summary>
