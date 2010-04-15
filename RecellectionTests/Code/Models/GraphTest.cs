@@ -17,6 +17,8 @@ namespace Recellection.Code.Models
 	{
 		private Graph g;
 		
+		private int size;
+		
 		private BaseBuilding bb = new BaseBuilding();
 		private Building b1 = new TestBuilding();
 		private Building b2 = new TestBuilding();
@@ -25,35 +27,38 @@ namespace Recellection.Code.Models
 		[SetUp]
 		public void Init()
 		{
+			size = 0;
 			g = new Graph(bb);
+			size += 1;
 		}
 	
 		[Test]
 		public void AddAndCount()
 		{
 			g.Add(b1);
-			Assert.AreEqual(1, g.CountBuildings());
+			Assert.AreEqual(++size, g.CountBuildings());
 			g.Add(b2);
-			Assert.AreEqual(2, g.CountBuildings());
+			Assert.AreEqual(++size, g.CountBuildings());
 			g.Add(b3);
-			Assert.AreEqual(3, g.CountBuildings());
+			Assert.AreEqual(++size, g.CountBuildings());
 			
 			// Adding same building twice should be ignored
-			g.Add(b1);
-			Assert.AreEqual(3, g.CountBuildings());
+
+			Assert.Throws<ArgumentException>(delegate { g.Add(b1); });
+			Assert.AreEqual(size, g.CountBuildings());
 		}
 		
 		[Test]
 		public void Remove()
 		{
 			g.Add(b1);
-			Assert.AreEqual(1, g.CountBuildings());
+			Assert.AreEqual(++size, g.CountBuildings());
 
 			g.Remove(b1);
-			Assert.AreEqual(0, g.CountBuildings());
+			Assert.AreEqual(--size, g.CountBuildings());
 
 			g.Remove(b1);
-			Assert.AreEqual(0, g.CountBuildings());
+			Assert.AreEqual(size, g.CountBuildings());
 		}
 		
 		[Test]
@@ -62,8 +67,8 @@ namespace Recellection.Code.Models
 			g.Add(b1);
 			g.SetWeight(b1, 100);
 			g.SetWeight(b2, 200);
-			
-			Assert.AreEqual(2, g.CountBuildings());
+			size += 2;
+			Assert.AreEqual(size, g.CountBuildings());
 		}
 		
 		[Test]

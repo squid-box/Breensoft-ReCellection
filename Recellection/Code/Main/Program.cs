@@ -1,5 +1,9 @@
 using System;
+using System.Runtime.CompilerServices;
 using Recellection.Code.Utility.Logger;
+
+// We should be able to test internals
+[assembly: InternalsVisibleTo("RecellectionTests")]
 
 namespace Recellection
 {
