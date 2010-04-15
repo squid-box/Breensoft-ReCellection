@@ -27,7 +27,7 @@ namespace Recellection.Code
         {
             Tile newTile = new Tile();
        
-            return visibleWorld[coords.X][coords.Y];
+            return visibleWorld[(int)coords.X][(int)coords.Y];
         }
 
 

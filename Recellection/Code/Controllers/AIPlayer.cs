@@ -8,7 +8,7 @@ using Microsoft.Xna.Framework;
 
 namespace Recellection.Code.Controllers
 {
-    class AIPlayer
+    class AIPlayer : Player
     {
 
         /**
@@ -119,16 +119,17 @@ namespace Recellection.Code.Controllers
             if (tempBuilding == null)
                 return false;
 
-            if (tempBuilding.GetPlayer != this)
+            if (tempBuilding.GetPlayer() != this)
             {
                 //TODO: Enemy harvesting at this location, very interresting.
                 return false;
             }
 
-            if (view.GetBuildingTypeOf(view.GetBuildingAt(point)) == Globals.BuildingTypes)
+            if (view.GetBuildingTypeOf(view.GetBuildingAt(point)) == Globals.BuildingTypes.Resource)
             {
                 return true;
             }
+            return false;
         }
 
         private bool CanHoldPoint(Vector2 Point)
