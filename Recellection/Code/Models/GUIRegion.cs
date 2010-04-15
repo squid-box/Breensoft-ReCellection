@@ -4,6 +4,9 @@ using System.Linq;
 using System.Text;
 using Tobii.TecSDK.Client.Interaction.RegionImplementations;
 
+using Recellection.Code.Utility.Events;
+using Recellection.Code.Utility.Logger;
+
 namespace Recellection.Code.Models
 {
     /*
@@ -18,8 +21,31 @@ namespace Recellection.Code.Models
      * */
     public class GUIRegion : WindowBoundInteractionRegion, IModel
     {
-        public GUIRegion(WindowBoundInteractionRegionIdentifier id ):base(id){ 
+        public static Logger logger = LoggerFactory.GetLogger();
+        public event Publish<GUIRegion, GUIRegionEvent> regionActivated;
+
+        public GUIRegion(WindowBoundInteractionRegionIdentifier id ):base(id)
+        { 
+            logger.Trace("Creating a new GUIRegion.");
+        }
+
+        public GUIRegion(IntPtr nativeHwnd, System.Windows.Rect innerBounds)
+            : base(nativeHwnd, innerBounds)
+        {
+            logger.Trace("Creating a new GUIRegion.");
+        }
         
+        public void onActivate()
+        {
+            Publish(this, EventType.ADD);
+        }
+
+        public void Publish(GUIRegion guiregion, EventType t)
+        {
+            if (regionActivated != null)
+            {
+               regionActivated(this, new GUIRegionEvent(this, t));
+            }
         }
     }
 }
