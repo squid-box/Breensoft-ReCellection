@@ -106,6 +106,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Code\Controllers\AIPlayer.cs" />
+    <Compile Include="Code\Controllers\Localizer.cs" />
     <Compile Include="Code\Controllers\Tobii Controller.cs" />
     <Compile Include="Code\Controllers\UnitAccountant.cs" />
     <Compile Include="Code\Models\Coordinate.cs" />
@@ -129,9 +130,8 @@
     <Compile Include="Code\Models\GUIRegion.cs" />
     <Compile Include="Code\Models\Menu.cs" />
     <Compile Include="Code\Models\Player.cs" />
-    <Compile Include="Code\Models\SpriteMap.cs" />
+    <Compile Include="Code\Models\SpriteTextureMap.cs" />
     <Compile Include="Code\Models\TerrainType.cs" />
-    <Compile Include="Code\Models\Texture.cs" />
     <Compile Include="Code\Models\Tile.cs" />
     <Compile Include="Code\Models\Unit.cs" />
     <Compile Include="Code\Sounds\AudioPlayer.cs" />
