@@ -12,8 +12,8 @@ namespace Recellection.Code.Models
         private Unit currentTarget = null;
         public event Publish<AggressiveBuilding> targetChanged;
 
-        public AggressiveBuilding(String name, int posX, int posY, int maxHealth,Player owner, Globals.BuildingTypes type, BaseBuilding baseBuilding)
-               :base(name, posX, posY, maxHealth, owner, type, baseBuilding)
+        public AggressiveBuilding(String name, int posX, int posY, int maxHealth,Player owner,BaseBuilding baseBuilding)
+               :base(name, posX, posY, maxHealth, owner, Globals.BuildingTypes.Aggressive, baseBuilding)
         {
 
 
