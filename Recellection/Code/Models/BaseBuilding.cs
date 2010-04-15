@@ -9,9 +9,9 @@ namespace Recellection.Code.Models
     public class BaseBuilding : ResourceBuilding // note that I inherit ResourceBuilding,
     {                                            // this makes sense as a BaseBuilding 
         LinkedList<Building> childBuildings;     // will have it's own production
-        public event Publish<Building> buildingsChanged;
+		public event Publish<Building, BuildingAddedEvent> buildingsChanged;
 
-        BaseBuilding(String name, int posX, int posY, int maxHealth,
+        public BaseBuilding(String name, int posX, int posY, int maxHealth,
             Player owner)
             : base(name, posX, posY, maxHealth, owner, null)
         {
