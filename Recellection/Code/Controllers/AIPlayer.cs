@@ -8,16 +8,16 @@ using Microsoft.Xna.Framework;
 
 namespace Recellection.Code.Controllers
 {
-    class AIPlayer
+    class AIPlayer : Player
     {
 
         /**
          * Variables
          */
-        private AIView View;
-        private Vector2[] InterrestPoints;
-        private Vector2[] EnemyPoints;
-        private int Threshold;
+        private AIView view;
+        private Vector2[] interrestPoints;
+        private Vector2[] enemyPoints;
+        private int threshold;
 
 
 
@@ -27,109 +27,125 @@ namespace Recellection.Code.Controllers
          */
         public void MakeMove(){
 
-            for (int i = 0; i < InterrestPoints.Length; i++)
+            for (int i = 0; i < interrestPoints.Length; i++)
             {
-                Vector2 Current = InterrestPoints[i];
+                Vector2 current = interrestPoints[i];
 
-                if (containsResourcePoint(Current))
+                if (view.ContainsResourcePoint(current))
                 {
-                    evaluateResourcePoint(Current);
+                    EvaluateResourcePoint(current);
                 }
                 else
                 {
-                    calculateWeight(Current);
+                    CalculateWeight(current);
                 }
             }
 
-            if (EnemyPoints.Length == 0)
+            if (enemyPoints.Length == 0)
             {
-                explore(calculateScoutDirection());
+                Explore(CalculateScoutDirection());
             }
             else
             {
-                for (int i = 0; i < EnemyPoints.Length; i++)
+                for (int i = 0; i < enemyPoints.Length; i++)
                 {
-                    Vector2 Current = EnemyPoints[i];
-                    Vector2 Nearby = getClosestInterrestPoint(Current);
-                    if (distanceBetween(Current, Nearby) > Threshold)
+                    Vector2 current = enemyPoints[i];
+                    Vector2 nearby = GetClosestInterrestPoint(current);
+                    if (DistanceBetween(current, nearby) > threshold)
                     {
-                        Nearby = calculatePointNear(Current);
-                        InterrestPoints[InterrestPoints.Length] = Nearby;
+                        nearby = CalculatePointNear(current);
+                        interrestPoints[interrestPoints.Length] = nearby;
                     }
-                    sendUnits(Nearby);
+                    SendUnits(nearby);
                 }
             }
         }
 
-        private bool containsResourcePoint(Vector2 Current)
+
+        private void CalculateWeight(Vector2 Current)
         {
             throw new NotImplementedException();
         }
 
-        private void calculateWeight(Vector2 Current)
+        private void Explore(object p)
         {
             throw new NotImplementedException();
         }
 
-        private void explore(object p)
+        private object CalculateScoutDirection()
         {
             throw new NotImplementedException();
         }
 
-        private object calculateScoutDirection()
+        private Vector2 GetClosestInterrestPoint(Vector2 Current)
         {
             throw new NotImplementedException();
         }
 
-        private Vector2 getClosestInterrestPoint(Vector2 Current)
+        private int DistanceBetween(Vector2 Current, Vector2 Nearby)
         {
             throw new NotImplementedException();
         }
 
-        private int distanceBetween(Vector2 Current, Vector2 Nearby)
+        private Vector2 CalculatePointNear(Vector2 Current)
         {
             throw new NotImplementedException();
         }
 
-        private Vector2 calculatePointNear(Vector2 Current)
-        {
-            throw new NotImplementedException();
-        }
-
-        private void evaluateResourcePoint(Vector2 Point)
+        private void EvaluateResourcePoint(Vector2 point)
         {
             //Resource point but we already have it.
-            if (harvesting(Point))
+            if (Harvesting(point))
                 return;
 
-            if (canHoldPoint(Point))
+            if (CanHoldPoint(point))
             {
-                issueBuildOrder(Point, "Resource");
+                IssueBuildOrder(point, Globals.BuildingTypes.Resource);
             }
             else
             {
-                sendUnits(Point);
+                SendUnits(point);
             }
         }
 
-        private bool harvesting(Vector2 Point)
+        
+        /*
+         * Returns true if the AIPlayer is already harvesting at the given coordinates.
+         */
+        private bool Harvesting(Vector2 point)
+        {
+            Building tempBuilding = view.GetBuildingAt(point);
+
+            if (tempBuilding == null)
+                return false;
+
+            if (tempBuilding.GetPlayer() != this)
+            {
+                //TODO: Enemy harvesting at this location, very interresting.
+                return false;
+            }
+
+            if (view.GetBuildingTypeOf(view.GetBuildingAt(point)) == Globals.BuildingTypes.Resource)
+            {
+                return true;
+            }
+            return false;
+        }
+
+        private bool CanHoldPoint(Vector2 Point)
         {
             throw new NotImplementedException();
         }
 
-        private bool canHoldPoint(Vector2 Point)
+        private void SendUnits(Vector2 Point)
         {
             throw new NotImplementedException();
         }
 
-        private void issueBuildOrder(Vector2 Point, string p)
+        private void IssueBuildOrder(Vector2 point, Globals.BuildingTypes buildingType)
         {
             throw new NotImplementedException();
         }
 
-        private void sendUnits(Vector2 Point)
-        {
-            throw new NotImplementedException();
-        }
     }
 }
