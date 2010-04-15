@@ -30,9 +30,12 @@ namespace Recellection.Code.Models
 
         }
 
-        public void Visit(BaseBuilding building)
+        public void Visit(BaseBuilding building){
+            throw new DivideByZeroException("");
+        }
+
+        public void Visit(Building b)
         {
-            throw new DivideByZeroException();
         }
 
     }
