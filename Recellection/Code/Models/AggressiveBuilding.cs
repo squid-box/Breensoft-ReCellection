@@ -39,7 +39,5 @@ namespace Recellection.Code.Models
             currentTarget = newTarget;
             targetChanged(this,new Event<AggressiveBuilding>(this,EventType.ALTER));
         }
-
-
     }
 }
