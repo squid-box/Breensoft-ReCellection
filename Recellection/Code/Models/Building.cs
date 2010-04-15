@@ -260,7 +260,7 @@ namespace Recellection.Code.Models
         /// </summary>
         /// <param name="dmgHealth">The ammount of damage to cause to the 
         /// building</param>
-        public void damage(int dmgHealth)
+        public void Damage(int dmgHealth)
         {
             //TODO Verify if there should be logic here to detirmine if it dies
             if (isAlive())
@@ -280,7 +280,7 @@ namespace Recellection.Code.Models
         /// parameter. It can not heal it above max health.
         /// </summary>
         /// <param name="health">The ammount to repair the building</param>
-        public void repair(int health)
+        public void Repair(int health)
         {
             if (isAlive())
             {
