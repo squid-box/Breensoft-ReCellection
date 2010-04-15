@@ -169,7 +169,7 @@ namespace Recellection
         private void PrintHelp()
         {
             spriteBatch.Begin();
-            spriteBatch.DrawString(screenFont, "M-> Toggle music\nI-> Turn SFX off\nO-> Turn SFX on\nA-> Acid sound\nB-> Explosion sound", Vector2.Zero, Color.White);
+            spriteBatch.DrawString(screenFont, "M: Toggle music\nI: Turn SFX off\nO: Turn SFX on\nA: Acid sound\nB: Explosion sound\nF1: Toggle Console", Vector2.Zero, Color.White);
             spriteBatch.End();
         }
 
