@@ -82,9 +82,9 @@ namespace Recellection.Code.Controllers
 
             while (numberOfRandomTiles > 0)
             {
-                randomY = randomer.Next(retur.Length);
+                randomY = randomer.Next(10,retur.Length-10);
 
-                randomX = randomer.Next(retur[randomY].Length);
+                randomX = randomer.Next(10,retur[randomY].Length-10);
 
 
                 numberOfTilesToRandomize = randomer.Next(MINIMUM_SPREAD, 
@@ -101,10 +101,11 @@ namespace Recellection.Code.Controllers
         }
 
         /// <summary>
-        /// Initiates the tile matrix 
+        /// Initiates the tile matrix, though no Tiles in the matrix
+        /// is initiated 
         /// </summary>
         /// <param name="randomer"></param>
-        /// <returns></returns>
+        /// <returns>Returns a initiated Tile Matrix</returns>
         private static Tile[][] InitTileMatrix(Random randomer)
         {
 
@@ -178,8 +179,6 @@ namespace Recellection.Code.Controllers
             //randomize a number which is 0 to number of terrain types - 1.
             int randomTile = randomer.Next(GetNumberOfTerrainTypes());
            
-            //This is aperantly the best way to determine how many 
-            //different enums there is
 
             return new Tile((Globals.TerrainTypes)randomTile);
         }
@@ -187,12 +186,12 @@ namespace Recellection.Code.Controllers
 
         private static Globals.TerrainTypes RandomTerrainType(Random randomer)
         {
-            //randomize a number which is 0 to number of terrain types - 1.
-            int randomType = randomer.Next(GetNumberOfTerrainTypes());
+            //randomize a number which is 1 to number of terrain types - 1.
+            //Ignores the default terrain type Membrane.
+            int randomType = randomer.Next(1,GetNumberOfTerrainTypes());
 
-            //This is aperantly the best way to determine how many 
-            //different enums there is
 
+            
             return (Globals.TerrainTypes)randomType;
         }
 

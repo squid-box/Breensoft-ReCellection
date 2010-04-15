@@ -7,10 +7,35 @@ namespace Recellection.Code.Models
 {
     public class BaseBuilding : Building
     {
+        LinkedList<Building> childBuildings;
 
-        public void Visit(Building building)
+        BaseBuilding(String name, int posX, int posY, int maxHealth,
+            Player owner, Globals.BuildingTypes type)
+            : base(name, posX, posY, maxHealth, owner, type, null)
         {
-            //TODO Add functionality here.
+
+        }
+
+        public void Visit(AggressiveBuilding building)
+        {
+            
+        }
+
+        public void Visit(ResourceBuilding building)
+        {
+        }
+
+        public void Visit(BarrierBuilding building)
+        {
+
+        }
+
+        public void Visit(BaseBuilding building){
+            throw new DivideByZeroException("");
+        }
+
+        public void Visit(Building b)
+        {
         }
 
     }
