@@ -21,7 +21,7 @@ namespace Recellection.Code.Models
 		
 		private int size;
 		
-		private BaseBuilding bb = new BaseBuilding();
+		private BaseBuilding bb = new BaseBuilding("test", 0, 0, 0, new Player());
 		private Building b1 = new TestBuilding();
 		private Building b2 = new TestBuilding();
 		private Building b3 = new TestBuilding();

@@ -6,7 +6,7 @@ using Recellection.Code.Models;
 
 namespace Recellection.Code.Utility.Events
 {
-    class BuildingAddedEvent : Event<Building>
+    public class BuildingAddedEvent : Event<Building>
     {
         Building newBuilding;
 
