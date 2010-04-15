@@ -13,6 +13,7 @@ using Microsoft.Xna.Framework.Graphics;
 using IronPython.Hosting;
 using IronPython.Runtime.Exceptions;
 using IronPython.Modules;
+using Recellection.Code.Utility.Logger;
 
 namespace Recellection.Code.Utility.Console
 {
@@ -109,6 +110,7 @@ namespace Recellection.Code.Utility.Console
         const double CursorBlinkTime = 0.3;
         const string NewLine = "\n";
         const string Version = "Xna Console v.1.0";
+        const string prompt = "> ";
         
         #endregion
         #region Rendering stuff
@@ -121,7 +123,9 @@ namespace Recellection.Code.Utility.Console
         #endregion
         #region Console text management stuff
 
-        string InputBuffer, OutputBuffer;
+        string InputBuffer;
+		public StringWriter OutputBuffer { get; private set; }
+        
         History history;
         int lineWidth, cursorPos, cursorOffset, consoleXSize, consoleYSize;
         double firstInterval, repeatInterval;
@@ -152,8 +156,10 @@ namespace Recellection.Code.Utility.Console
             background = new Texture2D(device, 1, 1, 1, TextureUsage.None,
                 SurfaceFormat.Color);
             background.SetData<Color>(new Color[1] { new Color(0, 0, 0, 125) });
-
+			
             InputBuffer = "";
+            OutputBuffer = new StringWriter();
+            
             history = new History();
 
             WriteLine("###");
@@ -177,7 +183,11 @@ namespace Recellection.Code.Utility.Console
             {
                 Keys key = (Keys)Enum.GetValues(typeof(Keys)).GetValue(i);
                 keyTimes[key] = 0f;
-            }
+			}
+
+			// lol. hack.
+			LoggerFactory.SetGlobalTarget(OutputBuffer);
+			LoggerFactory.GetLogger().Info("Initialized XNA console.");
         }
 
         public string Chomp(string str)
@@ -303,7 +313,7 @@ namespace Recellection.Code.Utility.Console
         /// <param name="str"></param>
         public void Write(string str)
         {
-            OutputBuffer += str;
+            OutputBuffer.Write(str);
         }
 
         /// <summary>
@@ -320,7 +330,7 @@ namespace Recellection.Code.Utility.Console
         /// </summary>
         public void Clear()
         {
-            OutputBuffer = "";
+            OutputBuffer.GetStringBuilder().Remove(0, OutputBuffer.ToString().Length);
         }
 
         /// <summary>
@@ -336,12 +346,11 @@ namespace Recellection.Code.Utility.Console
         /// </summary>
         /// <param name="str"></param>
         /// <param name="callback"></param>
-        public void Prompt(string str, InputHandler callback)
+        public void Prompt(InputHandler callback)
         {
-            Write(str);
-            string[] lines = WrapLine(OutputBuffer, lineWidth).ToArray();
+            string[] lines = WrapLine(OutputBuffer.ToString(), lineWidth).ToArray();
             this.input = callback;
-            cursorOffset = lines[lines.Length-1].Length;
+            cursorOffset = prompt.Length;
         }
 
         public override void Update(GameTime gameTime)
@@ -502,9 +511,11 @@ namespace Recellection.Code.Utility.Console
 
         public string DrawCursor(double now)
         {
-            int spaces = (InputBuffer.Length > 0 && cursorPos > 0) ? 
-                Render(InputBuffer.Substring(0, cursorPos))[0].Length + cursorOffset :
-                cursorOffset;
+			int spaces = cursorOffset;
+			if (InputBuffer.Length > 0 && cursorPos > 0)
+			{
+				spaces = Render(InputBuffer.Substring(0, cursorPos))[0].Length + cursorOffset;
+			}
             return new String(' ', spaces) + (((int)(now / CursorBlinkTime) % 2 == 0) ? "_" : "");
         }
 
@@ -562,7 +573,7 @@ namespace Recellection.Code.Utility.Console
             spriteBatch.DrawString(font, cursorString, new Vector2(consoleXOffset + 10, consoleYOffset + consoleYSize - 10 - font.LineSpacing), Color.White);
 
             int j = 0;
-            List<string> lines = Render(OutputBuffer + InputBuffer); //show them in the proper order, because we're drawing from the bottom
+            List<string> lines = Render(OutputBuffer + prompt + InputBuffer); //show them in the proper order, because we're drawing from the bottom
             foreach (string str in lines)
             {
                 //draw each line at an offset determined by the line height and line count

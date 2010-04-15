@@ -25,7 +25,7 @@ namespace Recellection.Code.Utility.Console
         const string PromptCont = "... ";
         string multi;
         public XnaConsoleComponent Console;
-
+        
         #region Python execution stuff
 
         private PythonEngine PythonEngine;
@@ -44,6 +44,7 @@ namespace Recellection.Code.Utility.Console
             this.PythonEngine.SetStandardOutput(PythonOutput);
             this.ASCIIEncoder = new ASCIIEncoding();
 
+			
             ClrModule clr = this.PythonEngine.Import("clr") as ClrModule;
             clr.AddReference("Microsoft.Xna.Framework");
             clr.AddReference("Microsoft.Xna.Framework.Game");
@@ -55,7 +56,7 @@ namespace Recellection.Code.Utility.Console
 
             Console = new XnaConsoleComponent(game, font);
             game.Components.Add(Console);
-            Console.Prompt(Prompt, Execute);
+            Console.Prompt(Execute);
             AddGlobal("Console", Console);
         }
 
@@ -74,6 +75,11 @@ namespace Recellection.Code.Utility.Console
             return ASCIIEncoder.GetString(statementOutput);
         }
 
+		public bool IsActive()
+		{
+			return Console.Visible;
+		}
+
         /// <summary>
         /// Executes python commands from the console.
         /// </summary>
@@ -86,7 +92,7 @@ namespace Recellection.Code.Utility.Console
                 if ((input != "") && ((input[input.Length - 1].ToString() == ":") || (multi != ""))) //multiline block incomplete, ask for more
                 {
                     multi += input + "\n";
-                    Console.Prompt(PromptCont, Execute);
+                    Console.Prompt(Execute);
                 }
                 else if (multi != "" && input == "") //execute the multiline code after block is finished
                 {
@@ -94,19 +100,19 @@ namespace Recellection.Code.Utility.Console
                     multi = "";
                     PythonEngine.Execute(temp);
                     Console.WriteLine(getOutput());
-                    Console.Prompt(Prompt, Execute);
+                    Console.Prompt(Execute);
                 }
                 else // if (multi == "" && input != "") execute single line expressions or statements
                 {
                     PythonEngine.Execute(input);
                     Console.WriteLine(Console.Chomp(getOutput()));
-                    Console.Prompt(Prompt, Execute);
+                    Console.Prompt(Execute);
                 }
             }
             catch (Exception ex)
             {
                 Console.WriteLine("Error: " + ex.Message + ".");
-                Console.Prompt(Prompt, Execute);
+                Console.Prompt(Execute);
             }
 
         }
