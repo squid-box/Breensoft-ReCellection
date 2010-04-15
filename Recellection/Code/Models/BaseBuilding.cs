@@ -16,6 +16,7 @@ namespace Recellection.Code.Models
             : base(name, posX, posY, maxHealth, owner, null)
         {
             this.type = Globals.BuildingTypes.Base;
+            baseBuilding = this;
         }
 
         /// <summary>
