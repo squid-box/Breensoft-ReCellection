@@ -77,7 +77,7 @@ namespace Recellection.Code.Models
 
 
         }
-        
+
        /// <summary>
         /// Part of visitor pattern
        /// </summary>
@@ -108,7 +108,7 @@ namespace Recellection.Code.Models
         }
 
         /// <summary>
-        /// Returns a list of units if the building is alive else it returns 
+        /// Returns a list of units if the building is alive else it returns
         /// null
         /// </summary>
         /// <returns>A List of units that belongs to this building</returns>
@@ -125,6 +125,16 @@ namespace Recellection.Code.Models
         }
 
         /// <summary>
+        /// Returns the number of units the building has appointed to itself.
+        /// </summary>
+        /// <returns>A possitive integer representing the number of units
+        /// in the list.</returns>
+        public int CountUnits()
+        {
+            return units.Count;
+        }
+
+        /// <summary>
         /// Add one unig to the unit list if the building is alive
         /// </summary>
         /// <param name="unit">The Unit to add to the list</param>
@@ -137,16 +147,17 @@ namespace Recellection.Code.Models
                 throw new ArgumentNullException("unit",
                     "The given parameter unit was null");
             }
-   
+
             if (isAlive())
             {
                 units.Add(unit);
 
-                unitsChanged(this, new Event<Building>(this, EventType.ALTER));
+                unitsChanged(this, new BuildingEvent(this, this.units,
+                    EventType.ADD));
             }
             else
             {
-                //TODO Add a Notify to Notify that it failed.
+                //TODO Add a notification to notify that it failed.
             }
         }
 
@@ -158,7 +169,8 @@ namespace Recellection.Code.Models
         {
             this.units.Remove(unit);
 
-            unitsChanged(this, new Event<Building>(this, EventType.ALTER));
+            unitsChanged(this, new BuildingEvent(this, this.units,
+                    EventType.REMOVE));
         }
 
         /// <summary>
@@ -177,7 +189,8 @@ namespace Recellection.Code.Models
                     this.units.Add(u);
                 }
 
-                unitsChanged(this, new Event<Building>(this, EventType.ALTER));
+                unitsChanged(this, new BuildingEvent(this, this.units,
+                    EventType.ADD));
             }
         }
 
@@ -192,12 +205,13 @@ namespace Recellection.Code.Models
                 this.units.Remove(u);
             }
 
-            unitsChanged(this, new Event<Building>(this, EventType.ALTER));
+            unitsChanged(this, new BuildingEvent(this, this.units,
+                    EventType.REMOVE));
         }
 
         //TODO Decide if they are needed, i will leave them uncommented until
         //it is decided.
-        
+
         public string GetName()
         {
             return this.name;
@@ -241,19 +255,19 @@ namespace Recellection.Code.Models
         // Modifiers
 
         /// <summary>
-        /// Reduces health for a building by the ammount specified in the 
+        /// Reduces health for a building by the ammount specified in the
         /// parameter. It can change the current health to a negative value.
         /// </summary>
-        /// <param name="dmgHealth">The ammount of damage to cause to the 
+        /// <param name="dmgHealth">The ammount of damage to cause to the
         /// building</param>
-        public void damage(int dmgHealth)
+        public void Damage(int dmgHealth)
         {
             //TODO Verify if there should be logic here to detirmine if it dies
             if (isAlive())
             {
                 this.currentHealth -= dmgHealth;
 
-                healthChanged(this, new Event<Building>(this, EventType.ALTER));
+                healthChanged(this, new Event<Building>(this, EventType.REMOVE));
             }
             else
             {
@@ -262,11 +276,11 @@ namespace Recellection.Code.Models
         }
 
         /// <summary>
-        /// Increases health for a building by the ammount specified in the 
+        /// Increases health for a building by the ammount specified in the
         /// parameter. It can not heal it above max health.
         /// </summary>
         /// <param name="health">The ammount to repair the building</param>
-        public void repair(int health)
+        public void Repair(int health)
         {
             if (isAlive())
             {
@@ -278,8 +292,8 @@ namespace Recellection.Code.Models
                 {
                     this.currentHealth += health;
                 }
-               
-                healthChanged(this, new Event<Building>(this, EventType.ALTER));
+
+                healthChanged(this, new Event<Building>(this, EventType.ADD));
             }
             else
             {
