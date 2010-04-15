@@ -6,21 +6,35 @@ using Recellection.Code.Utility.Events;
 
 namespace Recellection.Code.Models
 {
+    /// <summary>
+    /// The base building class serves the purpose of keeping track of 
+    /// all the other buildings associated with it.
+    /// A base building should never in this way be connected to another base building
+    /// 
+    /// Author: Viktor Eklund
+    /// </summary>
     public class BaseBuilding : ResourceBuilding // note that I inherit ResourceBuilding,
     {                                            // this makes sense as a BaseBuilding 
-        LinkedList<Building> childBuildings;     // will have it's own production
+        private LinkedList<Building> childBuildings;     // will have it's own production
 		public event Publish<Building, BuildingAddedEvent> buildingsChanged;
 
-        public BaseBuilding(String name, int posX, int posY, int maxHealth,
-            Player owner)
-            : base(name, posX, posY, maxHealth, owner, null)
+        /// <summary>
+        /// Constructs a new base building
+        /// </summary>
+        /// <param name="name"></param>
+        /// <param name="posX"></param>
+        /// <param name="posY"></param>
+        /// <param name="maxHealth"></param>
+        /// <param name="owner"></param>
+        public BaseBuilding(String name, int posX, int posY, int maxHealth,Player owner)
+               :base(name, posX, posY, maxHealth, owner, null)
         {
             this.type = Globals.BuildingTypes.Base;
             baseBuilding = this;
         }
 
         /// <summary>
-        /// allows a AggressiveBuilding to add itself to this basebuildings list of buildings
+        /// Allows any building except a BaseBuilding to add itself to this basebuildings list of buildings
         /// </summary>
         /// <param name="building"></param>
         public void Visit(Building building)
@@ -29,30 +43,14 @@ namespace Recellection.Code.Models
             buildingsChanged(this, new BuildingAddedEvent(this,EventType.ADD));
         }
 
-        ///// <summary>
-        ///// allows a ResourceBuilding to add itself to this basebuildings list of buildings
-        ///// </summary>
-        ///// <param name="building"></param>
-        //public void Visit(ResourceBuilding building)
-        //{
-        //    childBuildings.AddLast(building);
-        //}
-
-        ///// <summary>
-        ///// allows a BarrierBuilding to add itself to this basebuildings list of buildings
-        ///// </summary>
-        ///// <param name="building"></param>
-        //public void Visit(BarrierBuilding building)
-        //{
-        //    childBuildings.AddLast(building);
-        //}
-
         /// <summary>
-        /// Don't do it! it will break!
+        /// This function will prevent the real Visit function from being called
+        /// with a base building.
         /// </summary>
         /// <param name="building"></param>
-        public void Visit(BaseBuilding building){
-            throw new DivideByZeroException("");
+        public void Visit(BaseBuilding building)
+        {
+            throw new ArgumentException("A BaseBuilding should not be added as a child building to another BaseBuilding");
         }
 
         /// <summary>
