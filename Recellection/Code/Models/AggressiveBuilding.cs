@@ -7,11 +7,28 @@ using Recellection.Code.Utility.Events;
 
 namespace Recellection.Code.Models
 {
+    /// <summary>
+    /// An Aggressive Building improves upon an ordinary building
+    /// by having a targeted unit that will be subject to it's aggressive means.
+    /// 
+    /// Author: Viktor Eklund
+    /// </summary>
     public class AggressiveBuilding : Building
     {
         private Unit currentTarget = null;
+
+        //Subscribe to me if you want to know about it when I change my target.
 		public event Publish<AggressiveBuilding, Event<AggressiveBuilding>> targetChanged;
 
+        /// <summary>
+        /// Constructs a new AgressiveBuilding
+        /// </summary>
+        /// <param name="name"></param>
+        /// <param name="posX"></param>
+        /// <param name="posY"></param>
+        /// <param name="maxHealth"></param>
+        /// <param name="owner"></param>
+        /// <param name="baseBuilding"></param>
         public AggressiveBuilding(String name, int posX, int posY, int maxHealth,Player owner,BaseBuilding baseBuilding)
                :base(name, posX, posY, maxHealth, owner, Globals.BuildingTypes.Aggressive, baseBuilding)
         {
@@ -25,6 +42,7 @@ namespace Recellection.Code.Models
         /// <returns>
         /// The target of this aggressive building, can be null
         /// </returns>
+        ///
         public Unit GetTarget()
         {
             return currentTarget;
