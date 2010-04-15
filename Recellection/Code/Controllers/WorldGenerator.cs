@@ -106,7 +106,7 @@ namespace Recellection.Code.Controllers
             //This is aperantly the best way to determine how many 
             //different enums there is
 
-            return new Tile(GetTerrainTypeEnumFromInt(randomTile));
+            return new Tile((Globals.TerrainTypes)randomTile);
         }
 
         /// <summary>
