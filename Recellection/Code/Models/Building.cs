@@ -15,17 +15,17 @@ namespace Recellection.Code.Models
          * Variables 'n stuff.
          */
         // Simple values
-        private string name;
-        private int posX;
-        private int posY;
-        private int currentHealth;
-        private int maxHealth;
+        protected string name;
+        protected int posX;
+        protected int posY;
+        protected int currentHealth;
+        protected int maxHealth;
 
         // References
-        private Player owner;
-        private List<Unit> units;
-        private Globals.BuildingTypes type;
-        private BaseBuilding baseBuilding;
+        protected Player owner;
+        protected List<Unit> units;
+        protected Globals.BuildingTypes type;
+        protected BaseBuilding baseBuilding;
 
         //Events
         public event Publish<Building> healthChanged;
@@ -125,6 +125,16 @@ namespace Recellection.Code.Models
         }
 
         /// <summary>
+        /// Returns the number of units the building has appointed to itself.
+        /// </summary>
+        /// <returns>A possitive integer representing the number of units
+        /// in the list.</returns>
+        public int CountUnits()
+        {
+            return units.Count;
+        }
+
+        /// <summary>
         /// Add one unig to the unit list if the building is alive
         /// </summary>
         /// <param name="unit">The Unit to add to the list</param>
@@ -142,11 +152,12 @@ namespace Recellection.Code.Models
             {
                 units.Add(unit);
 
-                unitsChanged(this, new Event<Building>(this, EventType.ALTER));
+                unitsChanged(this, new BuildingEvent(this, this.units, 
+                    EventType.ADD));
             }
             else
             {
-                //TODO Add a notify to notify that it failed.
+                //TODO Add a notification to notify that it failed.
             }
         }
 
@@ -158,7 +169,8 @@ namespace Recellection.Code.Models
         {
             this.units.Remove(unit);
 
-            unitsChanged(this, new Event<Building>(this, EventType.ALTER));
+            unitsChanged(this, new BuildingEvent(this, this.units,
+                    EventType.REMOVE));
         }
 
         /// <summary>
@@ -177,7 +189,8 @@ namespace Recellection.Code.Models
                     this.units.Add(u);
                 }
 
-                unitsChanged(this, new Event<Building>(this, EventType.ALTER));
+                unitsChanged(this, new BuildingEvent(this, this.units,
+                    EventType.ADD));
             }
         }
 
@@ -192,7 +205,8 @@ namespace Recellection.Code.Models
                 this.units.Remove(u);
             }
 
-            unitsChanged(this, new Event<Building>(this, EventType.ALTER));
+            unitsChanged(this, new BuildingEvent(this, this.units,
+                    EventType.REMOVE));
         }
 
         //TODO Decide if they are needed, i will leave them uncommented until
@@ -246,14 +260,14 @@ namespace Recellection.Code.Models
         /// </summary>
         /// <param name="dmgHealth">The ammount of damage to cause to the 
         /// building</param>
-        public void damage(int dmgHealth)
+        public void Damage(int dmgHealth)
         {
             //TODO Verify if there should be logic here to detirmine if it dies
             if (isAlive())
             {
                 this.currentHealth -= dmgHealth;
 
-                healthChanged(this, new Event<Building>(this, EventType.ALTER));
+                healthChanged(this, new Event<Building>(this, EventType.REMOVE));
             }
             else
             {
@@ -266,7 +280,7 @@ namespace Recellection.Code.Models
         /// parameter. It can not heal it above max health.
         /// </summary>
         /// <param name="health">The ammount to repair the building</param>
-        public void repair(int health)
+        public void Repair(int health)
         {
             if (isAlive())
             {
@@ -279,7 +293,7 @@ namespace Recellection.Code.Models
                     this.currentHealth += health;
                 }
                
-                healthChanged(this, new Event<Building>(this, EventType.ALTER));
+                healthChanged(this, new Event<Building>(this, EventType.ADD));
             }
             else
             {
