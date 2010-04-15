@@ -25,6 +25,8 @@ namespace Recellection.Code.Models
         private int angle;          // Angle of unit, for drawing
         private bool isDispersed;   // Whether or not this unit should recieve a new target from the dispersion procedure
         private bool isDead;        // Status of unit
+        private float powerLevel;
+
 
         private Player owner;
         //private Sprite sprite;
@@ -199,6 +201,29 @@ namespace Recellection.Code.Models
             {
                 this.Move(systemTime);
             }
+        }
+
+        /// <summary>
+        /// modify or set a new powerlevel for this unit
+        /// this could adjust it's 50/50 chance of dying/killing
+        /// when engaged with another unit
+        /// default should be one, set a new value as 1.1 for a 10% powerbonus for example
+        /// </summary>
+        /// <param name="newPowerLevel"></param>
+        public void SetPowerLevel(float newPowerLevel)
+        {
+            powerLevel = newPowerLevel;
+        }
+        
+        /// <summary>
+        /// Gets this units powerlevel
+        /// </summary>
+        /// <returns>
+        /// powerlevel as a float
+        /// </returns>
+        public float GetPowerLevel()
+        {
+            return powerLevel;
         }
 
         /// <summary>

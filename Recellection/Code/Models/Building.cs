@@ -15,17 +15,17 @@ namespace Recellection.Code.Models
          * Variables 'n stuff.
          */
         // Simple values
-        private string name;
-        private int posX;
-        private int posY;
-        private int currentHealth;
-        private int maxHealth;
+        protected string name;
+        protected int posX;
+        protected int posY;
+        protected int currentHealth;
+        protected int maxHealth;
 
         // References
-        private Player owner;
-        private List<Unit> units;
-        private Globals.BuildingTypes type;
-        private BaseBuilding baseBuilding;
+        protected Player owner;
+        protected List<Unit> units;
+        protected Globals.BuildingTypes type;
+        protected BaseBuilding baseBuilding;
 
         //Events
 		public event Publish<Building, Event<Building>> healthChanged;
@@ -89,7 +89,7 @@ namespace Recellection.Code.Models
         /// Returns the owner of the building
         /// </summary>
         /// <returns>The Player that owns the building</returns>
-        private Player GetPlayer()
+        public Player GetPlayer()
         {
             return this.owner;
         }
