@@ -9,7 +9,7 @@ namespace Recellection.Code.Models
     {
         private readonly float powerBonus = 1.1f;
 
-        public readonly float PowerBonus
+        public float PowerBonus
         {
             get { return powerBonus; }
         }
