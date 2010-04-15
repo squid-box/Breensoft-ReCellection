@@ -112,6 +112,7 @@
     <Compile Include="Code\Controllers\UnitAccountant.cs" />
     <Compile Include="Code\Models\Coordinate.cs" />
     <Compile Include="Code\Models\IModel.cs" />
+    <Compile Include="Code\Utility\Events\BuildingEvent.cs" />
     <Compile Include="Code\Utility\Events\Event.cs" />
     <Compile Include="Code\Models\GameOptions.cs" />
     <Compile Include="Code\Models\Language.cs" />
