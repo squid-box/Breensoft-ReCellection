@@ -21,16 +21,16 @@ namespace Recellection.Code.Utility.Console
     /// </remarks>
     public class PythonInterpreter : DrawableGameComponent
     {
-        const string Prompt = ">>> ";
+        const string Prompt = "> ";
         const string PromptCont = "... ";
         string multi;
         public XnaConsoleComponent Console;
 
         #region Python execution stuff
 
-        PythonEngine PythonEngine;
-        MemoryStream PythonOutput;
-        ASCIIEncoding ASCIIEncoder;
+        private PythonEngine PythonEngine;
+		private MemoryStream PythonOutput;
+		private ASCIIEncoding ASCIIEncoder;
 
         #endregion
 
@@ -105,7 +105,7 @@ namespace Recellection.Code.Utility.Console
             }
             catch (Exception ex)
             {
-                Console.WriteLine("ERROR: " + ex.Message);
+                Console.WriteLine("Error: " + ex.Message + ".");
                 Console.Prompt(Prompt, Execute);
             }
 

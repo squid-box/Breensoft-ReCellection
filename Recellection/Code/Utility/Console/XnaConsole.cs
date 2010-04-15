@@ -105,7 +105,7 @@ namespace Recellection.Code.Utility.Console
         #region Configuration constants
 
         const double AnimationTime = 0.2;
-        const int LinesDisplayed = 15;
+        const int LinesDisplayed = 30;
         const double CursorBlinkTime = 0.3;
         const string NewLine = "\n";
         const string Version = "Xna Console v.1.0";
@@ -143,8 +143,7 @@ namespace Recellection.Code.Utility.Console
         /// <param name="interp"></param>
         /// <param name="font"></param>
         public XnaConsoleComponent(Game game, SpriteFont font)
-            :
-            base(game)
+            : base(game)
         {
             this.game = game;
             device = game.GraphicsDevice;
@@ -159,7 +158,8 @@ namespace Recellection.Code.Utility.Console
 
             WriteLine("###");
             WriteLine("### " + Version);
-            WriteLine("###");
+			WriteLine("### Patched by Breensoft.");
+			WriteLine("###");
 
             consoleXSize = Game.Window.ClientBounds.Right - Game.Window.ClientBounds.Left - 20;
             consoleYSize = font.LineSpacing * LinesDisplayed + 20;
@@ -512,19 +512,22 @@ namespace Recellection.Code.Utility.Console
         {
             //don't draw the console if it's closed
             if (State == ConsoleState.Closed)
+            {
                 this.Visible = false;
+                return;
+            }
 
             double now = gameTime.TotalRealTime.TotalSeconds;
 
             #region Console size & dimension management
 
             //get console dimensions
-            consoleXSize = this.Game.Window.ClientBounds.Right - this.Game.Window.ClientBounds.Left - 20;
-            consoleYSize = this.font.LineSpacing * LinesDisplayed + 20;
+            consoleXSize = this.Game.Window.ClientBounds.Right - this.Game.Window.ClientBounds.Left;
+            consoleYSize = this.font.LineSpacing * LinesDisplayed;
 
             //set the offsets 
-            int consoleXOffset = 10;
-            int consoleYOffset = 10;
+            int consoleXOffset = 0;
+            int consoleYOffset = 0;
 
             //run the opening animation
             if (State == ConsoleState.Opening)
