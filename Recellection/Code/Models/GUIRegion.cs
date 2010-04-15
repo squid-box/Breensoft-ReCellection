@@ -27,17 +27,19 @@ namespace Recellection.Code.Models
         public GUIRegion(WindowBoundInteractionRegionIdentifier id ):base(id)
         { 
             logger.Trace("Creating a new GUIRegion.");
+            Publish(this, EventType.ADD);
         }
 
         public GUIRegion(IntPtr nativeHwnd, System.Windows.Rect innerBounds)
             : base(nativeHwnd, innerBounds)
         {
             logger.Trace("Creating a new GUIRegion.");
+            Publish(this, EventType.ADD);
         }
         
         public void onActivate()
         {
-            Publish(this, EventType.ADD);
+            Publish(this, EventType.ALTER);
         }
 
         public void Publish(GUIRegion guiregion, EventType t)
