@@ -11,6 +11,7 @@ using Microsoft.Xna.Framework.Media;
 using Microsoft.Xna.Framework.Net;
 using Microsoft.Xna.Framework.Storage;
 using Recellection.Code.Utility.Console;
+using Recellection.Code.Utility.Logger;
 
 /*
  * BREENSOFT GAME OMG OMG OMG
@@ -26,6 +27,8 @@ namespace Recellection
     /// </summary>
     public class Recellection : Microsoft.Xna.Framework.Game
     {
+		private static Logger logger = LoggerFactory.GetLogger("XNA");
+		
         GraphicsDeviceManager graphics;
         SpriteFont screenFont;
         SpriteBatch spriteBatch;
@@ -101,6 +104,12 @@ namespace Recellection
         /// </summary>
         private void HandleDebugInput()
         {
+			// If the console is open, we ignore input.
+			if (console.IsActive())
+			{
+				return;
+			}
+			
             #region Update input states
 
             lastKBState = kBState;
@@ -114,19 +123,34 @@ namespace Recellection
                 this.Exit();
 
             if (kBState.IsKeyDown(Keys.A) && lastKBState.IsKeyUp(Keys.A))
+			{
+				logger.Debug("Playing acid sound.");
                 audioPlayer.PlaySound("acid");
+            }
 
             if (kBState.IsKeyDown(Keys.B) && lastKBState.IsKeyUp(Keys.B))
+            {
+				logger.Debug("Playing boom sound.");
                 audioPlayer.PlaySound("boom");
+            }
 
             if (kBState.IsKeyDown(Keys.M) && lastKBState.IsKeyUp(Keys.M))
+			{
+				logger.Debug("Toggling music mute.");
                 audioPlayer.ToggleMusicMute();
+            }
 
             if (kBState.IsKeyDown(Keys.O) && lastKBState.IsKeyUp(Keys.O))
+			{
+				logger.Debug("Enabling sound effects.");
                 audioPlayer.SetSoundVolume(1f);
+            }
 
             if (kBState.IsKeyDown(Keys.I) && lastKBState.IsKeyUp(Keys.I))
-                audioPlayer.SetSoundVolume(0);
+			{
+				logger.Debug("Disabling sound effects.");
+				audioPlayer.SetSoundVolume(0);
+			}
         }
 
         /// <summary>
