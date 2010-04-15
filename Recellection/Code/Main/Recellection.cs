@@ -10,6 +10,7 @@ using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
 using Microsoft.Xna.Framework.Net;
 using Microsoft.Xna.Framework.Storage;
+using Recellection.Code.Utility.Console;
 
 /*
  * BREENSOFT GAME OMG OMG OMG
@@ -29,7 +30,11 @@ namespace Recellection
         SpriteFont screenFont;
         SpriteBatch spriteBatch;
         static Color breen = new Color(new Vector3(0.4f, 0.3f, 0.1f));
-        
+
+		// Python console
+		SpriteFont consoleFont;
+		PythonInterpreter console;
+		
         //Sounds and music
         AudioPlayer audioPlayer;
 
@@ -48,7 +53,11 @@ namespace Recellection
         /// </summary>
         protected override void Initialize()
         {
-            base.Initialize();
+			base.Initialize();
+			
+			// Initialize the python console
+			console = new PythonInterpreter(this, consoleFont);
+			console.AddGlobal("game", this);
         }
 
         /// <summary>
@@ -58,7 +67,8 @@ namespace Recellection
         {
             spriteBatch = new SpriteBatch(GraphicsDevice);
 
-            screenFont = Content.Load<SpriteFont>("Fonts/ScreenFont");
+			screenFont = Content.Load<SpriteFont>("Fonts/ScreenFont");
+			consoleFont = Content.Load<SpriteFont>("Fonts/ConsoleFont");
 
             audioPlayer = new AudioPlayer(Content);
             audioPlayer.PlaySong(Globals.Songs.Theme);
