@@ -16,6 +16,11 @@ namespace Recellection.Code.Utility.Events
             set { newBuilding = value; }
         }
 
+        /// <summary>
+        /// A building added event
+        /// </summary>
+        /// <param name="building"></param>
+        /// <param name="type"></param>
         public BuildingAddedEvent(Building building, EventType type):base(building, type)
         {
             this.newBuilding = building;
