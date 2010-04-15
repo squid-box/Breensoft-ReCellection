@@ -109,7 +109,7 @@
     <Compile Include="Code\Controllers\Localizer.cs" />
     <Compile Include="Code\Controllers\Tobii Controller.cs" />
     <Compile Include="Code\Controllers\UnitAccountant.cs" />
-    <Compile Include="Code\Models\Coordinate.cs" />
+    <Compile Include="Code\Controllers\VictorTurner.cs" />
     <Compile Include="Code\Models\IModel.cs" />
     <Compile Include="Code\Utility\Events\BuildingEvent.cs" />
     <Compile Include="Code\Utility\Events\Event.cs" />
