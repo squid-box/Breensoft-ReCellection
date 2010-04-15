@@ -27,7 +27,7 @@ namespace Recellection.Code.Controllers
 		/// </summary>
 		/// <param name="b">The building to find the graph for.</param>
 		/// <returns>The found graph.</returns>
-		private Graph GetGraph(Building b)
+		internal Graph GetGraph(Building b)
 		{
 			foreach(Graph g in components)
 			{
@@ -102,7 +102,7 @@ namespace Recellection.Code.Controllers
 				foreach(Building b in buildings)
 				{
 					int unitGoal = totalUnits / g.GetWeight(new BaseBuilding());
-					int unitBalance = b.GetUnits().Count - unitGoal;
+					int unitBalance = b.CountUnits() - unitGoal;
 					
 					if (unitBalance > 0)
 					{
@@ -158,7 +158,7 @@ namespace Recellection.Code.Controllers
 			int totalUnits = 0;
 			foreach (Building b in buildings)
 			{
-				totalUnits += b.GetUnits().Count;
+				totalUnits += b.CountUnits();
 			}
 			return totalUnits;
 		}
