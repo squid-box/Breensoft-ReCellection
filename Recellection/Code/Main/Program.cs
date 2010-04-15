@@ -1,6 +1,8 @@
 using System;
 using System.Runtime.CompilerServices;
 using Recellection.Code.Utility.Logger;
+using Recellection.Code.Utility.Console;
+using Microsoft.Xna.Framework.Graphics;
 
 // We should be able to test internals
 [assembly: InternalsVisibleTo("RecellectionTests")]
@@ -15,6 +17,7 @@ namespace Recellection
         static void Main(string[] args)
         {
 			LoggerSetup.Initialize();
+			
             using (Recellection game = new Recellection())
             {
                 game.Run();
