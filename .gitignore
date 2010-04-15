@@ -1,3 +1,4 @@
+
 # Ignore shit
 
 Recellection/bin
@@ -11,3 +12,5 @@ _ReSharper.*
 *.sln.cache
 *.Debug.cachefile
 *.VisualState.xml
+*.csproj
+*.sln

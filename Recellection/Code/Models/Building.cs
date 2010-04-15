@@ -92,7 +92,7 @@ namespace Recellection.Code.Models
         /// Returns the owner of the building
         /// </summary>
         /// <returns>The Player that owns the building</returns>
-        private Player GetPlayer()
+        public Player GetPlayer()
         {
             return this.owner;
         }
