@@ -17,6 +17,7 @@ namespace Recellection.Code.Models
 		private static Logger logger = LoggerFactory.GetLogger();
 		private static int defaultWeight = 1;
 		private Dictionary<Building, int> buildings;
+		
 		public event Publish<Building> weightChanged;
 		
 		private Graph()
