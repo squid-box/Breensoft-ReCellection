@@ -40,7 +40,7 @@ namespace Recellection.Code.Models
         public void Visit(Building building)
         {
             childBuildings.AddLast(building);
-            buildingsChanged(this, new BuildingAddedEvent(this,EventType.ADD));
+            buildingsChanged(this, new BuildingAddedEvent(building,EventType.ADD));
         }
 
         /// <summary>
