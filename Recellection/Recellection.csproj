@@ -58,6 +58,14 @@
     <XnaCompressContent>true</XnaCompressContent>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="IronMath, Version=1.1.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\IronPython\IronMath.dll</HintPath>
+    </Reference>
+    <Reference Include="IronPython, Version=1.1.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\IronPython\IronPython.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.Xna.Framework, Version=3.1.0.0, Culture=neutral, PublicKeyToken=6d5c3888ef60e27d, processorArchitecture=x86">
       <Private>False</Private>
       <SpecificVersion>True</SpecificVersion>
@@ -106,16 +114,26 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Code\Controllers\AIPlayer.cs" />
+    <Compile Include="Code\Controllers\Graph Controller.cs" />
+    <Compile Include="Code\Controllers\Localizer.cs" />
     <Compile Include="Code\Controllers\Tobii Controller.cs" />
     <Compile Include="Code\Controllers\UnitAccountant.cs" />
+    <Compile Include="Code\Controllers\VictorTurner.cs" />
+    <Compile Include="Code\Models\AggressiveBuilding.cs" />
+    <Compile Include="Code\Models\BarrierBuilding.cs" />
     <Compile Include="Code\Models\IModel.cs" />
     <Compile Include="Code\Models\World.cs" />
+    <Compile Include="Code\Models\ResourceBuilding.cs" />
+    <Compile Include="Code\Utility\Events\BuildingAddedEvent.cs" />
+    <Compile Include="Code\Utility\Events\BuildingEvent.cs" />
     <Compile Include="Code\Utility\Events\Event.cs" />
     <Compile Include="Code\Models\GameOptions.cs" />
     <Compile Include="Code\Models\Language.cs" />
     <Compile Include="Code\Utility\Events\GraphEvent.cs" />
+    <Compile Include="Code\Utility\Events\GUIRegionEvent.cs" />
     <Compile Include="Code\Utility\Events\IPublisher.cs" />
     <Compile Include="Code\Utility\Events\MapEvent.cs" />
+    <Compile Include="Code\Utility\Console\KeyBindings.cs" />
     <Compile Include="Code\Utility\Logger\Logger.cs" />
     <Compile Include="Code\Controllers\WorldGenerator.cs" />
     <Compile Include="Code\Main\Globals.cs" />
@@ -132,12 +150,13 @@
     <Compile Include="Code\Models\GUIRegion.cs" />
     <Compile Include="Code\Models\Menu.cs" />
     <Compile Include="Code\Models\Player.cs" />
-    <Compile Include="Code\Models\SpriteMap.cs" />
+    <Compile Include="Code\Models\SpriteTextureMap.cs" />
     <Compile Include="Code\Models\TerrainType.cs" />
-    <Compile Include="Code\Models\Texture.cs" />
     <Compile Include="Code\Models\Tile.cs" />
     <Compile Include="Code\Models\Unit.cs" />
     <Compile Include="Code\Sounds\AudioPlayer.cs" />
+    <Compile Include="Code\Utility\Console\PythonInterpreter.cs" />
+    <Compile Include="Code\Utility\Console\XnaConsole.cs" />
     <Compile Include="Code\Views\AIView.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
