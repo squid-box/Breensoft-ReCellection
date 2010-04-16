@@ -5,9 +5,10 @@ using System.Text;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 
+
 namespace Recellection.Code.Models
 {
-
+    //Signed by Viktor!
     /// <summary>
     /// This class should be instantiated once, preferably in the Initializer. 
     /// When constructed it will load all the image textures the game will use
