@@ -8,14 +8,17 @@ namespace Recellection.Code.Utility.Logger
 {
 	public static class LoggerSetup
 	{
+		public static TextWriter target = GetLogFileTarget("recellection.log");
+		public static LogLevel threshold = LogLevel.TRACE;
+		
 		/// <summary>
 		/// Initializes the testing environment for this specific application.
 		/// Individual settings can be adjusted here.
 		/// </summary>
 		public static void Initialize()
 		{
-			LoggerFactory.SetGlobalTarget(GetLogFileTarget("recellection.log"));
-			LoggerFactory.SetGlobalThreshold(LogLevel.TRACE);
+			LoggerFactory.SetGlobalTarget(target);
+			LoggerFactory.SetGlobalThreshold(threshold);
 			
 			Logger l = LoggerFactory.GetLogger();
 			l.Trace("Initialized Logger.");

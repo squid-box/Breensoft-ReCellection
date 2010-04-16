@@ -5,17 +5,23 @@ using System.Text;
 
 using NUnit.Framework;
 
+using Recellection.Code.Utility.Events;
+
 namespace Recellection.Code.Models
 {
 	class TestBuilding : Building
 	{
 	}
-	
+
+	/// TODO: Unit tests for events
 	[TestFixture]
 	public class GraphTest
 	{
 		private Graph g;
 		
+		private int size;
+		
+		private BaseBuilding bb = new BaseBuilding("test", 0, 0, 0, new Player());
 		private Building b1 = new TestBuilding();
 		private Building b2 = new TestBuilding();
 		private Building b3 = new TestBuilding();
@@ -23,35 +29,38 @@ namespace Recellection.Code.Models
 		[SetUp]
 		public void Init()
 		{
-			g = new Graph();
+			size = 0;
+			g = new Graph(bb);
+			size += 1;
 		}
 	
 		[Test]
 		public void AddAndCount()
 		{
 			g.Add(b1);
-			Assert.AreEqual(1, g.CountBuildings());
+			Assert.AreEqual(++size, g.CountBuildings());
 			g.Add(b2);
-			Assert.AreEqual(2, g.CountBuildings());
+			Assert.AreEqual(++size, g.CountBuildings());
 			g.Add(b3);
-			Assert.AreEqual(3, g.CountBuildings());
+			Assert.AreEqual(++size, g.CountBuildings());
 			
 			// Adding same building twice should be ignored
-			g.Add(b1);
-			Assert.AreEqual(3, g.CountBuildings());
+
+			Assert.Throws<ArgumentException>(delegate { g.Add(b1); });
+			Assert.AreEqual(size, g.CountBuildings());
 		}
 		
 		[Test]
 		public void Remove()
 		{
 			g.Add(b1);
-			Assert.AreEqual(1, g.CountBuildings());
+			Assert.AreEqual(++size, g.CountBuildings());
 
 			g.Remove(b1);
-			Assert.AreEqual(0, g.CountBuildings());
+			Assert.AreEqual(--size, g.CountBuildings());
 
 			g.Remove(b1);
-			Assert.AreEqual(0, g.CountBuildings());
+			Assert.AreEqual(size, g.CountBuildings());
 		}
 		
 		[Test]
@@ -60,8 +69,8 @@ namespace Recellection.Code.Models
 			g.Add(b1);
 			g.SetWeight(b1, 100);
 			g.SetWeight(b2, 200);
-			
-			Assert.AreEqual(2, g.CountBuildings());
+			size += 2;
+			Assert.AreEqual(size, g.CountBuildings());
 		}
 		
 		[Test]
@@ -75,6 +84,26 @@ namespace Recellection.Code.Models
 		}
 		
 		[Test]
+		public void GetWeightFactor()
+		{
+			g.SetWeight(b1, 10);
+			g.SetWeight(b2, 20);
+			g.SetWeight(b3, 70);
+			
+			Assert.AreEqual(0.1, Math.Round(g.GetWeightFactor(b1), 1));
+			Assert.AreEqual(0.2, Math.Round(g.GetWeightFactor(b2), 1));
+			Assert.AreEqual(0.7, Math.Round(g.GetWeightFactor(b3), 1));
+		}
+		
+		[Test]
+		public void HasBuilding()
+		{
+			Assert.False(g.HasBuilding(b1));
+			g.Add(b1);
+			Assert.True(g.HasBuilding(b1));
+		}
+		
+		[Test]
 		public void GetWeightOfNonExistingBuilding()
 		{
 			Assert.Throws<ArgumentException>(delegate{ g.GetWeight(b1); });
@@ -83,6 +112,21 @@ namespace Recellection.Code.Models
 			g.Remove(b1);
 			
 			Assert.Throws<ArgumentException>(delegate { g.GetWeight(b1); });
+		}
+
+		public void observed(Object g, Event<Building> e)
+		{
+			wasNotified = true;
+		}
+		
+		private bool wasNotified = false;
+		
+		[Test]
+		public void Publish()
+		{
+			g.weightChanged += this.observed;
+			g.SetWeight(b1, 150);
+			Assert.IsTrue(wasNotified);
 		}
 	}
 }

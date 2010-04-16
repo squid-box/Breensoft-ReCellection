@@ -19,7 +19,7 @@ namespace Recellection
         }
         public enum TerrainTypes
         {
-            Mucus, Membrane, Water, Slow, Infected
+            Membrane, Mucus, Water, Slow, Infected
         }
 
         public enum BuildingTypes
@@ -30,6 +30,11 @@ namespace Recellection
         public enum Languages
         {
             English, Swedish
+        }
+
+        public enum TextureTypes
+        { 
+            Mucus, Membrane, Water, Slow, Infected
         }
     }
 }
