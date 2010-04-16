@@ -7,6 +7,10 @@ using Recellection.Code.Utility.Logger;
 
 namespace Recellection.Code.Controllers
 {
+    /// <summary>
+    /// This class will not be instantiated and only be called once to generate
+    /// all the world tiles and place the spawn points.
+    /// </summary>
     public class WorldGenerator
     {
         public const int MINIMUM = 100;
@@ -66,7 +70,11 @@ namespace Recellection.Code.Controllers
 
             return retur;
         }
-
+        /// <summary>
+        /// IGNORE WORK IN PROGRESS, MIGHT NOT STAY!
+        /// </summary>
+        /// <param name="mapSeed"></param>
+        /// <returns></returns>
         private static Tile[][] GenerateTileMatrixFromSeed2(int mapSeed)
         {
             Random randomer = new Random(mapSeed);
@@ -74,7 +82,7 @@ namespace Recellection.Code.Controllers
             Tile[][] retur = InitTileMatrix2(randomer);
 
             
-            int numberOfRandomTiles = randomer.Next(20, 100);
+            int numberOfRandomTiles = randomer.Next(50, 100);
 
             int randomX;
             int randomY;
@@ -195,6 +203,15 @@ namespace Recellection.Code.Controllers
             return (Globals.TerrainTypes)randomType;
         }
 
+        /// <summary>
+        /// IGNORE WORK IN PROGRESS, MIGHT NOT STAY!
+        /// </summary>
+        /// <param name="tileMatrix"></param>
+        /// <param name="xCoord"></param>
+        /// <param name="yCoord"></param>
+        /// <param name="numberOfTiles"></param>
+        /// <param name="type"></param>
+        /// <param name="randomer"></param>
         private static void SpreadTiles(Tile[][] tileMatrix, int xCoord, 
             int yCoord, int numberOfTiles, Globals.TerrainTypes type, 
             Random randomer)
