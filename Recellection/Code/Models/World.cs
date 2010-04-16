@@ -16,16 +16,16 @@ namespace Recellection.Code.Models
         /// <summary>
         /// Event for tiles created and deleted 
         /// </summary>
-        public event Publish<World> EMapEvent;
+        public event Publish<World, Event<World>> EMapEvent;
 
-        public event Publish<Player> PlayerEvent;
+        public event Publish<Player, Event<Player>> PlayerEvent;
         
         /// <summary>
         /// The tiles of the world arranged in a row-column matrix
         /// </summary>
-        private Tile[,] map { get; private set; }
+        protected Tile[,] map { get; private set; }
 
-        private List<Player> players { get; private set; }
+        protected List<Player> players { get; private set; }
 
         /// <summary>
         /// The number of columns in the map
