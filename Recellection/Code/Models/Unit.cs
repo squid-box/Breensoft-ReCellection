@@ -26,14 +26,12 @@ namespace Recellection.Code.Models
         private bool isDispersed;   // Whether or not this unit should recieve a new target from the dispersion procedure
         private bool isDead;        // Status of unit
         private float powerLevel;
-
-
         private Player owner;
-        //private Sprite sprite;
+
 
         private const float MOVEMENT_SPEED = 0.01f;
         private const float NO_TARGET = -1;
-        private const float TARGET_THRESHOLD = 0.01f;
+        private const float TARGET_THRESHOLD = 0.05f;
 
         // METHODS
 

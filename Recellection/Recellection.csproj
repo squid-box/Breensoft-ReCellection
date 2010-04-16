@@ -122,6 +122,7 @@
     <Compile Include="Code\Models\AggressiveBuilding.cs" />
     <Compile Include="Code\Models\BarrierBuilding.cs" />
     <Compile Include="Code\Models\IModel.cs" />
+    <Compile Include="Code\Models\World.cs" />
     <Compile Include="Code\Models\ResourceBuilding.cs" />
     <Compile Include="Code\Utility\Events\BuildingAddedEvent.cs" />
     <Compile Include="Code\Utility\Events\BuildingEvent.cs" />
@@ -131,6 +132,7 @@
     <Compile Include="Code\Utility\Events\GraphEvent.cs" />
     <Compile Include="Code\Utility\Events\GUIRegionEvent.cs" />
     <Compile Include="Code\Utility\Events\IPublisher.cs" />
+    <Compile Include="Code\Utility\Events\MapEvent.cs" />
     <Compile Include="Code\Utility\Console\KeyBindings.cs" />
     <Compile Include="Code\Utility\Logger\Logger.cs" />
     <Compile Include="Code\Controllers\WorldGenerator.cs" />
