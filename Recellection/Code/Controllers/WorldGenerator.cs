@@ -71,7 +71,7 @@ namespace Recellection.Code.Controllers
             return retur;
         }
         /// <summary>
-        /// IGNORE WORK IN PROGRESS, MIGHT NOT STAY!
+        /// IGNORE, WORK IN PROGRESS, MIGHT NOT REMAIN!
         /// </summary>
         /// <param name="mapSeed"></param>
         /// <returns></returns>
@@ -204,7 +204,7 @@ namespace Recellection.Code.Controllers
         }
 
         /// <summary>
-        /// IGNORE WORK IN PROGRESS, MIGHT NOT STAY!
+        /// IGNORE, WORK IN PROGRESS, MIGHT NOT REMAIN!
         /// </summary>
         /// <param name="tileMatrix"></param>
         /// <param name="xCoord"></param>
