@@ -75,11 +75,15 @@ namespace Recellection.Code.Models
             while (!sr.EndOfStream)
             {
                 tmp1 = sr.ReadLine();
-                tmp2 = tmp1.Split('|');
+                tmp2 = tmp1.Split('=');
                 translations[Globals.Languages.English].Add(tmp2[0], tmp2[1]);
             }
         }
-
+        
+        /// <summary>
+        /// Saves all translated texts.
+        /// </summary>
+        [Obsolete("Language files should never be changed during runtime.")]
         private void SaveLanguagesToFile()
         {
             // TODO: Get list of all languages in this.translations. (Get keys, they are the languages!)
@@ -89,7 +93,7 @@ namespace Recellection.Code.Models
 
             foreach(KeyValuePair<String, String> kp in translations[Globals.Languages.English])
             {
-                sw.WriteLine(kp.Key + "|" + kp.Value);
+                //sw.WriteLine(kp.Key + "|" + kp.Value);
             }
         }
     }

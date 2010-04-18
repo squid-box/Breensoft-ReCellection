@@ -1,1 +1,7 @@
-title|Re:Cellection
+[General]
+title=Re:Cellection
+
+[Menu]
+
+
+[Game entities]
