@@ -9,6 +9,10 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace Recellection.Code.Models
 {
+    /// <summary>
+    /// This is the abstract class Building, every
+    /// type of building will inherit this class.
+    /// </summary>
     public abstract class Building : IModel
     {
         /**
