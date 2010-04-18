@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using Recellection.Code.Models;
 using Recellection.Code.Utility.Logger;
+using System.Windows;
 
 namespace Recellection.Code.Controllers
 {
@@ -13,11 +14,14 @@ namespace Recellection.Code.Controllers
     /// </summary>
     public class WorldGenerator
     {
-        public const int MINIMUM = 100;
-        public const int MAXIMUM = 200;
+        public const int MINIMUM_MAP_SIZE = 100;
+        public const int MAXIMUM_MAP_SIZE = 200;
 
-        public const int MINIMUM_SPREAD = 3;
-        public const int MAXIMUM_SPREAD = 7;
+        //IGONRE FOR NOW....
+        private const int MINIMUM_SPREAD = 3;
+        private const int MAXIMUM_SPREAD = 7;
+
+        private const double MIN_DISTANCE_BETWEEN_PLAYERS = 55.55;
 
         public static Logger myLogger;
 
@@ -121,9 +125,9 @@ namespace Recellection.Code.Controllers
 
             //Construct the matrix, the size is limited by MINIMUM and MAXIMUM
             Tile[][] retur = new Tile
-                [randomer.Next(MINIMUM, MAXIMUM)][];
+                [randomer.Next(MINIMUM_MAP_SIZE, MAXIMUM_MAP_SIZE)][];
 
-            int width = randomer.Next(MINIMUM, MAXIMUM);
+            int width = randomer.Next(MINIMUM_MAP_SIZE, MAXIMUM_MAP_SIZE);
 
             myLogger.Info("Map consists of " + retur.Length + " times "
                 + width + " tiles.");
@@ -151,9 +155,9 @@ namespace Recellection.Code.Controllers
 
             //Construct the matrix, the size is limited by MINIMUM and MAXIMUM
             Tile[][] retur = new Tile
-                [randomer.Next(MINIMUM, MAXIMUM)][];
+                [randomer.Next(MINIMUM_MAP_SIZE, MAXIMUM_MAP_SIZE)][];
 
-            int width = randomer.Next(MINIMUM, MAXIMUM);
+            int width = randomer.Next(MINIMUM_MAP_SIZE, MAXIMUM_MAP_SIZE);
 
             myLogger.Info("Map consists of " + retur.Length + " times "
                 + width + " tiles.");
@@ -173,7 +177,66 @@ namespace Recellection.Code.Controllers
             return retur;
         }
 
+        /// <summary>
+        /// Random generates a spawn point for both players,
+        /// it makes sure that the distance between them is 
+        /// more then the MIN_DISTANCE_BETWEEN_PLAYERS constant.
+        /// </summary>
+        /// <param name="players">The players which the spawn point will be 
+        /// set for.</param>
+        /// <param name="width">The width of the map.</param>
+        /// <param name="heigth">The height of the map.</param>
+        /// <param name="randomer">The random generator to use.</param>
+        private static void SpawnPoints(List<Player> players, 
+            int width, int heigth,Random randomer)
+        {
+            //Make sure the first player can place its spawn point.
+            int previousXCoord = Int32.MinValue;
+            int previousYCoord = Int32.MinValue;
+            
+            int randomX = randomer.Next(10, width - 10);
+            int randomY = randomer.Next(10, heigth - 10);
 
+            foreach(Player player in players)
+            {
+                //Calculate the length of the vector between the new spawn
+                //point and the last one.
+                while ( DistanceBetweenPoints(previousXCoord,previousYCoord,
+                    randomX,randomY) < MIN_DISTANCE_BETWEEN_PLAYERS)
+                {
+                    randomX = randomer.Next(10, width - 10);
+                    randomY = randomer.Next(10, heigth - 10);
+                }
+
+                SpawnGraph(randomX, randomY, player);
+
+                previousXCoord = randomX;
+                previousYCoord = randomY;
+            }
+        }
+
+        private static double DistanceBetweenPoints(int x1, int y1, int x2, 
+            int y2)
+        {
+          return Math.Sqrt((x1 - x2) ^ 2 + (y1 - y2) ^ 2);
+        }
+
+        /// <summary>
+        /// Creates a new BaseBuilding at the specified location and
+        /// add that building to a new Graph and then add that graph
+        /// to the player.
+        /// </summary>
+        /// <param name="xCoord">The x-coordinate to spawn the BaseBuilding on
+        /// </param>
+        /// <param name="yCoord">The Y-coordinate to spawn the BaseBuilding on
+        /// </param>
+        /// <param name="owner">The player which this method will create a new 
+        /// graph.</param>
+        private static void SpawnGraph(int xCoord, int yCoord, Player owner)
+        {
+            owner.AddGraph(new Graph(
+                new BaseBuilding("base", xCoord, yCoord, 10, owner)));
+        }
 
 
         /// <summary>
@@ -191,7 +254,11 @@ namespace Recellection.Code.Controllers
             return new Tile((Globals.TerrainTypes)randomTile);
         }
 
-
+        /// <summary>
+        /// IGNORE, WORK IN PROGRESS; MIGHT NOT REMAIN!
+        /// </summary>
+        /// <param name="randomer"></param>
+        /// <returns></returns>
         private static Globals.TerrainTypes RandomTerrainType(Random randomer)
         {
             //randomize a number which is 1 to number of terrain types - 1.
