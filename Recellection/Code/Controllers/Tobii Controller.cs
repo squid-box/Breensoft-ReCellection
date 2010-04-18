@@ -16,43 +16,30 @@ using Interaction = Tobii.TecSDK.Client.Utilities.Interaction;
 
 namespace Recellection
 {
+    /// <summary>
+    /// The TobiiController serves the purpose of simplifying region creation and handling
+    /// for our software.
+    /// 
+    /// Author: Viktor Eklund
+    /// </summary>
     public class TobiiController
-    {
-        //debug prylar
-        private bool DEBUG = true;
-        private StreamWriter log_out = null;
-        
+    {        
         //utan ett internt litet uppslagsverk så har controllern ingen aning om vad den ska kontrollera för något =(
-        //Det ser ut att finnas regiongrupper redan färdiga att använda från tobii
-        //men jag fick det inte att fungera, kan hända att de var till för något annat.
-        //TODO: senare bör den mappa mot en lista av GUIRegions
         Dictionary<Globals.RegionCategories,List<WindowBoundInteractionRegionIdentifier>> regionCategories;
 
         private readonly int DEFAULT_TIME_SPAN = 1;
 
         /// <summary>
-        /// Main constructor for the controller, 
+        /// Main constructor for the controller,
+        /// 
         /// Important: only instantiate it once as it uses
         /// static classes from the tobii SDK
+        /// 
         /// Remember to call Init or the controller will not work.
         /// </summary>
-        public TobiiController(){
+        public TobiiController()
+        {
             regionCategories = new Dictionary<Globals.RegionCategories,List<WindowBoundInteractionRegionIdentifier>>();
-            #region debug
-            if (DEBUG)
-            {
-                try
-                {
-                    log_out = new StreamWriter("tobiiController_logfile.txt");
-                }
-                catch (IOException exc)
-                {
-                    Console.WriteLine(exc.Message + "Cannot open file.");
-                    return;
-                }
-                Console.SetOut(log_out);
-            }
-            #endregion
         }
 
         ///<summary>
@@ -66,9 +53,7 @@ namespace Recellection
             try
             {
                 TecClient.Init("Recellection");
-                //TecClient.IsMouseEngineOverrideEnabled = true;
-                //TecClient.BroadcastActivate();
-                //probably more stuff to do here, like loading eye tracking preferences e.t.c
+                //TODO: more stuff?, like loading eye tracking preferences e.t.c?
             }
             catch (Exception)
             {
@@ -85,7 +70,6 @@ namespace Recellection
         /// <param name="value"></param>
         public void SetRegionsEnabled(Globals.RegionCategories regionID, bool value)
         {
-            //THIS USED TO BE UGLY WITH IFS AND STUFF BUT I MADE IT SMARTSER Ü
             for (int i = 0; i < regionCategories[regionID].Count; i++)
             {
                 Interaction.Regions[regionCategories[regionID].ElementAt(i)].Enabled = value;
@@ -116,12 +100,12 @@ namespace Recellection
         /// <returns>
         /// The region asked for
         /// </returns>
-        public WindowBoundInteractionRegion GetRegionByIdentifier(WindowBoundInteractionRegionIdentifier id){
-            return (WindowBoundInteractionRegion)Interaction.Regions[id];
-            //uncertain if this will return a WindowBoundInteractionRegionIdentifier or a GUIRegion
+        public GUIRegion GetRegionByIdentifier(WindowBoundInteractionRegionIdentifier id){
+            return (GUIRegion)Interaction.Regions[id];
+            //uncertain if this is castable.
         }
 
-        #region subscribers, wrong place for these though?
+        #region subscribers, awaiting confirmation to remove
         /// <summary>
         /// This will, when it works, allow you to subsribe to an event from a region, given it's identifier
         /// Disabled for now
@@ -163,10 +147,6 @@ namespace Recellection
         /// </returns>
         public bool AddRegion(GUIRegion newRegion,Globals.RegionCategories regionID)
         {
-            #region doing stuff with the GUIRegion
-
-            //TODO will have to change to something like
-                //newRegion.GetWindowBoundInteractionRegion
                 newRegion.CanActivate = true;
                 if (newRegion.DwellTime == null)
                 {
@@ -174,25 +154,22 @@ namespace Recellection
                 }
                 newRegion.Enabled = false;
 
-                newRegion.AlwaysInteractive = true; //what does this call really mean?
-                //newRegion.IsActivating = true; //and this one?
-                newRegion.UsesCoordinate = true; //and this one?
-
-                //newRegion.FocusEnter += new EventHandler<RegionFocusEventArgs>(newRegion_FocusEnter);
-                //newRegion.FocusLeave += new EventHandler<RegionFocusEventArgs>(newRegion_FocusLeave);
-                //newRegion.Activate += new EventHandler<Tobii.TecSDK.Client.Interaction.ActivateEventArgs>(newRegion_Activate);
-
-            #endregion
+                //TODO: Figure out what these calls does
+                //newRegion.AlwaysInteractive = true; 
+                //newRegion.IsActivating = true; 
+                //newRegion.UsesCoordinate = true; 
 
             if(regionCategories.ContainsKey(regionID))
             {
                 regionCategories[regionID].Add(newRegion.RegionIdentifier);
-            }else
+            }
+            else
             {
                 List<WindowBoundInteractionRegionIdentifier> temp = new List<WindowBoundInteractionRegionIdentifier>();
                 temp.Add(newRegion.RegionIdentifier);
                 regionCategories.Add(regionID, temp);
             }
+
             try
             {
                 Interaction.AddRegion(newRegion); //this is what actually makes tobii start tracking our region
@@ -201,6 +178,7 @@ namespace Recellection
             {
                 return false;
             }
+
             return true;
         }
 
@@ -214,37 +192,8 @@ namespace Recellection
             //assuming nothing funky happens if trying to remove a non existing region
         }
 
-        #region dummymethods
-        //this method is a dummy and won't be needed
-        private void newRegion_Activate(object sender, Tobii.TecSDK.Client.Interaction.ActivateEventArgs e)
-        {
-            Console.WriteLine("Activated");
-        }
-
-        //this method is a dummy and won't be needed
-        private void newRegion_FocusEnter(object sender, RegionFocusEventArgs e)
-        {
-            GUIRegion s = (GUIRegion)sender;
-            Console.Write("hello from: ");
-            
-        }
-
         /// <summary>
-        /// this method is a dummy and won't be needed
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void newRegion_FocusLeave(object sender, RegionFocusEventArgs e)
-        {
-            Console.WriteLine("good bye");
-
-        }
-
-        #endregion
-
-        /// <summary>
-        /// this function will return null, checking for activated regions does not work yet
-        /// will this be handled elsewhere?
+        /// Awaiting confirmation
         /// </summary>
         /// <returns></returns>
         public List<GUIRegion> GetActivatedRegions()
@@ -254,41 +203,3 @@ namespace Recellection
         }
     }
 }
-#region old code stuffs
-//Wrong place for this =(
-///// <summary>
-///// will return the currently focused region, if any.
-///// does not currently work
-///// </summary>
-///// <returns>
-///// The currently focused GUIRegion
-///// </returns>
-//public GUIRegion GetFocusedRegion()
-//{
-//    for(int i = 0; i < Interaction.Regions.Values.Count; i++)
-//    {
-//        if (Interaction.Regions.Values.ElementAt(i).HasFocus)
-//        {
-//            return Interaction.Regions.Values.ElementAt(i);
-//        }
-//    }
-//    return null;
-//}
-
-//WindowBoundInteractionRegionIdentifier testId = new WindowBoundInteractionRegionIdentifier(XNAHandle, new Rect(0, 0, 200, 200));
-//WindowBoundInteractionRegion testWindow = new WindowBoundInteractionRegion(testId);
-//testWindow.Enabled = true;
-//testWindow.CanActivate = true;
-//testWindow.AlwaysInteractive = true;
-//testWindow.DwellTime = new System.TimeSpan(0, 0, 2);
-//Interaction.AddRegion(testWindow);
-//Interaction.Regions.ElementAt(0).Value.Enabled = true;
-//Interaction.Regions.ElementAt(0).Value.CanActivate = true;
-//Interaction.Regions.ElementAt(0).Value.AlwaysInteractive = true;
-#endregion
-
-
-
-
-
-
