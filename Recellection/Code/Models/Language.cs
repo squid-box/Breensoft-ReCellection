@@ -65,6 +65,32 @@ namespace Recellection.Code.Models
         private void ReadLanguagesFromFile()
         {
             // TODO: Fill translations with text.
+            FileStream fs = new FileStream("Content\\Languages\\English.txt", FileMode.Open);
+
+            // TODO: Loop over all availiable languages.
+
+            StreamReader sr = new StreamReader(fs);
+            String tmp1;
+            String[] tmp2;
+            while (!sr.EndOfStream)
+            {
+                tmp1 = sr.ReadLine();
+                tmp2 = tmp1.Split('|');
+                translations[Globals.Languages.English].Add(tmp2[0], tmp2[1]);
+            }
+        }
+
+        private void SaveLanguagesToFile()
+        {
+            // TODO: Get list of all languages in this.translations. (Get keys, they are the languages!)
+
+            FileStream fs = new FileStream("Content\\Languages\\English.txt", FileMode.Create);
+            StreamWriter sw = new StreamWriter(fs);
+
+            foreach(KeyValuePair<String, String> kp in translations[Globals.Languages.English])
+            {
+                sw.WriteLine(kp.Key + "|" + kp.Value);
+            }
         }
     }
 }
