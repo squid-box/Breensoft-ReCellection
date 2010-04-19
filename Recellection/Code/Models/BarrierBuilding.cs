@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Microsoft.Xna.Framework.Graphics;
 
 namespace Recellection.Code.Models
 {
@@ -34,6 +35,11 @@ namespace Recellection.Code.Models
             : base(name, posX, posY, maxHealth, owner, Globals.BuildingTypes.Barrier, baseBuilding)
         {
 
+        }
+
+        public override Texture2D GetSprite()
+        {
+            return Recellection.textureMap.GetTexture(Globals.TextureTypes.BarrierBuilding);
         }
     }
 }
