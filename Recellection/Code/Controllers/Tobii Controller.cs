@@ -30,6 +30,7 @@ namespace Recellection
 
         private const int DEFAULT_TIME_SPAN = 1;
         private static Logger logger = LoggerFactory.GetLogger();
+        IntPtr xnaHandle;
 
 
         /// <summary>
@@ -40,9 +41,9 @@ namespace Recellection
         /// 
         /// Remember to call Init or the controller will not work.
         /// </summary>
-        public TobiiController()
+        public TobiiController(IntPtr xnaHandle)
         {
-            
+            this.xnaHandle = xnaHandle;
             regionCategories = new Dictionary<Globals.RegionCategories,List<WindowBoundInteractionRegionIdentifier>>();
             logger.Info("Created the Tobii Controller");
         }
@@ -147,13 +148,18 @@ namespace Recellection
 
         /// <summary>
         /// Attempts to add a region
+        /// Note that a region will be disabled by default
         /// </summary>
         /// <param name="newRegion"></param>
         /// <returns>
-        /// will return false if the region was already added, otherwise true
+        /// will return an identifier to your newly created region
+        /// this can be used to find your region with 
+        /// "GetRegionByIdentifer"
+        /// should you want to fiddle with the GUIRegion later.
         /// </returns>
-        public bool AddRegion(GUIRegion newRegion,Globals.RegionCategories regionID)
+        public WindowBoundInteractionRegionIdentifier AddRegion(Rect pos,Globals.RegionCategories regionID)
         {
+                GUIRegion newRegion = new GUIRegion(xnaHandle, pos);
                 newRegion.CanActivate = true;
                 if (newRegion.DwellTime == null)
                 {
@@ -185,10 +191,10 @@ namespace Recellection
             catch (Exception) //will occur if the region was already added, Interaction.AddRegion can throw stuff
             {
                 logger.Warn("Failed to add a new region, region was most likely already added");
-                return false;
+                return null;
             }
             logger.Info("Successfully added a new region");
-            return true;
+            return newRegion.RegionIdentifier;
         }
 
         /// <summary>

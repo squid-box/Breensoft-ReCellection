@@ -30,6 +30,7 @@ namespace Recellection
 		private static Logger logger = LoggerFactory.GetLogger("XNA");
 		
         GraphicsDeviceManager graphics;
+        TobiiController tobiiController;
         SpriteFont screenFont;
         SpriteBatch spriteBatch;
         static Color breen = new Color(new Vector3(0.4f, 0.3f, 0.1f));
@@ -47,6 +48,8 @@ namespace Recellection
 
         public Recellection()
         {
+            tobiiController = new TobiiController(this.Window.Handle);
+            tobiiController.Init();
             graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
         }
