@@ -6,6 +6,7 @@ using System.Text;
 using Recellection.Code.Utility;
 using Recellection.Code.Utility.Events;
 using Microsoft.Xna.Framework.Graphics;
+using Recellection.Code.Utility.Logger;
 
 namespace Recellection.Code.Models
 {
@@ -31,6 +32,8 @@ namespace Recellection.Code.Models
         protected Globals.BuildingTypes type;
         protected BaseBuilding baseBuilding;
 
+        private static Logger logger = LoggerFactory.GetLogger();
+
         //Events
 		public event Publish<Building, Event<Building>> healthChanged;
 		public event Publish<Building, Event<Building>> unitsChanged;
@@ -40,6 +43,7 @@ namespace Recellection.Code.Models
         /// </summary>
         public Building()
         {
+            logger.Trace("Constructing new Building with default values");
             this.name = "noName";
             this.posX = -1;
             this.posY = -1;
@@ -67,6 +71,7 @@ namespace Recellection.Code.Models
         public Building(String name, int posX, int posY, int maxHealth,
             Player owner, Globals.BuildingTypes type, BaseBuilding baseBuilding)
         {
+            logger.Trace("Constructing new Building with choosed values");
             this.name = name;
             this.posX = posX;
             this.maxHealth = maxHealth;
