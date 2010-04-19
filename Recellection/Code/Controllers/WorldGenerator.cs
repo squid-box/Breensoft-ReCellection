@@ -25,6 +25,10 @@ namespace Recellection.Code.Controllers
 
         public static Logger myLogger;
 
+        public static int map_rows = 0;
+
+        public static int map_cols = 0;
+
 
         /// <summary>
         /// Random generates a world of tiles and places the players
@@ -33,18 +37,21 @@ namespace Recellection.Code.Controllers
         /// </summary>
         /// <param name="mapSeed">
         /// The seed that the random generater will use.</param>
-        /// <returns>TODO Make it return a World</returns>
-        public static Tile[][] GenerateWorld(int mapSeed) 
+        /// <returns>The newly initiated world</returns>
+        public static World GenerateWorld(int mapSeed) 
         {
             myLogger = LoggerFactory.GetLogger();
 
-            Tile[][] tileMatrix = GenerateTileMatrixFromSeed(mapSeed);
-            //TODO make a world from the tiles.
+            Tile[,] tileMatrix = GenerateTileMatrixFromSeed(mapSeed);
 
-            //TODO Set spawnpoint, easiest if it is, 10 tiles from the corner
-            //For a 100,100 map that means it is at 10,10 and 90,90
 
-            return tileMatrix;
+            //Constructs a new world using the dimensions.
+            World returWorld = new World(map_rows,map_cols);
+
+            //Sets the map for the world
+            returWorld.SetMap(tileMatrix,map_rows,map_cols);
+            //TODO Wack'a'Marco
+            return returWorld;
         }
 
         /// <summary>
@@ -52,7 +59,7 @@ namespace Recellection.Code.Controllers
         /// </summary>
         /// <param name="mapSeed">The seed the random generator uses.</param>
         /// <returns>A Tile matrix filled with random tiles.</returns>
-        private static Tile[][] GenerateTileMatrixFromSeed(int mapSeed)
+        private static Tile[,] GenerateTileMatrixFromSeed(int mapSeed)
         {
 
             myLogger.Info("Seed used to generate the world is:\t" + mapSeed);
@@ -60,13 +67,13 @@ namespace Recellection.Code.Controllers
             Random randomer = new Random(mapSeed);
 
             //Init the tile matrix
-            Tile[][] retur = InitTileMatrix(randomer);
+            Tile[,] retur = InitTileMatrix(randomer);
 
-            for (int i = 0; i < retur.Length; i++)
+            for (int i = 0; i < map_rows; i++)
             {
-                for (int j = 0; j < retur[i].Length; j++)
+                for (int j = 0; j < map_cols; j++)
                 {
-                    retur[i][j] = RandomTile(randomer);
+                    retur[i,j] = RandomTile(randomer);
                 }
 
             }
@@ -79,11 +86,11 @@ namespace Recellection.Code.Controllers
         /// </summary>
         /// <param name="mapSeed"></param>
         /// <returns></returns>
-        private static Tile[][] GenerateTileMatrixFromSeed2(int mapSeed)
+        private static Tile[,] GenerateTileMatrixFromSeed2(int mapSeed)
         {
             Random randomer = new Random(mapSeed);
 
-            Tile[][] retur = InitTileMatrix2(randomer);
+            Tile[,] retur = InitTileMatrix2(randomer);
 
             
             int numberOfRandomTiles = randomer.Next(50, 100);
@@ -94,9 +101,9 @@ namespace Recellection.Code.Controllers
 
             while (numberOfRandomTiles > 0)
             {
-                randomY = randomer.Next(10,retur.Length-10);
+                randomY = randomer.Next(10,map_rows-10);
 
-                randomX = randomer.Next(10,retur[randomY].Length-10);
+                randomX = randomer.Next(10,map_cols-10);
 
 
                 numberOfTilesToRandomize = randomer.Next(MINIMUM_SPREAD, 
@@ -118,27 +125,19 @@ namespace Recellection.Code.Controllers
         /// </summary>
         /// <param name="randomer"></param>
         /// <returns>Returns a initiated Tile Matrix</returns>
-        private static Tile[][] InitTileMatrix(Random randomer)
+        private static Tile[,] InitTileMatrix(Random randomer)
         {
 
 
+            map_rows = randomer.Next(MINIMUM_MAP_SIZE, MAXIMUM_MAP_SIZE);
+
+            map_cols = randomer.Next(MINIMUM_MAP_SIZE, MAXIMUM_MAP_SIZE);
 
             //Construct the matrix, the size is limited by MINIMUM and MAXIMUM
-            Tile[][] retur = new Tile
-                [randomer.Next(MINIMUM_MAP_SIZE, MAXIMUM_MAP_SIZE)][];
+            Tile[,] retur = new Tile[map_rows, map_cols];
 
-            int width = randomer.Next(MINIMUM_MAP_SIZE, MAXIMUM_MAP_SIZE);
-
-            myLogger.Info("Map consists of " + retur.Length + " times "
-                + width + " tiles.");
-
-            //Each row needs an array initiated each row needs to have 
-            //an array of equal size.
-            for (int i = 0; i < retur.Length; i++)
-            {
-                retur[i] = new Tile[width];
-
-            }
+            myLogger.Info("Map consists of " + map_rows + " times "
+                + map_cols + " tiles.");
 
             return retur;
         }
@@ -148,28 +147,29 @@ namespace Recellection.Code.Controllers
         /// </summary>
         /// <param name="randomer"></param>
         /// <returns></returns>
-        private static Tile[][] InitTileMatrix2(Random randomer)
+        private static Tile[,] InitTileMatrix2(Random randomer)
         {
 
 
 
+            map_rows = randomer.Next(MINIMUM_MAP_SIZE, MAXIMUM_MAP_SIZE);
+
+            map_cols = randomer.Next(MINIMUM_MAP_SIZE, MAXIMUM_MAP_SIZE);
+
             //Construct the matrix, the size is limited by MINIMUM and MAXIMUM
-            Tile[][] retur = new Tile
-                [randomer.Next(MINIMUM_MAP_SIZE, MAXIMUM_MAP_SIZE)][];
+            Tile[,] retur = new Tile[map_rows, map_cols];
 
-            int width = randomer.Next(MINIMUM_MAP_SIZE, MAXIMUM_MAP_SIZE);
 
-            myLogger.Info("Map consists of " + retur.Length + " times "
-                + width + " tiles.");
+            myLogger.Info("Map consists of " + map_rows + " times "
+                + map_cols + " tiles.");
 
             //Each row needs an array initiated each row needs to have 
             //an array of equal size.
-            for (int i = 0; i < retur.Length; i++)
+            for (int i = 0; i < map_rows; i++)
             {
-                retur[i] = new Tile[width];
-                for (int j = 0; j < width; j++)
+                for (int j = 0; j < map_cols; j++)
                 {
-                    retur[i][j] = new Tile();
+                    retur[i,j] = new Tile();
                 }
 
             }
@@ -279,12 +279,12 @@ namespace Recellection.Code.Controllers
         /// <param name="numberOfTiles"></param>
         /// <param name="type"></param>
         /// <param name="randomer"></param>
-        private static void SpreadTiles(Tile[][] tileMatrix, int xCoord, 
+        private static void SpreadTiles(Tile[,] tileMatrix, int xCoord, 
             int yCoord, int numberOfTiles, Globals.TerrainTypes type, 
             Random randomer)
         {
 
-            tileMatrix[yCoord][xCoord] = new Tile(type);
+            tileMatrix[yCoord,xCoord] = new Tile(type);
 
             //4 represents the adjecent tiles
             //      X = 1
