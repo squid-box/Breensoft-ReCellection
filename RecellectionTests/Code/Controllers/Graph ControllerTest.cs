@@ -18,6 +18,11 @@ namespace Recellection.Code.Controllers
 			{
 				return numberOfUnits;
 			}
+
+            public override Microsoft.Xna.Framework.Graphics.Texture2D GetSprite()
+            {
+                throw new NotImplementedException();
+            }
 		}
 		
 		GraphController gc;

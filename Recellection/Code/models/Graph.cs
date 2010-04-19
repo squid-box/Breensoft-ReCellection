@@ -4,6 +4,7 @@ using System.Linq;
 
 using Recellection.Code.Utility.Logger;
 using Recellection.Code.Utility.Events;
+using Recellection.Code.Controllers;
 
 namespace Recellection.Code.Models
 {
@@ -75,15 +76,15 @@ namespace Recellection.Code.Models
 
 		/// <summary>
 		/// Sets the weight of a building node in the graph.
-		/// The building is added to the graph, if it is not a part of the graph.
 		/// </summary>
 		/// <param name="building">The building to set weight for.</param>
 		/// <param name="weight">The new weight.</param>
+		/// <exception cref="GraphLessBuildingException">If the building does not exist in the graph.</exception>
 		public void SetWeight(Building building, int weight)
 		{
 			if (! buildings.ContainsKey(building))
 			{
-				Add(building);
+				throw new GraphLessBuildingException();
 			}
 			
 			TotalWeight -= buildings[building];
@@ -136,9 +137,13 @@ namespace Recellection.Code.Models
 			return buildings.Count();
 		}
 		
-		public List<Building> GetBuildings()
+		/// <returns>An enumerator for all buildings in the graph.</returns>
+		public System.Collections.IEnumerable GetBuildings()
 		{
-			return buildings.Keys.ToList();
+			foreach(KeyValuePair<Building,int> b in buildings)
+			{
+				yield return b.Key;
+			}
 		}
 
 		/// <summary>

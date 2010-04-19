@@ -13,6 +13,7 @@ using Tobii.TecSDK.Client.Interaction;
 using Tobii.TecSDK.Core.Interaction;
 using Tobii.TecSDK.Core.Utilities;
 using Interaction = Tobii.TecSDK.Client.Utilities.Interaction;
+using Recellection.Code.Utility.Logger;
 
 namespace Recellection
 {
@@ -27,7 +28,9 @@ namespace Recellection
         //utan ett internt litet uppslagsverk så har controllern ingen aning om vad den ska kontrollera för något =(
         Dictionary<Globals.RegionCategories,List<WindowBoundInteractionRegionIdentifier>> regionCategories;
 
-        private readonly int DEFAULT_TIME_SPAN = 1;
+        private const int DEFAULT_TIME_SPAN = 1;
+        private static Logger logger = LoggerFactory.GetLogger();
+
 
         /// <summary>
         /// Main constructor for the controller,
@@ -39,7 +42,9 @@ namespace Recellection
         /// </summary>
         public TobiiController()
         {
+            
             regionCategories = new Dictionary<Globals.RegionCategories,List<WindowBoundInteractionRegionIdentifier>>();
+            logger.Info("Created the Tobii Controller");
         }
 
         ///<summary>
@@ -57,8 +62,10 @@ namespace Recellection
             }
             catch (Exception)
             {
+                logger.Warn("The Tobii Controller did not initialize correctly");
                 return false;
             }
+            logger.Info("Successfully initialized the Tobii Controller");
             return true;
         }
 
@@ -172,13 +179,15 @@ namespace Recellection
 
             try
             {
+                logger.Info("about to add a new region");
                 Interaction.AddRegion(newRegion); //this is what actually makes tobii start tracking our region
             }
             catch (Exception) //will occur if the region was already added, Interaction.AddRegion can throw stuff
             {
+                logger.Warn("Failed to add a new region, region was most likely already added");
                 return false;
             }
-
+            logger.Info("Successfully added a new region");
             return true;
         }
 
