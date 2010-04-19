@@ -9,21 +9,19 @@ using Recellection.Code.Utility.Logger;
 
 namespace Recellection.Code.Models
 {
-    /*
-     * klassen "WindowBoundInteractionRegion" representerar de regioner vi vill använda
-     * den behöver i sin konstruktor en "WindowBoundInteractionRegionIdentifier" som i sin tur
-     * behöver en IntPtr, som ska vara en handle till det XNA fönster vi kör i( i Recellection.cs så är det "this.Window.Handle") 
-     * och en Rect för att definera sin position
-     * Ovannämnda klasser finns i "Tobii.TecSDK.Client.Interaction.RegionImplementations"
-     * andra paket kanske behövs
-     * Det är inte mitt jobb att skriva den här klassen, men ovan är säkert till någon form av hjälp.
-     *
-     * */
+	/// <summary>
+	/// The GUIRegion class is a wrapper around a WindowBoundInteractionRegion
+	/// to provide for our publisher-observer pattern.
+	/// </summary>
     public class GUIRegion : WindowBoundInteractionRegion, IModel
     {
         public static Logger logger = LoggerFactory.GetLogger();
         public event Publish<GUIRegion, GUIRegionEvent> regionActivated;
-
+		
+		/// <summary>
+		/// General Constructor for GUIRegion.
+		/// </summary>
+		/// <param name="id">An identifier for the region</param>
         public GUIRegion(WindowBoundInteractionRegionIdentifier id)
             : base(id)
         {
@@ -32,6 +30,11 @@ namespace Recellection.Code.Models
             Publish(this, EventType.ADD);
         }
 
+		/// <summary>
+		/// General Constructor for GUIRegion.
+		/// </summary>
+		/// <param name="nativeHwnd">The window handle for the game window.</param>
+		/// <param name="innerBounds">A Rect object to define where and how big the region will be.</param>
         public GUIRegion(IntPtr nativeHwnd, System.Windows.Rect innerBounds)
             : base(nativeHwnd, innerBounds)
         {
@@ -39,12 +42,20 @@ namespace Recellection.Code.Models
             Publish(this, EventType.ADD);
             Activate += new EventHandler<Tobii.TecSDK.Client.Interaction.ActivateEventArgs>(OnActivate);
         }
-
-        public void OnActivate(object sender, Tobii.TecSDK.Client.Interaction.ActivateEventArgs e)
+		
+		/// <summary>
+		/// Internal method fired by the Tobii eventhandler.
+		/// </summar>
+        private void OnActivate(object sender, Tobii.TecSDK.Client.Interaction.ActivateEventArgs e)
         {
             Publish(this, EventType.ALTER);
         }
-
+		
+		/// <summary>
+		/// Publishes events.
+		/// </summary>
+		/// <param name="guiregion">The GUIRegion instance that triggered the event.</param>
+		/// <param name="t">The type of event triggered.</param>
         public void Publish(GUIRegion guiregion, EventType t)
         {
             if (regionActivated != null)
