@@ -11,6 +11,10 @@ namespace Recellection.Code.Models
 {
 	class TestBuilding : Building
 	{
+        public override Microsoft.Xna.Framework.Graphics.Texture2D GetSprite()
+        {
+            throw new NotImplementedException();
+        }
 	}
 
 	/// TODO: Unit tests for events
