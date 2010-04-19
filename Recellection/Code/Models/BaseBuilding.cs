@@ -16,7 +16,7 @@ namespace Recellection.Code.Models
     public class BaseBuilding : ResourceBuilding // note that I inherit ResourceBuilding,
     {                                            // this makes sense as a BaseBuilding 
         private LinkedList<Building> childBuildings;     // will have it's own production
-		public event Publish<Building, BuildingAddedEvent> buildingsChanged;
+		public event Publish<Building> buildingsChanged;
 
         /// <summary>
         /// Constructs a new base building

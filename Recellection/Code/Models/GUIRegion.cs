@@ -22,7 +22,7 @@ namespace Recellection.Code.Models
     public class GUIRegion : WindowBoundInteractionRegion, IModel
     {
         public static Logger logger = LoggerFactory.GetLogger();
-        public event Publish<GUIRegion, GUIRegionEvent> regionActivated;
+        public event Publish<GUIRegion> regionActivated;
 
         public GUIRegion(WindowBoundInteractionRegionIdentifier id ):base(id)
         { 

@@ -86,6 +86,7 @@
       <Private>False</Private>
     </Reference>
     <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml">
       <Private>False</Private>
@@ -116,6 +117,7 @@
     <Compile Include="Code\Controllers\Localizer.cs" />
     <Compile Include="Code\Controllers\Tobii Controller.cs" />
     <Compile Include="Code\Controllers\UnitAccountant.cs" />
+    <Compile Include="Code\Controllers\UnitController.cs" />
     <Compile Include="Code\Controllers\VictorTurner.cs" />
     <Compile Include="Code\Models\AggressiveBuilding.cs" />
     <Compile Include="Code\Models\BarrierBuilding.cs" />

@@ -16,9 +16,11 @@ namespace Recellection.Code.Models
         /// <summary>
         /// Event for tiles created and deleted 
         /// </summary>
-        public event Publish MapEvent;
+        public event Publish<Tile> TileEvent;
 
-        public event Publish PlayerEvent;
+        public event Publish<Tile[,]> MapEvent;
+
+        public event Publish<Player> PlayerEvent;
         
         /// <summary>
         /// The tiles of the world arranged in a row-column matrix
@@ -55,7 +57,7 @@ namespace Recellection.Code.Models
         public void AddPlayer(Player p) 
         {
             players.Add(p);
-            PlayerEvent(this);
+            PlayerEvent(this, new Event<Player>(p, EventType.ADD));
         }
 
         /// <summary>
@@ -65,7 +67,7 @@ namespace Recellection.Code.Models
         public void RemovePlayer(Player p)
         {
             players.Remove(p);
-            PlayerEvent(this);
+            PlayerEvent(this, new Event<Player>(p, EventType.REMOVE));
         }
 
         /// <summary>
@@ -83,7 +85,7 @@ namespace Recellection.Code.Models
                 throw new IndexOutOfRangeException("Attempted to set a tile outside the range of the map.");
             }
             map[row, col] = t;
-            MapEvent(this);
+            TileEvent(this, new Event<Tile>(t, EventType.REMOVE));
         }
 
         /// <summary>
@@ -114,7 +116,7 @@ namespace Recellection.Code.Models
             this.map = map;
             this.mapColumns = rows;
             this.mapRows = cols;
-            MapEvent(this);
+            MapEvent(this, new Event<Tile[,]>(map, EventType.ADD));
         }
 
         /// <summary>
@@ -125,7 +127,7 @@ namespace Recellection.Code.Models
             this.map = null;
             this.mapColumns = 0;
             this.mapRows = 0;
-            MapEvent(this);
+            MapEvent(this, new Event<Tile[,]>(map, EventType.REMOVE));
         }
 
         /// <summary>

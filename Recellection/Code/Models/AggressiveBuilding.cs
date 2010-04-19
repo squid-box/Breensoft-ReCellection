@@ -18,7 +18,7 @@ namespace Recellection.Code.Models
         private Unit currentTarget = null;
 
         //Subscribe to me if you want to know about it when I change my target.
-		public event Publish<AggressiveBuilding, Event<AggressiveBuilding>> targetChanged;
+		public event Publish<AggressiveBuilding> targetChanged;
 
         /// <summary>
         /// Constructs a new AgressiveBuilding
