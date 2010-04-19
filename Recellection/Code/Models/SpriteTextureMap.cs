@@ -19,10 +19,10 @@ namespace Recellection.Code.Models
     class SpriteTextureMap : IModel
     {
         //Image file format, currently only accepts one format
-        public readonly String IMAGE_FORMAT = "png";
+        public const String IMAGE_FORMAT = "png";
 
         //The map which each of the texture image file will be placed
-        public readonly String TEXTURE_FOLDER = "Textures";
+        public const String TEXTURE_FOLDER = "Textures";
 
         //The array containing each of the Texture2D.
         private Texture2D[] textures;
