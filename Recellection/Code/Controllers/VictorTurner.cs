@@ -36,7 +36,7 @@ namespace Recellection.Code.Controllers
                     {
                         //world.RemovePlayer(player);
                     }
-                    if(HasWon(player))
+                    if(HasWon())
                     {
 
                         finished = true;
@@ -50,6 +50,15 @@ namespace Recellection.Code.Controllers
 
         }
 
+        /// <summary>
+        /// Counts how many graphs a player has, if it is zero
+        /// the player has lost. 
+        /// 
+        /// Condition: when a graph is empty it is
+        /// deleted or a empty graph is not counted.
+        /// </summary>
+        /// <param name="player">The player which might have lost</param>
+        /// <returns>True if the player has no graphs false othervice</returns>
         private Boolean HasLost(Player player)
         {
             /*if (player.CountGraphs() == 0)
@@ -63,7 +72,13 @@ namespace Recellection.Code.Controllers
             //}
         }
 
-        private Boolean HasWon(Player player)
+        /// <summary>
+        /// This method returns true if there is only one player left playing.
+        /// 
+        /// </summary>
+        /// <returns>Returns true if the length of currently active players 
+        /// in the world is zero false othervice.</returns>
+        private Boolean HasWon()
         {
             /*if (world.GetPlayers().Length() == 1)
             {
@@ -73,6 +88,10 @@ namespace Recellection.Code.Controllers
             return false;
         }
 
+        /// <summary>
+        /// Gives Controll to tht player.
+        /// </summary>
+        /// <param name="player">The Player who recivies the controll.</param>
         private void PlayerAct(Player player)
         {
             //PlayerController(player);

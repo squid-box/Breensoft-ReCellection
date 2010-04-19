@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Recellection.Code.Utility.Events;
+using Microsoft.Xna.Framework.Graphics;
 
 namespace Recellection.Code.Models
 {
@@ -30,6 +31,7 @@ namespace Recellection.Code.Models
                :base(name, posX, posY, maxHealth, owner, null)
         {
             this.type = Globals.BuildingTypes.Base;
+            childBuildings = new LinkedList<Building>();
             baseBuilding = this;
         }
 
@@ -40,7 +42,7 @@ namespace Recellection.Code.Models
         public void Visit(Building building)
         {
             childBuildings.AddLast(building);
-            buildingsChanged(this, new BuildingAddedEvent(this,EventType.ADD));
+            buildingsChanged(this, new BuildingAddedEvent(building,EventType.ADD));
         }
 
         /// <summary>
@@ -62,6 +64,11 @@ namespace Recellection.Code.Models
         public LinkedList<Building>.Enumerator GetBuildings()
         {
             return childBuildings.GetEnumerator();
+        }
+
+        public override Texture2D GetSprite()
+        {
+            return Recellection.textureMap.GetTexture(Globals.TextureTypes.BaseBuilding);
         }
     }
 }

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.IO;
 
 namespace Recellection.Code.Models
 {
@@ -21,13 +22,16 @@ namespace Recellection.Code.Models
 
         #region Constructors
 
+        /// <summary>
+        /// Create a Language object. Preferably only once...
+        /// </summary>
+        /// <param name="language">Current language to use.</param>
         public Language(Globals.Languages language)
         {
             this.currentLanguage = language;
             this.translations = new Dictionary<Globals.Languages, Dictionary<string, string>>();
             foreach (Globals.Languages lang in Enum.GetValues(typeof(Globals.Languages)))
             {
-                // TODO: CREATE STUFFS
                 this.translations.Add(lang, new Dictionary<string, string>());
             }
         }
@@ -35,26 +39,58 @@ namespace Recellection.Code.Models
         #endregion
 
 
-        public static string GetString(string label)
+        public string GetString(string label)
         {
-            return null;
+            return translations[currentLanguage][label];
         }
         
         // Adding new strings to the model
-        public void SetString(string label, Type type, string translation)
+        public void SetString(string label, Globals.Languages type, string translation)
         {
-
+            this.translations[type].Add(label, translation);
         }
         
         // Changing the language
-        public void SetLanguage(Language newLanguage)
+        public void SetLanguage(Globals.Languages newLanguage)
         {
-
+            this.currentLanguage = newLanguage;
         }
 
-        public Language GetLanguage()
+        public Globals.Languages GetLanguage()
         {
-            return null;
+            return this.currentLanguage;
+        }
+
+
+        private void ReadLanguagesFromFile()
+        {
+            // TODO: Fill translations with text.
+            FileStream fs = new FileStream("Content\\Languages\\English.txt", FileMode.Open);
+
+            // TODO: Loop over all availiable languages.
+
+            StreamReader sr = new StreamReader(fs);
+            String tmp1;
+            String[] tmp2;
+            while (!sr.EndOfStream)
+            {
+                tmp1 = sr.ReadLine();
+                tmp2 = tmp1.Split('|');
+                translations[Globals.Languages.English].Add(tmp2[0], tmp2[1]);
+            }
+        }
+
+        private void SaveLanguagesToFile()
+        {
+            // TODO: Get list of all languages in this.translations. (Get keys, they are the languages!)
+
+            FileStream fs = new FileStream("Content\\Languages\\English.txt", FileMode.Create);
+            StreamWriter sw = new StreamWriter(fs);
+
+            foreach(KeyValuePair<String, String> kp in translations[Globals.Languages.English])
+            {
+                sw.WriteLine(kp.Key + "|" + kp.Value);
+            }
         }
     }
 }

@@ -11,7 +11,7 @@ namespace Recellection.Code.Models
     /// Part of the model describing the game world. Contains a list of the players and the matrix
     /// of tiles that make up the game map.
     /// </summary>
-    class World : IModel
+    public class World : IModel
     {
         /// <summary>
         /// Event for tiles created and deleted 

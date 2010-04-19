@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Recellection.Code.Utility.Events;
+using Microsoft.Xna.Framework.Graphics;
 
 
 namespace Recellection.Code.Models
@@ -56,6 +57,11 @@ namespace Recellection.Code.Models
         {
             currentTarget = newTarget;
             targetChanged(this,new Event<AggressiveBuilding>(this,EventType.ALTER));
+        }
+
+        public override Texture2D GetSprite()
+        {
+            return Recellection.textureMap.GetTexture(Globals.TextureTypes.AggressiveBuilding);
         }
     }
 }
