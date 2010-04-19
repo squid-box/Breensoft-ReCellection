@@ -6,17 +6,10 @@ using System.Text;
 using NUnit.Framework;
 
 using Recellection.Code.Utility.Events;
+using Recellection.Code.Controllers;
 
 namespace Recellection.Code.Models
 {
-	class TestBuilding : Building
-	{
-        public override Microsoft.Xna.Framework.Graphics.Texture2D GetSprite()
-        {
-            throw new NotImplementedException();
-        }
-	}
-
 	/// TODO: Unit tests for events
 	[TestFixture]
 	public class GraphTest
@@ -25,7 +18,7 @@ namespace Recellection.Code.Models
 		
 		private int size;
 		
-		private BaseBuilding bb = new BaseBuilding("test", 0, 0, 0, new Player());
+		private BaseBuilding bb = new BaseBuilding("test", 0, 0, 50, new Player());
 		private Building b1 = new TestBuilding();
 		private Building b2 = new TestBuilding();
 		private Building b3 = new TestBuilding();
@@ -72,9 +65,10 @@ namespace Recellection.Code.Models
 		{
 			g.Add(b1);
 			g.SetWeight(b1, 100);
-			g.SetWeight(b2, 200);
-			size += 2;
+			++size;
 			Assert.AreEqual(size, g.CountBuildings());
+
+			Assert.Throws<GraphLessBuildingException>(delegate { g.SetWeight(b2, 200); });
 		}
 		
 		[Test]
@@ -90,6 +84,9 @@ namespace Recellection.Code.Models
 		[Test]
 		public void GetWeightFactor()
 		{
+			g.Add(b1);
+			g.Add(b2);
+			g.Add(b3);
 			g.SetWeight(b1, 10);
 			g.SetWeight(b2, 20);
 			g.SetWeight(b3, 70);
@@ -129,6 +126,7 @@ namespace Recellection.Code.Models
 		public void Publish()
 		{
 			g.weightChanged += this.observed;
+			g.Add(b1);
 			g.SetWeight(b1, 150);
 			Assert.IsTrue(wasNotified);
 		}
