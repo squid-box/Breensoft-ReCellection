@@ -157,9 +157,11 @@ namespace Recellection.Code.Models
             if (isAlive())
             {
                 units.Add(unit);
-
-                unitsChanged(this, new BuildingEvent(this, this.units,
-                    EventType.ADD));
+                if (unitsChanged != null)
+                {
+                    unitsChanged(this, new BuildingEvent(this, this.units,
+                        EventType.ADD));
+                }
             }
             else
             {
@@ -174,9 +176,11 @@ namespace Recellection.Code.Models
         public void RemoveUnit(Unit unit)
         {
             this.units.Remove(unit);
-
-            unitsChanged(this, new BuildingEvent(this, this.units,
-                    EventType.REMOVE));
+            if (unitsChanged != null)
+            {
+                unitsChanged(this, new BuildingEvent(this, this.units,
+                        EventType.REMOVE));
+            }
         }
 
         /// <summary>
@@ -194,9 +198,11 @@ namespace Recellection.Code.Models
                 foreach(Unit u in units){
                     this.units.Add(u);
                 }
-
-                unitsChanged(this, new BuildingEvent(this, this.units,
-                    EventType.ADD));
+                if (unitsChanged != null)
+                {
+                    unitsChanged(this, new BuildingEvent(this, this.units,
+                        EventType.ADD));
+                }
             }
         }
 
@@ -210,9 +216,11 @@ namespace Recellection.Code.Models
             {
                 this.units.Remove(u);
             }
-
-            unitsChanged(this, new BuildingEvent(this, this.units,
-                    EventType.REMOVE));
+            if (unitsChanged != null)
+            {
+                unitsChanged(this, new BuildingEvent(this, this.units,
+                        EventType.REMOVE));
+            }
         }
 
         //TODO Decide if they are needed, i will leave them uncommented until
@@ -275,8 +283,10 @@ namespace Recellection.Code.Models
             if (isAlive())
             {
                 this.currentHealth -= dmgHealth;
-
-                healthChanged(this, new Event<Building>(this, EventType.REMOVE));
+                if (healthChanged != null)
+                {
+                    healthChanged(this, new Event<Building>(this, EventType.REMOVE));
+                }
             }
             else
             {
@@ -301,8 +311,10 @@ namespace Recellection.Code.Models
                 {
                     this.currentHealth += health;
                 }
-
-                healthChanged(this, new Event<Building>(this, EventType.ADD));
+                if (healthChanged != null)
+                {
+                    healthChanged(this, new Event<Building>(this, EventType.ADD));
+                }
             }
             else
             {
