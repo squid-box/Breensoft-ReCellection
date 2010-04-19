@@ -1,7 +1,5 @@
 ﻿<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
   <PropertyGroup>
-    <ProjectGuid>{F6D91C58-7522-448F-97A1-5E9F5CD7FDF4}</ProjectGuid>
-    <ProjectTypeGuids>{6D335F3A-9D43-41b4-9D22-F6F17C4BE596};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
     <OutputType>WinExe</OutputType>
@@ -88,6 +86,7 @@
       <Private>False</Private>
     </Reference>
     <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml">
       <Private>False</Private>
@@ -118,6 +117,7 @@
     <Compile Include="Code\Controllers\Localizer.cs" />
     <Compile Include="Code\Controllers\Tobii Controller.cs" />
     <Compile Include="Code\Controllers\UnitAccountant.cs" />
+    <Compile Include="Code\Controllers\UnitController.cs" />
     <Compile Include="Code\Controllers\VictorTurner.cs" />
     <Compile Include="Code\Models\AggressiveBuilding.cs" />
     <Compile Include="Code\Models\BarrierBuilding.cs" />

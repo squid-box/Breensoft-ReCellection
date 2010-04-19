@@ -32,8 +32,8 @@ namespace Recellection.Code.Models
         private static Logger logger = LoggerFactory.GetLogger();
 
         //Events
-		public event Publish<Building, Event<Building>> healthChanged;
-		public event Publish<Building, Event<Building>> unitsChanged;
+		public event Publish<Building> healthChanged;
+		public event Publish<Building> unitsChanged;
 
         /// <summary>
         /// Creates an unusable building with everything set at default values.
