@@ -68,7 +68,7 @@ namespace Recellection.Code.Models
         public Building(String name, int posX, int posY, int maxHealth,
             Player owner, Globals.BuildingTypes type, BaseBuilding baseBuilding)
         {
-            if (maxHealth >= 0)
+            if (maxHealth <= 0)
             {
                 throw new ArgumentOutOfRangeException("maxHealth", 
                     "The max of health may not be zero or less");
