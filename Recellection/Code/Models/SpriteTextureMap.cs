@@ -16,7 +16,7 @@ namespace Recellection.Code.Models
     /// to retrieve one of these textures by providing a enum from
     /// Globals.TextureTypes.
     /// </summary>
-    class SpriteTextureMap : IModel
+    public class SpriteTextureMap : IModel
     {
         //Image file format, currently only accepts one format
         public const String IMAGE_FORMAT = "png";
