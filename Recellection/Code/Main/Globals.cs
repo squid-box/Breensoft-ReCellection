@@ -27,11 +27,6 @@ namespace Recellection
             NoType, Aggressive, Barrier, Base, Resource
         }
 
-        public enum Languages
-        {
-            English, Swedish
-        }
-
         public enum TextureTypes
         {
             Membrane, Mucus, Water, Slow, Infected

@@ -7,11 +7,11 @@ using System.Resources;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("Recellection")]
-[assembly: AssemblyProduct("Recellection")]
+[assembly: AssemblyProduct("Re:cellection")]
 [assembly: AssemblyDescription("Celldomely boring")]
 [assembly: AssemblyCompany("Breensoft")]
 
-[assembly: AssemblyCopyright("Copyright © HP 2010")]
+[assembly: AssemblyCopyright("Copyright © Breensoft 2010")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
