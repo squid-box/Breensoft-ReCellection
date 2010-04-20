@@ -12,6 +12,7 @@ using Microsoft.Xna.Framework.Net;
 using Microsoft.Xna.Framework.Storage;
 using Recellection.Code.Utility.Console;
 using Recellection.Code.Utility.Logger;
+using Recellection.Code.Models;
 
 /*
  * BREENSOFT GAME OMG OMG OMG
@@ -28,7 +29,8 @@ namespace Recellection
     public class Recellection : Microsoft.Xna.Framework.Game
     {
 		private static Logger logger = LoggerFactory.GetLogger("XNA");
-		
+
+        public static SpriteTextureMap textureMap;
         GraphicsDeviceManager graphics;
         TobiiController tobiiController;
         SpriteFont screenFont;

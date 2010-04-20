@@ -20,9 +20,8 @@ namespace Recellection.Code.Utility.Events
 	/// Author: Martin Nycander
 	/// </summary>
 	/// <typeparam name="T">The type of object which is updated.</typeparam>
-	public class Event<T> : EventArgs where T : IModel
+	public class Event<T> : EventArgs
 	{
-		
 		/// <summary>
 		/// The object responsible for generating the event.
 		/// </summary>

@@ -16,9 +16,6 @@ namespace Recellection.Code.Models
     /// </summary>
     public abstract class Building : IModel
     {
-        /**
-         * Variables 'n stuff.
-         */
         // Simple values
         protected string name;
         protected int posX;
@@ -35,11 +32,11 @@ namespace Recellection.Code.Models
         private static Logger logger = LoggerFactory.GetLogger();
 
         //Events
-		public event Publish<Building, Event<Building>> healthChanged;
-		public event Publish<Building, Event<Building>> unitsChanged;
+		public event Publish<Building> healthChanged;
+		public event Publish<Building> unitsChanged;
 
         /// <summary>
-        /// Creates an unusable building with everything set at defualt values.
+        /// Creates an unusable building with everything set at default values.
         /// </summary>
         public Building()
         {
@@ -57,12 +54,12 @@ namespace Recellection.Code.Models
 
         /// <summary>
         /// Creates a building with specified parameters, the unit list will
-        /// be initated but empty and the current health will be set at maxHealth.
+        /// be initiated but empty and the current health will be set at maxHealth.
         /// </summary>
         /// <param name="name">The name for the building TODO Decide if this is
         /// needded</param>
-        /// <param name="posX">The x tile koordinate</param>
-        /// <param name="posY">The y tile koordinate</param>
+        /// <param name="posX">The x tile coordinate</param>
+        /// <param name="posY">The y tile coordinate</param>
         /// <param name="maxHealth">The max health of this building</param>
         /// <param name="owner">The player that owns the building</param>
         /// <param name="type">The </param>
@@ -71,6 +68,13 @@ namespace Recellection.Code.Models
         public Building(String name, int posX, int posY, int maxHealth,
             Player owner, Globals.BuildingTypes type, BaseBuilding baseBuilding)
         {
+            if (maxHealth <= 0)
+            {
+                throw new ArgumentOutOfRangeException("maxHealth", 
+                    "The max of health may not be zero or less");
+
+            }
+
             logger.Trace("Constructing new Building with choosed values");
             this.name = name;
             this.posX = posX;
@@ -94,6 +98,7 @@ namespace Recellection.Code.Models
         {
             visitor.Visit(this);
         }
+
         /// <summary>
         /// Returns the owner of the building
         /// </summary>
@@ -107,33 +112,25 @@ namespace Recellection.Code.Models
         /// Checks if the health of the Building is more then zero
         /// </summary>
         /// <returns>If the current health is more then zero
-        /// it returns true othervice false</returns>
-        public bool isAlive()
+        /// it returns true other vice false</returns>
+        public bool IsAlive()
         {
             return GetHealth() > 0;
         }
 
         /// <summary>
-        /// Returns a list of units if the building is alive else it returns
-        /// null
+        /// Returns a list of units
         /// </summary>
         /// <returns>A List of units that belongs to this building</returns>
         private List<Unit> GetUnits()
         {
-            if (isAlive())
-            {
-                return this.units;
-            }
-            else
-            {
-                return null;
-            }
+            return this.units;
         }
 
         /// <summary>
         /// Returns the number of units the building has appointed to itself.
         /// </summary>
-        /// <returns>A possitive integer representing the number of units
+        /// <returns>A positive integer representing the number of units
         /// in the list.</returns>
         public virtual int CountUnits()
 		{
@@ -141,11 +138,13 @@ namespace Recellection.Code.Models
         }
 
         /// <summary>
-        /// Add one unig to the unit list if the building is alive
+        /// Add one unit to the unit list if the building is alive
         /// </summary>
         /// <param name="unit">The Unit to add to the list</param>
         /// <exception cref="ArgumentNullException">The Unit to add was null
         /// </exception>
+        /// <exception cref="BuildingNotAliveException">
+        /// The building is dead</exception>
         public void AddUnit(Unit unit)
         {
             if(unit == null)
@@ -154,7 +153,7 @@ namespace Recellection.Code.Models
                     "The given parameter unit was null");
             }
 
-            if (isAlive())
+            if (IsAlive())
             {
                 units.Add(unit);
                 if (unitsChanged != null)
@@ -165,12 +164,12 @@ namespace Recellection.Code.Models
             }
             else
             {
-                //TODO Add a notification to notify that it failed.
+                throw new BuildingNotAliveException();
             }
         }
 
         /// <summary>
-        /// Removes one unit fromt the Unit list
+        /// Removes one unit from the Unit list
         /// </summary>
         /// <param name="unit">The Unit to remove</param>
         public void RemoveUnit(Unit unit)
@@ -189,13 +188,10 @@ namespace Recellection.Code.Models
         /// <param name="units">The array of units to add</param>
         public void AddUnits(Unit[] units)
         {
-            if (!isAlive())
+            if (IsAlive())
             {
-                return;
-            }
-            else
-            {
-                foreach(Unit u in units){
+                foreach (Unit u in units)
+                {
                     this.units.Add(u);
                 }
                 if (unitsChanged != null)
@@ -231,11 +227,7 @@ namespace Recellection.Code.Models
             return this.name;
         }
 
-        public Texture2D GetSprite()
-        {
-            //TODO When the sprite map is done add code here
-            return null;
-        }
+        public abstract Texture2D GetSprite();
 
         public int GetX()
         {
@@ -264,7 +256,6 @@ namespace Recellection.Code.Models
         
         public int GetHealthPercentage()
         {
-            //TODO Check if it really should be an int that is returned.
             return ((this.currentHealth * 100) / this.maxHealth);
         }
 
@@ -272,15 +263,15 @@ namespace Recellection.Code.Models
         // Modifiers
 
         /// <summary>
-        /// Reduces health for a building by the ammount specified in the
+        /// Reduces health for a building by the amount specified in the
         /// parameter. It can change the current health to a negative value.
         /// </summary>
-        /// <param name="dmgHealth">The ammount of damage to cause to the
+        /// <param name="dmgHealth">The amount of damage to cause to the
         /// building</param>
         public void Damage(int dmgHealth)
         {
             //TODO Verify if there should be logic here to detirmine if it dies
-            if (isAlive())
+            if (IsAlive())
             {
                 this.currentHealth -= dmgHealth;
                 if (healthChanged != null)
@@ -288,20 +279,16 @@ namespace Recellection.Code.Models
                     healthChanged(this, new Event<Building>(this, EventType.REMOVE));
                 }
             }
-            else
-            {
-                return;
-            }
         }
 
         /// <summary>
-        /// Increases health for a building by the ammount specified in the
+        /// Increases health for a building by the amount specified in the
         /// parameter. It can not heal it above max health.
         /// </summary>
         /// <param name="health">The ammount to repair the building</param>
         public void Repair(int health)
         {
-            if (isAlive())
+            if (IsAlive())
             {
                 if (this.currentHealth + health > this.maxHealth)
                 {
@@ -316,9 +303,20 @@ namespace Recellection.Code.Models
                     healthChanged(this, new Event<Building>(this, EventType.ADD));
                 }
             }
-            else
+        }
+
+        /// <summary>
+        /// Exception for when a building is not alive.
+        /// This is serious enough to have its own exception.
+        /// </summary>
+        public class BuildingNotAliveException : Exception
+        {
+            private static string msg = "A unit can not be added to a "+
+                "building which is not alive.";
+
+            public BuildingNotAliveException()
+                : base(msg)
             {
-                return;
             }
         }
     }

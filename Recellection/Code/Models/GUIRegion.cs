@@ -22,13 +22,11 @@ namespace Recellection.Code.Models
     public class GUIRegion : WindowBoundInteractionRegion, IModel
     {
         public static Logger logger = LoggerFactory.GetLogger();
-        public event Publish<GUIRegion, GUIRegionEvent> regionActivated;
+        public event Publish<GUIRegion> regionActivated;
 
-        public GUIRegion(WindowBoundInteractionRegionIdentifier id)
-            : base(id)
-        {
+        public GUIRegion(WindowBoundInteractionRegionIdentifier id ):base(id)
+        { 
             logger.Trace("Creating a new GUIRegion.");
-            Activate += new EventHandler<Tobii.TecSDK.Client.Interaction.ActivateEventArgs>(OnActivate);
             Publish(this, EventType.ADD);
         }
 
@@ -37,10 +35,9 @@ namespace Recellection.Code.Models
         {
             logger.Trace("Creating a new GUIRegion.");
             Publish(this, EventType.ADD);
-            Activate += new EventHandler<Tobii.TecSDK.Client.Interaction.ActivateEventArgs>(OnActivate);
         }
-
-        public void OnActivate(object sender, Tobii.TecSDK.Client.Interaction.ActivateEventArgs e)
+        
+        public void onActivate()
         {
             Publish(this, EventType.ALTER);
         }
@@ -52,6 +49,5 @@ namespace Recellection.Code.Models
                regionActivated(this, new GUIRegionEvent(this, t));
             }
         }
-
     }
 }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Recellection.Code.Utility.Events;
+using Microsoft.Xna.Framework.Graphics;
 
 
 namespace Recellection.Code.Models
@@ -18,7 +19,7 @@ namespace Recellection.Code.Models
         private Unit currentTarget = null;
 
         //Subscribe to me if you want to know about it when I change my target.
-		public event Publish<AggressiveBuilding, Event<AggressiveBuilding>> targetChanged;
+		public event Publish<AggressiveBuilding> targetChanged;
 
         /// <summary>
         /// Constructs a new AgressiveBuilding
@@ -56,6 +57,11 @@ namespace Recellection.Code.Models
         {
             currentTarget = newTarget;
             targetChanged(this,new Event<AggressiveBuilding>(this,EventType.ALTER));
+        }
+
+        public override Texture2D GetSprite()
+        {
+            return Recellection.textureMap.GetTexture(Globals.TextureTypes.AggressiveBuilding);
         }
     }
 }
