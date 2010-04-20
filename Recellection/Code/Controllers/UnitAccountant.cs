@@ -63,14 +63,17 @@ namespace Recellection.Code.Controllers
         }
 
         /// <summary>
-        /// Unknown.
+        /// Quite possibly a horribly slow way of adding units.
         /// </summary>
         private void ProduceUnits()
         {
-            // for all BaseBuilding b in bases
-                // for all graphs g in p
-                    // for all buildings b in g.GetBuildings()
-                        //b.AddUnits(b.Production())
+            foreach (BaseBuilding b in world)
+            {
+                for (int i = 0; i < b.GetProductionRate(); i++)
+                {
+                    b.AddUnit(new Unit(b.posX,b.posY));
+                }
+            }
         }
     }
 }

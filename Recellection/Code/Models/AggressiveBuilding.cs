@@ -13,6 +13,10 @@ namespace Recellection.Code.Models
     /// by having a targeted unit that will be subject to it's aggressive means.
     /// 
     /// Author: Viktor Eklund
+    /// Date: 2010-04-??
+    /// 
+    /// Signature: Joel Ahlgren (2010-04-20)
+    /// Signature: 
     /// </summary>
     public class AggressiveBuilding : Building
     {
@@ -30,8 +34,8 @@ namespace Recellection.Code.Models
         /// <param name="maxHealth"></param>
         /// <param name="owner"></param>
         /// <param name="baseBuilding"></param>
-        public AggressiveBuilding(String name, int posX, int posY, int maxHealth,Player owner,BaseBuilding baseBuilding)
-               :base(name, posX, posY, maxHealth, owner, Globals.BuildingTypes.Aggressive, baseBuilding)
+        public AggressiveBuilding(String name, int posX, int posY, Player owner,BaseBuilding baseBuilding)
+               :base(name, posX, posY, AGGRESSIVE_BUILDING_HEALTH, owner, Globals.BuildingTypes.Aggressive, baseBuilding)
         {
 
 
@@ -43,7 +47,6 @@ namespace Recellection.Code.Models
         /// <returns>
         /// The target of this aggressive building, can be null
         /// </returns>
-        ///
         public Unit GetTarget()
         {
             return currentTarget;
