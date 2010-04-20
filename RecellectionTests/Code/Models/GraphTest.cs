@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using IEnumerable = System.Collections.IEnumerable;
 using System.Linq;
 using System.Text;
 
@@ -113,6 +114,37 @@ namespace Recellection.Code.Models
 			g.Remove(b1);
 			
 			Assert.Throws<ArgumentException>(delegate { g.GetWeight(b1); });
+		}
+
+		[Test]
+		public void GetBuildings()
+		{
+			Graph g2 = new Graph(bb);
+			g.Add(b1);
+			g.SetWeight(b1, 1);
+			g2.Add(b1);
+			g2.SetWeight(b1, 1);
+			
+			g.Add(b2);
+			g.SetWeight(b2, 2);
+			g2.Add(b2);
+			g2.SetWeight(b2, 2);
+			
+			g.Add(b3);
+			g.SetWeight(b3, 3);
+			g2.Add(b3);
+			g2.SetWeight(b3, 3);
+			
+			IEnumerable<Building> it = g.GetBuildings();
+			foreach(Building b in it)
+			{
+				g2.SetWeight(b, g.GetWeight(b)+10);
+				b.Damage(1);
+			}
+
+			Assert.AreEqual(11, g2.GetWeight(b1));
+			Assert.AreEqual(12, g2.GetWeight(b2));
+			Assert.AreEqual(13, g2.GetWeight(b3));
 		}
 
 		public void observed(Object g, Event<Building> e)
