@@ -10,16 +10,6 @@ namespace Recellection.Code.Controllers
 	[TestFixture]
 	public class GraphControllerTest
 	{
-		private class TestBuilding : Building
-		{
-			public int numberOfUnits = 5;
-			
-			public override int CountUnits()
-			{
-				return numberOfUnits;
-			}
-		}
-		
 		GraphController gc;
 		Graph g1;
 		Graph g2;
@@ -35,11 +25,11 @@ namespace Recellection.Code.Controllers
 		[SetUp]
 		public void Init()
 		{
-			b1 = new BaseBuilding("test", 0, 0, 0, new Player());
+			b1 = new BaseBuilding("test", 0, 0, 1, new Player());
 			b2 = new TestBuilding();
 			b3 = new TestBuilding();
 
-			ba = new BaseBuilding("test", 0, 0, 0, new Player());
+			ba = new BaseBuilding("test", 0, 0, 1, new Player());
 			bb = new TestBuilding();
 			bc = new TestBuilding();
 			
