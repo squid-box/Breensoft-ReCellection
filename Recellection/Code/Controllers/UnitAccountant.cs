@@ -69,7 +69,7 @@ namespace Recellection.Code.Controllers
         {
             foreach (BaseBuilding b in world)
             {
-                for (int i = 0; i < b.GetProductionRate(); i++)
+                for (int i = 0; i < b.RateOfProduction; i++)
                 {
                     b.AddUnit(new Unit(b.posX,b.posY));
                 }
