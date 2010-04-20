@@ -16,6 +16,12 @@ namespace Recellection.Code.Models
     {
         private int rateOfProduction;
 
+        public int RateOfProduction
+        {
+            get { return rateOfProduction; }
+            set { rateOfProduction = value; }
+        }
+
         /// <summary>
         /// Constructs a new ResourceBuilding
         /// </summary>
@@ -33,25 +39,9 @@ namespace Recellection.Code.Models
         }
 
         /// <summary>
-        /// Sets the producion rate of this ResourceBuilding in terms of units / turns
+        /// 
         /// </summary>
-        /// <param name="rate"></param>
-        public void SetProductionRate(int rate)
-        {
-            rateOfProduction = rate;
-        }
-
-        /// <summary>
-        /// Gets the production rate of this ResourceBuilding in terms of units / turns
-        /// </summary>
-        /// <returns>
-        /// ProductionRate as an int
-        /// </returns>
-        public int GetProductionRate()
-        {
-            return rateOfProduction;
-        }
-
+        /// <returns>The sprite!</returns>
         public override Texture2D GetSprite()
         {
             return Recellection.textureMap.GetTexture(Globals.TextureTypes.ResourceBuilding);
