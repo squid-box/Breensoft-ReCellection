@@ -22,14 +22,6 @@ namespace Recellection.Code.Controllers
         }
 
         /// <summary>
-        /// Get all Base buildings and have them produce units.
-        /// </summary>
-        private void ProduceUnits()
-        {
-
-        }
-
-        /// <summary>
         /// Called by building. Adds units to a building?
         /// </summary>
         /// <param name="units">A list of units.</param>
