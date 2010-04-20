@@ -111,13 +111,14 @@ namespace Recellection.Code.Models
             return currentHealth > 0;
         }
 
-        /// <summary>
-        /// Returns a list of units
-        /// </summary>
-        /// <returns>A List of units that belongs to this building</returns>
-        private List<Unit> GetUnits()
+        /// <returns>Returns an IEnumerable which can iterate over the list 
+        /// of units</returns>
+        public IEnumerable<Unit> GetUnits()
         {
-            return this.units;
+            foreach (Unit u in this.units)
+            {
+                yield return u;
+            }
         }
 
         /// <summary>
