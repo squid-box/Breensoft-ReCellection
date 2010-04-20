@@ -8,12 +8,12 @@ using Recellection.Code.Controllers;
 
 namespace Recellection.Code.Models
 {
-    //sig John Forsberg
 
 	/// <summary>
 	/// The Graph component is a storage class for buildings and their weights.
 	/// 
 	/// Author: Martin Nycander
+    /// Signature: John Forsberg (2010-04-20)
 	/// </summary>
 	public class Graph : IModel
 	{
@@ -140,7 +140,7 @@ namespace Recellection.Code.Models
 		}
 		
 		/// <returns>An enumerator for all buildings in the graph.</returns>
-		public System.Collections.IEnumerable GetBuildings()
+		public IEnumerable<Building> GetBuildings()
 		{
 			foreach(KeyValuePair<Building,int> b in buildings)
 			{
