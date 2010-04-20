@@ -13,21 +13,23 @@ namespace Recellection.Code.Models
     /// <summary>
     /// This is the abstract class Building, every
     /// type of building will inherit this class.
+    /// 
+    /// Author: John Forsberg
     /// </summary>
     public abstract class Building : IModel
     {
         // Simple values
-        protected string name { get; private set; }
-        protected int posX { get; private set; }
-        protected int posY { get; private set; }
-        protected int currentHealth { get; private set; }
-        protected int maxHealth { get; private set; }
+        public string name { get; protected set; }
+        public int posX { get; protected set; }
+        public int posY { get; protected set; }
+        public int currentHealth { get; protected set; }
+        public int maxHealth { get; protected set; }
 
         // References
-        protected Player owner;
-        protected List<Unit> units;
-        protected Globals.BuildingTypes type;
-        protected BaseBuilding baseBuilding;
+        public Player owner { get; protected set; }
+        public List<Unit> units { get; protected set; }
+        public Globals.BuildingTypes type { get; protected set; }
+        public BaseBuilding baseBuilding { get; protected set; }
 
         private static Logger logger = LoggerFactory.GetLogger();
 
@@ -97,15 +99,6 @@ namespace Recellection.Code.Models
         public void Accept(BaseBuilding visitor)
         {
             visitor.Visit(this);
-        }
-
-        /// <summary>
-        /// Returns the owner of the building
-        /// </summary>
-        /// <returns>The Player that owns the building</returns>
-        public Player GetPlayer()
-        {
-            return this.owner;
         }
 
         /// <summary>

@@ -162,7 +162,7 @@ namespace Recellection.Code.Controllers
             if (tempBuilding == null)
                 return false;
 
-            if (tempBuilding.GetPlayer() != this)
+            if (tempBuilding.owner != this)
             {
                 //TODO: Enemy harvesting at this location, very interresting.
                 return false;
