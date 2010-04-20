@@ -18,6 +18,19 @@ namespace Recellection.Code.Models
     {
         private Unit currentTarget = null;
 
+        public Unit CurrentTarget
+        {
+            get
+            {
+                return currentTarget; 
+            }
+            set 
+            { 
+                currentTarget = value;
+                targetChanged(this, new Event<AggressiveBuilding>(this, EventType.ALTER));
+            }
+        }
+
         //Subscribe to me if you want to know about it when I change my target.
 		public event Publish<AggressiveBuilding> targetChanged;
 
@@ -35,28 +48,6 @@ namespace Recellection.Code.Models
         {
 
 
-        }
-
-        /// <summary>
-        /// Getter for the currently targeted unit
-        /// </summary>
-        /// <returns>
-        /// The target of this aggressive building, can be null
-        /// </returns>
-        ///
-        public Unit GetTarget()
-        {
-            return currentTarget;
-        }
-
-        /// <summary>
-        /// sets a new targeted unit, will overwrite any already targeted unit
-        /// null can be passed to just clear the current target
-        /// </summary>
-        public void SetTarget(Unit newTarget)
-        {
-            currentTarget = newTarget;
-            targetChanged(this,new Event<AggressiveBuilding>(this,EventType.ALTER));
         }
 
         public override Texture2D GetSprite()
