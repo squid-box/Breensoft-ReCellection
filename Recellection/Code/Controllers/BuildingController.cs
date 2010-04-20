@@ -41,42 +41,43 @@ namespace Recellection.Code.Controllers
         }
 
         public static void AddBuilding(Globals.BuildingTypes buildingType,
-            Building buildFrom, Vector2 targetCoordinate)
+            Building sourceBuilding, Vector2 targetCoordinate)
         {
             if (buildingType == Globals.BuildingTypes.Base)
             {
-                //GLOBAL ACCESS THE SINGLETON GRAPH_CONTROLL HAX
-                //theGraphController.AddBaseBuilding(new BaseBuilding("Base Buidling",
-                //targetCoordinate.X,targetCoordinate.Y,buildFrom.owner));
+                GraphController.Instance.AddBaseBuilding(new BaseBuilding("Base Buidling",
+                (int)targetCoordinate.X, (int)targetCoordinate.Y, sourceBuilding.owner));
             }
             else
             {
-                /*Building b;
+                Building newBuilding = null;
                 switch (buildingType)
                 {
                     case Globals.BuildingTypes.Aggressive:
-                        b = new AggressiveBuilding("Aggresive Building", targetCoordinate.X, targetCoordinate.Y, buildFrom.owner,
-                            theGraphController.GetGraph(buildFrom).baseBuilding);
+                        newBuilding = new AggressiveBuilding("Aggresive Building",
+                            (int)targetCoordinate.X, (int)targetCoordinate.Y, sourceBuilding.owner,
+                            GraphController.Instance.GetGraph(sourceBuilding).baseBuilding);
                         break;
                     case Globals.BuildingTypes.Barrier:
-                        b = new BarrierBuilding("Barrier Building", targetCoordinate.X, targetCoordinate.Y, buildFrom.owner,
-                            theGraphController.GetGraph(buildFrom).baseBuilding);
+                        newBuilding = new BarrierBuilding("Barrier Building",
+                            (int)targetCoordinate.X, (int)targetCoordinate.Y, sourceBuilding.owner,
+                            GraphController.Instance.GetGraph(sourceBuilding).baseBuilding);
                         break;
                     case Globals.BuildingTypes.Resource:
-                        b = new ResourceBuilding("Resource Building", targetCoordinate.X, targetCoordinate.Y, buildFrom.owner,
-                            theGraphController.GetGraph(buildFrom).baseBuilding);
+                        newBuilding = new ResourceBuilding("Resource Building",
+                            (int)targetCoordinate.X, (int)targetCoordinate.Y, sourceBuilding.owner,
+                            GraphController.Instance.GetGraph(sourceBuilding).baseBuilding);
                         break;
 
-                }*/
-                //GLOBAL ACCESS THE SINGLETON GRAPH_CONTROLL HAX
-                //theGraphController.AddBuilding(b);
+                }
+                GraphController.Instance.AddBuilding(sourceBuilding,newBuilding);
 
             }
         }
 
         public static void RemoveBuilding(Building b)
         {
-            //theGraphController.Remove(b);
+            GraphController.Instance.RemoveBuilding(b);
         }
 
     }
