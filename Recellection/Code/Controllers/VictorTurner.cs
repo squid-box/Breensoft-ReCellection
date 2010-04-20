@@ -7,6 +7,12 @@ using Recellection.Code.Models;
 
 namespace Recellection.Code.Controllers
 {
+    /// <summary>
+    /// 
+    /// 
+    /// 
+    /// Author: John Forsberg
+    /// </summary>
     class VictorTurner
     {
         private List<Player> players;
