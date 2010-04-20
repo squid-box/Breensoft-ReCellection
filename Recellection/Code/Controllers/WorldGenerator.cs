@@ -237,7 +237,7 @@ namespace Recellection.Code.Controllers
         private static void SpawnGraph(int xCoord, int yCoord, Player owner)
         {
             owner.AddGraph(new Graph(
-                new BaseBuilding("base", xCoord, yCoord, 10, owner)));
+                new BaseBuilding("base", xCoord, yCoord, owner)));
         }
 
 
