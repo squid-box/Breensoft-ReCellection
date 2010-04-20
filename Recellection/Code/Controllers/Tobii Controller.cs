@@ -31,7 +31,7 @@ namespace Recellection
         private const int DEFAULT_TIME_SPAN = 1;
         private static Logger logger = LoggerFactory.GetLogger();
         private IntPtr xnaHandle;
-        private Code.Utility.Events.GUIRegionEvent newActivatedRegion = null;
+        private global::Recellection.Code.Utility.Events.Event<GUIRegion> newActivatedRegion = null;
         private static TobiiController _instance = null;
 
         /// <summary>
@@ -171,15 +171,16 @@ namespace Recellection
                 logger.Warn("Failed to add a new region, region was most likely already added");
                 return null;
             }
-            logger.Info("Successfully added a new region");            
-            newRegion.regionActivated += new global::Recellection.Code.Utility.Events.Publish<GUIRegion, global::Recellection.Code.Utility.Events.GUIRegionEvent>(newRegion_regionActivated);
+            logger.Info("Successfully added a new region");
+            newRegion.regionActivated += new global::Recellection.Code.Utility.Events.Publish<GUIRegion>(newRegion_regionActivated);
             return newRegion.RegionIdentifier;
         }
 
-        void newRegion_regionActivated(object publisher, global::Recellection.Code.Utility.Events.GUIRegionEvent ev)
+        void newRegion_regionActivated(object publisher, global::Recellection.Code.Utility.Events.Event<GUIRegion> ev)
         {
             newActivatedRegion = ev;
         }
+
 
         /// <summary>
         /// Odds are that we won't want to really remove a region (we can just disable them by category instead)
@@ -195,7 +196,7 @@ namespace Recellection
         /// Blocking function that will, eventually, return a GUIRegionEvent
         /// </summary>
         /// <returns></returns>
-        public Code.Utility.Events.GUIRegionEvent GetActivatedRegion()
+        public global::Recellection.Code.Utility.Events.Event<GUIRegion> GetActivatedRegion()
         {
             for (; ; )
             {
