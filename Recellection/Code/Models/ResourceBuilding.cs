@@ -33,6 +33,22 @@ namespace Recellection.Code.Models
         }
 
         /// <summary>
+        /// Constructs a new ResourceBuilding
+        /// </summary>
+        /// <param name="name"></param>
+        /// <param name="posX"></param>
+        /// <param name="posY"></param>
+        /// <param name="maxHealth"></param>
+        /// <param name="owner"></param>
+        /// <param name="baseBuilding"></param>
+        public ResourceBuilding(String name, int posX, int posY, int maxHealth,
+            Player owner, BaseBuilding baseBuilding)
+            : base(name, posX, posY, maxHealth, owner, Globals.BuildingTypes.Resource, baseBuilding)
+        {
+
+        }
+
+        /// <summary>
         /// Sets the producion rate of this ResourceBuilding in terms of units / turns
         /// </summary>
         /// <param name="rate"></param>
