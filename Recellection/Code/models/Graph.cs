@@ -140,7 +140,7 @@ namespace Recellection.Code.Models
 		}
 		
 		/// <returns>An enumerator for all buildings in the graph.</returns>
-		public System.Collections.IEnumerable GetBuildings()
+		public IEnumerable<Building> GetBuildings()
 		{
 			foreach(KeyValuePair<Building,int> b in buildings)
 			{
