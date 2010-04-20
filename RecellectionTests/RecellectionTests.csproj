@@ -50,7 +50,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Code\Controllers\Graph ControllerTest.cs" />
+    <Compile Include="Code\Controllers\GraphControllerTest.cs" />
     <Compile Include="Code\Controllers\UnitAccountantTest.cs" />
     <Compile Include="Code\Controllers\WorldGeneratorTest.cs" />
     <Compile Include="Code\Models\LanguageTest.cs" />

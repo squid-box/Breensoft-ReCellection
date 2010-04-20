@@ -47,7 +47,7 @@ namespace Recellection.Code.Models
         /// <summary>
         /// Creates an unusable building with everything set at default values.
         /// </summary>
-        public Building():this("noName",-1,-1,-1,null, 
+        public Building():this("noName",-1,-1,1,null, 
             Globals.BuildingTypes.NoType, null)
         {
             logger.Trace("Constructing new Building with default values");   
