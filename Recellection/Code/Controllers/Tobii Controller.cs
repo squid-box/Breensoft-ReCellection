@@ -193,7 +193,8 @@ namespace Recellection
         }
 
         /// <summary>
-        /// Blocking function that will, eventually, return a GUIRegionEvent
+        /// Blocking function that will, eventually, return an Event
+        /// consisting of the GUIRegion that Published the event, and any EventArgs
         /// </summary>
         /// <returns></returns>
         public global::Recellection.Code.Utility.Events.Event<GUIRegion> GetActivatedRegion()
