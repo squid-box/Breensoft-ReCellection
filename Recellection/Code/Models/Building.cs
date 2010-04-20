@@ -17,11 +17,11 @@ namespace Recellection.Code.Models
     public abstract class Building : IModel
     {
         // Simple values
-        protected string name;
-        protected int posX;
-        protected int posY;
-        protected int currentHealth;
-        protected int maxHealth;
+        protected string name { get; private set; }
+        protected int posX { get; private set; }
+        protected int posY { get; private set; }
+        protected int currentHealth { get; private set; }
+        protected int maxHealth { get; private set; }
 
         // References
         protected Player owner;
@@ -115,7 +115,7 @@ namespace Recellection.Code.Models
         /// it returns true other vice false</returns>
         public bool IsAlive()
         {
-            return GetHealth() > 0;
+            return currentHealth > 0;
         }
 
         /// <summary>
@@ -136,6 +136,8 @@ namespace Recellection.Code.Models
 		{
             return units.Count;
         }
+
+        public abstract Texture2D GetSprite();
 
         /// <summary>
         /// Add one unit to the unit list if the building is alive
@@ -219,41 +221,11 @@ namespace Recellection.Code.Models
             }
         }
 
-        //TODO Decide if they are needed, i will leave them uncommented until
-        //it is decided.
-
-        public string GetName()
-        {
-            return this.name;
-        }
-
-        public abstract Texture2D GetSprite();
-
-        public int GetX()
-        {
-            return this.posX;
-        }
-        
-        public int GetY()
-        {
-            return this.posY;
-        }
-
-        public BaseBuilding GetBase()
-        {
-            return this.baseBuilding;
-        }
-        
-        public int GetHealth()
-        {
-            return this.currentHealth;
-        }
-
-        public int GetHealthMax()
-        {
-            return this.maxHealth;
-        }
-        
+        /// <summary>
+        /// Returns a number between 0 and 100, it is an integer
+        /// representing how many % of the buildings health is left.
+        /// </summary>
+        /// <returns>A number  that is [0,100].</returns>
         public int GetHealthPercentage()
         {
             return ((this.currentHealth * 100) / this.maxHealth);
