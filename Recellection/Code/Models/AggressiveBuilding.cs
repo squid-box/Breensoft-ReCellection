@@ -13,6 +13,10 @@ namespace Recellection.Code.Models
     /// by having a targeted unit that will be subject to it's aggressive means.
     /// 
     /// Author: Viktor Eklund
+    /// Date: 2010-04-??
+    /// 
+    /// Signature: Joel Ahlgren (2010-04-20)
+    /// Signature: 
     /// </summary>
     public class AggressiveBuilding : Building
     {
@@ -43,7 +47,6 @@ namespace Recellection.Code.Models
         /// <returns>
         /// The target of this aggressive building, can be null
         /// </returns>
-        ///
         public Unit GetTarget()
         {
             return currentTarget;
