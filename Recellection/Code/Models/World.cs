@@ -25,9 +25,9 @@ namespace Recellection.Code.Models
         /// <summary>
         /// The tiles of the world arranged in a row-column matrix
         /// </summary>
-        protected Tile[,] map { get; private set; }
+        public Tile[,] map { get; private set; }
 
-        protected List<Player> players { get; private set; }
+        public List<Player> players { get; private set; }
 
         /// <summary>
         /// The number of columns in the map
@@ -44,10 +44,10 @@ namespace Recellection.Code.Models
         /// </summary>
         /// <param name="rows">Number of rows in the map of the world</param>
         /// <param name="cols">Number of columns in the map of the world</param>
-        public World(int rows, int cols)
+        public World(int rows, int cols, Tile[,] map)
         {
             players = new List<Player>();
-            map = new Tile[rows, cols];
+            SetMap(map, rows, cols);
         }
 
         /// <summary>

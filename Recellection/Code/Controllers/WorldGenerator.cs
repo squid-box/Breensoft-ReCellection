@@ -48,11 +48,8 @@ namespace Recellection.Code.Controllers
 
 
             //Constructs a new world using the dimensions.
-            World returWorld = new World(map_rows,map_cols);
+            World returWorld = new World(map_rows,map_cols, tileMatrix);
 
-            //Sets the map for the world
-            returWorld.SetMap(tileMatrix,map_rows,map_cols);
-            //TODO Wack'a'Marco
             return returWorld;
         }
 
