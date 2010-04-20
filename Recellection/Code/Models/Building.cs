@@ -7,6 +7,7 @@ using Recellection.Code.Utility;
 using Recellection.Code.Utility.Events;
 using Microsoft.Xna.Framework.Graphics;
 using Recellection.Code.Utility.Logger;
+using System.Collections.ObjectModel;
 
 namespace Recellection.Code.Models
 {
@@ -30,6 +31,7 @@ namespace Recellection.Code.Models
         public List<Unit> units { get; protected set; }
         public Globals.BuildingTypes type { get; protected set; }
         public BaseBuilding baseBuilding { get; protected set; }
+        public LinkedList<Tile> controlZone;
 
         private static Logger logger = LoggerFactory.GetLogger();
 
@@ -52,6 +54,7 @@ namespace Recellection.Code.Models
             this.units = new List<Unit>();
             this.type = Globals.BuildingTypes.NoType;
             this.baseBuilding = null;
+            this.controlZone = new LinkedList<Tile>();
         }
 
         /// <summary>
@@ -88,6 +91,49 @@ namespace Recellection.Code.Models
             this.type = type;
 
             this.baseBuilding = baseBuilding;
+        }
+
+        /// <summary>
+        /// Creates a building with specified parameters, the unit list will
+        /// be initiated but empty and the current health will be set at maxHealth.
+        /// Regarding the controlZone the fift tile should be the 
+        /// tile the building is standing on.
+        /// </summary>
+        /// <param name="name">The name for the building TODO Decide if this is
+        /// needded</param>
+        /// <param name="posX">The x tile coordinate</param>
+        /// <param name="posY">The y tile coordinate</param>
+        /// <param name="maxHealth">The max health of this building</param>
+        /// <param name="owner">The player that owns the building</param>
+        /// <param name="type">The </param>
+        /// <param name="baseBuilding">The Base Building this building belongs
+        /// <param name="controlZone">The nine tiles around the building
+        /// and the tile the building is on.</param>
+        /// to</param>
+        public Building(String name, int posX, int posY, int maxHealth,
+            Player owner, Globals.BuildingTypes type, BaseBuilding baseBuilding,
+            LinkedList<Tile> controlZone)
+        {
+            if (maxHealth <= 0)
+            {
+                throw new ArgumentOutOfRangeException("maxHealth", 
+                    "The max of health may not be zero or less");
+
+            }
+
+            logger.Trace("Constructing new Building with choosed values");
+            this.name = name;
+            this.posX = posX;
+            this.maxHealth = maxHealth;
+            this.currentHealth = maxHealth;
+
+            this.owner = owner;
+            this.units = new List<Unit>();
+            this.type = type;
+
+            this.baseBuilding = baseBuilding;
+
+            this.controlZone = controlZone;
         }
 
        /// <summary>
@@ -179,10 +225,10 @@ namespace Recellection.Code.Models
         }
 
         /// <summary>
-        /// Add an array of units to the unit List
+        /// Add a collection of units to the unit List
         /// </summary>
-        /// <param name="units">The array of units to add</param>
-        public void AddUnits(Unit[] units)
+        /// <param name="units">The collection of units to add</param>
+        public void AddUnits(Collection<Unit> units)
         {
             if (IsAlive())
             {
@@ -199,10 +245,10 @@ namespace Recellection.Code.Models
         }
 
         /// <summary>
-        /// Removes an array of units from the unit List,
+        /// Removes a collection of units from the unit List,
         /// </summary>
-        /// <param name="units">The array of units to remove</param>
-        public void RemoveUnits(Unit[] units)
+        /// <param name="units">The collection of units to remove</param>
+        public void RemoveUnits(Collection<Unit> units)
         {
             foreach (Unit u in units)
             {
