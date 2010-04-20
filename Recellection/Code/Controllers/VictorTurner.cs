@@ -11,7 +11,7 @@ namespace Recellection.Code.Controllers
     {
         private List<Player> players;
 
-        //private World World;
+        private World world;
 
         Boolean finished = false;
         /// <summary>
@@ -19,11 +19,11 @@ namespace Recellection.Code.Controllers
         /// </summary>
         /// <param name="players">The players in the game</param>
         /// <param name="world">The world the game takes place in</param>
-        /*public VictorTurner(List<Player> players,World world)
+        public VictorTurner(List<Player> players,World world)
         {
             this.players = players;
             this.world = world;
-        }*/
+        }
 
         public void Run()
         {
