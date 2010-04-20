@@ -5,9 +5,10 @@ using System.Text;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 
+
 namespace Recellection.Code.Models
 {
-
+    //Signed by Viktor!
     /// <summary>
     /// This class should be instantiated once, preferably in the Initializer. 
     /// When constructed it will load all the image textures the game will use
@@ -15,7 +16,7 @@ namespace Recellection.Code.Models
     /// to retrieve one of these textures by providing a enum from
     /// Globals.TextureTypes.
     /// </summary>
-    class SpriteTextureMap : IModel
+    public class SpriteTextureMap : IModel
     {
         //Image file format, currently only accepts one format
         public const String IMAGE_FORMAT = "png";

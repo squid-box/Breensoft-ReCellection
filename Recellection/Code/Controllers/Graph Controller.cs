@@ -92,14 +92,12 @@ namespace Recellection.Code.Controllers
 		{
 			foreach(Graph g in components)
 			{
-				List<Building> buildings = g.GetBuildings();
-
 				int totalUnits = SumUnitsInGraph(g);
 
 				// Figure out the unit balance for each building
 				LinkedList<BuildingBalance> inNeed = new LinkedList<BuildingBalance>();
 				LinkedList<BuildingBalance> withExcess = new LinkedList<BuildingBalance>();
-				foreach(Building b in buildings)
+				foreach(Building b in g.GetBuildings())
 				{
 					float factor = g.GetWeight(b) / g.TotalWeight;
 					int unitGoal = (int)(totalUnits * factor);
@@ -154,10 +152,9 @@ namespace Recellection.Code.Controllers
 
 		internal static int SumUnitsInGraph(Graph g)
 		{
-			List<Building> buildings = g.GetBuildings();
 			// Calculate total number of units
 			int totalUnits = 0;
-			foreach (Building b in buildings)
+			foreach (Building b in g.GetBuildings())
 			{
 				totalUnits += b.CountUnits();
 			}

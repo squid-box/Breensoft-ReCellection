@@ -29,7 +29,8 @@ namespace Recellection
 
         public enum TextureTypes
         {
-            Membrane, Mucus, Water, Slow, Infected
+            Membrane, Mucus, Water, Slow, Infected, BaseBuilding, 
+            BarrierBuilding, AggressiveBuilding, ResourceBuilding
         }
     }
 }

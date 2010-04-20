@@ -11,14 +11,16 @@ namespace Recellection.Code.Models
     /// Part of the model describing the game world. Contains a list of the players and the matrix
     /// of tiles that make up the game map.
     /// </summary>
-    class World : IModel
+    public class World : IModel
     {
         /// <summary>
         /// Event for tiles created and deleted 
         /// </summary>
-        public event Publish<World, Event<World>> EMapEvent;
+        public event Publish<Tile> TileEvent;
 
-        public event Publish<Player, Event<Player>> PlayerEvent;
+        public event Publish<Tile[,]> MapEvent;
+
+        public event Publish<Player> PlayerEvent;
         
         /// <summary>
         /// The tiles of the world arranged in a row-column matrix
@@ -83,7 +85,7 @@ namespace Recellection.Code.Models
                 throw new IndexOutOfRangeException("Attempted to set a tile outside the range of the map.");
             }
             map[row, col] = t;
-            EMapEvent(this, new MapEvent(this, row, col, EventType.ALTER));
+            TileEvent(this, new Event<Tile>(t, EventType.REMOVE));
         }
 
         /// <summary>
@@ -114,7 +116,7 @@ namespace Recellection.Code.Models
             this.map = map;
             this.mapColumns = rows;
             this.mapRows = cols;
-            EMapEvent(this, new MapEvent(this, -1, -1, EventType.ADD));
+            MapEvent(this, new Event<Tile[,]>(map, EventType.ADD));
         }
 
         /// <summary>
@@ -125,7 +127,7 @@ namespace Recellection.Code.Models
             this.map = null;
             this.mapColumns = 0;
             this.mapRows = 0;
-            EMapEvent(this, new MapEvent(this, -1, -1, EventType.REMOVE));
+            MapEvent(this, new Event<Tile[,]>(map, EventType.REMOVE));
         }
 
         /// <summary>
