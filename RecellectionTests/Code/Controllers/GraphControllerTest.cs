@@ -33,7 +33,13 @@ namespace Recellection.Code.Controllers
 			bb = new TestBuilding();
 			bc = new TestBuilding();
 			
-			gc = new GraphController();
+			gc = GraphController.Instance;
+		}
+		
+		[Test]
+		public void Singleton()
+		{
+			Assert.AreSame(GraphController.Instance, gc);
 		}
 		
 		[Test]
