@@ -15,8 +15,31 @@ namespace Recellection.Code.Models
     /// </summary>
     /// <author>Joel Ahlgren</author>
     /// <date>2010-04-16</date>
-    public class Language : IModel
+    public sealed class Language : IModel
     {
+        #region Singleton-stuff
+
+        // from http://www.yoda.arachsys.com/csharp/singleton.html
+        static Language instance = null;
+        static readonly object padlock = new object();
+
+        public static Language Instance
+        {
+            get
+            {
+                lock (padlock)
+                {
+                    if (instance == null)
+                    {
+                        instance = new Language();
+                    }
+                    return instance;
+                }
+            }
+        }
+
+        #endregion
+
         private String currentLanguage;
         private Dictionary<String, Dictionary<String, String>> translations;
 
@@ -27,7 +50,7 @@ namespace Recellection.Code.Models
         /// <summary>
         /// Create a Language object. Defaults to English.
         /// </summary>
-        public Language()
+        private Language()
         {
             this.currentLanguage = "English";
             this.translations = new Dictionary<String, Dictionary<String, String>>();
