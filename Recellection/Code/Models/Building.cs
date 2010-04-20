@@ -7,6 +7,7 @@ using Recellection.Code.Utility;
 using Recellection.Code.Utility.Events;
 using Microsoft.Xna.Framework.Graphics;
 using Recellection.Code.Utility.Logger;
+using System.Collections.ObjectModel;
 
 namespace Recellection.Code.Models
 {
@@ -179,10 +180,10 @@ namespace Recellection.Code.Models
         }
 
         /// <summary>
-        /// Add an array of units to the unit List
+        /// Add a collection of units to the unit List
         /// </summary>
-        /// <param name="units">The array of units to add</param>
-        public void AddUnits(Unit[] units)
+        /// <param name="units">The collection of units to add</param>
+        public void AddUnits(Collection<Unit> units)
         {
             if (IsAlive())
             {
@@ -199,10 +200,10 @@ namespace Recellection.Code.Models
         }
 
         /// <summary>
-        /// Removes an array of units from the unit List,
+        /// Removes a collection of units from the unit List,
         /// </summary>
-        /// <param name="units">The array of units to remove</param>
-        public void RemoveUnits(Unit[] units)
+        /// <param name="units">The collection of units to remove</param>
+        public void RemoveUnits(Collection<Unit> units)
         {
             foreach (Unit u in units)
             {
