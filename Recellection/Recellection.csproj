@@ -160,6 +160,7 @@
     <Compile Include="Code\Utility\Console\PythonInterpreter.cs" />
     <Compile Include="Code\Utility\Console\XnaConsole.cs" />
     <Compile Include="Code\Views\AIView.cs" />
+    <Compile Include="Code\Views\WorldView.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
