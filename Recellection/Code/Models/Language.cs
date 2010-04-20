@@ -17,23 +17,32 @@ namespace Recellection.Code.Models
     /// <date>2010-04-16</date>
     public class Language : IModel
     {
-        private Globals.Languages currentLanguage;
-        private Dictionary<Globals.Languages, Dictionary<String, String>> translations;
+        private String currentLanguage;
+        private Dictionary<String, Dictionary<String, String>> translations;
 
+        private const string EXTENSION = "txt";
+        
         #region Constructors
+
+        /// <summary>
+        /// Create a Language object. Defaults to English.
+        /// </summary>
+        public Language()
+        {
+            this.currentLanguage = "English";
+            this.translations = new Dictionary<String, Dictionary<String, String>>();
+            this.ReadLanguagesFromFile();
+        }
 
         /// <summary>
         /// Create a Language object. Preferably only once...
         /// </summary>
         /// <param name="language">Current language to use.</param>
-        public Language(Globals.Languages language)
+        public Language(String language)
         {
             this.currentLanguage = language;
-            this.translations = new Dictionary<Globals.Languages, Dictionary<string, string>>();
-            foreach (Globals.Languages lang in Enum.GetValues(typeof(Globals.Languages)))
-            {
-                this.translations.Add(lang, new Dictionary<string, string>());
-            }
+            this.translations = new Dictionary<String, Dictionary<String, String>>();
+            this.ReadLanguagesFromFile();
         }
 
         #endregion
@@ -45,18 +54,18 @@ namespace Recellection.Code.Models
         }
         
         // Adding new strings to the model
-        public void SetString(string label, Globals.Languages type, string translation)
+        public void SetString(String language, string label, string translation)
         {
-            this.translations[type].Add(label, translation);
+            this.translations[language].Add(label, translation);
         }
         
         // Changing the language
-        public void SetLanguage(Globals.Languages newLanguage)
+        public void SetLanguage(String newLanguage)
         {
             this.currentLanguage = newLanguage;
         }
 
-        public Globals.Languages GetLanguage()
+        public String GetLanguage()
         {
             return this.currentLanguage;
         }
@@ -64,19 +73,31 @@ namespace Recellection.Code.Models
 
         private void ReadLanguagesFromFile()
         {
-            // TODO: Fill translations with text.
-            FileStream fs = new FileStream("Content\\Languages\\English.txt", FileMode.Open);
+            // Get list of language-files in Content directory.
+            DirectoryInfo di = new DirectoryInfo("Content/Languages");
+            FileInfo[] fi = di.GetFiles("*."+EXTENSION);
 
-            // TODO: Loop over all availiable languages.
+            // Variables for looping.
+            StreamReader sr;
+            String language;
+            String[] tmp;
 
-            StreamReader sr = new StreamReader(fs);
-            String tmp1;
-            String[] tmp2;
-            while (!sr.EndOfStream)
+            foreach (FileInfo f in fi)
             {
-                tmp1 = sr.ReadLine();
-                tmp2 = tmp1.Split('=');
-                translations[Globals.Languages.English].Add(tmp2[0], tmp2[1]);
+                sr = new StreamReader(new FileStream("Content/Languages/" + f.Name, FileMode.Open));
+                language = f.Name.Split('.')[0];
+
+                // Make sure the language exists
+                if(this.translations[language] == null)
+                {
+                    this.translations.Add(language, new Dictionary<string,string>());
+                }
+                
+                while (!sr.EndOfStream)
+                {
+                    tmp = sr.ReadLine().Split('=');
+                    translations[language].Add(tmp[0], tmp[1]);
+                }
             }
         }
         
@@ -86,15 +107,7 @@ namespace Recellection.Code.Models
         [Obsolete("Language files should never be changed during runtime.")]
         private void SaveLanguagesToFile()
         {
-            // TODO: Get list of all languages in this.translations. (Get keys, they are the languages!)
-
-            FileStream fs = new FileStream("Content\\Languages\\English.txt", FileMode.Create);
-            StreamWriter sw = new StreamWriter(fs);
-
-            foreach(KeyValuePair<String, String> kp in translations[Globals.Languages.English])
-            {
-                //sw.WriteLine(kp.Key + "|" + kp.Value);
-            }
+            
         }
     }
 }
