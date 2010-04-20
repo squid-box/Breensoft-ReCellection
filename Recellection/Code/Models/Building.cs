@@ -19,6 +19,11 @@ namespace Recellection.Code.Models
     /// </summary>
     public abstract class Building : IModel
     {
+        protected static const int AGGRESSIVE_BUILDING_HEALTH = 80;
+        protected static const int BARRIER_BUILDING_HEALTH = 90;
+        protected static const int BASE_BUILDING_HEALTH = 100;
+        protected static const int RESOURCE_BUILDING_HEALTH = 70;
+
         // Simple values
         public string name { get; protected set; }
         public int posX { get; protected set; }
@@ -31,7 +36,7 @@ namespace Recellection.Code.Models
         public List<Unit> units { get; protected set; }
         public Globals.BuildingTypes type { get; protected set; }
         public BaseBuilding baseBuilding { get; protected set; }
-        public LinkedList<Tile> controlZone;
+        public LinkedList<Tile> controlZone { get; protected set; }
 
         private static Logger logger = LoggerFactory.GetLogger();
 

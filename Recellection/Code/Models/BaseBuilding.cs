@@ -25,10 +25,9 @@ namespace Recellection.Code.Models
         /// <param name="name"></param>
         /// <param name="posX"></param>
         /// <param name="posY"></param>
-        /// <param name="maxHealth"></param>
         /// <param name="owner"></param>
-        public BaseBuilding(String name, int posX, int posY, int maxHealth,Player owner)
-               :base(name, posX, posY, maxHealth, owner, null)
+        public BaseBuilding(String name, int posX, int posY,Player owner)
+               :base(name, posX, posY, BASE_BUILDING_HEALTH, owner, null)
         {
             this.type = Globals.BuildingTypes.Base;
             childBuildings = new LinkedList<Building>();
