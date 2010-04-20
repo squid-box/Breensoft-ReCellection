@@ -54,6 +54,7 @@
     <Compile Include="Code\Controllers\UnitAccountantTest.cs" />
     <Compile Include="Code\Controllers\WorldGeneratorTest.cs" />
     <Compile Include="Code\Models\LanguageTest.cs" />
+    <Compile Include="Code\Models\TestBuilding.cs" />
     <Compile Include="Code\Utility\LoggerFactoryTest.cs" />
     <Compile Include="Code\Models\BuildingTest.cs" />
     <Compile Include="Code\Models\GraphTest.cs" />

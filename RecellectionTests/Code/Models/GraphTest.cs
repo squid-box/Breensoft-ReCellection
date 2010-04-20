@@ -1,18 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
+using IEnumerable = System.Collections.IEnumerable;
 using System.Linq;
 using System.Text;
 
 using NUnit.Framework;
 
 using Recellection.Code.Utility.Events;
+using Recellection.Code.Controllers;
 
 namespace Recellection.Code.Models
 {
-	class TestBuilding : Building
-	{
-	}
-
 	/// TODO: Unit tests for events
 	[TestFixture]
 	public class GraphTest
@@ -21,7 +19,7 @@ namespace Recellection.Code.Models
 		
 		private int size;
 		
-		private BaseBuilding bb = new BaseBuilding("test", 0, 0, 0, new Player());
+		private BaseBuilding bb = new BaseBuilding("test", 0, 0, 50, new Player());
 		private Building b1 = new TestBuilding();
 		private Building b2 = new TestBuilding();
 		private Building b3 = new TestBuilding();
@@ -68,9 +66,10 @@ namespace Recellection.Code.Models
 		{
 			g.Add(b1);
 			g.SetWeight(b1, 100);
-			g.SetWeight(b2, 200);
-			size += 2;
+			++size;
 			Assert.AreEqual(size, g.CountBuildings());
+
+			Assert.Throws<GraphLessBuildingException>(delegate { g.SetWeight(b2, 200); });
 		}
 		
 		[Test]
@@ -86,6 +85,9 @@ namespace Recellection.Code.Models
 		[Test]
 		public void GetWeightFactor()
 		{
+			g.Add(b1);
+			g.Add(b2);
+			g.Add(b3);
 			g.SetWeight(b1, 10);
 			g.SetWeight(b2, 20);
 			g.SetWeight(b3, 70);
@@ -114,6 +116,36 @@ namespace Recellection.Code.Models
 			Assert.Throws<ArgumentException>(delegate { g.GetWeight(b1); });
 		}
 
+		[Test]
+		public void GetBuildings()
+		{
+			Graph g2 = new Graph(bb);
+			g.Add(b1);
+			g.SetWeight(b1, 1);
+			g2.Add(b1);
+			g2.SetWeight(b1, 1);
+			
+			g.Add(b2);
+			g.SetWeight(b2, 2);
+			g2.Add(b2);
+			g2.SetWeight(b2, 2);
+			
+			g.Add(b3);
+			g.SetWeight(b3, 3);
+			g2.Add(b3);
+			g2.SetWeight(b3, 3);
+			
+			IEnumerable<Building> it = g.GetBuildings();
+			foreach(Building b in it)
+			{
+				g2.SetWeight(b, g.GetWeight(b)+10);
+			}
+						
+			Assert.AreEqual(11, g2.GetWeight(b1));
+			Assert.AreEqual(12, g2.GetWeight(b2));
+			Assert.AreEqual(13, g2.GetWeight(b3));
+		}
+
 		public void observed(Object g, Event<Building> e)
 		{
 			wasNotified = true;
@@ -125,6 +157,7 @@ namespace Recellection.Code.Models
 		public void Publish()
 		{
 			g.weightChanged += this.observed;
+			g.Add(b1);
 			g.SetWeight(b1, 150);
 			Assert.IsTrue(wasNotified);
 		}

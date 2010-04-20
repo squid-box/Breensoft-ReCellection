@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Microsoft.Xna.Framework.Graphics;
 
 namespace Recellection.Code.Models
 {
@@ -49,6 +50,11 @@ namespace Recellection.Code.Models
         public int GetProductionRate()
         {
             return rateOfProduction;
+        }
+
+        public override Texture2D GetSprite()
+        {
+            return Recellection.textureMap.GetTexture(Globals.TextureTypes.ResourceBuilding);
         }
     }
 }

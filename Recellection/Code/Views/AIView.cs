@@ -20,10 +20,16 @@ namespace Recellection.Code
         Tile[][] visibleWorld;
         Dictionary<Building, Globals.BuildingTypes> buildingTypes;
 
+
+
+        public AIView()
+        {
+        }
+
         /*
          * Returns the Tile located in the given coordinates provided that it is visible.
          */
-        private Tile getTileAt(Vector2 coords)
+        internal Tile getTileAt(Vector2 coords)
         {
             Tile newTile = new Tile();
        

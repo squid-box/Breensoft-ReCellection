@@ -13,9 +13,6 @@ namespace Recellection.Code.Models
 
     public class Player : IModel
     {
-
-
-
         /// <summary>
         /// The name of the player
         /// </summary>
