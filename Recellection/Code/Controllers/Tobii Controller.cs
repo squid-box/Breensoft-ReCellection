@@ -172,7 +172,7 @@ namespace Recellection
                 return null;
             }
             logger.Info("Successfully added a new region");
-            newRegion.regionActivated += new global::Recellection.Code.Utility.Events.Publish<GUIRegion>(newRegion_regionActivated);
+            newRegion.regionActivated += newRegion_regionActivated;
             return newRegion.RegionIdentifier;
         }
 
