@@ -11,6 +11,8 @@ namespace Recellection.Code.Controllers
     /// <summary>
     /// This class will not be instantiated and only be called once to generate
     /// all the world tiles and place the spawn points.
+    /// 
+    /// Author: John Forsberg
     /// </summary>
     public class WorldGenerator
     {
