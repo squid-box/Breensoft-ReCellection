@@ -139,9 +139,8 @@ namespace Recellection.Code.Models
 			foreach(Building b in it)
 			{
 				g2.SetWeight(b, g.GetWeight(b)+10);
-				b.Damage(1);
 			}
-
+						
 			Assert.AreEqual(11, g2.GetWeight(b1));
 			Assert.AreEqual(12, g2.GetWeight(b2));
 			Assert.AreEqual(13, g2.GetWeight(b3));
