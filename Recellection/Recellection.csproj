@@ -29,6 +29,9 @@
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
+    <ProjectGuid>{F6D91C58-7522-448F-97A1-5E9F5CD7FDF4}</ProjectGuid>
+    <StartupObject>
+    </StartupObject>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
     <DebugSymbols>true</DebugSymbols>
@@ -113,7 +116,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Code\Controllers\AIPlayer.cs" />
-    <Compile Include="Code\Controllers\Graph Controller.cs" />
+    <Compile Include="Code\Controllers\BuildingController.cs" />
+    <Compile Include="Code\Controllers\GraphController.cs" />
     <Compile Include="Code\Controllers\Localizer.cs" />
     <Compile Include="Code\Controllers\Tobii Controller.cs" />
     <Compile Include="Code\Controllers\UnitAccountant.cs" />
@@ -156,6 +160,7 @@
     <Compile Include="Code\Utility\Console\PythonInterpreter.cs" />
     <Compile Include="Code\Utility\Console\XnaConsole.cs" />
     <Compile Include="Code\Views\AIView.cs" />
+    <Compile Include="Code\Views\WorldView.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

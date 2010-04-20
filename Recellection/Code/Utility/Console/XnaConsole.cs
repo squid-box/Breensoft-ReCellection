@@ -169,7 +169,7 @@ namespace Recellection.Code.Utility.Console
 
             consoleXSize = Game.Window.ClientBounds.Right - Game.Window.ClientBounds.Left - 20;
             consoleYSize = font.LineSpacing * LinesDisplayed + 20;
-            lineWidth = (int)(consoleXSize / font.MeasureString("a").X) - 2; //calculate number of letters that fit on a line, using "a" as example character
+            lineWidth = (int)(consoleXSize / font.MeasureString("m").X) - 2; //calculate number of letters that fit on a line, using "a" as example character
 
             State = ConsoleState.Closed;
             StateStartTime = 0;
@@ -239,10 +239,10 @@ namespace Recellection.Code.Utility.Console
         /// <returns></returns>
         private string GetStringFromKeyState(double elapsedTime)
         {
-            bool shiftPressed = CurrentKeyState.IsKeyDown(Keys.LeftShift) || CurrentKeyState.IsKeyDown(Keys.RightShift);
+			bool shiftPressed = CurrentKeyState.IsKeyDown(Keys.LeftShift) || CurrentKeyState.IsKeyDown(Keys.RightShift);
             bool altPressed = CurrentKeyState.IsKeyDown(Keys.LeftAlt) || CurrentKeyState.IsKeyDown(Keys.RightAlt);
 
-            foreach (KeyBinding binding in KeyboardHelper.AmericanBindings)
+            foreach (KeyBinding binding in KeyboardHelper.SwedishBindings)
                 if (KeyPressWithRepeat(binding.Key, elapsedTime))
                 {
                     if (!shiftPressed && !altPressed)
@@ -578,7 +578,7 @@ namespace Recellection.Code.Utility.Console
             {
                 //draw each line at an offset determined by the line height and line count
                 j++;
-                spriteBatch.DrawString(font, str, new Vector2(consoleXOffset + 10, consoleYOffset + consoleYSize - 10 - font.LineSpacing * (j)), Color.White);
+				spriteBatch.DrawString(font, str, new Vector2(consoleXOffset + 10, consoleYOffset + consoleYSize - 10 - font.LineSpacing * (j)), Color.White);
             }
 
             #endregion
