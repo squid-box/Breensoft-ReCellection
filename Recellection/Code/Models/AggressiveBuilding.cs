@@ -50,6 +50,10 @@ namespace Recellection.Code.Models
 
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns>The sprite!</returns>
         public override Texture2D GetSprite()
         {
             return Recellection.textureMap.GetTexture(Globals.TextureTypes.AggressiveBuilding);
