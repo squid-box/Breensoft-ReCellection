@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Microsoft.Xna.Framework;
 using System.Text;
 using Recellection.Code.Models;
 
@@ -18,6 +19,7 @@ namespace Recellection.Code.Models
         private HashSet<Player> visibleTo;
         private HashSet<Unit> units;
         private Building building;
+        public Vector2 position;
 
 
         // Methods
@@ -27,6 +29,7 @@ namespace Recellection.Code.Models
         /// <summary>
         /// Creates a Tile of Membrane (default) type.
         /// </summary>
+        [Obsolete("Caution, crazily broken!")]
         public Tile()
         {
             this.type = new TerrainType();
@@ -38,6 +41,7 @@ namespace Recellection.Code.Models
         /// Creates a Tile of the type 'type'.
         /// </summary>
         /// <param name="type">Enum of the terrain type.</param>
+        [Obsolete("Caution, crazily broken!")]
         public Tile(Globals.TerrainTypes type)
         {
             this.type = new TerrainType(type);
@@ -52,6 +56,24 @@ namespace Recellection.Code.Models
             this.type = new TerrainType();
             this.visibleTo = new HashSet<Player>();
             this.units = new HashSet<Unit>();
+            this.building = null;
+        }
+
+        public Tile(int x, int y)
+        {
+            this.type = new TerrainType();
+            this.visibleTo = new HashSet<Player>();
+            this.units = new HashSet<Unit>();
+            this.position = new Vector2(x, y);
+            this.building = null;
+        }
+
+        public Tile(int x, int y, Globals.TerrainTypes type)
+        {
+            this.type = new TerrainType(type);
+            this.visibleTo = new HashSet<Player>();
+            this.units = new HashSet<Unit>();
+            this.position = new Vector2(x, y);
             this.building = null;
         }
 

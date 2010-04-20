@@ -25,15 +25,21 @@ namespace Recellection.Code.Controllers
 		[SetUp]
 		public void Init()
 		{
-			b1 = new BaseBuilding("test", 0, 0, 1, new Player());
+			b1 = new BaseBuilding("test", 0, 0, new Player());
 			b2 = new TestBuilding();
 			b3 = new TestBuilding();
 
-			ba = new BaseBuilding("test", 0, 0, 1, new Player());
+			ba = new BaseBuilding("test", 0, 0, new Player());
 			bb = new TestBuilding();
 			bc = new TestBuilding();
 			
-			gc = new GraphController();
+			gc = GraphController.Instance;
+		}
+		
+		[Test]
+		public void Singleton()
+		{
+			Assert.AreSame(GraphController.Instance, gc);
 		}
 		
 		[Test]

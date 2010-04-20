@@ -13,23 +13,14 @@ namespace Recellection.Code.Models
     /// by having a targeted unit that will be subject to it's aggressive means.
     /// 
     /// Author: Viktor Eklund
+    /// Date: 2010-04-??
+    /// 
+    /// Signature: Joel Ahlgren (2010-04-20)
+    /// Signature: 
     /// </summary>
     public class AggressiveBuilding : Building
     {
         private Unit currentTarget = null;
-
-        public Unit CurrentTarget
-        {
-            get
-            {
-                return currentTarget; 
-            }
-            set 
-            { 
-                currentTarget = value;
-                targetChanged(this, new Event<AggressiveBuilding>(this, EventType.ALTER));
-            }
-        }
 
         //Subscribe to me if you want to know about it when I change my target.
 		public event Publish<AggressiveBuilding> targetChanged;
@@ -43,17 +34,34 @@ namespace Recellection.Code.Models
         /// <param name="maxHealth"></param>
         /// <param name="owner"></param>
         /// <param name="baseBuilding"></param>
-        public AggressiveBuilding(String name, int posX, int posY, int maxHealth,Player owner,BaseBuilding baseBuilding)
-               :base(name, posX, posY, maxHealth, owner, Globals.BuildingTypes.Aggressive, baseBuilding)
+        public AggressiveBuilding(String name, int posX, int posY, Player owner,BaseBuilding baseBuilding)
+               :base(name, posX, posY, AGGRESSIVE_BUILDING_HEALTH, owner, Globals.BuildingTypes.Aggressive, baseBuilding)
         {
 
 
         }
 
         /// <summary>
-        /// 
+        /// Getter for the currently targeted unit
         /// </summary>
-        /// <returns>The sprite!</returns>
+        /// <returns>
+        /// The target of this aggressive building, can be null
+        /// </returns>
+        public Unit GetTarget()
+        {
+            return currentTarget;
+        }
+
+        /// <summary>
+        /// sets a new targeted unit, will overwrite any already targeted unit
+        /// null can be passed to just clear the current target
+        /// </summary>
+        public void SetTarget(Unit newTarget)
+        {
+            currentTarget = newTarget;
+            targetChanged(this,new Event<AggressiveBuilding>(this,EventType.ALTER));
+        }
+
         public override Texture2D GetSprite()
         {
             return Recellection.textureMap.GetTexture(Globals.TextureTypes.AggressiveBuilding);

@@ -21,6 +21,7 @@ namespace Recellection.Code.Models
 		private static int defaultWeight = 1;
 		
 		public event Publish<Building> weightChanged;
+        public BaseBuilding baseBuilding { get; private set; }
 		private Dictionary<Building, int> buildings;
 		public int TotalWeight { get; private set; }
 		
@@ -37,6 +38,7 @@ namespace Recellection.Code.Models
 		public Graph(BaseBuilding baseBuilding) : this()
 		{
 			buildings.Add(baseBuilding, defaultWeight);
+            this.baseBuilding = baseBuilding;
 			TotalWeight += defaultWeight;
 		}
 

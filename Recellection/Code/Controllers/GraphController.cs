@@ -13,11 +13,25 @@ namespace Recellection.Code.Controllers
 		/// <summary>A list of all the graph components.</summary>
 		private List<Graph> components;
 		
+		private static GraphController instance;
+		public static GraphController Instance
+		{
+			get
+			{
+				if (instance == null)
+				{
+					instance = new GraphController();
+				}
+				
+				return instance;
+			}
+		}
+		
 		/// <summary>
 		/// Creates an empty graph controller.
 		/// Nothing to it, really.
 		/// </summary>
-		public GraphController()
+		protected GraphController()
 		{
 			components = new List<Graph>();
 		}
