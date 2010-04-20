@@ -47,19 +47,10 @@ namespace Recellection.Code.Models
         /// <summary>
         /// Creates an unusable building with everything set at default values.
         /// </summary>
-        public Building()
+        public Building():this("noName",-1,-1,-1,null, 
+            Globals.BuildingTypes.NoType, null)
         {
-            logger.Trace("Constructing new Building with default values");
-            this.name = "noName";
-            this.posX = -1;
-            this.posY = -1;
-            this.currentHealth = -1;
-            this.maxHealth = -1;
-            this.owner = null;
-            this.units = new List<Unit>();
-            this.type = Globals.BuildingTypes.NoType;
-            this.baseBuilding = null;
-            this.controlZone = new LinkedList<Tile>();
+            logger.Trace("Constructing new Building with default values");   
         }
 
         /// <summary>
@@ -241,6 +232,7 @@ namespace Recellection.Code.Models
                 {
                     this.units.Add(u);
                 }
+
                 if (unitsChanged != null)
                 {
                     unitsChanged(this, new BuildingEvent(this, this.units,
@@ -259,6 +251,7 @@ namespace Recellection.Code.Models
             {
                 this.units.Remove(u);
             }
+
             if (unitsChanged != null)
             {
                 unitsChanged(this, new BuildingEvent(this, this.units,
