@@ -67,7 +67,7 @@ namespace Recellection
 			base.Initialize();
 
             Globals.gameState = Globals.GameStates.Game;
-
+            
             graphicsRenderer = new GraphicsRenderer();
 
 			// Initialize the python console
