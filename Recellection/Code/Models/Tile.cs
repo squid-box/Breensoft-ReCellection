@@ -17,7 +17,7 @@ namespace Recellection.Code.Models
         // Data
         private TerrainType type;
         private HashSet<Player> visibleTo;
-        private HashSet<Unit> units;
+        private Dictionary<Player, HashSet<Unit>> units;
         private Building building;
         public Vector2 position;
 
@@ -26,53 +26,40 @@ namespace Recellection.Code.Models
 
         #region Constructors
 
-        /// <summary>
-        /// Creates a Tile of Membrane (default) type.
-        /// </summary>
         [Obsolete("Caution, crazily broken!")]
         public Tile()
         {
             this.type = new TerrainType();
             this.visibleTo = new HashSet<Player>();
-            this.units = new HashSet<Unit>();
+            //this.units = new HashSet<Unit>();
             this.building = null;
         }
+
         /// <summary>
-        /// Creates a Tile of the type 'type'.
+        /// Creates a Tile of Membrane (default) type.
         /// </summary>
-        /// <param name="type">Enum of the terrain type.</param>
-        [Obsolete("Caution, crazily broken!")]
-        public Tile(Globals.TerrainTypes type)
-        {
-            this.type = new TerrainType(type);
-            this.visibleTo = new HashSet<Player>();
-            this.units = new HashSet<Unit>();
-            this.building = null;
-        }
-
-        [Obsolete]
-        public Tile(TerrainType t)
-        {
-            this.type = new TerrainType();
-            this.visibleTo = new HashSet<Player>();
-            this.units = new HashSet<Unit>();
-            this.building = null;
-        }
-
+        /// <param name="x">Tile x-coordinate.</param>
+        /// <param name="y">Tile y-coordinate.</param>
         public Tile(int x, int y)
         {
             this.type = new TerrainType();
             this.visibleTo = new HashSet<Player>();
-            this.units = new HashSet<Unit>();
+            this.units = new Dictionary<Player, HashSet<Unit>>();
             this.position = new Vector2(x, y);
             this.building = null;
         }
 
+        /// <summary>
+        /// Creates a Tile of the type 'type'.
+        /// </summary>
+        /// <param name="type">Enum of the terrain type.</param>
+        /// <param name="x">Tile x-coordinate.</param>
+        /// <param name="y">Tile y-coordinate.</param>
         public Tile(int x, int y, Globals.TerrainTypes type)
         {
             this.type = new TerrainType(type);
             this.visibleTo = new HashSet<Player>();
-            this.units = new HashSet<Unit>();
+            this.units = new Dictionary<Player, HashSet<Unit>>();
             this.position = new Vector2(x, y);
             this.building = null;
         }
@@ -104,41 +91,49 @@ namespace Recellection.Code.Models
         /// <summary>
         /// Adds a list of units to this Tile.
         /// </summary>
+        /// <param name="p">Owner of the units</param>
         /// <param name="units">Units to be added to this Tile.</param>
-        public void AddUnit(List<Unit> units)
+        public void AddUnit(Player p, List<Unit> units)
         {
             foreach (Unit u in units)
             {
-                this.units.Add(u);
+                
             }
         }
         /// <summary>
         /// Add a unit to this Tile.
         /// </summary>
         /// <param name="units">Units to be added to this Tile.</param>
-        public void AddUnit(Unit u)
+        public void AddUnit(Player p, Unit u)
         {
-            this.units.Add(u);
+            this.units[p].Add(u);
         }
-        /// <summary>
-        /// Get the list of units on this tile.
-        /// </summary>
-        /// <returns>HashSet of units in this tile.</returns>
 
-        public void RemoveUnit(Unit u)
+        public void RemoveUnit(Player p, Unit u)
         {
-            this.units.Remove(u);
+            this.units[p].Remove(u);
         }
-        public void RemoveUnit(List<Unit> units)
+        public void RemoveUnit(Player p, List<Unit> units)
         {
             foreach (Unit u in units)
             {
-                this.units.Remove(u);
+                this.units[p].Remove(u);
             }
         }
+
         public HashSet<Unit> GetUnits()
         {
-            return this.units;
+            return null;
+        }
+
+        /// <summary>
+        /// Get the list of units on this tile.
+        /// </summary>
+        /// <param name="p">Owner of the units to be returned.</param>
+        /// <returns>HashSet of units in this tile.</returns>
+        public HashSet<Unit> GetUnits(Player p)
+        {
+            return this.units[p];
         }
 
         /// <summary>
