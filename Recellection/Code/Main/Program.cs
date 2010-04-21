@@ -5,7 +5,7 @@ using Recellection.Code.Utility.Console;
 using Microsoft.Xna.Framework.Graphics;
 
 // We should be able to test internals
-[assembly: InternalsVisibleTo("RecellectionTests")]
+//[assembly: InternalsVisibleTo("RecellectionTests")]
 
 namespace Recellection
 {

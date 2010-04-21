@@ -37,6 +37,9 @@ namespace Recellection
         SpriteBatch spriteBatch;
         static Color breen = new Color(new Vector3(0.4f, 0.3f, 0.1f));
 
+        //Graphics
+        GraphicsRenderer graphicsRenderer;
+        
 		// Python console
 		SpriteFont consoleFont;
 		PythonInterpreter console;
@@ -62,7 +65,11 @@ namespace Recellection
         protected override void Initialize()
         {
 			base.Initialize();
-			
+
+            Globals.gameState = Globals.GameStates.Game;
+
+            graphicsRenderer = new GraphicsRenderer();
+
 			// Initialize the python console
 			console = new PythonInterpreter(this, consoleFont);
 			console.AddGlobal("game", this);
@@ -167,6 +174,29 @@ namespace Recellection
             GraphicsDevice.Clear(breen);
 
             PrintHelp();
+
+            List<DrawData> objectsToDraw;             
+
+            switch (Globals.gameState)
+            {
+                case Globals.GameStates.StartUp:
+                    //objectsToDraw = startUp.GetDrawData();
+                    break;
+
+                case Globals.GameStates.Game:
+                    //objectsToDraw = worldView.GetDrawData();
+                    break;
+
+                case Globals.GameStates.Help:
+                    //objectsToDraw = helpView.GetDrawData();
+                    break;
+
+                case Globals.GameStates.Menu:
+                    //objectsToDraw = menuView.GetDrawData();
+                    break;
+            }
+
+            //GraphicsRenderer.Draw(objectsToDraw);
 
             base.Draw(gameTime);
         }
