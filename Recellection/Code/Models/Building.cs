@@ -156,7 +156,7 @@ namespace Recellection.Code.Models
         /// Checks if the health of the Building is more then zero
         /// </summary>
         /// <returns>If the current health is more then zero
-        /// it returns true other vice false</returns>
+        /// it returns true other wise false</returns>
         public bool IsAlive()
         {
             return currentHealth > 0;
