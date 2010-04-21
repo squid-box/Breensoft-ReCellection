@@ -87,6 +87,10 @@ namespace Recellection.Code.Models
             this.type = type;
 
             this.baseBuilding = baseBuilding;
+            if (baseBuilding != null)
+            {
+                Accept(baseBuilding);
+            }
         }
 
         /// <summary>
@@ -128,6 +132,11 @@ namespace Recellection.Code.Models
             this.type = type;
 
             this.baseBuilding = baseBuilding;
+
+            if (baseBuilding != null)
+            {
+                Accept(baseBuilding);
+            }
 
             this.controlZone = controlZone;
         }
