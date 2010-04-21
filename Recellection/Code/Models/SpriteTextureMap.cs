@@ -16,7 +16,7 @@ namespace Recellection.Code.Models
     /// to retrieve one of these textures by providing a enum from
     /// Globals.TextureTypes.
     /// 
-    /// 
+    /// Author: John Forsberg
     /// </summary>
     public class SpriteTextureMap : IModel
     {
