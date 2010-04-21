@@ -20,7 +20,7 @@ namespace Recellection.Code.Models
     public class Unit : IModel
     {
         // DATA
-        private Vector2 pos;        // Current tile
+        private Vector2 position;        // Current tile
         private Vector2 target;     // Target coordinate
         private int angle;          // Angle of unit, for drawing
         private bool isDispersed;   // Whether or not this unit should recieve a new target from the dispersion procedure
@@ -42,7 +42,7 @@ namespace Recellection.Code.Models
         /// </summary>
         public Unit()
         {
-            this.pos = new Vector2(0, 0);
+            this.position = new Vector2(0, 0);
             this.target = new Vector2(NO_TARGET,NO_TARGET);
             this.angle = 0;
             this.isDispersed = this.isDead = false;
@@ -55,7 +55,7 @@ namespace Recellection.Code.Models
         /// <param name="posY">Unit y-coordinate.</param>
         public Unit(float posX, float posY)
         {
-            this.pos = new Vector2(posX, posY);
+            this.position = new Vector2(posX, posY);
             this.target = new Vector2(NO_TARGET, NO_TARGET);
             this.angle = 0;
             this.isDispersed = this.isDead = false;
@@ -69,7 +69,7 @@ namespace Recellection.Code.Models
         /// <param name="owner">Owner of this unit.</param>
         public Unit(float posX, float posY, Player owner)
         {
-            this.pos = new Vector2(posX, posY);
+            this.position = new Vector2(posX, posY);
             this.target = new Vector2(NO_TARGET, NO_TARGET);
             this.angle = 0;
             this.isDispersed = this.isDead = false;
@@ -83,7 +83,7 @@ namespace Recellection.Code.Models
         /// <param name="angle">Draw-angle if this unit.</param>
         public Unit(float posX, float posY, int angle)
         {
-            this.pos = new Vector2(posX, posY);
+            this.position = new Vector2(posX, posY);
             this.target = new Vector2(NO_TARGET, NO_TARGET);
             this.angle = angle;
             this.isDispersed = this.isDead = false;
@@ -133,7 +133,7 @@ namespace Recellection.Code.Models
         /// <returns>X and Y coordinates for tile.</returns>
         public Vector2 GetPosition()
         {
-            return this.pos;
+            return this.position;
         }
         /// <summary>
         /// Magically teleport this Unit somewhere.
@@ -141,7 +141,7 @@ namespace Recellection.Code.Models
         /// <param name="newPos">X and Y coordinate of destination tile.</param>
         public void SetPosition(Vector2 newPos)
         {
-            this.pos = newPos;
+            this.position = newPos;
         }
         /// <summary>
         /// Set whether or not this unit should recieve a new 
@@ -232,13 +232,13 @@ namespace Recellection.Code.Models
             //TODO: Move unit towards target.
             if (this.target.X != NO_TARGET)
             {
-                if (this.target.X > this.pos.X)
+                if (this.target.X > this.position.X)
                 {
-                    this.pos.X += MOVEMENT_SPEED * deltaTime;
+                    this.position.X += MOVEMENT_SPEED * deltaTime;
                 }
-                else if (this.target.X < this.pos.X)
+                else if (this.target.X < this.position.X)
                 {
-                    this.pos.X += MOVEMENT_SPEED * deltaTime;
+                    this.position.X += MOVEMENT_SPEED * deltaTime;
                 }
                 else
                 {
@@ -247,17 +247,17 @@ namespace Recellection.Code.Models
             }
             if (this.target.Y != NO_TARGET)
             {
-                if (this.target.Y > this.pos.Y)
+                if (this.target.Y > this.position.Y)
                 {
-                    this.pos.Y += MOVEMENT_SPEED * deltaTime;
+                    this.position.Y += MOVEMENT_SPEED * deltaTime;
                 }
-                else if (this.target.Y < this.pos.Y)
+                else if (this.target.Y < this.position.Y)
                 {
-                    this.pos.Y += MOVEMENT_SPEED * deltaTime;
+                    this.position.Y += MOVEMENT_SPEED * deltaTime;
                 }
             }
             // Reasonably close to target.
-            if ((Math.Abs(this.pos.X - this.target.X) < TARGET_THRESHOLD) && (Math.Abs(this.pos.Y - this.target.Y) < TARGET_THRESHOLD))
+            if ((Math.Abs(this.position.X - this.target.X) < TARGET_THRESHOLD) && (Math.Abs(this.position.Y - this.target.Y) < TARGET_THRESHOLD))
             {
                 this.target = new Vector2(NO_TARGET, NO_TARGET);
             }
