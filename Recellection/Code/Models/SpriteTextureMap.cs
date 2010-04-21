@@ -8,13 +8,15 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace Recellection.Code.Models
 {
-    //Signed by Viktor!
+    
     /// <summary>
     /// This class should be instantiated once, preferably in the Initializer. 
     /// When constructed it will load all the image textures the game will use
     /// to represent models graphically. The only method it has is the method
     /// to retrieve one of these textures by providing a enum from
     /// Globals.TextureTypes.
+    /// 
+    /// 
     /// </summary>
     public class SpriteTextureMap : IModel
     {

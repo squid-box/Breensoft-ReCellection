@@ -17,6 +17,12 @@ namespace Recellection.Code.Models
     public class BaseBuilding : ResourceBuilding // note that I inherit ResourceBuilding,
     {                                            // this makes sense as a BaseBuilding 
         private LinkedList<Building> childBuildings;     // will have it's own production
+
+        public LinkedList<Building>.Enumerator ChildBuildings
+        {
+            get { return childBuildings.GetEnumerator(); }            
+        }
+
 		public event Publish<Building> buildingsChanged;
 
         /// <summary>
@@ -55,16 +61,9 @@ namespace Recellection.Code.Models
         }
 
         /// <summary>
-        /// Gets an enumerator to this base buildings child buildings
+        /// 
         /// </summary>
-        /// <returns>
-        /// The enumerator to the child buildings
-        /// </returns>
-        public LinkedList<Building>.Enumerator GetBuildings()
-        {
-            return childBuildings.GetEnumerator();
-        }
-
+        /// <returns>The sprite!</returns>
         public override Texture2D GetSprite()
         {
             return Recellection.textureMap.GetTexture(Globals.TextureTypes.BaseBuilding);
