@@ -245,7 +245,7 @@ namespace Recellection.Code.Models
         /// Removes a collection of units from the unit List,
         /// </summary>
         /// <param name="units">The collection of units to remove</param>
-        public void RemoveUnits(Collection<Unit> units)
+        public void RemoveUnits(ICollection<Unit> units)
         {
             foreach (Unit u in units)
             {

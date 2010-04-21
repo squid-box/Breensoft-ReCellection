@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Recellection.Code.Models;
 
 namespace Recellection.Code.Controllers
 {
@@ -29,12 +30,16 @@ namespace Recellection.Code.Controllers
                 {
                     case WCState.TILES:
                         // A tile has been selected, store it.
+                        break;
                     case WCState.BUILDING:
                         // We are in a building menu, do the action mapped to the region on that building
+                        break;
                     case WCState.MENU:
                         // We are in the main menu, perform the action mapped to the region on the application
+                        break;
                     case WCState.ZOOMED:
                         // We have selected a tile in zoomed-out mode.
+                        break;
                 }
             }
         }

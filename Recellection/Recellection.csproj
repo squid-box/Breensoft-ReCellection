@@ -123,6 +123,7 @@
     <Compile Include="Code\Controllers\UnitAccountant.cs" />
     <Compile Include="Code\Controllers\UnitController.cs" />
     <Compile Include="Code\Controllers\VictorTurner.cs" />
+    <Compile Include="Code\Controllers\WorldController.cs" />
     <Compile Include="Code\Models\AggressiveBuilding.cs" />
     <Compile Include="Code\Models\BarrierBuilding.cs" />
     <Compile Include="Code\Models\IModel.cs" />
@@ -160,6 +161,7 @@
     <Compile Include="Code\Utility\Console\PythonInterpreter.cs" />
     <Compile Include="Code\Utility\Console\XnaConsole.cs" />
     <Compile Include="Code\Views\AIView.cs" />
+    <Compile Include="Code\Views\IDrawable.cs" />
     <Compile Include="Code\Views\WorldView.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
