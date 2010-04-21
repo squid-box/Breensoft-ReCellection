@@ -72,7 +72,7 @@ namespace Recellection.Code.Controllers
             {
                 for (int j = 0; j < map_cols; j++)
                 {
-                    retur[i,j] = RandomTile(randomer);
+                    retur[i,j] = RandomTile(randomer,i,j);
                 }
 
             }
@@ -244,13 +244,13 @@ namespace Recellection.Code.Controllers
         /// </summary>
         /// <param name="randomer">The random generator used</param>
         /// <returns>A newly constructed Tile</returns>
-        private static Tile RandomTile(Random randomer)
+        private static Tile RandomTile(Random randomer, int x, int y)
         {
             //randomize a number which is 0 to number of terrain types - 1.
             int randomTile = randomer.Next(GetNumberOfTerrainTypes());
            
 
-            return new Tile((Globals.TerrainTypes)randomTile);
+            return new Tile(x,y,(Globals.TerrainTypes)randomTile);
         }
 
         /// <summary>
@@ -283,7 +283,7 @@ namespace Recellection.Code.Controllers
             Random randomer)
         {
 
-            tileMatrix[yCoord,xCoord] = new Tile(type);
+            tileMatrix[yCoord,xCoord] = new Tile(yCoord,xCoord,type);
 
             //4 represents the adjecent tiles
             //      X = 1

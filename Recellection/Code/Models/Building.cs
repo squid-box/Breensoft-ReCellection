@@ -63,7 +63,7 @@ namespace Recellection.Code.Models
         /// <param name="posY">The y tile coordinate</param>
         /// <param name="maxHealth">The max health of this building</param>
         /// <param name="owner">The player that owns the building</param>
-        /// <param name="type">The </param>
+        /// <param name="type">The type of the building</param>
         /// <param name="baseBuilding">The Base Building this building belongs
         /// to</param>
         public Building(String name, int posX, int posY, int maxHealth,
@@ -92,7 +92,7 @@ namespace Recellection.Code.Models
         /// <summary>
         /// Creates a building with specified parameters, the unit list will
         /// be initiated but empty and the current health will be set at maxHealth.
-        /// Regarding the controlZone the fift tile should be the 
+        /// Regarding the controlZone the first tile should be the 
         /// tile the building is standing on.
         /// </summary>
         /// <param name="name">The name for the building TODO Decide if this is
