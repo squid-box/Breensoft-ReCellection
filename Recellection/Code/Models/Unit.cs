@@ -259,6 +259,10 @@ namespace Recellection.Code.Models
             // Reasonably close to target.
             if ((Math.Abs(this.pos.X - this.target.X) < TARGET_THRESHOLD) && (Math.Abs(this.pos.Y - this.target.Y) < TARGET_THRESHOLD))
             {
+                if (!isDispersed)
+                {
+                    isDispersed = true;
+                }
                 this.target = new Vector2(NO_TARGET, NO_TARGET);
             }
         }

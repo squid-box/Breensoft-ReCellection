@@ -13,7 +13,7 @@ namespace Recellection.Code.Views
     /// to the player. The World View contains the information that is relevant to a single player, and
     /// therefore has a reference to a Player-object.
     /// </summary>
-    class WorldView
+    class WorldView : IDrawable
     {
         /// <summary>
         /// The player whose view of the world this is.
@@ -22,7 +22,7 @@ namespace Recellection.Code.Views
         /// <summary>
         /// The map of the world being viewed
         /// </summary>
-        public Tile[,] Map { get; private set; }
+        public World.Map Map { get; private set; }
 
         // TODO Figure out the Rectangle class...
         // public Rect CurrentScreen { get; set; }
@@ -31,7 +31,7 @@ namespace Recellection.Code.Views
         {
             this.Player = player;
             world.MapEvent += OnMapEvent;
-            world.TileEvent += OnTileEvent;
+            world.GetMap().TileEvent += OnTileEvent;
         }
 
         /// <summary>
@@ -39,7 +39,7 @@ namespace Recellection.Code.Views
         /// </summary>
         /// <param name="o"></param>
         /// <param name="ev"></param>
-        public void OnMapEvent(Object o, Event<Tile[,]> ev)
+        public void OnMapEvent(Object o, Event<World.Map> ev)
         {
             Map = ev.subject; 
         }
@@ -52,18 +52,9 @@ namespace Recellection.Code.Views
         /// <summary>
         /// I have no idea what this is supposed to do.
         /// </summary>
-        /// <returns>Something</returns>
-        public Object GetDrawables()
-        {
-
-        }
-
-        /// <summary>
-        /// I have no idea what this is supposed to do.
-        /// </summary>
         public void UpdateScreen()
         {
-
+            throw new NotImplementedException();
         }
 
         /// <summary>
@@ -71,7 +62,16 @@ namespace Recellection.Code.Views
         /// </summary>
         public void UpdateMapMatrix()
         {
-
+            throw new NotImplementedException();
         }
+
+        #region IDrawable Members
+        /*
+        public List<DrawData> GetDrawData()
+        {
+            throw new NotImplementedException();
+        }*/
+
+        #endregion
     }
 }
