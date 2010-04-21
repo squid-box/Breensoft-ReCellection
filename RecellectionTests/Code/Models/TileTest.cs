@@ -12,18 +12,21 @@ namespace Recellection.Code.Models
         Tile t1, t2;
         Player p;
         Unit u1, u2, u3;
-        Building b1, b2;
+        BaseBuilding b1;
+        Building b2;
 
         [SetUp]
         public void init()
         {
-            t1 = new Tile();
-            t2 = new Tile(Globals.TerrainTypes.Slow);
+            t1 = new Tile(0,0);
+            t2 = new Tile(0,0,Globals.TerrainTypes.Slow);
             p = new Player();
             u1 = new Unit();
             u2 = new Unit();
             u3 = new Unit();
-            //b1 = new Building();
+            b1 = new BaseBuilding("TestBase", 0, 0, p);
+            b2 = new AggressiveBuilding("TestBuilding1", 0, 0, p, b1);
+            
         }
 
         [Test]
@@ -62,24 +65,24 @@ namespace Recellection.Code.Models
         public void UnitTest()
         {
             Assert.AreEqual(0, t1.GetUnits().Count);
-            t1.AddUnit(u1);
+            t1.AddUnit(p, u1);
             List<Unit> l1 = new List<Unit>();
             l1.Add(u2);
             l1.Add(u3);
-            t1.AddUnit(l1);
+            t1.AddUnit(p, l1);
 
             Assert.AreEqual(3, t1.GetUnits().Count);
 
-            t1.AddUnit(u2);
+            t1.AddUnit(p, u2);
             Assert.AreEqual(3, t1.GetUnits().Count);
 
-            t1.RemoveUnit(u1);
+            t1.RemoveUnit(u1.GetOwner(), u1);
             Assert.AreEqual(2, t1.GetUnits().Count);
 
-            t1.RemoveUnit(u1);
+            t1.RemoveUnit(u1.GetOwner(), u1);
             Assert.AreEqual(2, t1.GetUnits().Count);
 
-            t1.RemoveUnit(l1);
+            t1.RemoveUnit(l1[0].GetOwner(), l1);
             Assert.AreEqual(0, t1.GetUnits().Count);
         }
 
