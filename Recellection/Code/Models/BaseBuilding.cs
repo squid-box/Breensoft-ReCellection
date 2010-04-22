@@ -7,6 +7,13 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace Recellection.Code.Models
 {
+    private int rateOfProduction;
+
+    public int RateOfProduction
+    {
+        get { return rateOfProduction; }
+        set { rateOfProduction = value; }
+    }
     /// <summary>
     /// The base building class serves the purpose of keeping track of 
     /// all the other buildings associated with it.
@@ -14,7 +21,7 @@ namespace Recellection.Code.Models
     /// 
     /// Author: Viktor Eklund
     /// </summary>
-    public class BaseBuilding : ResourceBuilding // note that I inherit ResourceBuilding,
+    public class BaseBuilding : Building // note that I inherit ResourceBuilding,
     {                                            // this makes sense as a BaseBuilding 
         private LinkedList<Building> childBuildings;     // will have it's own production
 
@@ -33,7 +40,7 @@ namespace Recellection.Code.Models
         /// <param name="posY"></param>
         /// <param name="owner"></param>
         public BaseBuilding(String name, int posX, int posY,Player owner)
-               :base(name, posX, posY, BASE_BUILDING_HEALTH, owner, null)
+               :base(name, posX, posY, BASE_BUILDING_HEALTH,owner,Globals.BuildingTypes.Base , null)
         {
             this.type = Globals.BuildingTypes.Base;
             childBuildings = new LinkedList<Building>();

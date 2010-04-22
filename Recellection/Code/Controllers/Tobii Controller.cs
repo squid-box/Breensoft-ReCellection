@@ -26,8 +26,7 @@ namespace Recellection
     public sealed class TobiiController
     {        
         //utan ett internt litet uppslagsverk så har controllern ingen aning om vad den ska kontrollera för något =(
-        private Dictionary<Globals.RegionCategories,List<WindowBoundInteractionRegionIdentifier>> regionCategories;
-
+        private Dictionary<Globals.RegionCategories,List<WindowBoundInteractionRegionIdentifier>> regionCategories;      
         private const int DEFAULT_TIME_SPAN = 1;
         private static Logger logger = LoggerFactory.GetLogger();
         private IntPtr xnaHandle;
