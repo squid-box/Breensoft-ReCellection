@@ -48,7 +48,7 @@ namespace Recellection.Code.Controllers
 
 
             //Constructs a new world using the dimensions.
-            World returWorld = new World(map_rows,map_cols, tileMatrix);
+            World returWorld = new World(tileMatrix);
 
             return returWorld;
         }
