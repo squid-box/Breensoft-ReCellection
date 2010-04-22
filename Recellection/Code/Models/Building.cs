@@ -87,6 +87,10 @@ namespace Recellection.Code.Models
             this.type = type;
 
             this.baseBuilding = baseBuilding;
+            if (baseBuilding != null)
+            {
+                Accept(baseBuilding);
+            }
         }
 
         /// <summary>
@@ -129,6 +133,11 @@ namespace Recellection.Code.Models
 
             this.baseBuilding = baseBuilding;
 
+            if (baseBuilding != null)
+            {
+                Accept(baseBuilding);
+            }
+
             this.controlZone = controlZone;
         }
 
@@ -147,7 +156,7 @@ namespace Recellection.Code.Models
         /// Checks if the health of the Building is more then zero
         /// </summary>
         /// <returns>If the current health is more then zero
-        /// it returns true other vice false</returns>
+        /// it returns true other wise false</returns>
         public bool IsAlive()
         {
             return currentHealth > 0;
@@ -245,7 +254,7 @@ namespace Recellection.Code.Models
         /// Removes a collection of units from the unit List,
         /// </summary>
         /// <param name="units">The collection of units to remove</param>
-        public void RemoveUnits(Collection<Unit> units)
+        public void RemoveUnits(ICollection<Unit> units)
         {
             foreach (Unit u in units)
             {

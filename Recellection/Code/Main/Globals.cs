@@ -9,6 +9,8 @@ namespace Recellection
 {
     public sealed class Globals
     {
+        public static GameStates gameState;
+
         public enum Songs
         {
             Theme
@@ -32,5 +34,13 @@ namespace Recellection
             Membrane, Mucus, Water, Slow, Infected, BaseBuilding, 
             BarrierBuilding, AggressiveBuilding, ResourceBuilding
         }
+
+        public enum GameStates
+        {
+            StartUp,
+            Menu,
+            Game,
+            Help
+        };
     }
 }
