@@ -7,13 +7,7 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace Recellection.Code.Models
 {
-    private int rateOfProduction;
 
-    public int RateOfProduction
-    {
-        get { return rateOfProduction; }
-        set { rateOfProduction = value; }
-    }
     /// <summary>
     /// The base building class serves the purpose of keeping track of 
     /// all the other buildings associated with it.
@@ -21,10 +15,16 @@ namespace Recellection.Code.Models
     /// 
     /// Author: Viktor Eklund
     /// </summary>
-    public class BaseBuilding : Building // note that I inherit ResourceBuilding,
-    {                                            // this makes sense as a BaseBuilding 
-        private LinkedList<Building> childBuildings;     // will have it's own production
+    public class BaseBuilding : Building 
 
+        private int rateOfProduction;
+
+        public int RateOfProduction
+        {
+            get { return rateOfProduction; }
+            set { rateOfProduction = value; }
+        }
+        private LinkedList<Building> childBuildings;    
         public LinkedList<Building>.Enumerator ChildBuildings
         {
             get { return childBuildings.GetEnumerator(); }            
