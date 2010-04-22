@@ -15,7 +15,7 @@ namespace Recellection.Code.Models
     /// 
     /// Author: Viktor Eklund
     /// </summary>
-    public class BaseBuilding : Building 
+    public class BaseBuilding : Building{
 
         private int rateOfProduction;
 
