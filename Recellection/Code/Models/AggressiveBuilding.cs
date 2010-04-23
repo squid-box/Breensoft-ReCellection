@@ -42,6 +42,23 @@ namespace Recellection.Code.Models
         }
 
         /// <summary>
+        /// Constructs a new AgressiveBuilding
+        /// </summary>
+        /// <param name="name"></param>
+        /// <param name="posX"></param>
+        /// <param name="posY"></param>
+        /// <param name="maxHealth"></param>
+        /// <param name="owner"></param>
+        /// <param name="baseBuilding"></param>
+        public AggressiveBuilding(String name, int posX, int posY, Player owner, BaseBuilding baseBuilding,
+            LinkedList<Tile> controlZone)
+            : base(name, posX, posY, AGGRESSIVE_BUILDING_HEALTH, owner, Globals.BuildingTypes.Aggressive, baseBuilding,controlZone)
+        {
+
+
+        }
+
+        /// <summary>
         /// Getter for the currently targeted unit
         /// </summary>
         /// <returns>
@@ -59,7 +76,12 @@ namespace Recellection.Code.Models
         public void SetTarget(Unit newTarget)
         {
             currentTarget = newTarget;
-            targetChanged(this,new Event<AggressiveBuilding>(this,EventType.ALTER));
+            units.Add(newTarget);
+            if (targetChanged != null)
+            {
+                targetChanged(this, new Event<AggressiveBuilding>(this, EventType.ALTER));
+            }
+            
         }
 
         public override Texture2D GetSprite()
