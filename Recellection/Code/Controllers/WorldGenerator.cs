@@ -168,7 +168,7 @@ namespace Recellection.Code.Controllers
             {
                 for (int j = 0; j < map_cols; j++)
                 {
-                    retur[i,j] = new Tile();
+                    retur[i,j] = new Tile(i,j);
                 }
 
             }
