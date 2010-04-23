@@ -104,6 +104,11 @@ namespace Recellection.Code.Models
             {
                 this.units[p].Add(u);
             }
+
+            if (unitsChanged != null)
+            {
+                unitsChanged(this, new Event<IEnumerable<Unit>>(this.units[p], EventType.ADD));
+            }
         }
         /// <summary>
         /// Add a unit to this Tile.
@@ -112,6 +117,11 @@ namespace Recellection.Code.Models
         public void AddUnit(Player p, Unit u)
         {
             this.units[p].Add(u);
+
+            if (unitsChanged != null)
+            {
+                unitsChanged(this, new Event<IEnumerable<Unit>>(this.units[p], EventType.ADD));
+            }
         }
 
         public void RemoveUnit(Player p, Unit u)
@@ -120,7 +130,7 @@ namespace Recellection.Code.Models
 
             if (unitsChanged != null)
             {
-                unitsChanged(this, new Event<IEnumerable<Unit>>(units, EventType.REMOVE));
+                unitsChanged(this, new Event<IEnumerable<Unit>>(this.units[p], EventType.REMOVE));
             }
         }
         public void RemoveUnit(Player p, List<Unit> units)
@@ -132,7 +142,8 @@ namespace Recellection.Code.Models
 
             if (unitsChanged != null)
             {
-                unitsChanged(this, new Event<IEnumerable<Unit>>(units, EventType.REMOVE));
+                
+                unitsChanged(this, new Event<IEnumerable<Unit>>(this.units[p], EventType.REMOVE));
             }
         }
 

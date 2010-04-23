@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using Recellection.Code.Utility.Events;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework;
 
 
 namespace Recellection.Code.Models
@@ -54,8 +55,16 @@ namespace Recellection.Code.Models
             LinkedList<Tile> controlZone)
             : base(name, posX, posY, AGGRESSIVE_BUILDING_HEALTH, owner, Globals.BuildingTypes.Aggressive, baseBuilding,controlZone)
         {
+            for(int i = 0; i < controlZone.Count; i++)
+            {
+                controlZone.ElementAt(i).unitsChanged += AggressiveBuilding_unitsChanged;
+            }
 
+        }
 
+        void AggressiveBuilding_unitsChanged(object publisher, Event<IEnumerable<Unit>> ev)
+        {
+            //TODO implement a way to add this to the que to be shoot.
         }
 
         /// <summary>
