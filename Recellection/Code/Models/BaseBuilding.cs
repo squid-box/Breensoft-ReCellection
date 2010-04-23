@@ -61,6 +61,15 @@ namespace Recellection.Code.Models
         }
 
         /// <summary>
+        /// A building may remove itself with itself as identifier
+        /// </summary>
+        /// <param name="building"></param>
+        public bool RemoveBuilding(Building building)
+        {
+            return childBuildings.Remove(building);
+        }
+
+        /// <summary>
         /// This function will prevent the real Visit function from being called
         /// with a base building.
         /// </summary>
