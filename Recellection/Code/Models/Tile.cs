@@ -4,6 +4,7 @@ using System.Linq;
 using Microsoft.Xna.Framework;
 using System.Text;
 using Recellection.Code.Models;
+using Recellection.Code.Utility.Events;
 
 namespace Recellection.Code.Models
 {
@@ -21,6 +22,10 @@ namespace Recellection.Code.Models
         private Building building;
         public Vector2 position;
 
+        // Events
+        public event Publish<IEnumerable<Player>> visionChanged;
+        public event Publish<IEnumerable<Unit>> unitsChanged;
+        public event Publish<Building> buildingChanged;
 
         // Methods
 
@@ -97,7 +102,7 @@ namespace Recellection.Code.Models
         {
             foreach (Unit u in units)
             {
-                
+                this.units[p].Add(u);
             }
         }
         /// <summary>
@@ -112,12 +117,22 @@ namespace Recellection.Code.Models
         public void RemoveUnit(Player p, Unit u)
         {
             this.units[p].Remove(u);
+
+            if (unitsChanged != null)
+            {
+                unitsChanged(this, new Event<IEnumerable<Unit>>(units, EventType.REMOVE));
+            }
         }
         public void RemoveUnit(Player p, List<Unit> units)
         {
             foreach (Unit u in units)
             {
                 this.units[p].Remove(u);
+            }
+
+            if (unitsChanged != null)
+            {
+                unitsChanged(this, new Event<IEnumerable<Unit>>(units, EventType.REMOVE));
             }
         }
 
@@ -152,6 +167,12 @@ namespace Recellection.Code.Models
             {
                 // Building placed.
                 this.building = building;
+                
+                if (buildingChanged != null)
+                {
+                    buildingChanged(this, new Event<Building>(building, EventType.ADD));
+                }
+
                 return true;
             }
         }
@@ -173,6 +194,11 @@ namespace Recellection.Code.Models
         public void MakeVisibleTo(Player p)
         {
             this.visibleTo.Add(p);
+
+            if (visionChanged != null)
+            {
+                visionChanged(this, new Event<IEnumerable<Player>>(visibleTo,EventType.ADD));
+            }
         }
         /// <summary>
         /// Make a player unable to see this tile.
@@ -181,6 +207,11 @@ namespace Recellection.Code.Models
         public void MakeInvisibleTo(Player p)
         {
             this.visibleTo.Remove(p);
+
+            if (visionChanged != null)
+            {
+                visionChanged(this, new Event<IEnumerable<Player>>(visibleTo,EventType.REMOVE));
+            }
         }
 
         /// <summary>
