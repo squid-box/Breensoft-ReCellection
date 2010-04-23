@@ -48,6 +48,21 @@ namespace Recellection.Code.Models
         }
 
         /// <summary>
+        /// Constructs a new base building
+        /// </summary>
+        /// <param name="name"></param>
+        /// <param name="posX"></param>
+        /// <param name="posY"></param>
+        /// <param name="owner"></param>
+        public BaseBuilding(String name, int posX, int posY,Player owner,LinkedList<Tile> controlZone)
+               :base(name, posX, posY, BASE_BUILDING_HEALTH,owner,Globals.BuildingTypes.Base , null,controlZone)
+        {
+            this.type = Globals.BuildingTypes.Base;
+            childBuildings = new LinkedList<Building>();
+            baseBuilding = this;
+        }
+
+        /// <summary>
         /// Allows any building except a BaseBuilding to add itself to this basebuildings list of buildings
         /// </summary>
         /// <param name="building"></param>
