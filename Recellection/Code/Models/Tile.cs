@@ -95,9 +95,13 @@ namespace Recellection.Code.Models
         /// <param name="units">Units to be added to this Tile.</param>
         public void AddUnit(Player p, List<Unit> units)
         {
+            if (this.units[p] == null)
+            {
+                this.units.Add(p, new HashSet<Unit>());
+            }
             foreach (Unit u in units)
             {
-                
+                this.units[p].Add(u);
             }
         }
         /// <summary>
@@ -106,6 +110,10 @@ namespace Recellection.Code.Models
         /// <param name="units">Units to be added to this Tile.</param>
         public void AddUnit(Player p, Unit u)
         {
+            if (this.units[p] == null)
+            {
+                this.units.Add(p, new HashSet<Unit>());
+            }
             this.units[p].Add(u);
         }
 
@@ -121,6 +129,7 @@ namespace Recellection.Code.Models
             }
         }
 
+        [Obsolete("Horribly horribly broken!")]
         public HashSet<Unit> GetUnits()
         {
             return null;
