@@ -76,7 +76,12 @@ namespace Recellection.Code.Models
         public void SetTarget(Unit newTarget)
         {
             currentTarget = newTarget;
-            targetChanged(this,new Event<AggressiveBuilding>(this,EventType.ALTER));
+            units.Add(newTarget);
+            if (targetChanged != null)
+            {
+                targetChanged(this, new Event<AggressiveBuilding>(this, EventType.ALTER));
+            }
+            
         }
 
         public override Texture2D GetSprite()
