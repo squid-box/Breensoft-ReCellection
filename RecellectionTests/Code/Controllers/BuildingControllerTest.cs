@@ -24,7 +24,7 @@ namespace Recellection.Code.Controllers
         [Test]
         public void CreateControlZone()
         {
-
+            Assert.True(true);
         }
     }
 }
