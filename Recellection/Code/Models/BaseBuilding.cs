@@ -69,7 +69,19 @@ namespace Recellection.Code.Models
         public void Visit(Building building)
         {
             childBuildings.AddLast(building);
-            buildingsChanged(this, new BuildingAddedEvent(building,EventType.ADD));
+            if (buildingsChanged != null)
+            {
+                buildingsChanged(this, new BuildingAddedEvent(building, EventType.ADD));
+            }          
+        }
+
+        /// <summary>
+        /// A building may remove itself with itself as identifier
+        /// </summary>
+        /// <param name="building"></param>
+        public bool RemoveBuilding(Building building)
+        {
+            return childBuildings.Remove(building);
         }
 
         /// <summary>
