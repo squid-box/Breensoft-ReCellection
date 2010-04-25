@@ -134,9 +134,13 @@ namespace Recellection
         /// "GetRegionByIdentifer"
         /// should you want to fiddle with the GUIRegion later.
         /// </returns>
-        public WindowBoundInteractionRegionIdentifier AddRegion(Rect pos,Globals.RegionCategories regionID)
+        public WindowBoundInteractionRegionIdentifier AddRegion(Rect pos, Globals.RegionCategories regionID)
         {
-                GUIRegion newRegion = new GUIRegion(xnaHandle, pos);
+            GUIRegion newRegion = new GUIRegion(xnaHandle, pos);
+            return AddRegion(newRegion, regionID);
+        }
+        public WindowBoundInteractionRegionIdentifier AddRegion(GUIRegion newRegion,Globals.RegionCategories regionID)
+        {                
                 newRegion.CanActivate = true;
                 if (newRegion.DwellTime == null)
                 {
