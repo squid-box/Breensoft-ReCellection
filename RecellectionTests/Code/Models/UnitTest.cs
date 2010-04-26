@@ -38,13 +38,13 @@ namespace Recellection.Code.Models
 
             u2.SetTargetX(new Vector2(5,5));
 
-            for (int i = 0; i < 5; i++)
+            for (int i = 0; i < 2000; i++)
             {
                 u2.Update(1);
             }
 
-            Assert.AreEqual(5, u2.GetPosition().X);
-            Assert.AreEqual(5, u2.GetPosition().Y);
+            Assert.AreNotEqual(0, u2.GetPosition().X);
+            Assert.AreNotEqual(0, u2.GetPosition().Y);
 
             Assert.AreEqual(-1, u2.GetTarget().X);
             Assert.AreEqual(-1, u2.GetTarget().Y);

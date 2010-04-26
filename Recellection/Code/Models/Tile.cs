@@ -12,7 +12,7 @@ namespace Recellection.Code.Models
     /// Representation of a tile in the game world.
     /// </summary>
     /// <author>Joel Ahlgren</author>
-    /// <date>2010-04-12</date>
+    /// <date>2010-04-26</date>
     public class Tile : IModel
     {
         // Data
@@ -100,7 +100,7 @@ namespace Recellection.Code.Models
         /// <param name="units">Units to be added to this Tile.</param>
         public void AddUnit(Player p, List<Unit> units)
         {
-            if (this.units[p] == null)
+            if (!this.units.ContainsKey(p))
             {
                 this.units.Add(p, new HashSet<Unit>());
             }
@@ -120,7 +120,7 @@ namespace Recellection.Code.Models
         /// <param name="units">Units to be added to this Tile.</param>
         public void AddUnit(Player p, Unit u)
         {
-            if (this.units[p] == null)
+            if (!this.units.ContainsKey(p))
             {
                 this.units.Add(p, new HashSet<Unit>());
             }
@@ -168,7 +168,14 @@ namespace Recellection.Code.Models
         /// <returns>HashSet of units in this tile.</returns>
         public HashSet<Unit> GetUnits(Player p)
         {
-            return this.units[p];
+            if(this.units.ContainsKey(p))
+            {
+                return this.units[p];
+            }
+            else
+            {
+                return new HashSet<Unit>();
+            }
         }
 
         /// <summary>

@@ -27,7 +27,8 @@ namespace Recellection.Code.Models
         {
             try
             {
-                lang = new Language("English");
+                lang = Language.Instance;
+                Assert.Pass(lang.GetLanguage().ToString() + " loaded.");
             }
             catch(Exception e)
             {
