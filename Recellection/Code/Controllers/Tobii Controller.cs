@@ -189,9 +189,10 @@ namespace Recellection
         /// Odds are that we won't want to really remove a region (we can just disable them by category instead)
         /// But if one need to be removed then so be it
         /// </summary>
-        /// <param name="id"></param>
-        public void RemoveRegionByIdentifier(WindowBoundInteractionRegionIdentifier id) {
-            Interaction.RemoveRegion(id); 
+        /// <param name="id"><
+        /// /param>
+        public bool RemoveRegionByIdentifier(WindowBoundInteractionRegionIdentifier id) {
+           return Interaction.RemoveRegion(id);//throws exceptions if id did not exist               
             //assuming nothing funky happens if trying to remove a non existing region
         }
 
