@@ -67,15 +67,15 @@ namespace Recellection.Code.Controllers
         /// <returns>True if the player has no graphs false othervice</returns>
         private Boolean HasLost(Player player)
         {
-            /*if (player.CountGraphs() == 0)
+            if (player.GetGraphs().Count == 0)
             {
                 return true;
 
             }
             else
-            {*/
+            {
                 return false;
-            //}
+            }
         }
 
         /// <summary>
@@ -86,10 +86,10 @@ namespace Recellection.Code.Controllers
         /// in the world is zero false othervice.</returns>
         private Boolean HasWon()
         {
-            /*if (world.GetPlayers().Length() == 1)
+            if (world.players.Count == 1)
             {
                 return true;
-            }*/
+            }
 
             return false;
         }
