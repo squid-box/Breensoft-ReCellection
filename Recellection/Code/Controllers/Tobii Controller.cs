@@ -134,9 +134,13 @@ namespace Recellection
         /// "GetRegionByIdentifer"
         /// should you want to fiddle with the GUIRegion later.
         /// </returns>
-        public WindowBoundInteractionRegionIdentifier AddRegion(Rect pos,Globals.RegionCategories regionID)
+        public WindowBoundInteractionRegionIdentifier AddRegion(Rect pos, Globals.RegionCategories regionID)
         {
-                GUIRegion newRegion = new GUIRegion(xnaHandle, pos);
+            GUIRegion newRegion = new GUIRegion(xnaHandle, pos);
+            return AddRegion(newRegion, regionID);
+        }
+        public WindowBoundInteractionRegionIdentifier AddRegion(GUIRegion newRegion,Globals.RegionCategories regionID)
+        {                
                 newRegion.CanActivate = true;
                 if (newRegion.DwellTime == null)
                 {
@@ -185,9 +189,10 @@ namespace Recellection
         /// Odds are that we won't want to really remove a region (we can just disable them by category instead)
         /// But if one need to be removed then so be it
         /// </summary>
-        /// <param name="id"></param>
-        public void RemoveRegionByIdentifier(WindowBoundInteractionRegionIdentifier id) {
-            Interaction.RemoveRegion(id); 
+        /// <param name="id"><
+        /// /param>
+        public bool RemoveRegionByIdentifier(WindowBoundInteractionRegionIdentifier id) {
+           return Interaction.RemoveRegion(id);//throws exceptions if id did not exist               
             //assuming nothing funky happens if trying to remove a non existing region
         }
 
