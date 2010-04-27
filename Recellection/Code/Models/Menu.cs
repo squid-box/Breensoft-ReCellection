@@ -12,7 +12,7 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace Recellection.Code.Models
 {
-    class Menu : IModel
+    public class Menu : IModel
     {
         private List<GUIRegion> regions;
         private Texture2D menuPic;
