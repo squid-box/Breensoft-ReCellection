@@ -16,8 +16,8 @@ namespace Recellection
         TobiiController tobiiController;
         GUIRegion region1;
         GUIRegion region2;
-        GUIRegion region3;
-        GUIRegion region4;
+        Menu menu1;
+        Menu menu2;
         IntPtr dummyHandle;
         Rect dummyRect;
 
@@ -31,21 +31,22 @@ namespace Recellection
             tobiiController.Init();
             region1 = new GUIRegion(dummyHandle, dummyRect);
             region2 = new GUIRegion(dummyHandle, dummyRect);
-            region3 = new GUIRegion(dummyHandle, dummyRect);
-            region4 = new GUIRegion(dummyHandle, dummyRect);
+            menu1 = new Menu();
+            menu2 = new Menu();
+            menu1.
         }
 
         [Test]
         public void testIdentifiers1()
         {
-            WindowBoundInteractionRegionIdentifier id1 = tobiiController.AddRegion(region1, Globals.RegionCategories.MainMenu);            
+            WindowBoundInteractionRegionIdentifier id1 = tobiiController.AddRegion(region1);            
             GUIRegion maybe_same1 = tobiiController.GetRegionByIdentifier(id1);
             Assert.AreSame(maybe_same1, region1);            
         }
         [Test]
         public void testRemove()
         {
-            WindowBoundInteractionRegionIdentifier removeMe = tobiiController.AddRegion(region2, Globals.RegionCategories.MainMenu);
+            WindowBoundInteractionRegionIdentifier removeMe = tobiiController.AddRegion(region2);
             Assert.IsTrue(tobiiController.RemoveRegionByIdentifier(removeMe));
             Assert.IsTrue(!tobiiController.RemoveRegionByIdentifier(removeMe));
             //GUIRegion doesNotExist = tobiiController.GetRegionByIdentifier(removeMe);
