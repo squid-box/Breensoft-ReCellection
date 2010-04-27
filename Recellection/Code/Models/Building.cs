@@ -338,5 +338,12 @@ namespace Recellection.Code.Models
             {
             }
         }
+
+        /// <returns>Returns the buy price for a building, it is set
+        /// at its health divided by 10. Upkeep should be added elsewhere.</returns>
+        public int getBuyPrice()
+        {
+            return maxHealth / 10;
+        }
     }
 }
