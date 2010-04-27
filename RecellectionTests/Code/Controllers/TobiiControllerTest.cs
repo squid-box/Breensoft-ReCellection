@@ -32,8 +32,7 @@ namespace Recellection
             region1 = new GUIRegion(dummyHandle, dummyRect);
             region2 = new GUIRegion(dummyHandle, dummyRect);
             menu1 = new Menu();
-            menu2 = new Menu();
-            menu1.
+            menu2 = new Menu();            
         }
 
         [Test]
