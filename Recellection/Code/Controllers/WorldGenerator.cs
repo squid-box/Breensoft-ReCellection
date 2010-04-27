@@ -13,6 +13,7 @@ namespace Recellection.Code.Controllers
     /// all the world tiles and place the spawn points.
     /// 
     /// Author: John Forsberg
+    /// 
     /// </summary>
     public class WorldGenerator
     {
@@ -48,7 +49,7 @@ namespace Recellection.Code.Controllers
 
 
             //Constructs a new world using the dimensions.
-            World returWorld = new World(tileMatrix);
+            World returWorld = new World(tileMatrix, mapSeed);
 
             return returWorld;
         }
@@ -149,8 +150,6 @@ namespace Recellection.Code.Controllers
         private static Tile[,] InitTileMatrix2(Random randomer)
         {
 
-
-
             map_rows = randomer.Next(MINIMUM_MAP_SIZE, MAXIMUM_MAP_SIZE);
 
             map_cols = randomer.Next(MINIMUM_MAP_SIZE, MAXIMUM_MAP_SIZE);
@@ -200,12 +199,14 @@ namespace Recellection.Code.Controllers
             {
                 //Calculate the length of the vector between the new spawn
                 //point and the last one.
-                while ( DistanceBetweenPoints(previousXCoord,previousYCoord,
-                    randomX,randomY) < MIN_DISTANCE_BETWEEN_PLAYERS)
+
+                do
                 {
                     randomX = randomer.Next(10, width - 10);
                     randomY = randomer.Next(10, heigth - 10);
                 }
+                while (DistanceBetweenPoints(previousXCoord, previousYCoord,
+                    randomX, randomY) < MIN_DISTANCE_BETWEEN_PLAYERS);
 
                 SpawnGraph(randomX, randomY, player);
 

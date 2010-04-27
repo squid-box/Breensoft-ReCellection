@@ -71,7 +71,10 @@ namespace Recellection.Code.Models
                     throw new IndexOutOfRangeException("Attempted to set a tile outside the range of the map.");
                 }
                 map[row, col] = t;
-                TileEvent(this, new Event<Tile>(t, EventType.REMOVE));
+                if (TileEvent != null)
+                {
+                    TileEvent(this, new Event<Tile>(t, EventType.REMOVE));
+                }
             }
         }
 
@@ -80,8 +83,14 @@ namespace Recellection.Code.Models
 
         #region Events
         
+        /// <summary>
+        /// Event that is invoked when the map is changed
+        /// </summary>
         public event Publish<Map> MapEvent;
 
+        /// <summary>
+        /// Event that is invoked when the set of players in the world changes
+        /// </summary>
         public event Publish<Player> PlayerEvent; 
         #endregion
         
@@ -89,6 +98,8 @@ namespace Recellection.Code.Models
         /// The tiles of the world arranged in a row-column matrix
         /// </summary>
         public Map map { get; private set; }
+
+        public int seed { get; private set; }
 
         public List<Player> players { get; private set; }
 
@@ -98,9 +109,10 @@ namespace Recellection.Code.Models
         /// </summary>
         /// <param name="rows">Number of rows in the map of the world</param>
         /// <param name="cols">Number of columns in the map of the world</param>
-        public World(Tile[,] map)
+        public World(Tile[,] map, int seed)
         {
             players = new List<Player>();
+            this.seed = seed;
             SetMap(map);
         }
 
@@ -111,7 +123,10 @@ namespace Recellection.Code.Models
         public void AddPlayer(Player p) 
         {
             players.Add(p);
-            PlayerEvent(this, new Event<Player>(p, EventType.ADD));
+            if (PlayerEvent != null)
+            {
+                PlayerEvent(this, new Event<Player>(p, EventType.ADD));
+            }
         }
 
         /// <summary>
@@ -121,7 +136,10 @@ namespace Recellection.Code.Models
         public void RemovePlayer(Player p)
         {
             players.Remove(p);
-            PlayerEvent(this, new Event<Player>(p, EventType.REMOVE));
+            if (PlayerEvent != null)
+            {
+                PlayerEvent(this, new Event<Player>(p, EventType.REMOVE));
+            }
         }
 
         /// <summary>
@@ -135,7 +153,10 @@ namespace Recellection.Code.Models
         {
             ClearMap();
             this.map = new Map(map);
-            MapEvent(this, new Event<Map>(this.map, EventType.ADD));
+            if (MapEvent!=null)
+            {
+                MapEvent(this, new Event<Map>(this.map, EventType.ADD)); 
+            }
         }
 
         /// <summary>
@@ -145,7 +166,10 @@ namespace Recellection.Code.Models
         {
             this.map = null;
             Map temp = this.map;
-            MapEvent(this, new Event<Map>(temp, EventType.REMOVE));
+            if (MapEvent != null)
+            {
+                MapEvent(this, new Event<Map>(temp, EventType.REMOVE));
+            }
         }
 
         /// <summary>
@@ -156,6 +180,5 @@ namespace Recellection.Code.Models
         {
             return map;
         }
-
     }
 }
