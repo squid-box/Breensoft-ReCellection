@@ -63,6 +63,5 @@ namespace Recellection.Code.Models
                regionActivated(this, new GUIRegionEvent(this, t));
             }
         }
-
     }
 }

@@ -8,17 +8,15 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace Recellection.Code.Controllers
 {
+    /// <summary>
+    /// This class delegates the update-cycle to each unit allowing them to move in the world.
+    /// The Unit controller also gives orders to units to move to another position.
+    /// 
+    /// Author: Marco
+    /// </summary>
+    
     public class UnitController
     {
-
-        public void Update(IEnumerator<Unit> units, int deltaT)
-        {
-            while(units.MoveNext())
-            {
-                units.Current.Update(deltaT);
-
-            }
-        }
 
         /// <summary>
         /// Move a set of units from one tile to another
@@ -26,7 +24,7 @@ namespace Recellection.Code.Controllers
         /// <param name="amount">The amount of units to be moved</param>
         /// <param name="from">The tile to move units from</param>
         /// <param name="to">Tile tile to move units to</param>
-        public void MoveUnits(int amount, Tile from, Tile to)
+        public static void MoveUnits(int amount, Tile from, Tile to)
         {
             List<Unit> tempUnit = new List<Unit>();
 
@@ -49,7 +47,7 @@ namespace Recellection.Code.Controllers
             {
                 if (amount <= 0)
                     break;
-                u.SetTargetX(to.position);
+                u.SetTargetTile(to);
                 if (u.IsDispersed())
                 {
                     tempUnit.Add(u);
@@ -81,7 +79,7 @@ namespace Recellection.Code.Controllers
         /// </summary>
         /// <param name="units"></param>
         /// <param name="amount"></param>
-        public void KillUnits(IEnumerable<Unit> units, int amount)
+        public static void KillUnits(IEnumerable<Unit> units, int amount)
         {
             foreach (Unit u in units)
             {
@@ -93,22 +91,34 @@ namespace Recellection.Code.Controllers
             }
         }
 
-        public void Update(IEnumerable<Unit> units, int systemTime)
+        /// <summary>
+        /// Call the update method on each unit causing them to move towards their target.
+        /// If the unit has arrived to its target, it will recieve new orders. If it was previously
+        /// travelling to a building, it will be joined with that building upon arrival.
+        /// </summary>
+        /// <param name="units">The set of units to be updated</param>
+        /// <param name="systemTime">The time passed since something</param>
+        public static void Update(IEnumerable<Unit> units, int systemTime)
         {
             foreach (Unit u in units)
             {
-                // Check whether or not we just arrived to a building
+                // Check whether or not we just arrived to our target
                 bool travelling = u.IsDispersed();
                 
                 u.Update(systemTime);
+                // We we arrive to our target
                 if (travelling && u.IsDispersed())
                 {
-                    Vector2 pos = u.GetPosition();
+                    Tile t = u.GetTargetTile();
+                    Vector2 min = new Vector2((floatMath.Floor(t.position.X), Math.Floor(t.position.Y));
                     
+                    Random r = new Random();
+                    float rX = (float)r.NextDouble() + min.X;
+                    float rY = (float)r.NextDouble() + min.Y;
+
+                    u.SetTargetVector(t + position );
                 }
-                
             }
         }
-
     }
 }

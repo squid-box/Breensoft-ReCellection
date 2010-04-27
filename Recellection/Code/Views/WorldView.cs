@@ -66,11 +66,11 @@ namespace Recellection.Code.Views
         }
 
         #region IDrawable Members
-        /*
+        
         public List<DrawData> GetDrawData()
         {
             throw new NotImplementedException();
-        }*/
+        }
 
         #endregion
     }

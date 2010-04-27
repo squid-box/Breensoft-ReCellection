@@ -5,8 +5,8 @@ using System.Text;
 
 namespace Recellection.Code.Views
 {
-    interface IDrawable
+    public interface IDrawable
     {
-        /*public List<DrawData> GetDrawData();*/
+        List<DrawData> GetDrawData();
     }
 }

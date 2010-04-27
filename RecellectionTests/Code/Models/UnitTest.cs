@@ -33,10 +33,12 @@ namespace Recellection.Code.Models
             Assert.AreEqual(0, u2.GetPosition().X);
             Assert.AreEqual(0, u2.GetPosition().Y);
 
-            Assert.AreEqual(-1, u2.GetTarget().X);
-            Assert.AreEqual(-1, u2.GetTarget().Y);
+            Vector2 v = u2.GetTargetVector();
 
-            u2.SetTargetX(new Vector2(5,5));
+            Assert.AreEqual(-1, v.X);
+            Assert.AreEqual(-1, v.Y);
+
+            u2.SetTargetVector(new Vector2(5,5));
 
             for (int i = 0; i < 5; i++)
             {
@@ -46,8 +48,10 @@ namespace Recellection.Code.Models
             Assert.AreEqual(5, u2.GetPosition().X);
             Assert.AreEqual(5, u2.GetPosition().Y);
 
-            Assert.AreEqual(-1, u2.GetTarget().X);
-            Assert.AreEqual(-1, u2.GetTarget().Y);
+            v = u2.GetTargetVector();
+
+            Assert.AreEqual(-1, v.X);
+            Assert.AreEqual(-1, v.Y);
         }
     }
 }

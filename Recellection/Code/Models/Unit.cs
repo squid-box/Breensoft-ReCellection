@@ -21,10 +21,16 @@ namespace Recellection.Code.Models
     {
         // DATA
         private Vector2 position;        // Current tile
-        private Vector2 target;     // Target coordinate
+        private Vector2 targetVector;     // Target coordinate
         private int angle;          // Angle of unit, for drawing
         private bool isDispersed;   // Whether or not this unit should recieve a new target from the dispersion procedure
         private bool isDead;        // Status of unit
+
+        /// <summary>
+        /// The target tile this unit is bound to.
+        /// </summary>
+        private Tile targetTile;
+
         private float powerLevel;
         private Player owner;
 
@@ -43,7 +49,7 @@ namespace Recellection.Code.Models
         public Unit()
         {
             this.position = new Vector2(0, 0);
-            this.target = new Vector2(NO_TARGET,NO_TARGET);
+            this.targetVector = new Vector2(NO_TARGET,NO_TARGET);
             this.angle = 0;
             this.isDispersed = this.isDead = false;
             this.owner = null;
@@ -56,7 +62,7 @@ namespace Recellection.Code.Models
         public Unit(float posX, float posY)
         {
             this.position = new Vector2(posX, posY);
-            this.target = new Vector2(NO_TARGET, NO_TARGET);
+            this.targetVector = new Vector2(NO_TARGET, NO_TARGET);
             this.angle = 0;
             this.isDispersed = this.isDead = false;
             this.owner = null;
@@ -70,7 +76,7 @@ namespace Recellection.Code.Models
         public Unit(float posX, float posY, Player owner)
         {
             this.position = new Vector2(posX, posY);
-            this.target = new Vector2(NO_TARGET, NO_TARGET);
+            this.targetVector = new Vector2(NO_TARGET, NO_TARGET);
             this.angle = 0;
             this.isDispersed = this.isDead = false;
             this.owner = owner;
@@ -84,7 +90,7 @@ namespace Recellection.Code.Models
         public Unit(float posX, float posY, int angle)
         {
             this.position = new Vector2(posX, posY);
-            this.target = new Vector2(NO_TARGET, NO_TARGET);
+            this.targetVector = new Vector2(NO_TARGET, NO_TARGET);
             this.angle = angle;
             this.isDispersed = this.isDead = false;
             this.owner = null;
@@ -115,17 +121,36 @@ namespace Recellection.Code.Models
         /// 
         /// </summary>
         /// <returns>X and Y coordinates of target tile.</returns>
-        public Vector2 GetTarget()
+        public Vector2 GetTargetVector()
         {
-            return this.target;
+            return this.targetVector;
         }
         /// <summary>
         /// Change target.
         /// </summary>
         /// <param name="newTarget">X and Y coordinates of new target.</param>
-        public void SetTargetX(Vector2 newTarget)
+        public void SetTargetVector(Vector2 newTarget)
         {
-            this.target = newTarget;
+            this.targetVector = newTarget;
+        }
+
+        /// <summary>
+        /// Set the tile this unit will move around
+        /// </summary>
+        /// <param name="tile"></param>
+        public void SetTargetTile(Tile tile)
+        {
+            this.targetTile = tile;
+            SetTargetVector(tile.position);
+        }
+
+        /// <summary>
+        /// Get the tile this unit moves around
+        /// </summary>
+        /// <returns>A tile.</returns>
+        public Tile GetTargetTile()
+        {
+            return targetTile;
         }
         /// <summary>
         /// Get current position of this Unit.
@@ -230,40 +255,43 @@ namespace Recellection.Code.Models
         private void Move(float deltaTime)
         {
             //TODO: Move unit towards target.
-            if (this.target.X != NO_TARGET)
+            if (this.targetVector.X != NO_TARGET)
             {
-                if (this.target.X > this.position.X)
+                if (this.targetVector.X > this.position.X)
                 {
                     this.position.X += MOVEMENT_SPEED * deltaTime;
                 }
-                else if (this.target.X < this.position.X)
+                else if (this.targetVector.X < this.position.X)
                 {
                     this.position.X += MOVEMENT_SPEED * deltaTime;
                 }
                 else
                 {
-                    this.target.X = NO_TARGET;
+                    this.targetVector.X = NO_TARGET;
                 }
             }
-            if (this.target.Y != NO_TARGET)
+            if (this.targetVector.Y != NO_TARGET)
             {
-                if (this.target.Y > this.position.Y)
+                if (this.targetVector.Y > this.position.Y)
                 {
                     this.position.Y += MOVEMENT_SPEED * deltaTime;
                 }
-                else if (this.target.Y < this.position.Y)
+                else if (this.targetVector.Y < this.position.Y)
                 {
                     this.position.Y += MOVEMENT_SPEED * deltaTime;
                 }
             }
             // Reasonably close to target.
-            if ((Math.Abs(this.position.X - this.target.X) < TARGET_THRESHOLD) && (Math.Abs(this.position.Y - this.target.Y) < TARGET_THRESHOLD))
+            if ((Math.Abs(this.position.X - this.targetVector.X) < TARGET_THRESHOLD) && (Math.Abs(this.position.Y - this.targetVector.Y) < TARGET_THRESHOLD))
             {
                 if (!isDispersed)
                 {
                     isDispersed = true;
                 }
-                this.target = new Vector2(NO_TARGET, NO_TARGET);
+                float x = targetTile.position.X;
+                float y = targetTile.position.Y;
+                Random r = new Random();
+                this.targetVector = new Vector2(x+r.NextDouble%-0.5, NO_TARGET);
             }
         }
     }

@@ -50,7 +50,7 @@ namespace Recellection.Code.Models
             this.type = new TerrainType();
             this.visibleTo = new HashSet<Player>();
             this.units = new Dictionary<Player, HashSet<Unit>>();
-            this.position = new Vector2(x, y);
+            this.position = new Vector2(x+0.5, y+0.5);
             this.building = null;
         }
 
