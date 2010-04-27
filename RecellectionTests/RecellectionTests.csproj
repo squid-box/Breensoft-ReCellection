@@ -48,10 +48,22 @@
     </Reference>
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
+    <Reference Include="Tobii.TecSDK.Client, Version=1.1.0.996, Culture=neutral, PublicKeyToken=1e024c1b473ff563, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\..\..\Program Files\Tobii\Tobii Eye Control SDK\Assemblies\Tobii.TecSDK.Client.dll</HintPath>
+    </Reference>
+    <Reference Include="Tobii.TecSDK.Core, Version=1.1.0.996, Culture=neutral, PublicKeyToken=1e024c1b473ff563, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\..\..\Program Files\Tobii\Tobii Eye Control SDK\Assemblies\Tobii.TecSDK.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="WindowsBase">
+      <RequiredTargetFramework>3.0</RequiredTargetFramework>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Code\Controllers\BuildingControllerTest.cs" />
     <Compile Include="Code\Controllers\GraphControllerTest.cs" />
+    <Compile Include="Code\Controllers\TobiiControllerTest.cs" />
     <Compile Include="Code\Controllers\UnitAccountantTest.cs" />
     <Compile Include="Code\Controllers\WorldGeneratorTest.cs" />
     <Compile Include="Code\Models\LanguageTest.cs" />

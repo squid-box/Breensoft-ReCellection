@@ -57,17 +57,6 @@ namespace Recellection.Code.Models
             this.ReadLanguagesFromFile();
         }
 
-        /// <summary>
-        /// Create a Language object. Preferably only once...
-        /// </summary>
-        /// <param name="language">Current language to use.</param>
-        public Language(String language)
-        {
-            this.currentLanguage = language;
-            this.translations = new Dictionary<String, Dictionary<String, String>>();
-            this.ReadLanguagesFromFile();
-        }
-
         #endregion
 
 
@@ -77,9 +66,16 @@ namespace Recellection.Code.Models
         }
         
         // Adding new strings to the model
-        public void SetString(String language, string label, string translation)
+        public void SetString(String language, String label, String translation)
         {
-            this.translations[language].Add(label, translation);
+            if (this.translations.ContainsKey(language))
+            {
+                this.translations[language].Add(label, translation);
+            }
+            else
+            {
+                throw new ArgumentException("Language does not exist!");
+            }
         }
         
         // Changing the language
@@ -100,26 +96,38 @@ namespace Recellection.Code.Models
             DirectoryInfo di = new DirectoryInfo("Content/Languages");
             FileInfo[] fi = di.GetFiles("*."+EXTENSION);
 
+            Console.Error.WriteLine(fi[0].Name);
+
             // Variables for looping.
             StreamReader sr;
             String language;
+            String tempLine;
             String[] tmp;
 
             foreach (FileInfo f in fi)
             {
                 sr = new StreamReader(new FileStream("Content/Languages/" + f.Name, FileMode.Open));
-                language = f.Name.Split('.')[0];
+                if (!f.Name.Equals(""))
+                {
+                    //language = f.Name.Split('.')[0];
 
-                // Make sure the language exists
-                if(this.translations[language] == null)
-                {
-                    this.translations.Add(language, new Dictionary<string,string>());
-                }
-                
-                while (!sr.EndOfStream)
-                {
-                    tmp = sr.ReadLine().Split('=');
-                    translations[language].Add(tmp[0], tmp[1]);
+                    language = "English";
+
+                    // Make sure the language exists
+                    if (!this.translations.ContainsKey(language))
+                    {
+                        this.translations.Add(language, new Dictionary<string, string>());
+                    }
+
+                    while (!sr.EndOfStream)
+                    {
+                        tempLine = sr.ReadLine();
+                        if (!tempLine.StartsWith("["))  // ignore lines starting with '['.
+                        {
+                            tmp = tempLine.Split('=');
+                            this.SetString(language, tmp[0], tmp[1]);
+                        }
+                    }
                 }
             }
         }

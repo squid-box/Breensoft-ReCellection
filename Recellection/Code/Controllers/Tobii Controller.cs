@@ -26,7 +26,7 @@ namespace Recellection
     public sealed class TobiiController
     {        
         //utan ett internt litet uppslagsverk så har controllern ingen aning om vad den ska kontrollera för något =(
-        private Dictionary<Globals.RegionCategories,List<WindowBoundInteractionRegionIdentifier>> regionCategories;      
+        //private Dictionary<Globals.RegionCategories,List<WindowBoundInteractionRegionIdentifier>> regionCategories;      
         private const int DEFAULT_TIME_SPAN = 1;
         private static Logger logger = LoggerFactory.GetLogger();
         private IntPtr xnaHandle;
@@ -44,7 +44,7 @@ namespace Recellection
         private TobiiController(IntPtr xnaHandle)
         {
             this.xnaHandle = xnaHandle;
-            regionCategories = new Dictionary<Globals.RegionCategories,List<WindowBoundInteractionRegionIdentifier>>();
+            //regionCategories = new Dictionary<Globals.RegionCategories,List<WindowBoundInteractionRegionIdentifier>>();
             logger.Info("Created the Tobii Controller");
         }
 
@@ -85,12 +85,22 @@ namespace Recellection
         /// </summary>
         /// <param name="regionID"></param>
         /// <param name="value"></param>
-        public void SetRegionsEnabled(Globals.RegionCategories regionID, bool value)
+        //public void SetRegionsEnabled(Globals.RegionCategories regionID, bool value)
+        //{
+        //    for (int i = 0; i < regionCategories[regionID].Count; i++)
+        //    {
+        //        Interaction.Regions[regionCategories[regionID].ElementAt(i)].Enabled = value;
+        //    }
+        //}
+
+        public void LoadMenu(Menu menu)
         {
-            for (int i = 0; i < regionCategories[regionID].Count; i++)
+            Interaction.Regions.Clear();
+            foreach(GUIRegion region in menu.GetRegions())
             {
-                Interaction.Regions[regionCategories[regionID].ElementAt(i)].Enabled = value;
+                AddRegion(region);
             }
+
         }
 
         /// <summary>
@@ -100,15 +110,15 @@ namespace Recellection
         /// </summary>
         /// <param name="regionID"></param>
         /// <returns>List of GUIRegion</returns>
-        public List<GUIRegion> GetRegionsByCategory(Globals.RegionCategories regionID)
-        {
-            List<GUIRegion> ret = new List<GUIRegion>();
-            for (int i = 0; i < regionCategories[regionID].Count; i++)
-            {                
-                ret.Add((GUIRegion)Interaction.FindRegion(regionCategories[regionID].ElementAt(i)));
-            }
-            return ret;
-        }
+        //public List<GUIRegion> GetRegionsByCategory(Globals.RegionCategories regionID)
+        //{
+        //    List<GUIRegion> ret = new List<GUIRegion>();
+        //    for (int i = 0; i < regionCategories[regionID].Count; i++)
+        //    {                
+        //        ret.Add((GUIRegion)Interaction.FindRegion(regionCategories[regionID].ElementAt(i)));
+        //    }
+        //    return ret;
+        //}
 
         /// <summary>
         /// Will return a region given it's identifier        
@@ -134,31 +144,35 @@ namespace Recellection
         /// "GetRegionByIdentifer"
         /// should you want to fiddle with the GUIRegion later.
         /// </returns>
-        public WindowBoundInteractionRegionIdentifier AddRegion(Rect pos,Globals.RegionCategories regionID)
+        public WindowBoundInteractionRegionIdentifier AddRegion(Rect pos)
         {
-                GUIRegion newRegion = new GUIRegion(xnaHandle, pos);
+            GUIRegion newRegion = new GUIRegion(xnaHandle, pos);
+            return AddRegion(newRegion);
+        }
+        public WindowBoundInteractionRegionIdentifier AddRegion(GUIRegion newRegion)
+        {                
                 newRegion.CanActivate = true;
                 if (newRegion.DwellTime == null)
                 {
                     newRegion.DwellTime = new TimeSpan(0, 0, DEFAULT_TIME_SPAN);
                 }
-                newRegion.Enabled = false;
+                newRegion.Enabled = true;
 
                 //TODO: Figure out what these calls does
                 //newRegion.AlwaysInteractive = true; 
                 //newRegion.IsActivating = true; 
                 //newRegion.UsesCoordinate = true; 
 
-            if(regionCategories.ContainsKey(regionID))
-            {
-                regionCategories[regionID].Add(newRegion.RegionIdentifier);
-            }
-            else
-            {
-                List<WindowBoundInteractionRegionIdentifier> temp = new List<WindowBoundInteractionRegionIdentifier>();
-                temp.Add(newRegion.RegionIdentifier);
-                regionCategories.Add(regionID, temp);
-            }
+            //if(regionCategories.ContainsKey(regionID))
+            //{
+            //    regionCategories[regionID].Add(newRegion.RegionIdentifier);
+            //}
+            //else
+            //{
+            //    List<WindowBoundInteractionRegionIdentifier> temp = new List<WindowBoundInteractionRegionIdentifier>();
+            //    temp.Add(newRegion.RegionIdentifier);
+            //    regionCategories.Add(regionID, temp);
+            //}
 
             try
             {
@@ -185,9 +199,10 @@ namespace Recellection
         /// Odds are that we won't want to really remove a region (we can just disable them by category instead)
         /// But if one need to be removed then so be it
         /// </summary>
-        /// <param name="id"></param>
-        public void RemoveRegionByIdentifier(WindowBoundInteractionRegionIdentifier id) {
-            Interaction.RemoveRegion(id); 
+        /// <param name="id"><
+        /// /param>
+        public bool RemoveRegionByIdentifier(WindowBoundInteractionRegionIdentifier id) {
+           return Interaction.RemoveRegion(id);//throws exceptions if id did not exist               
             //assuming nothing funky happens if trying to remove a non existing region
         }
 
