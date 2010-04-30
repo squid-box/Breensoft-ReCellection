@@ -11,16 +11,11 @@ namespace Recellection.Code.Models
     /// The representation of a Unit in the game world.
     /// </summary>
     /// <author>Joel Ahlgren</author>
-    /// <date>2010-04-13</date>
-    /* The representation of a Unit in the game world.
-     * 
-     * Author: Joel Ahlgren
-     * Date: 2010-04-11
-     */
+    /// <date>2010-04-30</date>
     public class Unit : IModel
     {
         // DATA
-        private Vector2 position;        // Current tile
+        private Vector2 position;   // Current tile
         private Vector2 target;     // Target coordinate
         private int angle;          // Angle of unit, for drawing
         private bool isDispersed;   // Whether or not this unit should recieve a new target from the dispersion procedure
@@ -202,22 +197,16 @@ namespace Recellection.Code.Models
         }
 
         /// <summary>
-        /// modify or set a new powerlevel for this unit
-        /// this could adjust it's 50/50 chance of dying/killing
-        /// when engaged with another unit
-        /// default should be one, set a new value as 1.1 for a 10% powerbonus for example
+        /// Modify or set a new powerlevel for this unit.
         /// </summary>
-        /// <param name="newPowerLevel"></param>
+        /// <param name="newPowerLevel">Default should be one, set a new value as 1.1 for a 10% powerbonus.</param>
         public void SetPowerLevel(float newPowerLevel)
         {
             powerLevel = newPowerLevel;
         }
         
-        /// <summary>
-        /// Gets this units powerlevel
-        /// </summary>
         /// <returns>
-        /// powerlevel as a float
+        /// Powerlevel of this unit.
         /// </returns>
         public float GetPowerLevel()
         {
