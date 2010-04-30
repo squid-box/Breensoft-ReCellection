@@ -131,7 +131,6 @@
     <Compile Include="Code\Models\BarrierBuilding.cs" />
     <Compile Include="Code\Models\DrawData.cs" />
     <Compile Include="Code\Models\IModel.cs" />
-    <Compile Include="Code\Models\MenuModel.cs" />
     <Compile Include="Code\Models\World.cs" />
     <Compile Include="Code\Models\ResourceBuilding.cs" />
     <Compile Include="Code\Utility\Events\BuildingAddedEvent.cs" />

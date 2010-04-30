@@ -11,7 +11,7 @@ using System.Text;
 
 namespace Recellection.Code.Models
 {
-    class GameOptions : IModel
+    public sealed class GameOptions : IModel
     {
         /**
          * 
@@ -20,6 +20,14 @@ namespace Recellection.Code.Models
          * 
          * TODO: alla options :P
          **/
+
+           
+        public static GameOptions Instance { get; private set; }
+        
+        /// <summary>
+        /// Static Constructors are automatically initialized on reference.
+        /// </summary>
+        static GameOptions() { Instance = new GameOptions(); }
 
     }
 }
