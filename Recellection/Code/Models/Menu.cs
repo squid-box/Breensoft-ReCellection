@@ -347,22 +347,27 @@ namespace Recellection.Code.Models
 
         private void CreateMainMenuHelp()
         {
+            helpMenu = null;
         }
 
         private void CreateOptionsMenuHelp()
         {
+            helpMenu = null;
         }
 
         private void CreateConfirmationMenuHelp()
         {
+            helpMenu = null;
         }
 
         private void CreateCommandMenuHelp()
         {
+            helpMenu = null;
         }
 
         private void CreateSpecialCommandMenuHelp()
         {
+            helpMenu = null;
         }
 
         #endregion
