@@ -2,6 +2,13 @@
 title=Åter:Urval
 
 [Menu]
-
+MainMenu1=Test1
+MainMenu2=Test2
+MainMenu3=Test3
+MainMenu4=Test4
+MainMenu5=Test5
+MainMenu6=Test6
+MainMenu7=Test7
+MainMenu8=Test8
 
 [Game entities]

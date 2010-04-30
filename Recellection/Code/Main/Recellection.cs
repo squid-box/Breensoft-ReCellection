@@ -60,7 +60,7 @@ namespace Recellection
             tobiiController = TobiiController.GetInstance(this.Window.Handle);
             tobiiController.Init();
             graphics = new GraphicsDeviceManager(this);
-            graphics.IsFullScreen = true;
+            graphics.IsFullScreen = false;
             Content.RootDirectory = "Content";
         }
 
@@ -180,10 +180,6 @@ namespace Recellection
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Draw(GameTime gameTime)
         {
-            GraphicsDevice.Clear(breen);
-
-            PrintHelp();
-
             List<DrawData> objectsToDraw;
 
             switch (Globals.gameState)
@@ -204,8 +200,10 @@ namespace Recellection
                     //objectsToDraw = menuView.GetDrawData();
                     break;
             }
+            
+            graphicsRenderer.Draw(spriteBatch);
 
-            //GraphicsRenderer.Draw(objectsToDraw);
+            PrintHelp();
 
             base.Draw(gameTime);
         }

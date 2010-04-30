@@ -14,16 +14,30 @@ namespace Recellection
         {
         }
 
-        public void Draw(SpriteBatch spriteBatch, List<DrawData> drawData)
+        public void Draw(SpriteBatch spriteBatch/*, List<DrawData> drawData*/)
         {
             Recellection.graphics.GraphicsDevice.SetRenderTarget(0, null);
+            Recellection.graphics.GraphicsDevice.Clear(Recellection.breen);
+
+            /* TEST CODE
+            Code.Models.Menu test = new Code.Models.Menu(Globals.MenuTypes.MainMenu, false);
+            Texture2D temp = test.GetMenuPic();
+            */
 
             spriteBatch.Begin(SpriteBlendMode.AlphaBlend, SpriteSortMode.Immediate, SaveStateMode.None);
-            foreach (DrawData d in drawData)
+           /* foreach (DrawData d in drawData)
             {
                 spriteBatch.Draw(d.Texture, d.Position, new Rectangle(d.CurrentFrame * d.SpriteSize, 0, d.SpriteSize, d.SpriteSize), Color.White, d.Rotation, new Vector2(d.SpriteSize / 2, d.SpriteSize / 2), 1.0f, SpriteEffects.None, 0);
-            }
+            }*/
+
+            /* TEST CODE
+            spriteBatch.Draw(temp, Vector2.Zero, Color.White);
+             */
+            
+
             spriteBatch.End();
+
+
         }
     }
 }
