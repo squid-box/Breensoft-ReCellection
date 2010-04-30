@@ -12,11 +12,29 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace Recellection.Code.Models
 {
-    class Menu : IModel
+    public class Menu : IModel
     {
         private List<GUIRegion> regions;
+
+        public List<GUIRegion> Regions
+        {
+            get { return regions; }
+            set { regions = value; }
+        }
         private Texture2D menuPic;
-        private Menu helpMenu; //om denna Menu är en helpmenu eller inte ska ha en helpMenu sets denna variabel till null duh.
+
+        public Texture2D MenuPic
+        {
+            get { return menuPic; }
+            set { menuPic = value; }
+        }
+        private Menu helpMenu; //om denna Menu är en helpmenu eller inte ska ha en HelpMenu sets denna variabel till null duh.
+
+        public Menu HelpMenu
+        {
+            get { return helpMenu; }
+            set { helpMenu = value; }
+        }
 
 
         /**
@@ -39,21 +57,5 @@ namespace Recellection.Code.Models
         public Menu(String menuType)
         {
         }
-
-
-        //och så några get metoder:
-        public List<GUIRegion> GetRegions()
-        {
-            return regions;
-        }
-        public Texture2D GetMenuPic()
-        {
-            return menuPic;
-        }
-        public Menu GetHelp() //seriously dude, you need help...
-        {
-            return helpMenu;
-        }
-        
     }
 }

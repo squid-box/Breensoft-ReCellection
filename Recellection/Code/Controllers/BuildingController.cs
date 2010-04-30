@@ -50,6 +50,25 @@ namespace Recellection.Code.Controllers
         }
 
         /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="player"></param>
+        public static void ConstructBuilding(Player player)
+        {
+            //TODO Somehow present a menu to the player, and then 
+            //use the information to ADD (not the document) the building.
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="player"></param>
+        public static void RaiseBuilding(Player player)
+        {
+
+        }
+
+        /// <summary>
         /// Add a building to the source buildings owners graph, 
         /// the source building will be used to find the correct graph.
         /// </summary>
