@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Recellection.Code.Models;
 
 namespace Recellection.Code.Controllers
 {
@@ -19,7 +20,8 @@ namespace Recellection.Code.Controllers
 
         private void ChangeOptions()
         {
-            /// TODO: write.
+            // Initialize a Menu.
+            GUIRegion activatedRegion = MenuController.GetInput();
         }
 
     }
