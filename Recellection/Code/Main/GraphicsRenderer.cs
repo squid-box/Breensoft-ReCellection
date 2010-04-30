@@ -16,6 +16,8 @@ namespace Recellection
 
         public void Draw(SpriteBatch spriteBatch, List<DrawData> drawData)
         {
+            Recellection.graphics.GraphicsDevice.SetRenderTarget(0, null);
+
             spriteBatch.Begin(SpriteBlendMode.AlphaBlend, SpriteSortMode.Immediate, SaveStateMode.None);
             foreach (DrawData d in drawData)
             {
