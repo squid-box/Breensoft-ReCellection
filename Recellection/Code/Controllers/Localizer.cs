@@ -11,7 +11,7 @@ namespace Recellection.Code.Controllers
     /// Language model, it will also set the current language for the application.
     /// </summary>
     /// <author>Joel Ahlgren</author>
-    /// <date>2010-04-14</date>
+    /// <date>2010-04-30</date>
     public class Localizer
     {
         // Keeps track of languages
@@ -22,16 +22,16 @@ namespace Recellection.Code.Controllers
         /// </summary>
         private void LoadTranslations()
         {
-
+            
         }
         
         /// <summary>
         /// Changes the language
         /// </summary>
         /// <param name="language"></param>
-        public void SetLanguage(Language language)
+        public void SetLanguage(String language)
         {
-
+            languageModel.SetLanguage(language);
         }
     }
 }

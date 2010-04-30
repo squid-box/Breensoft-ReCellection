@@ -10,7 +10,7 @@ namespace Recellection.Code.Models
     /// 
     /// </summary>
     /// <author>Joel Ahlgren</author>
-    /// <date>2010-04-13</date>
+    /// <date>2010-04-30</date>
     [TestFixture]
     class LanguageTest
     {
@@ -29,11 +29,31 @@ namespace Recellection.Code.Models
             {
                 lang = Language.Instance;
                 Assert.Pass(lang.GetLanguage().ToString() + " loaded.");
+                Assert.Pass();
             }
             catch(Exception e)
             {
-                Assert.Fail(e.Message);
+                if (e.GetType().ToString().Equals("NUnit.Framework.SuccessException"))
+                {
+                    Assert.Pass();
+                }
+                else
+                {
+                    Assert.Fail(e.GetType() + " : " + e.Message);
+                }
             }
+        }
+
+        [Test]
+        public void ChangeLanguageTest()
+        {
+            lang = Language.Instance;
+            lang.SetLanguage("English");
+            Assert.AreEqual("Re:Cellection", lang.GetString("title"));
+
+            lang.SetLanguage("Swedish");
+
+            Assert.AreEqual("Åter:Urval", lang.GetString("title"));
         }
     }
 }
