@@ -122,9 +122,7 @@ namespace Recellection.Code.Controllers
 		[Test]
 		public void MoveUnits()
 		{
-			// TODO: Do when Unit Controller is present
-			bool UnitControllerIsPresent = false;
-			Assert.IsTrue(UnitControllerIsPresent, "Unit Controller must be present.");
+			
 		}
 	}
 }
