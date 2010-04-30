@@ -12,15 +12,17 @@ namespace Recellection.Code.Controllers
     /// </summary>
     class Configurator
     {
+        private void BuildMenu()
+        {
+            /// TODO: write.
+        }
+
+        private void ChangeOptions()
+        {
+            /// TODO: write.
+        }
+
     }
 
-    private void BuildMenu()
-    {
-        /// TODO: write.
-    }; 
 
-    private void ChangeOptions()
-    {
-
-    }
 }

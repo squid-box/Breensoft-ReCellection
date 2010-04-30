@@ -120,7 +120,7 @@
     <Compile Include="Code\Controllers\Configurator.cs" />
     <Compile Include="Code\Controllers\GraphController.cs" />
     <Compile Include="Code\Controllers\Localizer.cs" />
-    <Compile Include="Code\Controllers\Tobii Controller.cs" />
+    <Compile Include="Code\Controllers\TobiiController.cs" />
     <Compile Include="Code\Controllers\UnitAccountant.cs" />
     <Compile Include="Code\Controllers\UnitController.cs" />
     <Compile Include="Code\Controllers\VictorTurner.cs" />
