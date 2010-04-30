@@ -18,6 +18,7 @@ namespace Recellection.Code
         private Player ai;
         private World world;
         public List<Building> myBuildings { get; internal set; }
+        public Building baseBuilding;
 
 
         /// <summary>
@@ -96,6 +97,15 @@ namespace Recellection.Code
                 coordinates.Add(myBuildings[i].coordinates);
             }
             return coordinates;
+        }
+
+        /// <summary>
+        /// Returns the AIPlayers first BaseBuilding
+        /// </summary>
+        /// <returns></returns>
+        internal Building getBaseBuilding()
+        {
+            return baseBuilding;
         }
     }
 }

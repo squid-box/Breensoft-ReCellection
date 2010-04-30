@@ -167,7 +167,7 @@ namespace Recellection.Code.Controllers
             }
             if (CanHoldPoint(point))
             {
-                IssueBuildOrder(point, Globals.BuildingTypes.Resource);
+                IssueBuildOrder(point, m_view.getBaseBuilding() , Globals.BuildingTypes.Resource);
             }
             else
             {
