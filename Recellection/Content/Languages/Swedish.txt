@@ -1,0 +1,7 @@
+[General]
+title=Åter:Urval
+
+[Menu]
+
+
+[Game entities]
