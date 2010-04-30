@@ -102,7 +102,7 @@ namespace Recellection
         public void LoadMenu(Menu menu)
         {
             Interaction.Regions.Clear();
-            foreach(GUIRegion region in menu.Regions)
+            foreach(GUIRegion region in menu.GetRegions())
             {
                 AddRegion(region);
             }
