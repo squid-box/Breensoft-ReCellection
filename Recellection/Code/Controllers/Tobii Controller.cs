@@ -44,7 +44,7 @@ namespace Recellection
         private TobiiController(IntPtr xnaHandle)
         {
             this.xnaHandle = xnaHandle;
-            //regionCategories = new Dictionary<Globals.RegionCategories,List<WindowBoundInteractionRegionIdentifier>>();
+            regionCategories = new Dictionary<Globals.RegionCategories,List<WindowBoundInteractionRegionIdentifier>>();
             logger.Info("Created the Tobii Controller");
         }
 
@@ -80,7 +80,7 @@ namespace Recellection
         }
 
         /// <summary>
-        /// Enable/disable a group of regions specified by the region ID
+        /// Enable/disable a group of Regions specified by the region ID
         /// If more region IDs are wanted just add more to Globals.RegionCategories
         /// </summary>
         /// <param name="regionID"></param>
@@ -102,7 +102,7 @@ namespace Recellection
         public void LoadMenu(Menu menu)
         {
             Interaction.Regions.Clear();
-            foreach(GUIRegion region in menu.GetRegions())
+            foreach(GUIRegion region in menu.Regions)
             {
                 AddRegion(region);
             }
