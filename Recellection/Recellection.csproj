@@ -117,6 +117,7 @@
   <ItemGroup>
     <Compile Include="Code\Controllers\AIPlayer.cs" />
     <Compile Include="Code\Controllers\BuildingController.cs" />
+    <Compile Include="Code\Controllers\Configurator.cs" />
     <Compile Include="Code\Controllers\GraphController.cs" />
     <Compile Include="Code\Controllers\Localizer.cs" />
     <Compile Include="Code\Controllers\Tobii Controller.cs" />
