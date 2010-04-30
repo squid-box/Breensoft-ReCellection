@@ -31,15 +31,6 @@ namespace Recellection.Code.Models
 
         #region Constructors
 
-        [Obsolete("Caution, crazily broken!")]
-        public Tile()
-        {
-            this.type = new TerrainType();
-            this.visibleTo = new HashSet<Player>();
-            //this.units = new HashSet<Unit>();
-            this.building = null;
-        }
-
         /// <summary>
         /// Creates a Tile of Membrane (default) type.
         /// </summary>
@@ -150,7 +141,6 @@ namespace Recellection.Code.Models
 
             if (unitsChanged != null)
             {
-                
                 unitsChanged(this, new Event<IEnumerable<Unit>>(this.units[p], EventType.REMOVE));
             }
         }
@@ -197,7 +187,7 @@ namespace Recellection.Code.Models
                 
                 if (buildingChanged != null)
                 {
-                    buildingChanged(this, new Event<Building>(building, EventType.ADD));
+                    buildingChanged(this, new Event<Building>(this.building, EventType.ADD));
                 }
 
                 return true;
@@ -263,6 +253,11 @@ namespace Recellection.Code.Models
         public void RemoveBuilding()
         {
             this.building = null;
+
+            if (buildingChanged != null)
+            {
+                buildingChanged(this, new Event<Building>(this.building, EventType.REMOVE));
+            }
         }
 
         /// <summary>
