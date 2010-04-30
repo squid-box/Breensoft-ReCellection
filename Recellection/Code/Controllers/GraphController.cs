@@ -192,14 +192,12 @@ namespace Recellection.Code.Controllers
 			}
 		}
 		
-		/// <summary>
-		/// </summary>
-		/// <param name="number"></param>
-		/// <param name="x"></param>
-		/// <param name="y"></param>
+		/// <param name="numberOfUnits">The number of units to move.</param>
+		/// <param name="from">From what building to move.</param>
+		/// <param name="to">Destination for the units.</param>
 		private void MoveUnits(int numberOfUnits, Building from, Building to)
 		{
-			// TODO: call the Unit Controller with orders about changes in unit positioning.
+			UnitController.MoveUnits(numberOfUnits, from.controlZone.First.Value, to.controlZone.First.Value);
 		}
 	}
 
