@@ -69,6 +69,8 @@ namespace Recellection
         /// </summary>
         protected override void Initialize()
         {
+            Language.Instance.SetLanguage("Japanese");
+
             base.Initialize();
 
             Globals.gameState = Globals.GameStates.Game;
