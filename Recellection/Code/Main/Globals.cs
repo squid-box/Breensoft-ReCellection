@@ -32,7 +32,8 @@ namespace Recellection
         public enum TextureTypes
         {
             Membrane, Mucus, Water, Slow, Infected, BaseBuilding, 
-            BarrierBuilding, AggressiveBuilding, ResourceBuilding
+            BarrierBuilding, AggressiveBuilding, ResourceBuilding,
+            Unit
         }
 
         public enum GameStates

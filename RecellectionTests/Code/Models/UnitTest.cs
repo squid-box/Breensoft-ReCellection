@@ -7,6 +7,11 @@ using Microsoft.Xna.Framework;
 
 namespace Recellection.Code.Models
 {
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <author>Joel Ahlgren</author>
+    /// <date>2010-04-30</date>
     [TestFixture]
     class UnitTest
     {
