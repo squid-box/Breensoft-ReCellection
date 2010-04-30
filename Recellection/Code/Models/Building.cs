@@ -8,6 +8,7 @@ using Recellection.Code.Utility.Events;
 using Microsoft.Xna.Framework.Graphics;
 using Recellection.Code.Utility.Logger;
 using System.Collections.ObjectModel;
+using Microsoft.Xna.Framework;
 
 namespace Recellection.Code.Models
 {
@@ -28,6 +29,11 @@ namespace Recellection.Code.Models
         public string name { get; protected set; }
         public int posX { get; protected set; }
         public int posY { get; protected set; }
+
+        //TODO: Use Vector2 instead of ints!
+        public Vector2 coordinates { get; protected set; }
+
+
         public int currentHealth { get; protected set; }
         public int maxHealth { get; protected set; }
 
