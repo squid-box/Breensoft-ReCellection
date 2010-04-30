@@ -14,7 +14,7 @@ namespace Recellection.Code.Models
     /// strings in the application.
     /// </summary>
     /// <author>Joel Ahlgren</author>
-    /// <date>2010-04-16</date>
+    /// <date>2010-04-30</date>
     public sealed class Language : IModel
     {
         #region Singleton-stuff
@@ -77,6 +77,12 @@ namespace Recellection.Code.Models
                 throw new ArgumentException("Language does not exist!");
             }
         }
+
+        /// <returns>A list of currently available languages.</returns>
+        public String[] GetAvailableLanguages()
+        {
+            return this.translations.Keys.ToArray();
+        }
         
         // Changing the language
         public void SetLanguage(String newLanguage)
@@ -84,12 +90,15 @@ namespace Recellection.Code.Models
             this.currentLanguage = newLanguage;
         }
 
+        /// <returns>The language current in use.</returns>
         public String GetLanguage()
         {
             return this.currentLanguage;
         }
 
-
+        /// <summary>
+        /// Reads all language-files from the Content/Languages-directory.
+        /// </summary>
         private void ReadLanguagesFromFile()
         {
             // Get list of language-files in Content directory.
@@ -109,9 +118,8 @@ namespace Recellection.Code.Models
                 sr = new StreamReader(new FileStream("Content/Languages/" + f.Name, FileMode.Open));
                 if (!f.Name.Equals(""))
                 {
-                    //language = f.Name.Split('.')[0];
-
-                    language = "English";
+                    language = f.Name.Split('.')[0];
+                    //language = "English";
 
                     // Make sure the language exists
                     if (!this.translations.ContainsKey(language))
@@ -122,13 +130,14 @@ namespace Recellection.Code.Models
                     while (!sr.EndOfStream)
                     {
                         tempLine = sr.ReadLine();
-                        if (!tempLine.StartsWith("["))  // ignore lines starting with '['.
+                        if (!(tempLine.StartsWith("[") || tempLine.Equals("") || tempLine.StartsWith(";")))
                         {
                             tmp = tempLine.Split('=');
                             this.SetString(language, tmp[0], tmp[1]);
                         }
                     }
                 }
+                sr.Close();
             }
         }
         
@@ -136,9 +145,6 @@ namespace Recellection.Code.Models
         /// Saves all translated texts.
         /// </summary>
         [Obsolete("Language files should never be changed during runtime.")]
-        private void SaveLanguagesToFile()
-        {
-            
-        }
+        private void SaveLanguagesToFile(){}
     }
 }

@@ -23,6 +23,7 @@ namespace Recellection.Code.Controllers
 		public static void LoadMenu(Menu m)
 		{
 			// TODO: menuModel.Push(m);
+			//menuModel.
 			tobiiController.LoadMenu(m);
 		}
 
@@ -33,13 +34,18 @@ namespace Recellection.Code.Controllers
 			// TODO: tobiiController.LoadMenu(menuModel.Peek());
 		}
 
-		// Hämta input från TobiiController
+		/// <summary>
+		/// Gets input from the Tobii controller
+		/// </summary>
+		/// <returns>An activated Region in a menu</returns>
 		public static GUIRegion GetInput()
 		{
-			//return tobiiController.GetActivatedRegion();
-			return null;
+			return tobiiController.GetActivatedRegion();
 		}
 
+		/// <summary>
+		/// 
+		/// </summary>
 		public static void ClearMenu()
 		{
 			// TODO: menuModel.Clear();

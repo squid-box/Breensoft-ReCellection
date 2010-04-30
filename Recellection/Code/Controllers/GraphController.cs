@@ -88,11 +88,21 @@ namespace Recellection.Code.Controllers
 		/// <summary>
 		/// Sets the weight of a building.
 		/// </summary>
-		/// <param name="building">The building to set the weigh for.</param>
+		/// <param name="building">The building to set the weight for.</param>
 		/// <param name="weight">The new weight.</param>
 		public void SetWeight(Building building, int weight)
 		{
 			GetGraph(building).SetWeight(building, weight);
+		}
+		
+		/// <summary>
+		/// Gets the weight of a building.
+		/// </summary>
+		/// <param name="building">The building to get the weight for.</param>
+		/// <returns>The weight of the building.</returns>
+		public int GetWeight(Building building)
+		{
+			return GetGraph(building).GetWeight(building);
 		}
 		
 		/// <summary>
