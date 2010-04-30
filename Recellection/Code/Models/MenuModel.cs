@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Recellection.Code.Utility.Events;
+using Microsoft.Xna.Framework;
 
 namespace Recellection.Code.Models
 {
@@ -10,7 +11,7 @@ namespace Recellection.Code.Models
     {
 
         private Stack<Menu> menuStack;
-        private Map<Menu, Vector2> menuPositions;
+        private Dictionary<Menu, Vector2> menuPositions;
 
         public event Publish<Menu> MenuEvent;
         public event Publish<Menu> MenuClearedEvent;
@@ -75,7 +76,7 @@ namespace Recellection.Code.Models
         /// <returns></returns>
         public Vector2 GetPosition(Menu m)
         {
-            return menuPositions.Get(m);
+            return menuPositions[m];
         }
     }
 }
