@@ -119,7 +119,8 @@
     <Compile Include="Code\Controllers\BuildingController.cs" />
     <Compile Include="Code\Controllers\GraphController.cs" />
     <Compile Include="Code\Controllers\Localizer.cs" />
-    <Compile Include="Code\Controllers\Tobii Controller.cs" />
+    <Compile Include="Code\Controllers\MenuController.cs" />
+    <Compile Include="Code\Controllers\TobiiController.cs" />
     <Compile Include="Code\Controllers\UnitAccountant.cs" />
     <Compile Include="Code\Controllers\UnitController.cs" />
     <Compile Include="Code\Controllers\VictorTurner.cs" />
