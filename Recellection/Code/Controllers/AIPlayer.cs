@@ -37,6 +37,7 @@ namespace Recellection.Code.Controllers
             interrestPoints = new List<Vector2>();
             enemyPoints = new List<Vector2>();
             view.registerPlayer(this);
+            distanceThreshold = 3;
         }
 
         /// <summary>
@@ -105,7 +106,8 @@ namespace Recellection.Code.Controllers
         /// <param name="building"></param>
         private void CalculateWeight(Building building)
         {
-            
+            m_graph.GetWeight(building);
+
             throw new NotImplementedException();
         }
 
