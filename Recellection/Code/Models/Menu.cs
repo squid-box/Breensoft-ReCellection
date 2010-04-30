@@ -46,8 +46,6 @@ namespace Recellection.Code.Models
         //här kommer menyerna hårdkodas, mest kod här
         public Menu(Globals.MenuTypes menuType, bool isHelpMenu)
         {
-            Recellection.graphics.GraphicsDevice.SetRenderTarget(0, textRenderTex);
-
             if (!isHelpMenu)
             {
                 switch (menuType)
@@ -104,7 +102,11 @@ namespace Recellection.Code.Models
 
         private void CreateMainMenu()
         {
-            textDrawer.Draw(Recellection.textureMap.GetTexture(Globals.TextureTypes.MainMenu), Vector2.Zero, Color.White);
+            Recellection.graphics.GraphicsDevice.SetRenderTarget(0, textRenderTex);
+            Recellection.graphics.GraphicsDevice.Clear(Color.White);
+
+            textDrawer.Begin();
+            //textDrawer.Draw(Recellection.textureMap.GetTexture(Globals.TextureTypes.MainMenu), Vector2.Zero, Color.White);
             float textScale = 2;
 
             //This is the offset from the buttonvector where the text will be drawn
@@ -141,6 +143,10 @@ namespace Recellection.Code.Models
 
             regions.Add(new GUIRegion(Recellection.windowHandle, new System.Windows.Rect(buttonDimension.X * 2, buttonDimension.Y * 2, buttonDimension.X, buttonDimension.Y)));
             textDrawer.DrawString(Recellection.screenFont, Language.Instance.GetString("MainMenu8"), new Vector2(buttonDimension.X * 2, buttonDimension.Y * 2) + offset, Color.Black, 0, Vector2.Zero, textScale, SpriteEffects.None, 0);
+
+            textDrawer.End();
+
+            Recellection.graphics.GraphicsDevice.SetRenderTarget(0, null);
 
             menuPic = textRenderTex.GetTexture();
 
