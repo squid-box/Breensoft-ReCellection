@@ -6,6 +6,11 @@ using NUnit.Framework;
 
 namespace Recellection.Code.Models
 {
+    /// <summary>
+    /// Test code for Tile-class.
+    /// </summary>
+    /// <author>Joel Ahlgren</author>
+    /// <date>2010-04-30</date>
     [TestFixture]
     class TileTest
     {  
