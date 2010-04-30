@@ -15,31 +15,55 @@ namespace Recellection.Code
 {
     class AIView
     {
-
-        Tile[][] world;
-        Tile[][] visibleWorld;
-        Dictionary<Building, Globals.BuildingTypes> buildingTypes;
-
+        private Player ai;
+        private World world;
+        public List<Building> myBuildings { get; internal set; }
 
 
-        public AIView()
+        /// <summary>
+        /// Constructor.
+        /// </summary>
+        /// <param name="p_world"></param>
+        public AIView(World p_world)
         {
+            world = p_world;
         }
 
-        /*
-         * Returns the Tile located in the given coordinates provided that it is visible.
-         */
+        /// <summary>
+        /// Internal function. Allows the AI Player to register itself so that this view can keep track
+        /// of who it is making calls for.
+        /// </summary>
+        /// <param name="p"></param>
+        internal void registerPlayer(Player p)
+        {
+            ai = p;
+        }
+
+        /// <summary>
+        /// Returns the Tile located in the given coordinates provided that it is visible.
+        /// If it is not visible, null is returned.
+        /// </summary>
+        /// <param name="coords"></param>
+        /// <returns></returns>
         internal Tile getTileAt(Vector2 coords)
         {
-            Tile newTile = new Tile();
-       
-            return visibleWorld[(int)coords.X][(int)coords.Y];
+            Tile tempTile = world.GetMap().GetTile((int)coords.X, (int)coords.Y);
+            if (tempTile.IsVisible(ai))
+            {
+                return tempTile;
+            }
+            else
+            {
+                return null;
+            }
         }
 
 
-        /*
-         * Checks whether or not there is a Resource Point at the given coordinates.
-         */
+        /// <summary>
+        /// Checks whether or not there is a Resource Point at the given coordinates.
+        /// </summary>
+        /// <param name="current"></param>
+        /// <returns></returns>
         internal bool ContainsResourcePoint(Vector2 current)
         {
             Tile tempTile = getTileAt(current);
@@ -50,14 +74,28 @@ namespace Recellection.Code
             return false;
         }
 
+        /// <summary>
+        /// Returns the building at the given coordinates provided that it is visible.
+        /// </summary>
+        /// <param name="point"></param>
+        /// <returns></returns>
         internal Building GetBuildingAt(Vector2 point)
         {
             return getTileAt(point).GetBuilding();
         }
 
-        internal Globals.BuildingTypes GetBuildingTypeOf(Building building)
+        /// <summary>
+        /// Returns the coordinates of all the friendly buildings
+        /// </summary>
+        /// <returns></returns>
+        internal List<Vector2> GetFriendlyBuildings()
         {
-            return buildingTypes[building];
+            List<Vector2> coordinates = new List<Vector2>();
+            for (int i = 0; i < coordinates.Count; i++)
+            {
+                coordinates.Add(myBuildings[i].coordinates);
+            }
+            return coordinates;
         }
     }
 }
