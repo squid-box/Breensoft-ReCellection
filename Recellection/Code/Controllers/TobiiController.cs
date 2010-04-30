@@ -30,7 +30,7 @@ namespace Recellection
         private const int DEFAULT_TIME_SPAN = 1;
         private static Logger logger = LoggerFactory.GetLogger();
         private IntPtr xnaHandle;
-        private global::Recellection.Code.Utility.Events.Event<GUIRegion> newActivatedRegion = null;
+        private GUIRegion newActivatedRegion = null;
         private static TobiiController _instance = null;
 
         /// <summary>
@@ -204,7 +204,7 @@ namespace Recellection
 
         void newRegion_regionActivated(object publisher, global::Recellection.Code.Utility.Events.Event<GUIRegion> ev)
         {
-            newActivatedRegion = ev;
+            newActivatedRegion = (GUIRegion)publisher;
         }
 
 
@@ -225,7 +225,7 @@ namespace Recellection
         /// consisting of the GUIRegion that Published the event, and any EventArgs
         /// </summary>
         /// <returns></returns>
-        public global::Recellection.Code.Utility.Events.Event<GUIRegion> GetActivatedRegion()
+        public GUIRegion GetActivatedRegion()
         {
             for (; ; )
             {
