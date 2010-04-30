@@ -26,7 +26,7 @@ namespace Recellection.Code.Controllers
         /// <param name="amount">The amount of units to be moved</param>
         /// <param name="from">The tile to move units from</param>
         /// <param name="to">Tile tile to move units to</param>
-        public void MoveUnits(int amount, Tile from, Tile to)
+        public static void MoveUnits(int amount, Tile from, Tile to)
         {
             List<Unit> tempUnit = new List<Unit>();
 
