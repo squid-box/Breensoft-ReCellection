@@ -15,16 +15,21 @@ namespace Recellection.Code.Controllers
     {
         private void BuildMenu()
         {
-            /// TODO: write.
+            // Initialize a Menu.
+            Menu menu = new Menu(Globals.MenuTypes.OptionsMenu, false);
+            /// TODO: Add Options to menu.
+            MenuController.LoadMenu(menu);
         }
 
-        private void ChangeOptions()
+        public void ChangeOptions()
         {
-            // Initialize a Menu.
+            BuildMenu();
             GUIRegion activatedRegion = MenuController.GetInput();
+            
+            /// There needs to be some way of distinguishing which menu item that triggered this region.
+            /// Upon which the corresponding option in GameOptions will be changed using GameOptions.setOption().
         }
 
     }
-
 
 }

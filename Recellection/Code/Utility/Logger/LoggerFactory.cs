@@ -13,7 +13,9 @@ namespace Recellection.Code.Utility.Logger
 	/// </summary>
 	public class LoggerFactory
 	{
-		private static LinkedList<Logger> loggers = new LinkedList<Logger>();
+		//private static LinkedList<Logger> loggers = new LinkedList<Logger>();
+		private static Dictionary<String, Logger> loggers = new Dictionary<string,Logger>();
+		
 		private static TextWriter globalTarget = System.Console.Out;
 		internal static LogLevel globalThreshold = LogLevel.TRACE;
 
@@ -26,18 +28,15 @@ namespace Recellection.Code.Utility.Logger
 		public static Logger GetLogger(string name)
 		{
 			// Try re-using a logger with that name
-			// TODO: Use Dictionary for loggers?
-			foreach (Logger l in loggers)
+			Logger l;
+			if(loggers.TryGetValue(name, out l))
 			{
-				if (l.GetName() == name)
-				{
-					return l;
-				}
+				return l;
 			}
 
-			Logger newLogger = new Logger(name, LogLevel.TRACE, globalTarget);
-			loggers.AddLast(newLogger);
-			return newLogger;
+			l = new Logger(name, LogLevel.TRACE, globalTarget);
+			loggers.Add(name, l);
+			return l;
 		}
 
 		/// <summary>
@@ -64,9 +63,9 @@ namespace Recellection.Code.Utility.Logger
 		{
 			LoggerFactory.globalTarget = newTarget;
 
-			foreach (Logger l in loggers)
+			foreach (KeyValuePair<String, Logger> l in loggers)
 			{
-				l.SetTarget(newTarget);
+				l.Value.SetTarget(newTarget);
 			}
 		}
 
