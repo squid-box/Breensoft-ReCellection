@@ -2,6 +2,43 @@
 title=Åter:Urval
 
 [Menu]
+MainMenu1=Test1
+MainMenu2=Test2
+MainMenu3=Test3
+MainMenu4=Test4
+MainMenu5=Test5
+MainMenu6=Test6
+MainMenu7=Test7
+MainMenu8=Test8
 
+OptionsMenu1=OTest1
+OptionsMenu2=OTest2
+OptionsMenu3=OTest3
+OptionsMenu4=OTest4
+OptionsMenu5=OTest5
+OptionsMenu6=OTest6
+OptionsMenu7=OTest7
+OptionsMenu8=OTest8
+
+ConfirmationMenuYes=Yes
+ConfirmationMenuNo=No
+
+CommandMenu1=CTest1
+CommandMenu2=CTest2
+CommandMenu3=CTest3
+CommandMenu4=CTest4
+CommandMenu5=CTest5
+CommandMenu6=CTest6
+CommandMenu7=CTest7
+CommandMenu8=CTest8
+
+SpecialCommandMenu1=CTest1
+SpecialCommandMenu2=CTest2
+SpecialCommandMenu3=CTest3
+SpecialCommandMenu4=CTest4
+SpecialCommandMenu5=CTest5
+SpecialCommandMenu6=CTest6
+SpecialCommandMenu7=CTest7
+SpecialCommandMenu8=CTest8
 
 [Game entities]

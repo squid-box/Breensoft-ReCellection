@@ -31,9 +31,11 @@ namespace Recellection
 
         public enum TextureTypes
         {
-            Membrane, Mucus, Water, Slow, Infected, BaseBuilding, 
-            BarrierBuilding, AggressiveBuilding, ResourceBuilding,
-            Unit
+            Membrane, Mucus, Water, Slow, Infected, BaseBuilding,
+            BarrierBuilding, AggressiveBuilding, ResourceBuilding, Unit,
+
+            MainMenu, OptionsMenu, Help, ConfirmationMenu, GetIntMenu,
+            CommandMenu, SpecialCommandMenu
         }
 
         public enum GameStates
@@ -42,6 +44,17 @@ namespace Recellection
             Menu,
             Game,
             Help
+        };
+
+        public enum MenuTypes
+        {
+            MainMenu,
+            OptionsMenu,
+            Help,
+            ConfirmationMenu,
+            GetIntMenu,
+            CommandMenu,
+            SpecialCommandMenu
         };
     }
 }
