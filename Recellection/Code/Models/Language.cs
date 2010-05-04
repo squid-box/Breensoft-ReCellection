@@ -12,8 +12,10 @@ namespace Recellection.Code.Models
     /// functionality for getting strings in the correct language. It does this 
     /// by providing a static function for every other component which handles 
     /// strings in the application.
+	/// 
+	/// Author: Joel Ahlgren
+	/// Signed: Martin Nycander (2010-05-04)
     /// </summary>
-    /// <author>Joel Ahlgren</author>
     /// <date>2010-04-30</date>
     public sealed class Language : IModel
     {
