@@ -3,6 +3,8 @@ using System.Runtime.CompilerServices;
 using Recellection.Code.Utility.Logger;
 using Recellection.Code.Utility.Console;
 using Microsoft.Xna.Framework.Graphics;
+using System.Threading;
+using Recellection.Code.Main;
 
 // We should be able to test internals
 [assembly: InternalsVisibleTo("RecellectionTests")]
@@ -16,13 +18,18 @@ namespace Recellection
         /// </summary>
         static void Main(string[] args)
 		{
-			Recellection game = new Recellection();
-			
 			LoggerSetup.Initialize();
 			
-			game.Run();
+			// This is the bridge between XNA and the logic
+			GraphicsRenderer graphicRendering = new GraphicsRenderer();
 
-			//LoggerSetup.target = game.console.Console.OutputBuffer;
+			Recellection game = new Recellection(graphicRendering);
+			Initializer logic = new Initializer(graphicRendering);
+
+			Thread gameLogic = new Thread(logic.Run);
+
+			gameLogic.Start();
+			game.Run();
         }
     }
 }

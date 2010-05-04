@@ -54,7 +54,8 @@ namespace Recellection
             ConfirmationMenu,
             GetIntMenu,
             CommandMenu,
-            SpecialCommandMenu
+            SpecialCommandMenu,
+            SelectNumberMenu
         };
     }
 }
