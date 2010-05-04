@@ -148,7 +148,7 @@ namespace Recellection.Code.Models
         [Obsolete("Horribly horribly broken!")]
         public HashSet<Unit> GetUnits()
         {
-            return null;
+            throw new Exception("NO, YOU CAN'T USE THIS CONSTRUCTOR!");
         }
 
         /// <summary>
