@@ -13,7 +13,7 @@ namespace Recellection.Code.Controllers
     /// Is a singleton class, only one object can be created!
     /// 
     /// Author: Joel Ahlgren
-    /// Date: 2010-04-20
+    /// Date: 2010-05-04
     /// 
     /// Signature: John Doe (yyyy-mm-dd)
     /// Signature: Jane Doe (yyyy-mm-dd)
@@ -54,12 +54,9 @@ namespace Recellection.Code.Controllers
         /// Called by building. Adds units to a building?
         /// </summary>
         /// <param name="units">A list of units.</param>
-        public void addUnits(List<Unit> units)
+        public void addUnits(Building b, List<Unit> units)
         {
-            foreach (Unit u in units)
-            {
-                // Din mamma
-            }
+            //b.AddUnits(units);
         }
 
         /// <summary>
@@ -71,7 +68,7 @@ namespace Recellection.Code.Controllers
             {
                 for (int i = 0; i < b.RateOfProduction; i++)
                 {
-                    b.AddUnit(new Unit(b.posX,b.posY));
+                    b.AddUnit(new Unit(b.owner,b.coordinates));
                 }
             }
         }
