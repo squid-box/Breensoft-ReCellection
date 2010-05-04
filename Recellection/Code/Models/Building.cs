@@ -27,8 +27,8 @@ namespace Recellection.Code.Models
 
         // Simple values
         public string name { get; protected set; }
-        public int posX { get; protected set; }
-        public int posY { get; protected set; }
+        //public int posX { get; protected set; }
+        //public int posY { get; protected set; }
 
         //TODO: Use Vector2 instead of ints!
         public Vector2 coordinates { get; protected set; }
@@ -84,7 +84,7 @@ namespace Recellection.Code.Models
 
             logger.Trace("Constructing new Building with choosed values");
             this.name = name;
-            this.posX = posX;
+            this.coordinates = new Vector2(posX,posY);
             this.maxHealth = maxHealth;
             this.currentHealth = maxHealth;
 
@@ -129,7 +129,7 @@ namespace Recellection.Code.Models
 
             logger.Trace("Constructing new Building with choosed values");
             this.name = name;
-            this.posX = posX;
+            this.coordinates = new Vector2(posX, posY);
             this.maxHealth = maxHealth;
             this.currentHealth = maxHealth;
 
@@ -211,7 +211,10 @@ namespace Recellection.Code.Models
                 units.Add(unit);
                 if (unitsChanged != null)
                 {
-                    unitsChanged(this, new BuildingEvent(this, this.units,
+                    //I'm sorry for this ugly hax - John
+                    List<Unit> temp = new List<Unit>();
+                    temp.Add(unit);
+                    unitsChanged(this, new BuildingEvent(this, temp,
                         EventType.ADD));
                 }
             }
@@ -230,7 +233,10 @@ namespace Recellection.Code.Models
             this.units.Remove(unit);
             if (unitsChanged != null)
             {
-                unitsChanged(this, new BuildingEvent(this, this.units,
+                //I'm sorry for this ugly hax - John
+                List<Unit> temp = new List<Unit>();
+                temp.Add(unit);
+                unitsChanged(this, new BuildingEvent(this, temp,
                         EventType.REMOVE));
             }
         }
@@ -239,18 +245,16 @@ namespace Recellection.Code.Models
         /// Add a collection of units to the unit List
         /// </summary>
         /// <param name="units">The collection of units to add</param>
-        public void AddUnits(Collection<Unit> units)
+        public void AddUnits(IEnumerable<Unit> units)
         {
+            
             if (IsAlive())
             {
-                foreach (Unit u in units)
-                {
-                    this.units.Add(u);
-                }
+                this.units.AddRange(units);
 
                 if (unitsChanged != null)
                 {
-                    unitsChanged(this, new BuildingEvent(this, this.units,
+                    unitsChanged(this, new BuildingEvent(this, units,
                         EventType.ADD));
                 }
             }
@@ -260,7 +264,7 @@ namespace Recellection.Code.Models
         /// Removes a collection of units from the unit List,
         /// </summary>
         /// <param name="units">The collection of units to remove</param>
-        public void RemoveUnits(ICollection<Unit> units)
+        public void RemoveUnits(IEnumerable<Unit> units)
         {
             foreach (Unit u in units)
             {
@@ -269,7 +273,7 @@ namespace Recellection.Code.Models
 
             if (unitsChanged != null)
             {
-                unitsChanged(this, new BuildingEvent(this, this.units,
+                unitsChanged(this, new BuildingEvent(this, units,
                         EventType.REMOVE));
             }
         }

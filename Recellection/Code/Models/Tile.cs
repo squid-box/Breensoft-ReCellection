@@ -102,7 +102,7 @@ namespace Recellection.Code.Models
 
             if (unitsChanged != null)
             {
-                unitsChanged(this, new Event<IEnumerable<Unit>>(this.units[p], EventType.ADD));
+                unitsChanged(this, new Event<IEnumerable<Unit>>(units, EventType.ADD));
             }
         }
         /// <summary>
@@ -119,7 +119,10 @@ namespace Recellection.Code.Models
 
             if (unitsChanged != null)
             {
-                unitsChanged(this, new Event<IEnumerable<Unit>>(this.units[p], EventType.ADD));
+                //I'm sorry for this ugly hax - John
+                List<Unit> temp = new List<Unit>();
+                temp.Add(u);
+                unitsChanged(this, new Event<IEnumerable<Unit>>(temp, EventType.ADD));
             }
         }
 
@@ -129,7 +132,10 @@ namespace Recellection.Code.Models
 
             if (unitsChanged != null)
             {
-                unitsChanged(this, new Event<IEnumerable<Unit>>(this.units[p], EventType.REMOVE));
+                //I'm sorry for this ugly hax - John
+                List<Unit> temp = new List<Unit>();
+                temp.Add(u);
+                unitsChanged(this, new Event<IEnumerable<Unit>>(temp, EventType.REMOVE));
             }
         }
         public void RemoveUnit(Player p, List<Unit> units)
@@ -141,7 +147,7 @@ namespace Recellection.Code.Models
 
             if (unitsChanged != null)
             {
-                unitsChanged(this, new Event<IEnumerable<Unit>>(this.units[p], EventType.REMOVE));
+                unitsChanged(this, new Event<IEnumerable<Unit>>(units, EventType.REMOVE));
             }
         }
 

@@ -10,7 +10,7 @@ namespace Recellection.Code.Utility.Events
     {
         List<Unit> units;
 
-        public BuildingEvent(Building building, List<Unit> units, 
+        public BuildingEvent(Building building, IEnumerable<Unit> units, 
             EventType type) : base(building, type)
 		{
 			this.units = units;
