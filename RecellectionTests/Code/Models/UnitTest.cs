@@ -16,12 +16,14 @@ namespace Recellection.Code.Models
     class UnitTest
     {
         Unit u1, u2;
+        Player p;
 
         [SetUp]
         public void init()
         {
-            u1 = new Unit();
-            u2 = new Unit();
+            p = new Player();
+            u1 = new Unit(p);
+            u2 = new Unit(p);
         }
 
         [Test]
