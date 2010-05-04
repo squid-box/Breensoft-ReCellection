@@ -8,7 +8,7 @@ namespace Recellection.Code.Utility.Events
 {
     class BuildingEvent : Event<Building>
     {
-        List<Unit> units;
+        IEnumerable<Unit> units;
 
         public BuildingEvent(Building building, IEnumerable<Unit> units, 
             EventType type) : base(building, type)
