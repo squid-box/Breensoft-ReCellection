@@ -8,7 +8,7 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace Recellection
 {
-    class GraphicsRenderer
+    public class GraphicsRenderer
     {
         public GraphicsRenderer()
         {
