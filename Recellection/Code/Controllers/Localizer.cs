@@ -9,6 +9,8 @@ namespace Recellection.Code.Controllers
     /// <summary>
     /// The purpose of the Localizer is to load the translations into the 
     /// Language model, it will also set the current language for the application.
+	/// 
+	/// Signature: Martin Nycander (2010-04-04)
     /// </summary>
     /// <author>Joel Ahlgren</author>
     /// <date>2010-05-04</date>
