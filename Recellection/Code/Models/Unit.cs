@@ -35,34 +35,20 @@ namespace Recellection.Code.Models
         /// <summary>
         /// Creates a "default unit".
         /// </summary>
-        public Unit()
+        public Unit(Player owner)
         {
             this.position = new Vector2(0, 0);
             this.target = new Vector2(NO_TARGET,NO_TARGET);
             this.angle = 0;
             this.isDispersed = this.isDead = false;
-            this.owner = null;
+            this.owner = owner;
         }
         /// <summary>
         /// Creates a unit.
         /// </summary>
         /// <param name="posX">Unit x-coordinate.</param>
         /// <param name="posY">Unit y-coordinate.</param>
-        public Unit(float posX, float posY)
-        {
-            this.position = new Vector2(posX, posY);
-            this.target = new Vector2(NO_TARGET, NO_TARGET);
-            this.angle = 0;
-            this.isDispersed = this.isDead = false;
-            this.owner = null;
-        }
-        /// <summary>
-        /// Creates a unit.
-        /// </summary>
-        /// <param name="posX">Unit x-coordinate.</param>
-        /// <param name="posY">Unit y-coordinate.</param>7
-        /// <param name="owner">Owner of this unit.</param>
-        public Unit(float posX, float posY, Player owner)
+        public Unit(Player owner, float posX, float posY)
         {
             this.position = new Vector2(posX, posY);
             this.target = new Vector2(NO_TARGET, NO_TARGET);
@@ -73,16 +59,15 @@ namespace Recellection.Code.Models
         /// <summary>
         /// Creates a unit.
         /// </summary>
-        /// <param name="posX">Unit x-coordinate.</param>
-        /// <param name="posY">Unit y-coordinate.</param>
-        /// <param name="angle">Draw-angle if this unit.</param>
-        public Unit(float posX, float posY, int angle)
+        /// <param name="position">Position of unit.</param>
+        /// <param name="owner">Owner of this unit.</param>
+        public Unit(Player owner, Vector2 position)
         {
-            this.position = new Vector2(posX, posY);
+            this.position = position;
             this.target = new Vector2(NO_TARGET, NO_TARGET);
-            this.angle = angle;
+            this.angle = 0;
             this.isDispersed = this.isDead = false;
-            this.owner = null;
+            this.owner = owner;
         }
 
         #endregion

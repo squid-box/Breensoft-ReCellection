@@ -126,6 +126,7 @@
     <Compile Include="Code\Controllers\VictorTurner.cs" />
     <Compile Include="Code\Controllers\WorldController.cs" />
     <Compile Include="Code\Main\GraphicsRenderer.cs" />
+    <Compile Include="Code\Main\Initializer.cs" />
     <Compile Include="Code\Models\AggressiveBuilding.cs" />
     <Compile Include="Code\Models\BarrierBuilding.cs" />
     <Compile Include="Code\Models\DrawData.cs" />
