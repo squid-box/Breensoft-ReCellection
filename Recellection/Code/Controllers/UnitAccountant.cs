@@ -20,7 +20,7 @@ namespace Recellection.Code.Controllers
     {
         private Player owner;
 
-        private UnitAccountant(Player owner)
+        public UnitAccountant(Player owner)
         {
             this.owner = owner;
         }
@@ -37,7 +37,7 @@ namespace Recellection.Code.Controllers
         /// <summary>
         /// Quite possibly a horribly slow way of adding units.
         /// </summary>
-        private void ProduceUnits()
+        public void ProduceUnits()
         {   
             foreach (Graph g in owner.GetGraphs())
             {
