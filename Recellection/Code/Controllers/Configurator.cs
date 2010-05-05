@@ -16,9 +16,9 @@ namespace Recellection.Code.Controllers
         private void BuildMenu()
         {
             // Initialize a Menu.
-            Menu menu = new Menu(Globals.MenuTypes.OptionsMenu, false);
+            //Menu menu = new Menu(Globals.MenuTypes.OptionsMenu, false);
             /// TODO: Add Options to menu.
-            MenuController.LoadMenu(menu);
+            //MenuController.LoadMenu(menu);
         }
 
         public void ChangeOptions()
