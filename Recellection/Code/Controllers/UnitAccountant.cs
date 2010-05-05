@@ -20,14 +20,19 @@ namespace Recellection.Code.Controllers
     {
         private Player owner;
 
+        /// <summary>
+        /// Constructs an UnitAccountant.
+        /// </summary>
+        /// <param name="owner">This UnitAccountant will belong to the player 'owner'.</param>
         public UnitAccountant(Player owner)
         {
             this.owner = owner;
         }
 
         /// <summary>
-        /// Called by building. Adds units to a building?
+        /// Called by building, adds units to a building.
         /// </summary>
+        /// <param name="b">The building to add units to.</param>
         /// <param name="units">A list of units.</param>
         public void addUnits(Building b, List<Unit> units)
         {
