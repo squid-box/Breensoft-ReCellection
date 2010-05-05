@@ -151,10 +151,22 @@ namespace Recellection.Code.Models
             }
         }
 
-        [Obsolete("Horribly horribly broken!")]
+        /// <summary>
+        /// Returns all units on this Tile, regardless of owner.
+        /// </summary>
         public HashSet<Unit> GetUnits()
         {
-            throw new Exception("NO, YOU CAN'T USE THIS CONSTRUCTOR!");
+            HashSet<Unit> ret = new HashSet<Unit>();
+
+            foreach(KeyValuePair<Player, HashSet<Unit>> pair in this.units)
+            {
+                foreach(Unit u in pair.Value)
+                {
+                    ret.Add(u);
+                }
+            }
+
+            return ret;
         }
 
         /// <summary>

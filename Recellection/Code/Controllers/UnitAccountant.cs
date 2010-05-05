@@ -10,44 +10,19 @@ namespace Recellection.Code.Controllers
     /// The purpose of the Unit Accountant is to insert new units into its
     /// graph as they are created by the buildings.
     /// 
-    /// Is a singleton class, only one object can be created!
-    /// 
-    /// Author: Joel Ahlgren
-    /// Date: 2010-05-04
+    /// </summary>
+    /// <author>Joel Ahlgren</author>
+    /// <date>2010-05-05</date>
     /// 
     /// Signature: John Doe (yyyy-mm-dd)
     /// Signature: Jane Doe (yyyy-mm-dd)
-    /// </summary>
     public sealed class UnitAccountant
     {
-        #region Singleton-stuff
+        private Player owner;
 
-        // from http://www.yoda.arachsys.com/csharp/singleton.html
-        static UnitAccountant instance = null;
-        static readonly object padlock = new object();
-
-        public static UnitAccountant Instance
+        private UnitAccountant(Player owner)
         {
-            get
-            {
-                lock (padlock)
-                {
-                    if (instance == null)
-                    {
-                        instance = new UnitAccountant();
-                    }
-                    return instance;
-                }
-            }
-        }
-
-        #endregion
-
-        private HashSet<BaseBuilding> world;
-
-        private UnitAccountant()
-        {
-            world = new HashSet<BaseBuilding>();
+            this.owner = owner;
         }
 
         /// <summary>
@@ -56,16 +31,18 @@ namespace Recellection.Code.Controllers
         /// <param name="units">A list of units.</param>
         public void addUnits(Building b, List<Unit> units)
         {
-            //b.AddUnits(units);
+            b.AddUnits(units);
         }
 
         /// <summary>
         /// Quite possibly a horribly slow way of adding units.
         /// </summary>
         private void ProduceUnits()
-        {
-            foreach (BaseBuilding b in world)
+        {   
+            foreach (Graph g in owner.GetGraphs())
             {
+                BaseBuilding b = g.baseBuilding;
+
                 for (int i = 0; i < b.RateOfProduction; i++)
                 {
                     b.AddUnit(new Unit(b.owner,b.coordinates));
