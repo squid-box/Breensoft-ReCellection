@@ -6,7 +6,7 @@ using NUnit.Framework;
 using Recellection.Code.Models;
 using Recellection.Code.Controllers;
 
-namespace Recellection.Code
+namespace Recellection.Code.Controllers
 {
     /// <summary>
     /// Test code for UnitAccountant.
@@ -28,10 +28,11 @@ namespace Recellection.Code
             this.bb = new BaseBuilding("FuckOff",0,0,p);
             this.g = new Graph(bb);
             this.ua = new UnitAccountant(p);
+            this.p.AddGraph(g);
         }
 
         [Test]
-        public void LolTest()
+        public void ProductionTest()
         {
             bb.RateOfProduction = 5;
 
@@ -39,6 +40,8 @@ namespace Recellection.Code
             Assert.AreEqual(0, bb.units.Count);
 
             ua.ProduceUnits();
+
+            Assert.AreEqual(5, bb.units.Count);
         }
     }
 }
