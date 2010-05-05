@@ -55,13 +55,14 @@ namespace Recellection
         KeyboardState lastKBState, kBState;
         MouseState lastMouseState, mouseState;
 
-        public Recellection()
+        public Recellection(GraphicsRenderer gfx)
         {
             tobiiController = TobiiController.GetInstance(this.Window.Handle);
             tobiiController.Init();
             graphics = new GraphicsDeviceManager(this);
             graphics.IsFullScreen = false;
-            Content.RootDirectory = "Content";
+			Content.RootDirectory = "Content";
+			graphicsRenderer = gfx;
         }
 
         /// <summary>
@@ -75,7 +76,6 @@ namespace Recellection
 
             Globals.gameState = Globals.GameStates.Game;
 
-            graphicsRenderer = new GraphicsRenderer();
 
             // Initialize the python console
             console = new PythonInterpreter(this, consoleFont);

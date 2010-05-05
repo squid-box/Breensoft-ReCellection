@@ -21,7 +21,9 @@ namespace Recellection.Code.Models
     /// </summary>
     public class AggressiveBuilding : Building
     {
-        private Unit currentTarget = null;
+        public List<Unit> currentTargets { get; protected set; }
+
+        private const int MAXIMUM_NUMBER_OF_TARGETS = 5;
 
         //Subscribe to me if you want to know about it when I change my target.
 		public event Publish<AggressiveBuilding> targetChanged;
@@ -38,7 +40,7 @@ namespace Recellection.Code.Models
         public AggressiveBuilding(String name, int posX, int posY, Player owner,BaseBuilding baseBuilding)
                :base(name, posX, posY, AGGRESSIVE_BUILDING_HEALTH, owner, Globals.BuildingTypes.Aggressive, baseBuilding)
         {
-
+            currentTargets = new List<Unit>();
 
         }
 
@@ -55,16 +57,51 @@ namespace Recellection.Code.Models
             LinkedList<Tile> controlZone)
             : base(name, posX, posY, AGGRESSIVE_BUILDING_HEALTH, owner, Globals.BuildingTypes.Aggressive, baseBuilding,controlZone)
         {
+            currentTargets = new List<Unit>();
+
             for(int i = 0; i < controlZone.Count; i++)
             {
                 controlZone.ElementAt(i).unitsChanged += AggressiveBuilding_unitsChanged;
             }
 
         }
-
+        
+        /// <summary>
+        /// This function is called when a unit enters or exits the control zone tiles for the
+        /// Aggressive Building. It might be ineffiecient due to the fact when a unit exit a tile
+        /// and then enter another tile in the control zone it will first be removed and then added.
+        /// </summary>
+        /// <param name="publisher"></param>
+        /// <param name="ev"></param>
         void AggressiveBuilding_unitsChanged(object publisher, Event<IEnumerable<Unit>> ev)
         {
             //TODO implement a way to add this to the que to be shoot.
+            if (ev.type == EventType.ADD)
+            {
+                foreach (Unit u in ev.subject)
+                {
+                    if (currentTargets.Count < MAXIMUM_NUMBER_OF_TARGETS && u.GetOwner() != this.owner)
+                    {
+                        if (!currentTargets.Contains(u))
+                        {
+                            currentTargets.Add(u);
+                        }
+                    }
+                }
+            }
+            if (ev.type == EventType.REMOVE)
+            {
+                foreach (Unit u in ev.subject)
+                {
+                    if (currentTargets.Count > 0 && u.GetOwner() != this.owner)
+                    {
+                        if (!currentTargets.Contains(u))
+                        {
+                            currentTargets.Remove(u);
+                        }
+                    }
+                }
+            }
         }
 
         /// <summary>
@@ -73,19 +110,18 @@ namespace Recellection.Code.Models
         /// <returns>
         /// The target of this aggressive building, can be null
         /// </returns>
-        public Unit GetTarget()
+        public List<Unit> GetTargets()
         {
-            return currentTarget;
+            return currentTargets;
         }
 
         /// <summary>
         /// sets a new targeted unit, will overwrite any already targeted unit
         /// null can be passed to just clear the current target
         /// </summary>
-        public void SetTarget(Unit newTarget)
+        public void SetTargets(List<Unit> newTargets)
         {
-            currentTarget = newTarget;
-            units.Add(newTarget);
+            currentTargets = newTargets;
             if (targetChanged != null)
             {
                 targetChanged(this, new Event<AggressiveBuilding>(this, EventType.ALTER));
