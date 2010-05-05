@@ -24,7 +24,7 @@ namespace Recellection.Code.Controllers
         public void ChangeOptions()
         {
             BuildMenu();
-            GUIRegion activatedRegion = MenuController.GetInput();
+            //MenuIcon activatedRegion = MenuController.GetInput();
             
             /// There needs to be some way of distinguishing which menu item that triggered this region.
             /// Upon which the corresponding option in GameOptions will be changed using GameOptions.setOption().

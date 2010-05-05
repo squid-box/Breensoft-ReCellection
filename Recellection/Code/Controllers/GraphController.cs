@@ -114,7 +114,7 @@ namespace Recellection.Code.Controllers
 			
 			//MenuController.LoadMenu(menu);
 			
-			GUIRegion input = MenuController.GetInput();
+			MenuIcon input = MenuController.GetInput();
 
 			// TODO: Decide what option was opted for.
 			
@@ -133,6 +133,8 @@ namespace Recellection.Code.Controllers
 		}
 		
 		/// <summary>
+		/// Calculates and carries out distribution of units in the graphs according to the buildings weights.
+		/// 
 		/// Warning: This method is not healthy. Not even for you. No. Dont.
 		/// </summary>
 		public void CalculateWeights()
