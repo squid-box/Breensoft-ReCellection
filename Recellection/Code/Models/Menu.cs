@@ -21,9 +21,18 @@ namespace Recellection
 			this.menuPic = menuPic;
 			this.icons = icons;
 		}
+
+		public List<GUIRegion> GetRegions()
+		{
+			List<GUIRegion> regions = new List<GUIRegion>();
+			foreach(MenuIcon mi in icons)
+			{
+				regions.Add(mi.getRegion());
+			}
+			return regions;
+		}
 		
-		
-		public Menu(MenuLayout layout, List<MenuIcon> icons)
+		public Menu(Globals.MenuLayout layout, List<MenuIcon> icons)
 		{
 			switch(layout)
 			{
