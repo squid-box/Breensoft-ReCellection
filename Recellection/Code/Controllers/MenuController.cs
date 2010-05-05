@@ -60,9 +60,20 @@ namespace Recellection.Code.Controllers
 		/// Gets input from the Tobii controller.
 		/// </summary>
 		/// <returns>An activated Region in the current menu</returns>
-		public static GUIRegion GetInput()
+		public static MenuIcon GetInput()
 		{
-			return tobiiController.GetActivatedRegion();
+			GUIRegion activated = tobiiController.GetActivatedRegion();
+			List<MenuIcon> options = menuModel.Peek().GetIcons();
+			foreach(MenuIcon mi in options)
+			{
+				if (mi.getRegion() == activated)
+					return mi;
+			}
+			throw new NonExistantInputException();
 		}
+	}
+	
+	public class NonExistantInputException : Exception
+	{
 	}
 }

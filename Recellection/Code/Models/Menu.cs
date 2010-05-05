@@ -21,7 +21,12 @@ namespace Recellection
 			this.menuPic = menuPic;
 			this.icons = icons;
 		}
-
+		
+		public List<MenuIcon> GetIcons()
+		{
+			return icons;
+		}
+		
 		public List<GUIRegion> GetRegions()
 		{
 			List<GUIRegion> regions = new List<GUIRegion>();
