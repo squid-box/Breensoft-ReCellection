@@ -30,7 +30,7 @@ namespace Recellection.Code.Controllers
 				throw new InvalidOperationException("The MenuController has already been initiated.");
 			}
 			
-			menuModel = new MenuModel();
+			menuModel = MenuModel.Instance;
 			tobiiController = tobii;
 			initiated = true;
 			
