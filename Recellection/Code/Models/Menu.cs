@@ -1,13 +1,15 @@
 
 using System;
 using System.Collections.Generic;
+using Microsoft.Xna.Framework.Graphics;
+using Recellection.Code.Models;
+
+
 namespace Recellection
 {
 	/// <summary>
 	/// author: co
 	/// </summary>
-	using System.Collections.Generic;
-
 
 	public class Menu
 	{
@@ -20,17 +22,17 @@ namespace Recellection
 			this.icons = icons;
 		}
 		
-		public Menu(MenuLayout layout, List<MenuIcon> icons)
+		public Menu(Globals.MenuLayout layout, List<MenuIcon> icons)
 		{
 			switch(layout)
 			{
-				case MenuLayout.Prompt:
+				case Globals.MenuLayout.Prompt:
 					CreatePrompt(icons);
 					break;
-				case MenuLayout.NineMatrix:
+				case Globals.MenuLayout.NineMatrix:
 					//code
 					break;
-				case MenuLayout.FourMatrix:
+				case Globals.MenuLayout.FourMatrix:
 					//code
 					break;
 			}

@@ -2,6 +2,8 @@ using System.Linq;
 using System.Text;
 using Tobii.TecSDK.Client.Interaction.RegionImplementations;
 using System;
+using Recellection.Code.Models;
+using Microsoft.Xna.Framework.Graphics;
 
 namespace Recellection
 {
@@ -31,7 +33,7 @@ namespace Recellection
 			return iconPic;
 		}
 		
-		public GUIregion getRegion()
+		public GUIRegion getRegion()
 		{
 			return region;
 		}
