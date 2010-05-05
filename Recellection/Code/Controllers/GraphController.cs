@@ -109,10 +109,10 @@ namespace Recellection.Code.Controllers
 		/// <param name="b">The building to set a weight for.</param>
 		public void SetWeight(Building b)
 		{
-			Menu menu = new Menu();
+			//Menu menu = new Menu();
 			// TODO: Construct the Menu options
 			
-			MenuController.LoadMenu(menu);
+			//MenuController.LoadMenu(menu);
 			
 			GUIRegion input = MenuController.GetInput();
 
@@ -133,11 +133,7 @@ namespace Recellection.Code.Controllers
 		}
 		
 		/// <summary>
-		/// for each Graph:
-		///		get the total number of units in the graph;
-		///		for each building in the graph:
-		///			check that the ratio between the units in that building and its
-		///			weight is proportional to the total number of units.
+		/// Warning: This method is not healthy. Not even for you. No. Dont.
 		/// </summary>
 		public void CalculateWeights()
 		{
