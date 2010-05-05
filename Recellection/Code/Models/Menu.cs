@@ -20,6 +20,11 @@ namespace Recellection
 			this.icons = icons;
 		}
 		
+		public void getIcons()
+		{
+			
+		}
+		
 		public Menu(MenuLayout layout, List<MenuIcon> icons)
 		{
 			switch(layout)
