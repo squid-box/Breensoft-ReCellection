@@ -17,6 +17,8 @@ namespace Recellection.Code.Models
     /// </summary>
     public class BaseBuilding : Building{
 
+        private const int BASE_PRODUCTION = 5;
+
         private int rateOfProduction;
 
         public int RateOfProduction
@@ -45,6 +47,7 @@ namespace Recellection.Code.Models
             this.type = Globals.BuildingTypes.Base;
             childBuildings = new LinkedList<Building>();
             baseBuilding = this;
+            this.rateOfProduction = BASE_PRODUCTION;
         }
 
         /// <summary>
@@ -60,6 +63,7 @@ namespace Recellection.Code.Models
             this.type = Globals.BuildingTypes.Base;
             childBuildings = new LinkedList<Building>();
             baseBuilding = this;
+            this.rateOfProduction = BASE_PRODUCTION;
         }
 
         /// <summary>
@@ -72,7 +76,12 @@ namespace Recellection.Code.Models
             if (buildingsChanged != null)
             {
                 buildingsChanged(this, new BuildingAddedEvent(building, EventType.ADD));
-            }          
+            }
+            if (building.type == Globals.BuildingTypes.Resource)
+            {
+                ResourceBuilding rb = (ResourceBuilding)building;
+                this.rateOfProduction += rb.RateOfProduction;
+            }
         }
 
         /// <summary>
@@ -81,6 +90,11 @@ namespace Recellection.Code.Models
         /// <param name="building"></param>
         public bool RemoveBuilding(Building building)
         {
+            if (building.type == Globals.BuildingTypes.Resource)
+            {
+                ResourceBuilding rb = (ResourceBuilding)building;
+                this.rateOfProduction -= rb.RateOfProduction;
+            }
             return childBuildings.Remove(building);
         }
 

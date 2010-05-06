@@ -7,16 +7,23 @@ using Microsoft.Xna.Framework;
 
 namespace Recellection.Code.Models
 {
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <author>Joel Ahlgren</author>
+    /// <date>2010-04-30</date>
     [TestFixture]
     class UnitTest
     {
         Unit u1, u2;
+        Player p;
 
         [SetUp]
         public void init()
         {
-            u1 = new Unit();
-            u2 = new Unit();
+            p = new Player();
+            u1 = new Unit(p);
+            u2 = new Unit(p);
         }
 
         [Test]

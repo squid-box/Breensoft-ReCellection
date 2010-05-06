@@ -22,7 +22,7 @@ namespace Recellection.Code.Controllers
 
                     if (b.type == Globals.BuildingTypes.Aggressive)
                     {
-                        AcquireTarget((AggressiveBuilding)b);
+                        AttackTargets((AggressiveBuilding)b);
                     }
                 }
             }
@@ -34,19 +34,16 @@ namespace Recellection.Code.Controllers
         /// then set them as a Target for the AggressiveBuilding.
         /// </summary>
         /// <param name="b"></param>
-        private static void AcquireTarget(AggressiveBuilding b)
+        private static void AttackTargets(AggressiveBuilding b)
         {
-            foreach (Tile t in b.controlZone)
+            foreach (Unit u in b.currentTargets)
             {
-                foreach (Unit u in t.GetUnits())
-                {
-                    if (u.GetOwner().Equals(b.owner))
-                    {
-                        b.SetTarget(u);
-                        break;
-                    }
-                }
+                //Show kill graphix and make sound.
+
+                //Kill units here.....
+
             }
+            b.currentTargets.Clear();
         }
 
         /// <summary>
@@ -63,7 +60,7 @@ namespace Recellection.Code.Controllers
         /// 
         /// </summary>
         /// <param name="player"></param>
-        public static void RaiseBuilding(Player player)
+        public static void RazeBuilding(Player player)
         {
 
         }

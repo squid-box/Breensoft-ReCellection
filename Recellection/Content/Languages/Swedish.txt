@@ -1,5 +1,5 @@
 [General]
-title=Re:Cellection
+title=Åter:Urval
 
 [Menu]
 MainMenu1=Test1
