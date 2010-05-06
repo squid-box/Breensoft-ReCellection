@@ -1,59 +1,65 @@
-﻿using System;
+
+using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using Microsoft.Xna.Framework.Graphics;
+using Recellection.Code.Models;
 
-/**
- * 
- * Author: co
- * 
- **/
 
-namespace Recellection.Code.Models
+namespace Recellection
 {
-    public class Menu : IModel
-    {
-        private List<GUIRegion> regions;
+	/// <summary>
+	/// author: co
+	/// </summary>
+
+	public class Menu
+	{
+	    private List<MenuIcon> icons;
         private Texture2D menuPic;
-        private Menu helpMenu; //om denna Menu är en helpmenu eller inte ska ha en helpMenu sets denna variabel till null duh.
-
-
-        /**
-         * 
-         * min tanke är att varje meny ska vara ett Menu objekt. 
-         * Denna klass kommer ha två konstruktorer den beskriver exakt hur menyn ska se ut och i den andra kan man välja bland några hårdkodade menyer.
-         * Om du har synpunkter eller frågorom implementationen tveka inte att kontakta mig (co).
-         * 
-         * Jag tänker inte låta det vara möjligt att ändra menyer, man gör bara nya om så skulle behövas istället, om dett visar sig vara ineffektivt ändrar jag på det.
-         * 
-         * */
-
-
-        //place holders, dem riktiga funktionerna ska faktiskt göra något :)
-        public Menu()
-        {
-        }
-
-        //här kommer menyerna hårdkodas, mest kod här
-        public Menu(String menuType)
-        {
-        }
-
-
-        //och så några get metoder:
-        public List<GUIRegion> GetRegions()
-        {
-            return regions;
-        }
-        public Texture2D GetMenuPic()
-        {
-            return menuPic;
-        }
-        public Menu GetHelp() //seriously dude, you need help...
-        {
-            return helpMenu;
-        }
-        
-    }
+		
+		public Menu(Texture2D menuPic, List<MenuIcon> icons)
+		{
+			this.menuPic = menuPic;
+			this.icons = icons;
+		}
+		
+		public List<MenuIcon> GetIcons()
+		{
+			return icons;
+		}
+		
+		public List<GUIRegion> GetRegions()
+		{
+			List<GUIRegion> regions = new List<GUIRegion>();
+			foreach(MenuIcon mi in icons)
+			{
+				regions.Add(mi.getRegion());
+			}
+			return regions;
+		}
+		
+		public Menu(Globals.MenuLayout layout, List<MenuIcon> icons)
+		{
+			switch(layout)
+			{
+				case Globals.MenuLayout.Prompt:
+					CreatePrompt(icons);
+					break;
+				case Globals.MenuLayout.NineMatrix:
+					//code
+					break;
+				case Globals.MenuLayout.FourMatrix:
+					//code
+					break;
+			}
+		}
+		private void CreatePrompt(List<MenuIcon> icons)
+		{
+			if (icons.Count != 2){
+				throw new Exception("Wrong amount of icons in menu");				
+			}
+			icons[0].setRegion(new GUIRegion(Recellection.windowHandle, new System.Windows.Rect(0, 0, Recellection.viewPort.Width * 2 / 5, Recellection.viewPort.Height)));
+			icons[1].setRegion(new GUIRegion(Recellection.windowHandle, new System.Windows.Rect(Recellection.viewPort.Width * 3 / 5, 0, Recellection.viewPort.Width, Recellection.viewPort.Height)));
+			this.icons = icons;
+		}
+	}
 }

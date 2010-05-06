@@ -2,10 +2,16 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Microsoft.Xna.Framework;
 using NUnit.Framework;
 
 namespace Recellection.Code.Models
 {
+    /// <summary>
+    /// Test code for Tile-class.
+    /// </summary>
+    /// <author>Joel Ahlgren</author>
+    /// <date>2010-04-30</date>
     [TestFixture]
     class TileTest
     {  
@@ -21,9 +27,9 @@ namespace Recellection.Code.Models
             t1 = new Tile(0,0);
             t2 = new Tile(1,1,Globals.TerrainTypes.Slow);
             p = new Player();
-            u1 = new Unit(0, 0, p);
-            u2 = new Unit(0, 0, p);
-            u3 = new Unit(0, 0, p);
+            u1 = new Unit(p, Vector2.Zero);
+            u2 = new Unit(p, Vector2.Zero);
+            u3 = new Unit(p, Vector2.Zero);
             b1 = new BaseBuilding("TestBase", 0, 0, p);
             b2 = new BarrierBuilding("TestBuilding1", 1, 1, p, b1);
             

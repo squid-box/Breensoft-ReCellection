@@ -14,22 +14,30 @@ namespace Recellection.Code.Controllers
         /**
          * Variables
          */
-        private AIView view;
+        private AIView m_view;
+        private World m_world;
+        private GraphController m_graph;
         private List<Vector2> interrestPoints;
         private List<Vector2> enemyPoints;
-        private int threshold;
+
+        private int distanceThreshold;
 
 
 
         /// <summary>
-        /// Constructor. 
+        /// Constructor. The AIPlayer requires quite alot of external controllers.
         /// </summary>
-        /// <param name="p_view"></param>
-        public AIPlayer(AIView p_view){
-            view = p_view;
+        /// <param name="view"></param>
+        /// <param name="world"></param>
+        /// <param name="graph"></param>
+        public AIPlayer(AIView view, World world, GraphController graph){
+            m_view = view;
+            m_world = world;
+            m_graph = graph;
             interrestPoints = new List<Vector2>();
             enemyPoints = new List<Vector2>();
-
+            view.registerPlayer(this);
+            distanceThreshold = 3;
         }
 
         /// <summary>
@@ -42,16 +50,15 @@ namespace Recellection.Code.Controllers
             {
                 Vector2 current = interrestPoints[i];
 
-                if (view.ContainsResourcePoint(current))
+                if (m_view.ContainsResourcePoint(current))
                 {
                     EvaluateResourcePoint(current);
                 }
                 else
                 {
-                    CalculateWeight(current);
+                    CalculateWeight(m_view.GetBuildingAt(current));
                 }
             }
-
             if (enemyPoints.Count == 0)
             {
                 Explore();
@@ -62,12 +69,12 @@ namespace Recellection.Code.Controllers
                 {
                     Vector2 current = enemyPoints[i];
                     Vector2 nearby = GetClosestPointFromList(current, interrestPoints);
-                    if (Vector2.Distance(current, nearby) > threshold)
+                    if (Vector2.Distance(current, nearby) > distanceThreshold)
                     {
                         nearby = CalculatePointNear(current);
                         interrestPoints[interrestPoints.Count] = nearby;
                     }
-                    SendUnits(nearby);
+                    SendUnits(nearby); //TODO: How many to send?
                 }
             }
         }
@@ -94,11 +101,13 @@ namespace Recellection.Code.Controllers
 
 
         /// <summary>
-        /// Decides what the weight should be at the given coordinates.
+        /// Decides what the weight should be at the given building
         /// </summary>
-        /// <param name="Current"></param>
-        private void CalculateWeight(Vector2 Current)
+        /// <param name="building"></param>
+        private void CalculateWeight(Building building)
         {
+            m_graph.GetWeight(building);
+
             throw new NotImplementedException();
         }
 
@@ -107,6 +116,7 @@ namespace Recellection.Code.Controllers
         /// </summary>
         private void Explore()
         {
+
             throw new NotImplementedException();
         }
 
@@ -116,17 +126,31 @@ namespace Recellection.Code.Controllers
         /// <returns></returns>
         private object CalculateScoutDirection()
         {
-            throw new NotImplementedException();
+            throw new NotFiniteNumberException();
         }
 
         /// <summary>
         /// Figure out where to add a new point of interrest that is close enough to the given point.
         /// </summary>
-        /// <param name="Current"></param>
+        /// <param name="point"></param>
         /// <returns></returns>
-        private Vector2 CalculatePointNear(Vector2 current)
+        private Vector2 CalculatePointNear(Vector2 point)
         {
-            throw new NotImplementedException();
+            Vector2 closestFriendly = GetClosestPointFromList(point, m_view.GetFriendlyBuildings());
+
+            //The distance between the two points, counting from the parameter point as origin.
+            int diffX = (int)(point.X - closestFriendly.X);
+            int diffY = (int)(point.Y - closestFriendly.Y);
+
+            //How close to the enemy building we should build
+            //These values may be calculated using more advanced logic.
+            int offsetX = diffX / 2;
+            int offsetY = diffY / 2;
+
+            int newX = (int)(point.X + diffX - offsetX);
+            int newY = (int)(point.Y + diffY - offsetY);
+
+            return new Vector2(newX, newY);
         }
 
         /// <summary>
@@ -135,19 +159,29 @@ namespace Recellection.Code.Controllers
         /// <param name="point"></param>
         private void EvaluateResourcePoint(Vector2 point)
         {
-            //Resource point but we already have it.
             if (Harvesting(point))
-                return;
+            {
+                if (CanHoldPoint(point))
+                    return;
 
+                SendUnits(point);
+                IncreaseWeight(m_view.GetBuildingAt(point));
+            }
             if (CanHoldPoint(point))
             {
-                IssueBuildOrder(point, Globals.BuildingTypes.Resource);
+                IssueBuildOrder(point, m_view.getBaseBuilding() , Globals.BuildingTypes.Resource);
             }
             else
             {
                 SendUnits(point);
             }
         }
+
+        private void IncreaseWeight(Building building)
+        {
+            throw new NotImplementedException();
+        }
+
 
         
         /// <summary>
@@ -157,7 +191,7 @@ namespace Recellection.Code.Controllers
         /// <returns></returns>
         private bool Harvesting(Vector2 point)
         {
-            Building tempBuilding = view.GetBuildingAt(point);
+            Building tempBuilding = m_view.GetBuildingAt(point);
 
             if (tempBuilding == null)
                 return false;
@@ -168,7 +202,7 @@ namespace Recellection.Code.Controllers
                 return false;
             }
 
-            if (view.GetBuildingTypeOf(view.GetBuildingAt(point)) == Globals.BuildingTypes.Resource)
+            if (m_view.GetBuildingAt(point).type == Globals.BuildingTypes.Resource)
             {
                 return true;
             }
@@ -190,19 +224,31 @@ namespace Recellection.Code.Controllers
             return false;
         }
 
+        /// <summary>
+        /// Returns the number of units located at the given coordinates.
+        /// </summary>
+        /// <param name="point"></param>
+        /// <returns></returns>
         private int unitCountAt(Vector2 point)
         {
-            return view.getTileAt(point).GetUnits().ToArray().Length;
+            return m_view.getTileAt(point).GetUnits(this).ToArray().Length;
         }
 
         private void SendUnits(Vector2 point)
         {
+
             throw new NotImplementedException();
         }
 
-        private void IssueBuildOrder(Vector2 point, Globals.BuildingTypes buildingType)
+        /// <summary>
+        /// Called when a new building should be created
+        /// </summary>
+        /// <param name="point"></param>
+        /// <param name="baseBuilding"></param>
+        /// <param name="buildingType"></param>
+        private void IssueBuildOrder(Vector2 point, Building baseBuilding, Globals.BuildingTypes buildingType)
         {
-            throw new NotImplementedException();
+            BuildingController.AddBuilding(buildingType, baseBuilding, point, m_world);
         }
 
     }

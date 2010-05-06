@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using Recellection.Code.Models;
 using Microsoft.Xna.Framework;
+using Recellection.Code.Utility.Logger;
 
 namespace Recellection.Code.Controllers
 {
@@ -10,6 +11,7 @@ namespace Recellection.Code.Controllers
 	/// </summary>
 	public class GraphController
 	{
+		private static Logger logger = LoggerFactory.GetLogger();
 		/// <summary>A list of all the graph components.</summary>
 		private List<Graph> components;
 		
@@ -34,6 +36,7 @@ namespace Recellection.Code.Controllers
 		protected GraphController()
 		{
 			components = new List<Graph>();
+			logger.Info("Constructed a new GraphController.");
 		}
 		
 		/// <summary>
@@ -47,10 +50,11 @@ namespace Recellection.Code.Controllers
 			{
 				if (g.HasBuilding(b))
 				{
+					logger.Trace("Found graph "+g+" for building "+b+".");
 					return g;
 				}
 			}
-			
+			logger.Error("Tried to fetch a graph for the building '"+b+"' and failed.");
 			throw new GraphLessBuildingException();
 		}
 		
@@ -60,6 +64,7 @@ namespace Recellection.Code.Controllers
 		/// <param name="building">The building to remove.</param>
 		public void RemoveBuilding(Building building)
 		{
+			logger.Info("Removed building "+building+".");
 			GetGraph(building).Remove(building);
 		}
 		
@@ -70,6 +75,7 @@ namespace Recellection.Code.Controllers
 		/// <param name="newBuilding">A new building, not belonging to a graph yet.</param>
 		public void AddBuilding(Building source, Building newBuilding)
 		{
+			logger.Info("Added building " + newBuilding + " with source " + source + ".");
 			GetGraph(source).Add(newBuilding);
 		}
 		
@@ -80,6 +86,7 @@ namespace Recellection.Code.Controllers
 		/// <returns>The created graph.</returns>
 		public Graph AddBaseBuilding(BaseBuilding newBaseBuilding)
 		{
+			logger.Info("Added base building " + newBaseBuilding + " and created a new graph from it.");
 			Graph graph = new Graph(newBaseBuilding);
 			components.Add(graph);
 			return graph;
@@ -88,80 +95,131 @@ namespace Recellection.Code.Controllers
 		/// <summary>
 		/// Sets the weight of a building.
 		/// </summary>
-		/// <param name="building">The building to set the weigh for.</param>
+		/// <param name="building">The building to set the weight for.</param>
 		/// <param name="weight">The new weight.</param>
 		public void SetWeight(Building building, int weight)
 		{
+			logger.Debug("Setting weight "+weight+" to building "+building+".");
 			GetGraph(building).SetWeight(building, weight);
 		}
 		
 		/// <summary>
-		/// for each Graph:
-		///		get the total number of units in the graph;
-		///		for each building in the graph:
-		///			check that the ratio between the units in that building and its
-		///			weight is proportional to the total number of units.
+		/// Sets the weight of a building by creating a menu and asking the user what weight the building should have.
+		/// </summary>
+		/// <param name="b">The building to set a weight for.</param>
+		public void SetWeight(Building b)
+		{
+			//Menu menu = new Menu();
+			// TODO: Construct the Menu options
+			
+			//MenuController.LoadMenu(menu);
+			
+			MenuIcon input = MenuController.GetInput();
+
+			// TODO: Decide what option was opted for.
+			
+			SetWeight(b, 0);
+		}
+		
+		/// <summary>
+		/// Gets the weight of a building.
+		/// </summary>
+		/// <param name="building">The building to get the weight for.</param>
+		/// <returns>The weight of the building.</returns>
+		public int GetWeight(Building building)
+		{
+			logger.Debug("Getting the weight for building " + building + ".");
+			return GetGraph(building).GetWeight(building);
+		}
+		
+		/// <summary>
+		/// Calculates and carries out distribution of units in the graphs according to the buildings weights.
+		/// 
+		/// Warning: This method is not healthy. Not even for you. No. Dont.
 		/// </summary>
 		public void CalculateWeights()
 		{
+			logger.Info("Calculating weights for all graphs.");
 			foreach(Graph g in components)
 			{
+				logger.Debug("Calculating weights for graph "+g+".");
 				int totalUnits = SumUnitsInGraph(g);
 
 				// Figure out the unit balance for each building
 				LinkedList<BuildingBalance> inNeed = new LinkedList<BuildingBalance>();
 				LinkedList<BuildingBalance> withExcess = new LinkedList<BuildingBalance>();
+				logger.Debug("Figuring out the unit balancing for each building");
 				foreach(Building b in g.GetBuildings())
 				{
 					float factor = g.GetWeight(b) / g.TotalWeight;
 					int unitGoal = (int)(totalUnits * factor);
 					int unitBalance = b.CountUnits() - unitGoal;
-					
+
+					logger.Trace("Unit goal for " + b + " is " + unitGoal + " which has "+b.CountUnits()+" units. Balance = "+unitBalance+".");
 					if (unitBalance > 0)
 					{
+						logger.Trace("Building has extra units to give.");
 						withExcess.AddLast(new BuildingBalance(b, unitBalance));
 					}
 					else if (unitBalance < 0)
 					{
+						logger.Trace("Building is in need of units.");
 						inNeed.AddLast(new BuildingBalance(b, unitBalance));
+					}
+					else
+					{
+						logger.Trace("Building is satisfied.");
 					}
 				}
 				
 				// If there is no need, don't balance.
 				if (inNeed.Count == 0)
+				{
+					logger.Debug("There is no need, don't balance.");
 					return;
+				}
 				
 				// If there is nothing to give, don't balance.
 				if (withExcess.Count == 0)
+				{
+					logger.Debug("There is nothing to give, don't balance.");
 					return;
-				
+				}
+
 				// Try to even out the unit count in every building
+				logger.Debug("Trying to even out the unit count in every building.");
 				bool balancingIsPossible = inNeed.Count > 0 && withExcess.Count > 0;
 				while (balancingIsPossible)
 				{
 					BuildingBalance want = inNeed.First.Value;
 					BuildingBalance has = withExcess.First.Value;
-					
 					int transferableUnits = Math.Min(has.balance, Math.Abs(want.balance));
+
+					logger.Trace("Transferring units "+transferableUnits+" from " + want + " to " + has + ".");
 					
 					has.balance -= transferableUnits;
 					want.balance += transferableUnits;
 					
+					MoveUnits(transferableUnits, want.building, has.building);
+					
 					if (has.balance == 0)
 					{
+						logger.Trace("Having building "+has+" is now satisfied. Removing from balancing.");
 						withExcess.Remove(has);
 					}
 					
 					if (want.balance == 0)
 					{
+						logger.Trace("Wanting building "+want + " is now satisfied. Removing from balancing.");
 						inNeed.Remove(want);
 					}
 					
-					MoveUnits(transferableUnits, want.building, has.building);
 					
 					balancingIsPossible = (inNeed.Count > 0 && withExcess.Count > 0);
 				}
+				logger.Trace("Done calculating weights for graph "+g+".");
 			}
+			logger.Debug("Done calculating weights for all graphs.");
 		}
 
 		internal static int SumUnitsInGraph(Graph g)
@@ -192,14 +250,12 @@ namespace Recellection.Code.Controllers
 			}
 		}
 		
-		/// <summary>
-		/// </summary>
-		/// <param name="number"></param>
-		/// <param name="x"></param>
-		/// <param name="y"></param>
+		/// <param name="numberOfUnits">The number of units to move.</param>
+		/// <param name="from">From what building to move.</param>
+		/// <param name="to">Destination for the units.</param>
 		private void MoveUnits(int numberOfUnits, Building from, Building to)
 		{
-			// TODO: call the Unit Controller with orders about changes in unit positioning.
+			UnitController.MoveUnits(numberOfUnits, from.controlZone.First.Value, to.controlZone.First.Value);
 		}
 	}
 

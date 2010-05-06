@@ -31,15 +31,6 @@ namespace Recellection.Code.Models
 
         #region Constructors
 
-        [Obsolete("Caution, crazily broken!")]
-        public Tile()
-        {
-            this.type = new TerrainType();
-            this.visibleTo = new HashSet<Player>();
-            //this.units = new HashSet<Unit>();
-            this.building = null;
-        }
-
         /// <summary>
         /// Creates a Tile of Membrane (default) type.
         /// </summary>
@@ -111,7 +102,7 @@ namespace Recellection.Code.Models
 
             if (unitsChanged != null)
             {
-                unitsChanged(this, new Event<IEnumerable<Unit>>(this.units[p], EventType.ADD));
+                unitsChanged(this, new Event<IEnumerable<Unit>>(units, EventType.ADD));
             }
         }
         /// <summary>
@@ -128,7 +119,10 @@ namespace Recellection.Code.Models
 
             if (unitsChanged != null)
             {
-                unitsChanged(this, new Event<IEnumerable<Unit>>(this.units[p], EventType.ADD));
+                //I'm sorry for this ugly hax - John
+                List<Unit> temp = new List<Unit>();
+                temp.Add(u);
+                unitsChanged(this, new Event<IEnumerable<Unit>>(temp, EventType.ADD));
             }
         }
 
@@ -138,7 +132,10 @@ namespace Recellection.Code.Models
 
             if (unitsChanged != null)
             {
-                unitsChanged(this, new Event<IEnumerable<Unit>>(this.units[p], EventType.REMOVE));
+                //I'm sorry for this ugly hax - John
+                List<Unit> temp = new List<Unit>();
+                temp.Add(u);
+                unitsChanged(this, new Event<IEnumerable<Unit>>(temp, EventType.REMOVE));
             }
         }
         public void RemoveUnit(Player p, List<Unit> units)
@@ -150,15 +147,26 @@ namespace Recellection.Code.Models
 
             if (unitsChanged != null)
             {
-                
-                unitsChanged(this, new Event<IEnumerable<Unit>>(this.units[p], EventType.REMOVE));
+                unitsChanged(this, new Event<IEnumerable<Unit>>(units, EventType.REMOVE));
             }
         }
 
-        [Obsolete("Horribly horribly broken!")]
+        /// <summary>
+        /// Returns all units on this Tile, regardless of owner.
+        /// </summary>
         public HashSet<Unit> GetUnits()
         {
-            return null;
+            HashSet<Unit> ret = new HashSet<Unit>();
+
+            foreach(KeyValuePair<Player, HashSet<Unit>> pair in this.units)
+            {
+                foreach(Unit u in pair.Value)
+                {
+                    ret.Add(u);
+                }
+            }
+
+            return ret;
         }
 
         /// <summary>
@@ -197,7 +205,7 @@ namespace Recellection.Code.Models
                 
                 if (buildingChanged != null)
                 {
-                    buildingChanged(this, new Event<Building>(building, EventType.ADD));
+                    buildingChanged(this, new Event<Building>(this.building, EventType.ADD));
                 }
 
                 return true;
@@ -263,6 +271,11 @@ namespace Recellection.Code.Models
         public void RemoveBuilding()
         {
             this.building = null;
+
+            if (buildingChanged != null)
+            {
+                buildingChanged(this, new Event<Building>(this.building, EventType.REMOVE));
+            }
         }
 
         /// <summary>
