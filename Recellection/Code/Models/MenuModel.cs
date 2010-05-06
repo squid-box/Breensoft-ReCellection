@@ -8,7 +8,29 @@ using Microsoft.Xna.Framework;
 namespace Recellection.Code.Models
 {
     public class MenuModel : IModel
-    {
+	{
+		#region Singleton-stuff
+
+		// from http://www.yoda.arachsys.com/csharp/singleton.html
+		static MenuModel instance = null;
+		static readonly object padlock = new object();
+
+		public static MenuModel Instance
+		{
+			get
+			{
+				lock (padlock)
+				{
+					if (instance == null)
+					{
+						instance = new MenuModel();
+					}
+					return instance;
+				}
+			}
+		}
+
+		#endregion
 
         private Stack<Menu> menuStack;
         private Dictionary<Menu, Vector2> menuPositions;
@@ -16,6 +38,10 @@ namespace Recellection.Code.Models
         public event Publish<Menu> MenuEvent;
         public event Publish<Menu> MenuClearedEvent;
 
+		private MenuModel()
+		{
+		}
+		
         /// <summary>
         /// check which menu is on top of the stack
         /// and return it without popping.
