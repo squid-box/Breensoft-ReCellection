@@ -63,7 +63,6 @@
   <ItemGroup>
     <Compile Include="Code\Controllers\BuildingControllerTest.cs" />
     <Compile Include="Code\Controllers\GraphControllerTest.cs" />
-    <Compile Include="Code\Controllers\LocalizerTest.cs" />
     <Compile Include="Code\Controllers\TobiiControllerTest.cs" />
     <Compile Include="Code\Controllers\UnitAccountantTest.cs" />
     <Compile Include="Code\Controllers\WorldGeneratorTest.cs" />

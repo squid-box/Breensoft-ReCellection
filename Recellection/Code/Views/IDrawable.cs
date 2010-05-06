@@ -7,6 +7,6 @@ namespace Recellection.Code.Views
 {
     interface IDrawable
     {
-        /*public List<DrawData> GetDrawData();*/
+        List<DrawData> GetDrawData();
     }
 }

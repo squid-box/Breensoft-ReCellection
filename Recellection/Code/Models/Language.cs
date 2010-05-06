@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -12,9 +12,11 @@ namespace Recellection.Code.Models
     /// functionality for getting strings in the correct language. It does this 
     /// by providing a static function for every other component which handles 
     /// strings in the application.
+	/// 
+	/// Author: Joel Ahlgren
+	/// Signed: Martin Nycander (2010-05-04)
     /// </summary>
-    /// <author>Joel Ahlgren</author>
-    /// <date>2010-04-30</date>
+    /// <date>2010-05-04</date>
     public sealed class Language : IModel
     {
         #region Singleton-stuff
@@ -59,14 +61,24 @@ namespace Recellection.Code.Models
 
         #endregion
 
-
+        /// <summary>
+        /// Returns a string attached to the label you supply in the
+        /// currently selected language.
+        /// </summary>
+        /// <param name="label">Label of the text string you want.</param>
+        /// <returns>Requested text in the currently active language.</returns>
         public string GetString(string label)
         {
             return translations[currentLanguage][label];
         }
         
-        // Adding new strings to the model
-        public void SetString(String language, String label, String translation)
+        /// <summary>
+        /// Add a new string to the model.
+        /// </summary>
+        /// <param name="language">Language of the new string.</param>
+        /// <param name="label">Label of the new string.</param>
+        /// <param name="translation">Text to be added. (The new string.)</param>
+        private void SetString(String language, String label, String translation)
         {
             if (this.translations.ContainsKey(language))
             {
@@ -84,10 +96,19 @@ namespace Recellection.Code.Models
             return this.translations.Keys.ToArray();
         }
         
-        // Changing the language
+        /// <summary>
+        /// Set a new active language.
+        /// </summary>
         public void SetLanguage(String newLanguage)
         {
-            this.currentLanguage = newLanguage;
+            if (!this.GetAvailableLanguages().Contains(newLanguage))
+            {
+                throw new ArgumentException("No such language, make sure the language file is present.");
+            }
+            else
+            {
+                this.currentLanguage = newLanguage;
+            }
         }
 
         /// <returns>The language current in use.</returns>
@@ -101,6 +122,9 @@ namespace Recellection.Code.Models
         /// </summary>
         private void ReadLanguagesFromFile()
         {
+            // Reset translations, just in case.
+            this.translations = new Dictionary<string, Dictionary<string, string>>();
+            
             // Get list of language-files in Content directory.
             DirectoryInfo di = new DirectoryInfo("Content/Languages");
             FileInfo[] fi = di.GetFiles("*."+EXTENSION);
@@ -139,6 +163,14 @@ namespace Recellection.Code.Models
                 }
                 sr.Close();
             }
+        }
+
+        /// <summary>
+        /// Reloads information from language files.
+        /// </summary>
+        public void ReloadFromFile()
+        {
+            this.ReadLanguagesFromFile();
         }
         
         /// <summary>
