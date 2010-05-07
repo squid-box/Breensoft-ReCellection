@@ -13,7 +13,7 @@ using Microsoft.Xna.Framework.Content;
 namespace Recellection
 {
 
-	public class MenuView : IRenderable
+	public sealed class MenuView : IRenderable
 	{
 		/// <summary>
 		/// author: co
@@ -23,8 +23,26 @@ namespace Recellection
         private RenderTarget2D textRenderTex = new RenderTarget2D(Recellection.graphics.GraphicsDevice, Recellection.viewPort.Width, Recellection.viewPort.Height, 0, Recellection.graphics.GraphicsDevice.DisplayMode.Format);
         private float fontSzInPx = 14;
 		List<DrawData> graphics;
-		
-		public MenuView()
+        static readonly object padlock = new object();
+        static MenuView instance = null;
+
+        public static MenuView Instance
+        {
+            get
+            {
+                lock (padlock)
+                {
+                    if (instance == null)
+                    {
+                        instance = new MenuView();
+                    }
+                    return instance;
+                }
+            }
+        }
+
+
+		private MenuView()
 		{
 			MenuModel.Instance.MenuEvent += menuEventFunction;
 			graphics = new List<DrawData>();
