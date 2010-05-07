@@ -17,6 +17,7 @@ namespace Recellection
 		
         public GraphicsRenderer()
         {
+
         }
 
         public void Draw(ContentManager content, SpriteBatch spriteBatch)
@@ -28,7 +29,7 @@ namespace Recellection
             spriteBatch.Begin(SpriteBlendMode.AlphaBlend, SpriteSortMode.Immediate, SaveStateMode.None);
             foreach (DrawData d in drawData)
             {
-                spriteBatch.Draw(d.Texture, d.Position, new Rectangle(d.CurrentFrame * d.SpriteSize, 0, d.SpriteSize, d.SpriteSize), Color.White, d.Rotation, new Vector2(d.SpriteSize / 2, d.SpriteSize / 2), 1.0f, SpriteEffects.None, 0);
+                spriteBatch.Draw(d.Texture, d.Position, new Rectangle(d.CurrentFrame * d.SpriteHeight, 0, d.SpriteWidth, ((d.SpriteWidth+d.SpriteHeight)/2)), Color.White, d.Rotation, new Vector2(d.SpriteHeight / 2, d.SpriteWidth / 2), 1.0f, SpriteEffects.None, 0);
             }
 
             spriteBatch.End();
