@@ -33,6 +33,9 @@ namespace Recellection
 
 			gameLogic.Start();
 			game.Run();
+			gameLogic.Abort();
+			Environment.Exit(0);
+			// MOAR EXITS! MOAR!!! DEATH TO ALL APPLICATION!
         }
     }
 }
