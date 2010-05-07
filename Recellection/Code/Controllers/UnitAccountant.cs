@@ -12,7 +12,7 @@ namespace Recellection.Code.Controllers
     /// 
     /// </summary>
     /// <author>Joel Ahlgren</author>
-    /// <date>2010-05-05</date>
+    /// <date>2010-05-07</date>
     /// 
     /// Signature: John Doe (yyyy-mm-dd)
     /// Signature: Jane Doe (yyyy-mm-dd)
@@ -43,15 +43,20 @@ namespace Recellection.Code.Controllers
         /// Quite possibly a horribly slow way of adding units.
         /// </summary>
         public void ProduceUnits()
-        {   
+        {
+            List<Unit> res;
+            
             foreach (Graph g in owner.GetGraphs())
             {
+                res = new List<Unit>();
+                
                 BaseBuilding b = g.baseBuilding;
 
                 for (int i = 0; i < b.RateOfProduction; i++)
                 {
-                    b.AddUnit(new Unit(b.coordinates.X, b.coordinates.Y));
+                    b.AddUnit(new Unit(b.coordinates.X, b.coordinates.Y, b.owner));
                 }
+                b.AddUnits(res);
             }
         }
     }
