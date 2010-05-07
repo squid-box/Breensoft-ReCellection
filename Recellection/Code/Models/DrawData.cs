@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -7,7 +7,7 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace Recellection
 {
-    public class DrawData
+    §public class DrawData
     {
         Vector2 position;
 
