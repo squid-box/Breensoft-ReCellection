@@ -70,12 +70,9 @@ namespace Recellection
         /// </summary>
         protected override void Initialize()
         {
-            Language.Instance.SetLanguage("English");
-
             base.Initialize();
 
             Globals.gameState = Globals.GameStates.Game;
-
 
             // Initialize the python console
             console = new PythonInterpreter(this, consoleFont);
@@ -182,27 +179,6 @@ namespace Recellection
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Draw(GameTime gameTime)
         {
-            List<DrawData> objectsToDraw;
-
-            switch (Globals.gameState)
-            {
-                case Globals.GameStates.StartUp:
-                    //objectsToDraw = startUp.GetDrawData();
-                    break;
-
-                case Globals.GameStates.Game:
-                    //objectsToDraw = worldView.GetDrawData();
-                    break;
-
-                case Globals.GameStates.Help:
-                    //objectsToDraw = helpView.GetDrawData();
-                    break;
-
-                case Globals.GameStates.Menu:
-                    //objectsToDraw = menuView.GetDrawData();
-                    break;
-            }
-            
             graphicsRenderer.Draw(spriteBatch);
 
             PrintHelp();

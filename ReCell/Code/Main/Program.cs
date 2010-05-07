@@ -5,6 +5,7 @@ using Recellection.Code.Utility.Console;
 using Microsoft.Xna.Framework.Graphics;
 using System.Threading;
 using Recellection.Code.Main;
+using Recellection.Code.Models;
 
 // We should be able to test internals
 [assembly: InternalsVisibleTo("RecellectionTests")]
@@ -19,7 +20,9 @@ namespace Recellection
         static void Main(string[] args)
 		{
 			LoggerSetup.Initialize();
-			
+
+			Language.Instance.SetLanguage("English");
+
 			// This is the bridge between XNA and the logic
 			GraphicsRenderer graphicRendering = new GraphicsRenderer();
 
