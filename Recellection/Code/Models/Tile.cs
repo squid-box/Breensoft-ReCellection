@@ -14,7 +14,10 @@ namespace Recellection.Code.Models
     /// Signed: Marco Ahumada Juntunen 2010-05-06
     /// </summary>
     /// <author>Joel Ahlgren</author>
-    /// <date>2010-04-26</date>
+    /// <date>2010-05-07</date>
+    /// 
+    /// Signature: Name (date)
+    /// Signature: Name (date)
     public class Tile : IModel
     {
         // Data
