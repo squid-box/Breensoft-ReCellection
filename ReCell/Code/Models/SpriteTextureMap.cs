@@ -46,11 +46,19 @@ namespace Recellection.Code.Models
 
             for(int i = 0; i < textures.Length; i++) 
             {
-                //For each of the enum name load the same texture image file.
-                textures[i] =
-                    content.Load<Texture2D>(
+                try
+                {
+                    //For each of the enum name load the same texture image file.
+                    textures[i] =
+                        content.Load<Texture2D>(
 
-                    TEXTURE_FOLDER+"/"+textureNames[i] + "." + IMAGE_FORMAT);
+                        TEXTURE_FOLDER + "/" + textureNames[i] + "." + IMAGE_FORMAT);
+                }
+                catch (ContentLoadException e)
+                {
+                    
+                    throw new ContentLoadException("You need to add the picture to: "+textureNames[i]);
+                }
 
             }
 
