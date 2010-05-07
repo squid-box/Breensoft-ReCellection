@@ -36,12 +36,16 @@ namespace Recellection
 			graphics.Clear();
 			graphics.Add(new DrawData(new Vector2(0,0), m.getMenuPic(), 0, 0, Recellection.viewPort.Width));
 			//graphics.Add();//TODO skriv ut text SEN inte nu, laga menu
-			textDrawer.DrawString(Recellection.screenFont, Language.Instance.GetString("MainMenu1"), offset, Color.Black, 0, Vector2.Zero, textScale, SpriteEffects.None, 0);
+			Vector2 position = new Vector2(20, 20);
+			Vector2 scale = new Vector2(1.0f, 1.0f);
+			textDrawer.DrawString(Recellection.screenFont, Language.Instance.GetString("MainMenu1"), 
+				position, Color.Black, 0, Vector2.Zero, scale, SpriteEffects.None, 0);
 
 			if(ev.type == EventType.ADD)
 			{
-				Menu m = ev.subject;
-			}else if (ev.type == EventType.REMOVE)
+				
+			}
+			else if (ev.type == EventType.REMOVE)
 			{
 				
 			}

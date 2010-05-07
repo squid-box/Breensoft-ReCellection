@@ -6,6 +6,11 @@ using System.IO;
 
 namespace Recellection.Code.Utility.Logger
 {
+    /// <summary>
+    /// 
+    /// 
+    /// Signature: John Forsberg (2010-05-07)
+    /// </summary>
 	public static class LoggerSetup
 	{
 		public static TextWriter target = GetLogFileTarget("recellection.log");
