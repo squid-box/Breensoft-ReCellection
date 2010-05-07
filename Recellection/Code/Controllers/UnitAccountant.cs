@@ -50,7 +50,7 @@ namespace Recellection.Code.Controllers
 
                 for (int i = 0; i < b.RateOfProduction; i++)
                 {
-                    b.AddUnit(new Unit(b.owner,b.coordinates));
+                    b.AddUnit(new Unit(b.coordinates.X, b.coordinates.Y));
                 }
             }
         }
