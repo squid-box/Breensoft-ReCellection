@@ -13,7 +13,7 @@ namespace Recellection
 {
     public class GraphicsRenderer
     {
-		public static IRenderable currentState = new LoadView();
+		public static IRenderable currentState = new TestView();
 		
         public GraphicsRenderer()
         {
