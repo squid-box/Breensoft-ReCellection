@@ -11,6 +11,7 @@ namespace Recellection.Code.Utility.Logger
 	/// Provides a re-usable logging interface for the whole application.
 	/// 
 	/// Author: Martin Nycander
+    /// Signature: John Forsberg (2010-05-07)
 	/// </summary>
 	public class Logger
 	{	

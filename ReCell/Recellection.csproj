@@ -126,6 +126,7 @@
     <Compile Include="Code\Controllers\VictorTurner.cs" />
     <Compile Include="Code\Controllers\WorldController.cs" />
     <Compile Include="Code\Controllers\WorldGenerator.cs" />
+    <Compile Include="Code\Main\GameInitializer.cs" />
     <Compile Include="Code\Main\Globals.cs" />
     <Compile Include="Code\Main\GraphicsRenderer.cs" />
     <Compile Include="Code\Main\Initializer.cs" />
