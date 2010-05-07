@@ -101,7 +101,7 @@ namespace Recellection
         /// <param name="menu"></param>
         public void LoadMenu(Menu menu)
         {
-            Interaction.Regions.Clear();
+            Interaction.Regions.Clear();    // This seems to break, at least on my laptop.
             foreach(GUIRegion region in menu.GetRegions())
             {
                 AddRegion(region);
