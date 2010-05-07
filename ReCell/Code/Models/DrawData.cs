@@ -7,7 +7,7 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace Recellection
 {
-    §public class DrawData
+    public class DrawData
     {
         Vector2 position;
 
