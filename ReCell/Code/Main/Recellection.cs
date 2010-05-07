@@ -60,7 +60,7 @@ namespace Recellection
             tobiiController = TobiiController.GetInstance(this.Window.Handle);
             tobiiController.Init();
             graphics = new GraphicsDeviceManager(this);
-            graphics.IsFullScreen = false;
+            graphics.IsFullScreen = true;
 			Content.RootDirectory = "Content";
 			graphicsRenderer = gfx;
         }
@@ -72,7 +72,6 @@ namespace Recellection
         {
             base.Initialize();
 
-			
             // Initialize the python console
             console = new PythonInterpreter(this, consoleFont);
             console.AddGlobal("game", this);
@@ -90,7 +89,7 @@ namespace Recellection
         /// </summary>
         protected override void LoadContent()
         {
-			spriteBatch = new SpriteBatch(GraphicsDevice);
+            spriteBatch = new SpriteBatch(GraphicsDevice);
 
             screenFont = Content.Load<SpriteFont>("Fonts/ScreenFont");
             consoleFont = Content.Load<SpriteFont>("Fonts/ConsoleFont");
@@ -183,13 +182,6 @@ namespace Recellection
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Draw(GameTime gameTime)
         {
-            List<DrawData> objectsToDraw = new List<DrawData>();
-
-            Texture2D tex = Content.Load<Texture2D>("Graphics/Terrains/art");
-            DrawData d = new DrawData(new Vector2(50, 50), tex, 0, 0, 128);
-
-            objectsToDraw.Add(d);
-
             graphicsRenderer.Draw(Content, spriteBatch);
 
             PrintHelp();

@@ -29,6 +29,8 @@ namespace Recellection.Code.Models
         //The array containing each of the Texture2D.
         private Texture2D[] textures;
 
+        private ContentManager contentHandle;
+
         /// <summary>
         /// Constructor for the SpriteTextureMap
         /// </summary>
@@ -36,6 +38,10 @@ namespace Recellection.Code.Models
         /// SpriteTextureMap will use to load the images</param>
         public SpriteTextureMap(ContentManager content)
         {
+
+            this.contentHandle = content;
+
+            /*
             textures = new Texture2D[
                 Enum.GetValues(typeof(Globals.TextureTypes)).Length];
 
@@ -57,10 +63,10 @@ namespace Recellection.Code.Models
                 catch (ContentLoadException e)
                 {
                     
-                    throw new ContentLoadException("You need to add the picture to: "+textureNames[i]);
+                    throw new ContentLoadException("You need to add the graphics for: "+textureNames[i]);
                 }
 
-            }
+            }*/
 
         }
         
@@ -73,7 +79,7 @@ namespace Recellection.Code.Models
         /// <returns>The requested Texture2D</returns>
         public Texture2D GetTexture(Globals.TextureTypes texture)
         {
-            return textures[(int)texture];
+            return contentHandle.Load<Texture2D>("Graphics/"+texture);
         }
     }
 }
