@@ -184,13 +184,6 @@ namespace Recellection
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Draw(GameTime gameTime)
         {
-            List<DrawData> objectsToDraw = new List<DrawData>();
-
-            Texture2D tex = Content.Load<Texture2D>("Graphics/Terrains/art");
-            DrawData d = new DrawData(new Vector2(50, 50), tex, 0, 0, 128);
-
-            objectsToDraw.Add(d);
-
             graphicsRenderer.Draw(Content, spriteBatch);
 
             PrintHelp();
