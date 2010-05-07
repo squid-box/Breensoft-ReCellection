@@ -70,7 +70,7 @@ namespace Recellection
         /// </summary>
         protected override void Initialize()
         {
-            Language.Instance.SetLanguage("Japanese");
+            Language.Instance.SetLanguage("English");
 
             base.Initialize();
 
