@@ -33,7 +33,7 @@ namespace Recellection.Code.Main
 			options.Add(yes);
 			options.Add(no);
 			
-			Menu mainMenu = new Menu(Globals.MenuLayout.Prompt, options);
+			Menu mainMenu = new Menu(Globals.MenuLayout.Prompt, options, "Do you wanna play a game?");
 			
 			//MenuIcon input = MenuController.GetInput();
 

@@ -10,6 +10,7 @@ namespace Recellection.Code.Utility.Logger
 	/// <summary>
 	/// Factory class, provides methods for supplying Loggers to the people.
 	/// Author: Martin Nycander
+    /// Signature: John Forsberg (2010-05-07)
 	/// </summary>
 	public class LoggerFactory
 	{

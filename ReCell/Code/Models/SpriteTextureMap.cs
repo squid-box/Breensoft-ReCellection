@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -24,7 +24,7 @@ namespace Recellection.Code.Models
         public const String IMAGE_FORMAT = "png";
 
         //The map which each of the texture image file will be placed
-        public const String TEXTURE_FOLDER = "Textures";
+        public const String TEXTURE_FOLDER = "Graphics";
 
         //The array containing each of the Texture2D.
         private Texture2D[] textures;
