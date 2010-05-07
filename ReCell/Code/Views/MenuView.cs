@@ -34,7 +34,7 @@ namespace Recellection
 		{
 			Menu m = ev.subject;
 			graphics.Clear();
-			graphics.Add(new DrawData(new Vector2(0,0), m.getMenuPic(), 0, 0, Recellection.viewPort.Width));
+			graphics.Add(new DrawData(new Vector2(0,0), m.getMenuPic(), 0, 0, Recellection.viewPort.Height, Recellection.viewPort.Width));
 			//graphics.Add();//TODO skriv ut text SEN inte nu, laga menu
 			Vector2 position = new Vector2(20, 20);
 			Vector2 scale = new Vector2(1.0f, 1.0f);

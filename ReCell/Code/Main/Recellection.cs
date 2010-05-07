@@ -13,6 +13,7 @@ using Microsoft.Xna.Framework.Storage;
 using Recellection.Code.Utility.Console;
 using Recellection.Code.Utility.Logger;
 using Recellection.Code.Models;
+using System.Threading;
 
 /*
  * BREENSOFT GAME OMG OMG OMG
@@ -36,6 +37,7 @@ namespace Recellection
         public static SpriteFont screenFont;
         public static Color breen = new Color(new Vector3(0.4f, 0.3f, 0.1f));
         public static GraphicsDeviceManager graphics;
+        public Thread LogicThread { get; set; }
 
         TobiiController tobiiController;
         SpriteBatch spriteBatch;
@@ -60,7 +62,7 @@ namespace Recellection
             tobiiController = TobiiController.GetInstance(this.Window.Handle);
             tobiiController.Init();
             graphics = new GraphicsDeviceManager(this);
-            graphics.IsFullScreen = false;
+            graphics.IsFullScreen = true;
 			Content.RootDirectory = "Content";
 			graphicsRenderer = gfx;
         }
@@ -72,12 +74,12 @@ namespace Recellection
         {
             base.Initialize();
 
-			
             // Initialize the python console
             console = new PythonInterpreter(this, consoleFont);
             console.AddGlobal("game", this);
 
             windowHandle = this.Window.Handle;
+            LogicThread.Start();
         }
         
         public void lawl()
@@ -90,7 +92,7 @@ namespace Recellection
         /// </summary>
         protected override void LoadContent()
         {
-			spriteBatch = new SpriteBatch(GraphicsDevice);
+            spriteBatch = new SpriteBatch(GraphicsDevice);
 
             screenFont = Content.Load<SpriteFont>("Fonts/ScreenFont");
             consoleFont = Content.Load<SpriteFont>("Fonts/ConsoleFont");
@@ -183,13 +185,6 @@ namespace Recellection
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Draw(GameTime gameTime)
         {
-            List<DrawData> objectsToDraw = new List<DrawData>();
-
-            Texture2D tex = Content.Load<Texture2D>("Graphics/Terrains/art");
-            DrawData d = new DrawData(new Vector2(50, 50), tex, 0, 0, 128);
-
-            objectsToDraw.Add(d);
-
             graphicsRenderer.Draw(Content, spriteBatch);
 
             PrintHelp();
@@ -203,6 +198,5 @@ namespace Recellection
             spriteBatch.DrawString(screenFont, "M: Toggle music\nI: Turn SFX off\nO: Turn SFX on\nA: Acid sound\nB: Explosion sound\nF1: Toggle Console", Vector2.Zero, Color.White);
             spriteBatch.End();
         }
-
     }
 }
