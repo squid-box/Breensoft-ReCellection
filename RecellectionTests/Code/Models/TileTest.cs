@@ -1,7 +1,4 @@
-﻿
-// RAGE
-
-/*using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -35,6 +32,7 @@ namespace Recellection.Code.Models
             u3 = new Unit(p, Vector2.Zero);
             b1 = new BaseBuilding("TestBase", 0, 0, p);
             b2 = new BarrierBuilding("TestBuilding1", 1, 1, p, b1);
+            
         }
 
         [Test]
@@ -114,4 +112,4 @@ namespace Recellection.Code.Models
             Assert.IsNull(t1.GetBuilding());
         }
     }
-}*/
+}
