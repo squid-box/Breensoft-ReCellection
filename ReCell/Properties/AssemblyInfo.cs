@@ -1,17 +1,16 @@
 ﻿using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
-using System.Resources;
 
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("Recellection")]
-[assembly: AssemblyProduct("Re:cellection")]
-[assembly: AssemblyDescription("Celldomely boring")]
-[assembly: AssemblyCompany("Breensoft")]
+[assembly: AssemblyTitle("ReCell")]
+[assembly: AssemblyProduct("ReCell")]
+[assembly: AssemblyDescription("")]
+[assembly: AssemblyCompany("Microsoft")]
 
-[assembly: AssemblyCopyright("Copyright © Breensoft 2010")]
+[assembly: AssemblyCopyright("Copyright © Microsoft 2010")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -21,7 +20,7 @@ using System.Resources;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("900cbc21-7ff5-4d1b-8734-e09280d52e1c")]
+[assembly: Guid("3033b5d6-adf0-4bca-a9e4-8a73f57cb524")]
 
 
 // Version information for an assembly consists of the following four values:
@@ -32,4 +31,3 @@ using System.Resources;
 //      Revision
 //
 [assembly: AssemblyVersion("1.0.0.0")]
-[assembly: NeutralResourcesLanguageAttribute("sv")]
