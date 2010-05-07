@@ -203,7 +203,10 @@ namespace Recellection
                     break;
             }
             
-            graphicsRenderer.Draw(spriteBatch);
+
+            //objectsToDraw.Add(
+
+            graphicsRenderer.Draw(spriteBatch, objectsToDraw);
 
             PrintHelp();
 
