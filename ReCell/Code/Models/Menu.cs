@@ -16,7 +16,23 @@ namespace Recellection
 	    private List<MenuIcon> icons;
         private Texture2D menuPic;
 		private String text;
-		
+
+		public Menu(Globals.MenuLayout layout, List<MenuIcon> icons, String text)
+		{
+			this.text = text;
+			switch (layout)
+			{
+				case Globals.MenuLayout.Prompt:
+					CreatePrompt(icons);
+					break;
+				case Globals.MenuLayout.NineMatrix:
+					//code
+					break;
+				case Globals.MenuLayout.FourMatrix:
+					//code
+					break;
+			}
+		}
 		
 		public Menu(Texture2D menuPic, List<MenuIcon> icons)
 		{
@@ -44,28 +60,12 @@ namespace Recellection
 			return regions;
 		}
 		
-		public Menu(Globals.MenuLayout layout, List<MenuIcon> icons, String text)
-		{
-			this.text = text;
-			switch(layout)
-			{
-				case Globals.MenuLayout.Prompt:
-					CreatePrompt(icons);
-					break;
-				case Globals.MenuLayout.NineMatrix:
-					//code
-					break;
-				case Globals.MenuLayout.FourMatrix:
-					//code
-					break;
-			}
-		}
 		private void CreatePrompt(List<MenuIcon> icons)
 		{
 			if (icons.Count != 2){
 				throw new Exception("Wrong amount of icons in menu");				
 			}
-			menuPic = Recellection.textureMap.GetTexture(Globals.TextureTypes(PromptMenu));
+			menuPic = Recellection.textureMap.GetTexture(Globals.TextureTypes.PromptMenu);
 			icons[0] = new MenuIcon("Yes", null);
 			icons[1] = new MenuIcon("No", null);
 			icons[0].setRegion(new GUIRegion(Recellection.windowHandle, new System.Windows.Rect(0, 0, Recellection.viewPort.Width * 2 / 5, Recellection.viewPort.Height)));
