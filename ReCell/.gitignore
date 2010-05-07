@@ -12,5 +12,4 @@ _ReSharper.*
 *.sln.cache
 *.Debug.cachefile
 *.VisualState.xml
-*.csproj
 *.sln
