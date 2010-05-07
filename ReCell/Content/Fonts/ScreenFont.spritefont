@@ -57,7 +57,8 @@ with.
       </CharacterRegion>
 
 
-      <!-- Kanji -->
+      <!-- 
+      Kanji
     
 <CharacterRegion><Start>&#x4E00;</Start><End>&#x4E01;</End></CharacterRegion>
 <CharacterRegion><Start>&#x4E03;</Start><End>&#x4E03;</End></CharacterRegion>
@@ -320,7 +321,6 @@ with.
 <CharacterRegion><Start>&#x5584;</Start><End>&#x5584;</End></CharacterRegion>
 <CharacterRegion><Start>&#x559A;</Start><End>&#x559A;</End></CharacterRegion>
 
-<!--
       
 <CharacterRegion><Start>&#x559C;</Start><End>&#x559D;</End></CharacterRegion>
 <CharacterRegion><Start>&#x55AA;</Start><End>&#x55AB;</End></CharacterRegion>
@@ -1735,20 +1735,21 @@ with.
 
 
 
-<!-- Ideographic Symbols and Punctuation -->
+<!-- Ideographic Symbols and Punctuation
 <CharacterRegion><Start>&#x3000;</Start><End>&#x303F;</End></CharacterRegion>
- 
-<!-- Hiragana -->
+  -->
+<!-- Hiragana
 <CharacterRegion><Start>&#x3040;</Start><End>&#x309F;</End></CharacterRegion>   
- 
-<!-- Katakana -->
+  -->
+<!-- Katakana
 <CharacterRegion><Start>&#x30A0;</Start><End>&#x30FF;</End></CharacterRegion>   
- 
-<!-- Fullwidth Latin -->
-<CharacterRegion><Start>&#xFF01;</Start><End>&#xFFE6;</End></CharacterRegion>   
-<!-- and/or the standard Latin set... -->
+  -->
+<!-- Fullwidth Latin
+<CharacterRegion><Start>&#xFF01;</Start><End>&#xFFE6;</End></CharacterRegion>
+ -->   
+<!-- and/or the standard Latin set...
 <CharacterRegion><Start>&#32;</Start><End>&#126;</End></CharacterRegion>	
-
+ -->
     </CharacterRegions>
   </Asset>
 </XnaContent>
