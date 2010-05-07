@@ -167,7 +167,7 @@
     <Compile Include="Code\Utility\Logger\LoggerSetup.cs" />
     <Compile Include="Code\Utility\Logger\LogLevel.cs" />
     <Compile Include="Code\Views\AIView.cs" />
-    <Compile Include="Code\Views\IDrawable.cs" />
+    <Compile Include="Code\Views\IRenderable.cs" />
     <Compile Include="Code\Views\MenuView.cs" />
     <Compile Include="Code\Views\WorldView.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
