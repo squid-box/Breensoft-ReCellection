@@ -60,7 +60,7 @@ namespace Recellection
             tobiiController = TobiiController.GetInstance(this.Window.Handle);
             tobiiController.Init();
             graphics = new GraphicsDeviceManager(this);
-            graphics.IsFullScreen = false;
+            graphics.IsFullScreen = true;
 			Content.RootDirectory = "Content";
 			graphicsRenderer = gfx;
         }
