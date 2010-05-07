@@ -13,6 +13,7 @@ using Microsoft.Xna.Framework.Storage;
 using Recellection.Code.Utility.Console;
 using Recellection.Code.Utility.Logger;
 using Recellection.Code.Models;
+using System.Threading;
 
 /*
  * BREENSOFT GAME OMG OMG OMG
@@ -36,6 +37,7 @@ namespace Recellection
         public static SpriteFont screenFont;
         public static Color breen = new Color(new Vector3(0.4f, 0.3f, 0.1f));
         public static GraphicsDeviceManager graphics;
+        public Thread LogicThread { get; set; }
 
         TobiiController tobiiController;
         SpriteBatch spriteBatch;
@@ -77,6 +79,7 @@ namespace Recellection
             console.AddGlobal("game", this);
 
             windowHandle = this.Window.Handle;
+            LogicThread.Start();
         }
         
         public void lawl()
@@ -195,6 +198,5 @@ namespace Recellection
             spriteBatch.DrawString(screenFont, "M: Toggle music\nI: Turn SFX off\nO: Turn SFX on\nA: Acid sound\nB: Explosion sound\nF1: Toggle Console", Vector2.Zero, Color.White);
             spriteBatch.End();
         }
-
     }
 }
