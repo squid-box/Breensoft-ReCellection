@@ -7,6 +7,8 @@ namespace Recellection.Code.Models
 {
     /// <summary>
     /// Contains information about traits of different Terrain Types.
+    /// 
+    /// Signed: Marco Ahumada Juntunen (2010-05-06
     /// </summary>
     /// <author>Joel Ahlgren</author>
     /// <date>2010-04-12</date>

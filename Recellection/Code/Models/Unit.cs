@@ -290,8 +290,8 @@ namespace Recellection.Code.Models
                 }
                 float x = targetTile.position.X;
                 float y = targetTile.position.Y;
-                Random r = new Random();
-                this.targetVector = new Vector2(x+r.NextDouble%-0.5, NO_TARGET);
+                //Random r = new Random();
+                //this.targetVector = new Vector2(x+r.NextDouble%-0.5, NO_TARGET);
             }
         }
     }
