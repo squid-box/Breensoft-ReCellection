@@ -37,10 +37,13 @@ namespace Recellection.Code.Main
 			
 			//MenuIcon input = MenuController.GetInput();
 
-            MenuController dinmamma = new MenuController(TobiiController.GetInstance(this.windowHandle), mainMenu);
-            
+            // Just to make sure everything is in there...
+            new MenuController(TobiiController.GetInstance(this.windowHandle), mainMenu);
+
+            logger.Info("Waiting for Tobii input...");
             MenuIcon response = MenuController.GetInput();
 
+            logger.Info("Got input!");
             if (response.getLabel() == yes.getLabel())
             {
                 Console.Beep(37, 1000);
