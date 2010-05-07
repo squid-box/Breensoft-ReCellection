@@ -110,13 +110,13 @@ namespace Recellection.Code.Controllers
                 if (travelling && u.IsDispersed())
                 {
                     Tile t = u.GetTargetTile();
-                    Vector2 min = new Vector2((floatMath.Floor(t.position.X), Math.Floor(t.position.Y));
+                    Vector2 min = new Vector2((float)Math.Floor(t.position.X), (float)Math.Floor(t.position.Y));
                     
                     Random r = new Random();
                     float rX = (float)r.NextDouble() + min.X;
                     float rY = (float)r.NextDouble() + min.Y;
 
-                    u.SetTargetVector(t + position );
+                    u.SetTargetVector(new Vector2(rX, rY));
                 }
             }
         }

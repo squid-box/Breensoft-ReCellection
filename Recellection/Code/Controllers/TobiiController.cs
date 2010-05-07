@@ -21,6 +21,8 @@ namespace Recellection
     /// The TobiiController serves the purpose of simplifying region creation and handling
     /// for our software.
     /// 
+    /// Signature: Marco Ahumada Juntunen (2010-05-06)
+    /// 
     /// Author: Viktor Eklund
     /// </summary>
     public sealed class TobiiController
