@@ -91,16 +91,13 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Sounds\Starcraft PREGO!!!.wav">
-      <Name>Starcraft PREGO!!!</Name>
+    <Compile Include="Sounds\prego.wav">
+      <Name>prego</Name>
       <Importer>WavImporter</Importer>
       <Processor>SoundEffectProcessor</Processor>
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Graphics\Buildings\" />
-    <Folder Include="Graphics\Terrains\" />
-    <Folder Include="Graphics\Units\" />
     <Compile Include="Graphics\PromptMenu.png">
       <Name>PromptMenu</Name>
       <Importer>TextureImporter</Importer>
@@ -134,6 +131,11 @@
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Graphics\Buildings\" />
+    <Folder Include="Graphics\Terrains\" />
+    <Folder Include="Graphics\Units\" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\XNA Game Studio\$(XnaFrameworkVersion)\Microsoft.Xna.GameStudio.ContentPipeline.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

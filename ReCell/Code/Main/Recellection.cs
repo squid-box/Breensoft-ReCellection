@@ -82,9 +82,9 @@ namespace Recellection
             LogicThread.Start();
         }
         
-        public void lawl()
+        public void lawl(string sound)
 		{
-			audioPlayer.PlaySound("boom");
+			audioPlayer.PlaySound(sound);
         }
 
         /// <summary>
