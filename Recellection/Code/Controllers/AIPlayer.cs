@@ -17,6 +17,7 @@ namespace Recellection.Code.Controllers
         private AIView m_view;
         private World m_world;
         private GraphController m_graph;
+        private List<Player> m_opponents;
         private List<Vector2> interrestPoints;
         private List<Vector2> enemyPoints;
 
@@ -27,17 +28,19 @@ namespace Recellection.Code.Controllers
         /// <summary>
         /// Constructor. The AIPlayer requires quite alot of external controllers.
         /// </summary>
+        /// <param name="opponents"></param>
         /// <param name="view"></param>
         /// <param name="world"></param>
         /// <param name="graph"></param>
-        public AIPlayer(AIView view, World world, GraphController graph){
+        public AIPlayer(List<Player> opponents, AIView view, World world, GraphController graph){
             m_view = view;
             m_world = world;
             m_graph = graph;
+            m_opponents = opponents;
             interrestPoints = new List<Vector2>();
             enemyPoints = new List<Vector2>();
             view.registerPlayer(this);
-            distanceThreshold = 3;
+            distanceThreshold = 3; //Arbitrary number at the moment
         }
 
         /// <summary>
@@ -106,9 +109,14 @@ namespace Recellection.Code.Controllers
         /// <param name="building"></param>
         private void CalculateWeight(Building building)
         {
-            m_graph.GetWeight(building);
-
-            throw new NotImplementedException();
+            int friendly = unitCountAt(building.coordinates, this);
+            int enemy = unitCountAt(GetClosestPointFromList(building.coordinates, enemyPoints), m_opponents[0]);
+            int diff = enemy - friendly;
+            if (diff > 0) //more enemy units than friendly
+            {
+                int weight = m_graph.GetWeight(building);
+                m_graph.SetWeight(building, weight + (diff/2)); //increase the weight by the difference in units / 2
+            }
         }
 
         /// <summary>
@@ -120,14 +128,6 @@ namespace Recellection.Code.Controllers
             throw new NotImplementedException();
         }
 
-        /// <summary>
-        /// Decides what direction/location to scout.
-        /// </summary>
-        /// <returns></returns>
-        private object CalculateScoutDirection()
-        {
-            throw new NotFiniteNumberException();
-        }
 
         /// <summary>
         /// Figure out where to add a new point of interrest that is close enough to the given point.
@@ -164,8 +164,7 @@ namespace Recellection.Code.Controllers
                 if (CanHoldPoint(point))
                     return;
 
-                SendUnits(point);
-                IncreaseWeight(m_view.GetBuildingAt(point));
+                CalculateWeight(m_view.GetBuildingAt(point));
             }
             if (CanHoldPoint(point))
             {
@@ -210,14 +209,14 @@ namespace Recellection.Code.Controllers
         }
 
         /// <summary>
-        /// Evaluates whether or not the given point can be defended against a potential attack
+        /// Evaluates whether or not the given point can be defended against a potential/ongoing attack
         /// from nearby enemy buildings.
         /// </summary>
         /// <param name="point"></param>
         /// <returns></returns>
         private bool CanHoldPoint(Vector2 point)
         {
-            if (unitCountAt(point) > unitCountAt(GetClosestPointFromList(point, enemyPoints)))
+            if (unitCountAt(point, this) > (unitCountAt(point, m_opponents[0])+ unitCountAt(GetClosestPointFromList(point, enemyPoints), m_opponents[0])))
             {
                 return true;
             }
@@ -225,13 +224,14 @@ namespace Recellection.Code.Controllers
         }
 
         /// <summary>
-        /// Returns the number of units located at the given coordinates.
+        /// Returns the number of units located at the given coordinates belonging to the given player.
         /// </summary>
         /// <param name="point"></param>
+        /// <param name="player"></param>
         /// <returns></returns>
-        private int unitCountAt(Vector2 point)
+        private int unitCountAt(Vector2 point, Player player)
         {
-            return m_view.getTileAt(point).GetUnits(this).ToArray().Length;
+            return m_view.getTileAt(point).GetUnits(player).ToArray().Length;
         }
 
         private void SendUnits(Vector2 point)
