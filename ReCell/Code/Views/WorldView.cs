@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using Recellection.Code.Models;
 using Recellection.Code.Utility.Events;
+using Microsoft.Xna.Framework.Content;
 
 namespace Recellection.Code.Views
 {
@@ -13,7 +14,7 @@ namespace Recellection.Code.Views
     /// to the player. The World View contains the information that is relevant to a single player, and
     /// therefore has a reference to a Player-object.
     /// </summary>
-    class WorldView : IDrawable
+    class WorldView : IRenderable
     {
         /// <summary>
         /// The player whose view of the world this is.
@@ -67,7 +68,7 @@ namespace Recellection.Code.Views
 
         #region IDrawable Members
         
-        public List<DrawData> GetDrawData()
+        public List<DrawData> GetDrawData(ContentManager content)
         {
             throw new NotImplementedException();
         }
