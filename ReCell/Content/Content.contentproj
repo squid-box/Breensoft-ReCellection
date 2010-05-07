@@ -133,9 +133,6 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Graphics\Buildings\" />
-    <Folder Include="Graphics\Terrains\" />
-    <Folder Include="Graphics\Units\" />
     <Compile Include="Sounds\buildingDeath.wav">
       <Name>buildingDeath</Name>
       <Importer>WavImporter</Importer>
@@ -176,6 +173,18 @@
       <Importer>WavImporter</Importer>
       <Processor>SoundEffectProcessor</Processor>
     </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Graphics\dracula.png">
+      <Name>dracula</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Graphics\Buildings\" />
+    <Folder Include="Graphics\Terrains\" />
+    <Folder Include="Graphics\Units\" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\XNA Game Studio\$(XnaFrameworkVersion)\Microsoft.Xna.GameStudio.ContentPipeline.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
