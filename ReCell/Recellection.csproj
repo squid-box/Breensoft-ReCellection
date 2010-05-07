@@ -1,4 +1,5 @@
 ﻿<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
+>>>>>>> 6ca8c78277793522b9142cb48e0f2c042cd54b0f:ReCell/Recellection.csproj
   <PropertyGroup>
     <ProjectGuid>{9EF79D24-402C-4248-BC08-87327E783F35}</ProjectGuid>
     <ProjectTypeGuids>{6D335F3A-9D43-41b4-9D22-F6F17C4BE596};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
@@ -168,8 +169,9 @@
     <Compile Include="Code\Utility\Logger\LoggerSetup.cs" />
     <Compile Include="Code\Utility\Logger\LogLevel.cs" />
     <Compile Include="Code\Views\AIView.cs" />
-    <Compile Include="Code\Views\IDrawable.cs" />
+    <Compile Include="Code\Views\IRenderable.cs" />
     <Compile Include="Code\Views\MenuView.cs" />
+    <Compile Include="Code\Views\TestView.cs" />
     <Compile Include="Code\Views\WorldView.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

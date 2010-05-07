@@ -14,9 +14,9 @@ namespace Recellection
 		
 		private GUIRegion region;
 		private String label;
-		private Texture2D iconPic;
+		private DrawData iconPic;
 		
-		public MenuIcon (String label, Texture2D iconPic)
+		public MenuIcon (String label, DrawData iconPic)
 		{
 			region = null;
 			this.label = label;
@@ -28,7 +28,7 @@ namespace Recellection
 			return label;
 		}
 		
-		public Texture2D getIconPic()
+		public DrawData getIconPic()
 		{
 			return iconPic;
 		}

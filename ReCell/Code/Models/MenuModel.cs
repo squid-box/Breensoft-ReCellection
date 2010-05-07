@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -65,7 +65,7 @@ namespace Recellection.Code.Models
             Menu m = menuStack.Pop();
             if (MenuEvent != null)
             {
-                MenuEvent(this, new Event<Menu>(m, EventType.REMOVE));
+                MenuEvent(this, new Event<Menu>(menuStack.Peek(), EventType.REMOVE));
             }
             return m;
         }
