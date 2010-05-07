@@ -78,8 +78,8 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Recellection\Recellection.csproj">
-      <Project>{F6D91C58-7522-448F-97A1-5E9F5CD7FDF4}</Project>
+    <ProjectReference Include="..\ReCell\Recellection.csproj">
+      <Project>{9EF79D24-402C-4248-BC08-87327E783F35}</Project>
       <Name>Recellection</Name>
     </ProjectReference>
   </ItemGroup>
