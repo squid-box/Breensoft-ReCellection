@@ -91,6 +91,16 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Sounds\Starcraft PREGO!!!.wav">
+      <Name>Starcraft PREGO!!!</Name>
+      <Importer>WavImporter</Importer>
+      <Processor>SoundEffectProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Graphics\Buildings\" />
+    <Folder Include="Graphics\Terrains\" />
+    <Folder Include="Graphics\Units\" />
     <Compile Include="Graphics\PromptMenu.png">
       <Name>PromptMenu</Name>
       <Importer>TextureImporter</Importer>
