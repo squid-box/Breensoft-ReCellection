@@ -12,6 +12,7 @@ using Microsoft.Xna.Framework.Net;
 using Microsoft.Xna.Framework.Storage;
 using Recellection.Code.Utility.Console;
 using Recellection.Code.Utility.Logger;
+using Recellection.Code.Views;
 using Recellection.Code.Models;
 using System.Threading;
 
@@ -163,6 +164,7 @@ namespace Recellection
             if (kBState.IsKeyDown(Keys.M) && lastKBState.IsKeyUp(Keys.M))
             {
                 logger.Debug("Toggling music mute.");
+                GraphicsRenderer.currentState = new TestView();
                 audioPlayer.ToggleMusicMute();
             }
 
