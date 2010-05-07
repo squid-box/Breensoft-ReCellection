@@ -35,8 +35,8 @@ namespace Recellection.Code.Main
 			Menu mainMenu = new Menu(Globals.MenuLayout.Prompt, options);
 			
 			MenuIcon input = MenuController.GetInput();
-			// TODO: Tell the graphic renderer what is the current view
 			
+			// TODO: Tell the graphic renderer what is the current view
 			// TODO: Spawn main menu, tell it to run.
 		}
 	}
