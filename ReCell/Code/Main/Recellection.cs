@@ -186,7 +186,11 @@ namespace Recellection
 
             objectsToDraw.Add(d);
 
-            graphicsRenderer.Draw(spriteBatch, objectsToDraw);
+
+
+            GraphicsRenderer.currentState = null;
+
+            graphicsRenderer.Draw(Content, spriteBatch);
 
             PrintHelp();
 
