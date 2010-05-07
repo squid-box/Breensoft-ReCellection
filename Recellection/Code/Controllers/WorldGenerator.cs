@@ -13,6 +13,7 @@ namespace Recellection.Code.Controllers
     /// all the world tiles and place the spawn points.
     /// 
     /// Author: John Forsberg
+    /// 
     /// </summary>
     public class WorldGenerator
     {
@@ -48,7 +49,7 @@ namespace Recellection.Code.Controllers
 
 
             //Constructs a new world using the dimensions.
-            World returWorld = new World(tileMatrix);
+            World returWorld = new World(tileMatrix, mapSeed);
 
             return returWorld;
         }
@@ -80,7 +81,43 @@ namespace Recellection.Code.Controllers
 
             return retur;
         }
-       
+        /// <summary>
+        /// IGNORE, WORK IN PROGRESS, MIGHT NOT REMAIN!
+        /// </summary>
+        /// <param name="mapSeed"></param>
+        /// <returns></returns>
+        private static Tile[,] GenerateTileMatrixFromSeed2(int mapSeed)
+        {
+            Random randomer = new Random(mapSeed);
+
+            Tile[,] retur = InitTileMatrix2(randomer);
+
+            
+            int numberOfRandomTiles = randomer.Next(50, 100);
+
+            int randomX;
+            int randomY;
+            int numberOfTilesToRandomize;
+
+            while (numberOfRandomTiles > 0)
+            {
+                randomY = randomer.Next(10,map_rows-10);
+
+                randomX = randomer.Next(10,map_cols-10);
+
+
+                numberOfTilesToRandomize = randomer.Next(MINIMUM_SPREAD, 
+                    MAXIMUM_SPREAD);
+
+
+                SpreadTiles(retur, randomX, randomY, numberOfTilesToRandomize,
+                    RandomTerrainType(randomer), randomer);
+
+                numberOfRandomTiles -= numberOfTilesToRandomize;
+            }
+
+            return retur;
+        }
 
         /// <summary>
         /// Initiates the tile matrix, though no Tiles in the matrix
@@ -105,6 +142,38 @@ namespace Recellection.Code.Controllers
             return retur;
         }
 
+        /// <summary>
+        /// Initiates the tile matrix with default tiles for every tile
+        /// </summary>
+        /// <param name="randomer"></param>
+        /// <returns></returns>
+        private static Tile[,] InitTileMatrix2(Random randomer)
+        {
+
+            map_rows = randomer.Next(MINIMUM_MAP_SIZE, MAXIMUM_MAP_SIZE);
+
+            map_cols = randomer.Next(MINIMUM_MAP_SIZE, MAXIMUM_MAP_SIZE);
+
+            //Construct the matrix, the size is limited by MINIMUM and MAXIMUM
+            Tile[,] retur = new Tile[map_rows, map_cols];
+
+
+            myLogger.Info("Map consists of " + map_rows + " times "
+                + map_cols + " tiles.");
+
+            //Each row needs an array initiated each row needs to have 
+            //an array of equal size.
+            for (int i = 0; i < map_rows; i++)
+            {
+                for (int j = 0; j < map_cols; j++)
+                {
+                    retur[i,j] = new Tile(i,j);
+                }
+
+            }
+
+            return retur;
+        }
 
         /// <summary>
         /// Random generates a spawn point for both players,
@@ -130,12 +199,14 @@ namespace Recellection.Code.Controllers
             {
                 //Calculate the length of the vector between the new spawn
                 //point and the last one.
-                while ( DistanceBetweenPoints(previousXCoord,previousYCoord,
-                    randomX,randomY) < MIN_DISTANCE_BETWEEN_PLAYERS)
+
+                do
                 {
                     randomX = randomer.Next(10, width - 10);
                     randomY = randomer.Next(10, heigth - 10);
                 }
+                while (DistanceBetweenPoints(previousXCoord, previousYCoord,
+                    randomX, randomY) < MIN_DISTANCE_BETWEEN_PLAYERS);
 
                 SpawnGraph(randomX, randomY, player);
 
@@ -184,6 +255,69 @@ namespace Recellection.Code.Controllers
         }
 
         /// <summary>
+        /// IGNORE, WORK IN PROGRESS; MIGHT NOT REMAIN!
+        /// </summary>
+        /// <param name="randomer"></param>
+        /// <returns></returns>
+        private static Globals.TerrainTypes RandomTerrainType(Random randomer)
+        {
+            //randomize a number which is 1 to number of terrain types - 1.
+            //Ignores the default terrain type Membrane.
+            int randomType = randomer.Next(1,GetNumberOfTerrainTypes());
+
+
+            
+            return (Globals.TerrainTypes)randomType;
+        }
+
+        /// <summary>
+        /// IGNORE, WORK IN PROGRESS, MIGHT NOT REMAIN!
+        /// </summary>
+        /// <param name="tileMatrix"></param>
+        /// <param name="xCoord"></param>
+        /// <param name="yCoord"></param>
+        /// <param name="numberOfTiles"></param>
+        /// <param name="type"></param>
+        /// <param name="randomer"></param>
+        private static void SpreadTiles(Tile[,] tileMatrix, int xCoord, 
+            int yCoord, int numberOfTiles, Globals.TerrainTypes type, 
+            Random randomer)
+        {
+
+            tileMatrix[yCoord,xCoord] = new Tile(yCoord,xCoord,type);
+
+            //4 represents the adjecent tiles
+            //      X = 1
+            //2 = X O X = 3
+            //  4 = X
+            //
+            switch (randomer.Next(4))
+            {
+                case 1:
+                    SpreadTiles(tileMatrix, xCoord, yCoord - 1, 
+                        numberOfTiles - 1, type, randomer);
+                    break;
+
+                case 2:
+                    SpreadTiles(tileMatrix, xCoord - 1, yCoord,
+                        numberOfTiles - 1, type, randomer);
+                    break;
+
+                case 3:
+                    SpreadTiles(tileMatrix, xCoord + 1, yCoord,
+                        numberOfTiles - 1, type, randomer);
+                    break;
+
+                case 4:
+                    SpreadTiles(tileMatrix, xCoord, yCoord + 1,
+                        numberOfTiles - 1, type, randomer);
+                    break;
+
+            }
+
+        }
+
+        /// <summary>
         /// This method converts one int to the correct enum in 
         /// Globals.TerrainTypes.
         /// </summary>
@@ -209,146 +343,5 @@ namespace Recellection.Code.Controllers
         {
             return Enum.GetValues(typeof(Globals.TerrainTypes)).Length;
         }
-
-
-        #region Work_In_Progress
-
-        /// <summary>
-        /// IGNORE, WORK IN PROGRESS, MIGHT NOT REMAIN!
-        /// </summary>
-        /// <param name="mapSeed"></param>
-        /// <returns></returns>
-        private static Tile[,] GenerateTileMatrixFromSeed2(int mapSeed)
-        {
-            Random randomer = new Random(mapSeed);
-
-            Tile[,] retur = InitTileMatrix2(randomer);
-
-
-            int numberOfRandomTiles = randomer.Next(50, 100);
-
-            int randomX;
-            int randomY;
-            int numberOfTilesToRandomize;
-
-            while (numberOfRandomTiles > 0)
-            {
-                randomY = randomer.Next(10, map_rows - 10);
-
-                randomX = randomer.Next(10, map_cols - 10);
-
-
-                numberOfTilesToRandomize = randomer.Next(MINIMUM_SPREAD,
-                    MAXIMUM_SPREAD);
-
-
-                SpreadTiles(retur, randomX, randomY, numberOfTilesToRandomize,
-                    RandomTerrainType(randomer), randomer);
-
-                numberOfRandomTiles -= numberOfTilesToRandomize;
-            }
-
-            return retur;
-        }
-
-
-        /// <summary>
-        /// Initiates the tile matrix with default tiles for every tile
-        /// </summary>
-        /// <param name="randomer"></param>
-        /// <returns></returns>
-        private static Tile[,] InitTileMatrix2(Random randomer)
-        {
-
-
-
-            map_rows = randomer.Next(MINIMUM_MAP_SIZE, MAXIMUM_MAP_SIZE);
-
-            map_cols = randomer.Next(MINIMUM_MAP_SIZE, MAXIMUM_MAP_SIZE);
-
-            //Construct the matrix, the size is limited by MINIMUM and MAXIMUM
-            Tile[,] retur = new Tile[map_rows, map_cols];
-
-
-            myLogger.Info("Map consists of " + map_rows + " times "
-                + map_cols + " tiles.");
-
-            //Each row needs an array initiated each row needs to have 
-            //an array of equal size.
-            for (int i = 0; i < map_rows; i++)
-            {
-                for (int j = 0; j < map_cols; j++)
-                {
-                    retur[i, j] = new Tile(i, j);
-                }
-
-            }
-
-            return retur;
-        }
-
-        /// <summary>
-        /// IGNORE, WORK IN PROGRESS; MIGHT NOT REMAIN!
-        /// </summary>
-        /// <param name="randomer"></param>
-        /// <returns></returns>
-        private static Globals.TerrainTypes RandomTerrainType(Random randomer)
-        {
-            //randomize a number which is 1 to number of terrain types - 1.
-            //Ignores the default terrain type Membrane.
-            int randomType = randomer.Next(1, GetNumberOfTerrainTypes());
-
-
-
-            return (Globals.TerrainTypes)randomType;
-        }
-
-        /// <summary>
-        /// IGNORE, WORK IN PROGRESS, MIGHT NOT REMAIN!
-        /// </summary>
-        /// <param name="tileMatrix"></param>
-        /// <param name="xCoord"></param>
-        /// <param name="yCoord"></param>
-        /// <param name="numberOfTiles"></param>
-        /// <param name="type"></param>
-        /// <param name="randomer"></param>
-        private static void SpreadTiles(Tile[,] tileMatrix, int xCoord,
-            int yCoord, int numberOfTiles, Globals.TerrainTypes type,
-            Random randomer)
-        {
-
-            tileMatrix[yCoord, xCoord] = new Tile(yCoord, xCoord, type);
-
-            //4 represents the adjecent tiles
-            //      X = 1
-            //2 = X O X = 3
-            //  4 = X
-            //
-            switch (randomer.Next(4))
-            {
-                case 1:
-                    SpreadTiles(tileMatrix, xCoord, yCoord - 1,
-                        numberOfTiles - 1, type, randomer);
-                    break;
-
-                case 2:
-                    SpreadTiles(tileMatrix, xCoord - 1, yCoord,
-                        numberOfTiles - 1, type, randomer);
-                    break;
-
-                case 3:
-                    SpreadTiles(tileMatrix, xCoord + 1, yCoord,
-                        numberOfTiles - 1, type, randomer);
-                    break;
-
-                case 4:
-                    SpreadTiles(tileMatrix, xCoord, yCoord + 1,
-                        numberOfTiles - 1, type, randomer);
-                    break;
-
-            }
-
-        }
-        #endregion
     }
 }

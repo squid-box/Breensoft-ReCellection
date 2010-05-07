@@ -10,6 +10,8 @@ namespace Recellection.Code.Models
 {
     /// <summary>
     /// Representation of a tile in the game world.
+    /// 
+    /// Signed: Marco Ahumada Juntunen 2010-05-06
     /// </summary>
     /// <author>Joel Ahlgren</author>
     /// <date>2010-05-07</date>
@@ -44,7 +46,7 @@ namespace Recellection.Code.Models
             this.type = new TerrainType();
             this.visibleTo = new HashSet<Player>();
             this.units = new Dictionary<Player, HashSet<Unit>>();
-            this.position = new Vector2(x, y);
+            this.position = new Vector2((float)(x+0.5), (float)(y+0.5));
             this.building = null;
         }
 
