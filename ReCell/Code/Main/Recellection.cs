@@ -72,8 +72,7 @@ namespace Recellection
         {
             base.Initialize();
 
-            Globals.gameState = Globals.GameStates.Game;
-
+			
             // Initialize the python console
             console = new PythonInterpreter(this, consoleFont);
             console.AddGlobal("game", this);
@@ -91,7 +90,7 @@ namespace Recellection
         /// </summary>
         protected override void LoadContent()
         {
-            spriteBatch = new SpriteBatch(GraphicsDevice);
+			spriteBatch = new SpriteBatch(GraphicsDevice);
 
             screenFont = Content.Load<SpriteFont>("Fonts/ScreenFont");
             consoleFont = Content.Load<SpriteFont>("Fonts/ConsoleFont");
