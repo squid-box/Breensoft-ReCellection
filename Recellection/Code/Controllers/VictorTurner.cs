@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 
 using Recellection.Code.Models;
+using Recellection.Code.Controllers;
 
 namespace Recellection.Code.Controllers
 {
@@ -40,7 +41,7 @@ namespace Recellection.Code.Controllers
                 {
                     if(HasLost(player))
                     {
-                        //world.RemovePlayer(player);
+                        world.RemovePlayer(player);
                     }
                     if(HasWon())
                     {
@@ -48,7 +49,7 @@ namespace Recellection.Code.Controllers
                         finished = true;
                         break;  
                     }
-                   // WorldController(player);
+                    new WorldController(player);
                 }
                 //UnitController();
 
