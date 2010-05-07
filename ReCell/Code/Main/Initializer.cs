@@ -35,11 +35,12 @@ namespace Recellection.Code.Main
 			
 			Menu mainMenu = new Menu(Globals.MenuLayout.Prompt, options, "Do you wanna play a game?");
 			
-			//MenuIcon input = MenuController.GetInput();
 
-            // Just to make sure everything is in there...
-            new MenuController(TobiiController.GetInstance(this.windowHandle), mainMenu);
-
+			// Just to make sure everything is in there...
+			new MenuController(TobiiController.GetInstance(this.windowHandle), mainMenu);
+			
+			//GraphicsRenderer.currentState = MenuView
+			
             logger.Info("Waiting for Tobii input...");
             MenuIcon response = MenuController.GetInput();
 
