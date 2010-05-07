@@ -11,26 +11,15 @@ namespace Recellection.Code.Models
     /// The representation of a Unit in the game world.
     /// </summary>
     /// <author>Joel Ahlgren</author>
-    /// <date>2010-04-13</date>
-    /* The representation of a Unit in the game world.
-     * 
-     * Author: Joel Ahlgren
-     * Date: 2010-04-11
-     */
+    /// <date>2010-04-30</date>
     public class Unit : IModel
     {
         // DATA
-        private Vector2 position;        // Current tile
-        private Vector2 targetVector;     // Target coordinate
+        private Vector2 position;   // Current tile
+        private Vector2 target;     // Target coordinate
         private int angle;          // Angle of unit, for drawing
         private bool isDispersed;   // Whether or not this unit should recieve a new target from the dispersion procedure
         private bool isDead;        // Status of unit
-
-        /// <summary>
-        /// The target tile this unit is bound to.
-        /// </summary>
-        private Tile targetTile;
-
         private float powerLevel;
         private Player owner;
 
@@ -46,37 +35,10 @@ namespace Recellection.Code.Models
         /// <summary>
         /// Creates a "default unit".
         /// </summary>
-        public Unit()
+        public Unit(Player owner)
         {
             this.position = new Vector2(0, 0);
-            this.targetVector = new Vector2(NO_TARGET,NO_TARGET);
-            this.angle = 0;
-            this.isDispersed = this.isDead = false;
-            this.owner = null;
-        }
-        /// <summary>
-        /// Creates a unit.
-        /// </summary>
-        /// <param name="posX">Unit x-coordinate.</param>
-        /// <param name="posY">Unit y-coordinate.</param>
-        public Unit(float posX, float posY)
-        {
-            this.position = new Vector2(posX, posY);
-            this.targetVector = new Vector2(NO_TARGET, NO_TARGET);
-            this.angle = 0;
-            this.isDispersed = this.isDead = false;
-            this.owner = null;
-        }
-        /// <summary>
-        /// Creates a unit.
-        /// </summary>
-        /// <param name="posX">Unit x-coordinate.</param>
-        /// <param name="posY">Unit y-coordinate.</param>7
-        /// <param name="owner">Owner of this unit.</param>
-        public Unit(float posX, float posY, Player owner)
-        {
-            this.position = new Vector2(posX, posY);
-            this.targetVector = new Vector2(NO_TARGET, NO_TARGET);
+            this.target = new Vector2(NO_TARGET,NO_TARGET);
             this.angle = 0;
             this.isDispersed = this.isDead = false;
             this.owner = owner;
@@ -86,14 +48,26 @@ namespace Recellection.Code.Models
         /// </summary>
         /// <param name="posX">Unit x-coordinate.</param>
         /// <param name="posY">Unit y-coordinate.</param>
-        /// <param name="angle">Draw-angle if this unit.</param>
-        public Unit(float posX, float posY, int angle)
+        public Unit(Player owner, float posX, float posY)
         {
             this.position = new Vector2(posX, posY);
-            this.targetVector = new Vector2(NO_TARGET, NO_TARGET);
-            this.angle = angle;
+            this.target = new Vector2(NO_TARGET, NO_TARGET);
+            this.angle = 0;
             this.isDispersed = this.isDead = false;
-            this.owner = null;
+            this.owner = owner;
+        }
+        /// <summary>
+        /// Creates a unit.
+        /// </summary>
+        /// <param name="position">Position of unit.</param>
+        /// <param name="owner">Owner of this unit.</param>
+        public Unit(Player owner, Vector2 position)
+        {
+            this.position = position;
+            this.target = new Vector2(NO_TARGET, NO_TARGET);
+            this.angle = 0;
+            this.isDispersed = this.isDead = false;
+            this.owner = owner;
         }
 
         #endregion
@@ -121,36 +95,17 @@ namespace Recellection.Code.Models
         /// 
         /// </summary>
         /// <returns>X and Y coordinates of target tile.</returns>
-        public Vector2 GetTargetVector()
+        public Vector2 GetTarget()
         {
-            return this.targetVector;
+            return this.target;
         }
         /// <summary>
         /// Change target.
         /// </summary>
         /// <param name="newTarget">X and Y coordinates of new target.</param>
-        public void SetTargetVector(Vector2 newTarget)
+        public void SetTarget(Vector2 newTarget)
         {
-            this.targetVector = newTarget;
-        }
-
-        /// <summary>
-        /// Set the tile this unit will move around
-        /// </summary>
-        /// <param name="tile"></param>
-        public void SetTargetTile(Tile tile)
-        {
-            this.targetTile = tile;
-            SetTargetVector(tile.position);
-        }
-
-        /// <summary>
-        /// Get the tile this unit moves around
-        /// </summary>
-        /// <returns>A tile.</returns>
-        public Tile GetTargetTile()
-        {
-            return targetTile;
+            this.target = newTarget;
         }
         /// <summary>
         /// Get current position of this Unit.
@@ -227,22 +182,16 @@ namespace Recellection.Code.Models
         }
 
         /// <summary>
-        /// modify or set a new powerlevel for this unit
-        /// this could adjust it's 50/50 chance of dying/killing
-        /// when engaged with another unit
-        /// default should be one, set a new value as 1.1 for a 10% powerbonus for example
+        /// Modify or set a new powerlevel for this unit.
         /// </summary>
-        /// <param name="newPowerLevel"></param>
+        /// <param name="newPowerLevel">Default should be one, set a new value as 1.1 for a 10% powerbonus.</param>
         public void SetPowerLevel(float newPowerLevel)
         {
             powerLevel = newPowerLevel;
         }
         
-        /// <summary>
-        /// Gets this units powerlevel
-        /// </summary>
         /// <returns>
-        /// powerlevel as a float
+        /// Powerlevel of this unit.
         /// </returns>
         public float GetPowerLevel()
         {
@@ -255,43 +204,40 @@ namespace Recellection.Code.Models
         private void Move(float deltaTime)
         {
             //TODO: Move unit towards target.
-            if (this.targetVector.X != NO_TARGET)
+            if (this.target.X != NO_TARGET)
             {
-                if (this.targetVector.X > this.position.X)
+                if (this.target.X > this.position.X)
                 {
                     this.position.X += MOVEMENT_SPEED * deltaTime;
                 }
-                else if (this.targetVector.X < this.position.X)
+                else if (this.target.X < this.position.X)
                 {
                     this.position.X += MOVEMENT_SPEED * deltaTime;
                 }
                 else
                 {
-                    this.targetVector.X = NO_TARGET;
+                    this.target.X = NO_TARGET;
                 }
             }
-            if (this.targetVector.Y != NO_TARGET)
+            if (this.target.Y != NO_TARGET)
             {
-                if (this.targetVector.Y > this.position.Y)
+                if (this.target.Y > this.position.Y)
                 {
                     this.position.Y += MOVEMENT_SPEED * deltaTime;
                 }
-                else if (this.targetVector.Y < this.position.Y)
+                else if (this.target.Y < this.position.Y)
                 {
                     this.position.Y += MOVEMENT_SPEED * deltaTime;
                 }
             }
             // Reasonably close to target.
-            if ((Math.Abs(this.position.X - this.targetVector.X) < TARGET_THRESHOLD) && (Math.Abs(this.position.Y - this.targetVector.Y) < TARGET_THRESHOLD))
+            if ((Math.Abs(this.position.X - this.target.X) < TARGET_THRESHOLD) && (Math.Abs(this.position.Y - this.target.Y) < TARGET_THRESHOLD))
             {
                 if (!isDispersed)
                 {
                     isDispersed = true;
                 }
-                float x = targetTile.position.X;
-                float y = targetTile.position.Y;
-                //Random r = new Random();
-                //this.targetVector = new Vector2(x+r.NextDouble%-0.5, NO_TARGET);
+                this.target = new Vector2(NO_TARGET, NO_TARGET);
             }
         }
     }

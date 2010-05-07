@@ -1,8 +1,4 @@
-﻿
-// MOAR RAGES
-
-/* 
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -44,12 +40,10 @@ namespace Recellection.Code.Models
             Assert.AreEqual(0, u2.GetPosition().X);
             Assert.AreEqual(0, u2.GetPosition().Y);
 
-            Vector2 v = u2.GetTargetVector();
+            Assert.AreEqual(-1, u2.GetTarget().X);
+            Assert.AreEqual(-1, u2.GetTarget().Y);
 
-            Assert.AreEqual(-1, v.X);
-            Assert.AreEqual(-1, v.Y);
-
-            u2.SetTargetVector(new Vector2(5,5));
+            u2.SetTarget(new Vector2(5,5));
 
             for (int i = 0; i < 2000; i++)
             {
@@ -59,11 +53,8 @@ namespace Recellection.Code.Models
             Assert.AreNotEqual(0, u2.GetPosition().X);
             Assert.AreNotEqual(0, u2.GetPosition().Y);
 
-            v = u2.GetTargetVector();
-
-            Assert.AreEqual(-1, v.X);
-            Assert.AreEqual(-1, v.Y);
+            Assert.AreEqual(-1, u2.GetTarget().X);
+            Assert.AreEqual(-1, u2.GetTarget().Y);
         }
     }
-} 
-*/
+}

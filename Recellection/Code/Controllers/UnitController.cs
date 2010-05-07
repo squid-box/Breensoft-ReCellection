@@ -47,7 +47,7 @@ namespace Recellection.Code.Controllers
             {
                 if (amount <= 0)
                     break;
-                u.SetTargetTile(to);
+                u.SetTarget(to.position);
                 if (u.IsDispersed())
                 {
                     tempUnit.Add(u);
@@ -109,14 +109,14 @@ namespace Recellection.Code.Controllers
                 // We we arrive to our target
                 if (travelling && u.IsDispersed())
                 {
-                    Tile t = u.GetTargetTile();
-                    Vector2 min = new Vector2((float)Math.Floor(t.position.X), (float)Math.Floor(t.position.Y));
+                    Vector2 tilePos = u.GetTarget();
+                    Vector2 min = new Vector2((float)Math.Floor(tilePos.X), (float)Math.Floor(tilePos.Y));
                     
                     Random r = new Random();
                     float rX = (float)r.NextDouble() + min.X;
                     float rY = (float)r.NextDouble() + min.Y;
 
-                    u.SetTargetVector(new Vector2(rX, rY));
+                    u.SetTarget(new Vector2(rX, rY));
                 }
             }
         }
