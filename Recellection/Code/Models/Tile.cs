@@ -12,7 +12,10 @@ namespace Recellection.Code.Models
     /// Representation of a tile in the game world.
     /// </summary>
     /// <author>Joel Ahlgren</author>
-    /// <date>2010-04-26</date>
+    /// <date>2010-05-07</date>
+    /// 
+    /// Signature: Name (date)
+    /// Signature: Name (date)
     public class Tile : IModel
     {
         // Data
