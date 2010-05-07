@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Recellection.Code.Models;
+using Recellection.Code.Utility.Logger;
 
 namespace Recellection.Code.Controllers
 {
@@ -12,7 +13,8 @@ namespace Recellection.Code.Controllers
 	/// Author: Martin Nycander
 	/// </summary>
 	public class MenuController
-	{
+    {
+        private static Logger logger = LoggerFactory.GetLogger();
 		private static MenuModel menuModel;
 		private static TobiiController tobiiController;
 		private static bool initiated = false;
@@ -29,9 +31,11 @@ namespace Recellection.Code.Controllers
 			{
 				throw new InvalidOperationException("The MenuController has already been initiated.");
 			}
-			
+            logger.Info("Initializing MenuController.");
 			menuModel = MenuModel.Instance;
+            logger.Info("Got " + tobii +" from constructor.");
 			tobiiController = tobii;
+            logger.Info("MenuController.tobiiController is now: "+ tobiiController +".");
 			initiated = true;
 			
 			LoadMenu(initialMenu);

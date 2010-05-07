@@ -24,7 +24,7 @@ namespace Recellection
 			GraphicsRenderer graphicRendering = new GraphicsRenderer();
 
 			Recellection game = new Recellection(graphicRendering);
-			Initializer logic = new Initializer(graphicRendering);
+			Initializer logic = new Initializer(graphicRendering, game.Window.Handle);
 
 			Thread gameLogic = new Thread(logic.Run);
 
