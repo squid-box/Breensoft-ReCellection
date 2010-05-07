@@ -10,6 +10,8 @@ namespace Recellection
 {
     public class GraphicsRenderer
     {
+		public static IDrawable currentState;
+		
         public GraphicsRenderer()
         {
         }
