@@ -5,11 +5,15 @@ using System.Linq;
 using System.Text;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Recellection.Code.Models;
+using Recellection.Code.Utility.Events;
+using Recellection.Code.Views;
+using Microsoft.Xna.Framework.Content;
 
 namespace Recellection
 {
 
-	public class MenuView : IDrawable
+	public class MenuView : IRenderable
 	{
 		/// <summary>
 		/// author: co
@@ -26,11 +30,11 @@ namespace Recellection
 			graphics = new List<DrawData>();
 		}
 		
-		public void menuEventFunction(Object publisher, Event ev)
+		public void menuEventFunction(Object publisher, Event<Menu> ev)
 		{
 			Menu m = ev.subject;
 			graphics.Clear();
-			graphics.Add(new DrawData(new Vector2D(0,0), m.getMenuPic(), 0, 0, Recellection.viewPort.Width));
+			graphics.Add(new DrawData(new Vector2(0,0), m.getMenuPic(), 0, 0, Recellection.viewPort.Width));
 			//graphics.Add();//TODO skriv ut text SEN inte nu, laga menu
 			textDrawer.DrawString(Recellection.screenFont, Language.Instance.GetString("MainMenu1"), offset, Color.Black, 0, Vector2.Zero, textScale, SpriteEffects.None, 0);
 
@@ -43,8 +47,7 @@ namespace Recellection
 			}
 		}
 		
-		
-		List<DrawData> GetDrawData()
+		public List<DrawData> GetDrawData(ContentManager content)
 		{
 			return graphics;
 		}
