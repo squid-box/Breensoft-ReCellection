@@ -13,7 +13,7 @@ namespace Recellection
 {
     public class GraphicsRenderer
     {
-		public static IRenderable currentState;
+		public static IRenderable currentState = new TestView();
 		
         public GraphicsRenderer()
         {
@@ -21,8 +21,7 @@ namespace Recellection
 
         public void Draw(ContentManager content, SpriteBatch spriteBatch)
         {
-            TestView tv = new TestView();
-            List<DrawData> drawData = tv.GetDrawData(content) ;
+			List<DrawData> drawData = GraphicsRenderer.currentState.GetDrawData(content);
             Recellection.graphics.GraphicsDevice.SetRenderTarget(0, null);
             Recellection.graphics.GraphicsDevice.Clear(Recellection.breen);
 
