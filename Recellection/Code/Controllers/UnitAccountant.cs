@@ -54,7 +54,7 @@ namespace Recellection.Code.Controllers
 
                 for (int i = 0; i < b.RateOfProduction; i++)
                 {
-                    res.Add(new Unit(b.owner,b.coordinates));
+                    b.AddUnit(new Unit(b.coordinates.X, b.coordinates.Y, b.owner));
                 }
                 b.AddUnits(res);
             }

@@ -11,6 +11,10 @@ namespace Recellection.Code.Models
     /// </summary>
     public enum PlayerColour {RED, BLUE, GREEN, YELLOW, PURPLE}
 
+    /// <summary>
+    /// Class representing a player in the world. Holds the buildings networks owned by the player
+    /// and some game related information.
+    /// </summary>
     public class Player : IModel
     {
         /// <summary>
@@ -23,8 +27,14 @@ namespace Recellection.Code.Models
         /// </summary>
         protected PlayerColour colour {get; private set;}
 
+        /// <summary>
+        /// The building networks owned by a player
+        /// </summary>
         private List<Graph> graphs;
 
+        /// <summary>
+        /// The level of upgrades of the player
+        /// </summary>
         protected int upgradeLevel { get; private set; }
 
         /// <summary>
@@ -40,6 +50,9 @@ namespace Recellection.Code.Models
             this.graphs = new List<Graph>();
         }
 
+        /// <summary>
+        /// Construct a default player for testing purposes. DO NOT use in game.
+        /// </summary>
         public Player()
         {
             this.name = "John doe";
@@ -48,7 +61,7 @@ namespace Recellection.Code.Models
         }
 
         /// <summary>
-        /// 
+        /// Retrieve the buildings networks 
         /// </summary>
         /// <returns></returns>
         public List<Graph> GetGraphs()

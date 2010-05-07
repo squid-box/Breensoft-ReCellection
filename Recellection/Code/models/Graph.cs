@@ -14,6 +14,7 @@ namespace Recellection.Code.Models
 	/// 
 	/// Author: Martin Nycander
     /// Signature: John Forsberg (2010-04-20)
+    /// Signature: Marco Ahumada Juntune (2010-05-06)
 	/// </summary>
 	public class Graph : IModel
 	{
