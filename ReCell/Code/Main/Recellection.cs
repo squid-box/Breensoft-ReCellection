@@ -80,6 +80,11 @@ namespace Recellection
 
             windowHandle = this.Window.Handle;
         }
+        
+        public void lawl()
+		{
+			audioPlayer.PlaySound("boom");
+        }
 
         /// <summary>
         /// Create models and load game data
