@@ -18,8 +18,8 @@ namespace Recellection.Code.Controllers
         private World m_world;
         private GraphController m_graph;
         private List<Player> m_opponents;
-        private List<Vector2> interrestPoints;
-        private List<Vector2> enemyPoints;
+        private List<Vector2> m_interrestPoints;
+        private List<Vector2> m_enemyPoints;
 
         private int distanceThreshold;
 
@@ -37,8 +37,8 @@ namespace Recellection.Code.Controllers
             m_world = world;
             m_graph = graph;
             m_opponents = opponents;
-            interrestPoints = new List<Vector2>();
-            enemyPoints = new List<Vector2>();
+            m_interrestPoints = new List<Vector2>();
+            m_enemyPoints = new List<Vector2>();
             view.registerPlayer(this);
             distanceThreshold = 3; //Arbitrary number at the moment
         }
@@ -49,9 +49,9 @@ namespace Recellection.Code.Controllers
         /// </summary>
         public void MakeMove(){
 
-            for (int i = 0; i < interrestPoints.Count; i++)
+            for (int i = 0; i < m_interrestPoints.Count; i++)
             {
-                Vector2 current = interrestPoints[i];
+                Vector2 current = m_interrestPoints[i];
 
                 if (m_view.ContainsResourcePoint(current))
                 {
@@ -62,20 +62,20 @@ namespace Recellection.Code.Controllers
                     CalculateWeight(m_view.GetBuildingAt(current));
                 }
             }
-            if (enemyPoints.Count == 0)
+            if (m_enemyPoints.Count == 0)
             {
                 Explore();
             }
             else
             {
-                for (int i = 0; i < enemyPoints.Count; i++)
+                for (int i = 0; i < m_enemyPoints.Count; i++)
                 {
-                    Vector2 current = enemyPoints[i];
-                    Vector2 nearby = GetClosestPointFromList(current, interrestPoints);
+                    Vector2 current = m_enemyPoints[i];
+                    Vector2 nearby = GetClosestPointFromList(current, m_interrestPoints);
                     if (Vector2.Distance(current, nearby) > distanceThreshold)
                     {
                         nearby = CalculatePointNear(current);
-                        interrestPoints[interrestPoints.Count] = nearby;
+                        m_interrestPoints[m_interrestPoints.Count] = nearby;
                     }
                     SendUnits(nearby); //TODO: How many to send?
                 }
@@ -110,7 +110,7 @@ namespace Recellection.Code.Controllers
         private void CalculateWeight(Building building)
         {
             int friendly = unitCountAt(building.coordinates, this);
-            int enemy = unitCountAt(GetClosestPointFromList(building.coordinates, enemyPoints), m_opponents[0]);
+            int enemy = unitCountAt(GetClosestPointFromList(building.coordinates, m_enemyPoints), m_opponents[0]);
             int diff = enemy - friendly;
             if (diff > 0) //more enemy units than friendly
             {
@@ -216,7 +216,7 @@ namespace Recellection.Code.Controllers
         /// <returns></returns>
         private bool CanHoldPoint(Vector2 point)
         {
-            if (unitCountAt(point, this) > (unitCountAt(point, m_opponents[0])+ unitCountAt(GetClosestPointFromList(point, enemyPoints), m_opponents[0])))
+            if (unitCountAt(point, this) > (unitCountAt(point, m_opponents[0])+ unitCountAt(GetClosestPointFromList(point, m_enemyPoints), m_opponents[0])))
             {
                 return true;
             }
