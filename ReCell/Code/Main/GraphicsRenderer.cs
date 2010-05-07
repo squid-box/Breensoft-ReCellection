@@ -4,18 +4,23 @@ using System.Linq;
 using System.Text;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Recellection.Code.Views;
+
 
 
 namespace Recellection
 {
     public class GraphicsRenderer
     {
+		public static IRenderable currentState;
+		
         public GraphicsRenderer()
         {
         }
 
-        public void Draw(SpriteBatch spriteBatch, List<DrawData> drawData)
+        public void Draw(SpriteBatch spriteBatch)
         {
+            List<DrawData> drawData = currentState.GetDrawData();
             Recellection.graphics.GraphicsDevice.SetRenderTarget(0, null);
             Recellection.graphics.GraphicsDevice.Clear(Recellection.breen);
 

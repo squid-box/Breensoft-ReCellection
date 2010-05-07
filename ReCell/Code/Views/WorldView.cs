@@ -13,7 +13,7 @@ namespace Recellection.Code.Views
     /// to the player. The World View contains the information that is relevant to a single player, and
     /// therefore has a reference to a Player-object.
     /// </summary>
-    class WorldView : IDrawable
+    class WorldView : IRenderable
     {
         /// <summary>
         /// The player whose view of the world this is.
