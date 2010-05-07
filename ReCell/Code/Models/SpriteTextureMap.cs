@@ -57,7 +57,7 @@ namespace Recellection.Code.Models
                 catch (ContentLoadException e)
                 {
                     
-                    throw new ContentLoadException("You need to add the picture to: "+textureNames[i]);
+                    throw new ContentLoadException("You need to add the graphics for: "+textureNames[i]);
                 }
 
             }
