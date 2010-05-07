@@ -72,8 +72,6 @@ namespace Recellection
         {
             base.Initialize();
 
-            Globals.gameState = Globals.GameStates.Game;
-
             // Initialize the python console
             console = new PythonInterpreter(this, consoleFont);
             console.AddGlobal("game", this);

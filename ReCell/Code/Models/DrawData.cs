@@ -11,6 +11,7 @@ namespace Recellection
     {
         Vector2 position;
 
+
         public Vector2 Position
         {
             get { return position; }
@@ -36,11 +37,18 @@ namespace Recellection
             get { return curFrame; }
         }
 
-        private int spriteSz;
+        private int spriteHeight;
 
-        public int SpriteSize
+        public int SpriteHeight
         {
-            get { return spriteSz; }
+            get { return spriteHeight; }
+        }
+
+        private int spriteWidth;
+
+        public int SpriteWidth
+        {
+            get { return spriteWidth; }
         }
 
 
@@ -52,13 +60,14 @@ namespace Recellection
         /// <param name="rotation">The entity's rotation.</param>
         /// <param name="currentFrame">Which frame to animate. If the frame has no animation cycle, send 0.</param>
         /// <param name="spriteSize">The sprites size in pixels. All sprites have to be n*n pixels in size.</param>
-        public DrawData(Vector2 position2D, Texture2D texture, float rotation, int currentFrame, int spriteSize)
+        public DrawData(Vector2 position2D, Texture2D texture, float rotation, int currentFrame, int spriteHeight, int spriteWidth)
         {
             position = position2D;
             tex = texture;
             rot = rotation;
             curFrame = currentFrame;
-            spriteSz = spriteSize;
+            this.spriteHeight = spriteHeight;
+            this.spriteWidth = spriteWidth;
         }
 
     }
