@@ -40,6 +40,8 @@ namespace Recellection.Code.Models
 
 		private MenuModel()
 		{
+            this.menuStack = new Stack<Menu>();
+            this.menuPositions = new Dictionary<Menu, Vector2>();
 		}
 		
         /// <summary>

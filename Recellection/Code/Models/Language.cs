@@ -143,7 +143,6 @@ namespace Recellection.Code.Models
                 if (!f.Name.Equals(""))
                 {
                     language = f.Name.Split('.')[0];
-                    //language = "English";
 
                     // Make sure the language exists
                     if (!this.translations.ContainsKey(language))
