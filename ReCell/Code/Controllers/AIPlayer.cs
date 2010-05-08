@@ -15,7 +15,6 @@ namespace Recellection.Code.Controllers
          * Variables
          */
         private AIView m_view;
-        private GraphController m_graph;
         private List<Player> m_opponents;
         private List<Vector2> m_interrestPoints;
         private List<Vector2> m_enemyPoints;
