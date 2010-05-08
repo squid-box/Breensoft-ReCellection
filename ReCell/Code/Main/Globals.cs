@@ -51,7 +51,7 @@ namespace Recellection
             Prompt,
             NineMatrix,
             FourMatrix,
-			FreeStyle
+			FreeStyle,
         };
     }
 }
