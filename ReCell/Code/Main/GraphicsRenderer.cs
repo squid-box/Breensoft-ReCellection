@@ -42,10 +42,17 @@ namespace Recellection
             {
 				logger.Trace("Drawing " + d + " at rectangle (" + d.TargetRectangle + ")");
 				
+				Color c = Color.White;
+				
+				if (d.Opacity < 1.0f)
+				{
+					c = new Color(255, 255, 255, d.Opacity*255);
+				}
+				
                 spriteBatch.Draw(d.Texture, 
 					d.TargetRectangle,
 					null,
-					Color.White, 
+					c, 
 					d.Rotation, 
 					new Vector2(0, 0),
 					SpriteEffects.None, 
