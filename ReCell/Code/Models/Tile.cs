@@ -56,7 +56,7 @@ namespace Recellection.Code.Models
         /// <param name="type">Enum of the terrain type.</param>
         /// <param name="x">Tile x-coordinate.</param>
         /// <param name="y">Tile y-coordinate.</param>
-        public Tile(int x, int y, Globals.TerrainTypes type)
+        public Tile(int x, int y, Globals.TextureTypes type)
         {
             this.type = new TerrainType(type);
             this.visibleTo = new HashSet<Player>();
@@ -73,7 +73,7 @@ namespace Recellection.Code.Models
         /// Change TerrainType of this tile.
         /// </summary>
         /// <param name="type">Enum of the terrain type.</param>
-        public void ChangeTerrainType(Globals.TerrainTypes type)
+        public void ChangeTerrainType(Globals.TextureTypes type)
         {
             if (this.type.GetEnum() != type)
             {

@@ -185,7 +185,7 @@ namespace Recellection.Code.Controllers
             int randomTile = randomer.Next(GetNumberOfTerrainTypes());
            
 
-            return new Tile(x,y,(Globals.TerrainTypes)randomTile);
+            return new Tile(x,y,(Globals.TextureTypes)randomTile);
         }
 
         /// <summary>
@@ -193,7 +193,7 @@ namespace Recellection.Code.Controllers
         /// </summary>
         /// <param name="randomer"></param>
         /// <returns></returns>
-        private static Globals.TerrainTypes RandomTerrainType(Random randomer)
+        private static Globals.TextureTypes RandomTerrainType(Random randomer)
         {
             //randomize a number which is 1 to number of terrain types - 1.
             //Ignores the default terrain type Membrane.
@@ -201,7 +201,7 @@ namespace Recellection.Code.Controllers
 
 
             
-            return (Globals.TerrainTypes)randomType;
+            return (Globals.TextureTypes)randomType;
         }
 
         /// <summary>
@@ -214,7 +214,7 @@ namespace Recellection.Code.Controllers
         /// <param name="type"></param>
         /// <param name="randomer"></param>
         private static void SpreadTiles(Tile[,] tileMatrix, int xCoord, 
-            int yCoord, int numberOfTiles, Globals.TerrainTypes type, 
+            int yCoord, int numberOfTiles, Globals.TextureTypes type, 
             Random randomer)
         {
 
