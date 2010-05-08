@@ -19,7 +19,7 @@ namespace Recellection.Code.Views
         int angle = 0;
         public List<DrawData> GetDrawData(ContentManager content)
         {
-            Texture2D tex = content.Load<Texture2D>("Graphics/dracula");
+            Texture2D tex = content.Load<Texture2D>("Graphics/logo");
             DrawData d = new DrawData(tex, new Rectangle(x, y, size, size), angle, 0);
 
             if(Keyboard.GetState().IsKeyDown(Keys.Right))
