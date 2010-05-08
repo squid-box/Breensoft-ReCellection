@@ -32,10 +32,10 @@ namespace Recellection
             spriteBatch.Begin(SpriteBlendMode.AlphaBlend, SpriteSortMode.Immediate, SaveStateMode.None);
             foreach (DrawData d in drawData)
             {
-				logger.Trace("Drawing "+d+" at rectangle ("+(int)d.Position.X+", "+(int)d.Position.Y+", "+((int)d.Position.X+d.SpriteWidth)+", "+((int)d.Position.Y+d.SpriteHeight)+")");
+				logger.Trace("Drawing " + d + " at rectangle (" + d.TargetRectangle + ")");
 				
                 spriteBatch.Draw(d.Texture, 
-					new Rectangle((int)d.Position.X, (int)d.Position.Y, (int)d.Position.X+d.SpriteWidth, (int)d.Position.Y+d.SpriteHeight),
+					d.TargetRectangle,
 					null,
 					Color.White, 
 					d.Rotation, 
