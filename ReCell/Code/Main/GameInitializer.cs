@@ -7,7 +7,7 @@ using Recellection.Code.Models;
 using Recellection.Code.Controllers;
 using Recellection.Code.Views;
 
-namespace ReCell.Code.Main
+namespace Recellection.Code.Main
 {
     public class GameInitializer
     {
