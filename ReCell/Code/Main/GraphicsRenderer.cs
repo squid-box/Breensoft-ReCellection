@@ -16,7 +16,6 @@ namespace Recellection
     public class GraphicsRenderer
 	{
 		private static Logger logger = LoggerFactory.GetLogger();
-
         public static IRenderable currentState = null;
 		
         public GraphicsRenderer()
@@ -25,7 +24,10 @@ namespace Recellection
         }
 
         public void Draw(ContentManager content, SpriteBatch spriteBatch)
-        {
+		{
+			Recellection.graphics.GraphicsDevice.SetRenderTarget(0, null);
+			Recellection.graphics.GraphicsDevice.Clear(Color.Black);
+			
 			if( currentState == null)
 			{
 				logger.Warn("No state to render!");
@@ -33,8 +35,7 @@ namespace Recellection
 			}
 			
 			List<DrawData> drawData = GraphicsRenderer.currentState.GetDrawData(content);
-            Recellection.graphics.GraphicsDevice.SetRenderTarget(0, null);
-            Recellection.graphics.GraphicsDevice.Clear(Recellection.breen);
+            
 			
             spriteBatch.Begin(SpriteBlendMode.AlphaBlend, SpriteSortMode.Immediate, SaveStateMode.None);
             foreach (DrawData d in drawData)
