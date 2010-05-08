@@ -21,7 +21,7 @@ namespace Recellection.Code.Models
         private int dmgMod; // Damage modifier
         private int spdMod; // Speed modifier
         private int rscMod; // Resource modifier
-        private Globals.TerrainTypes type;
+        private Globals.TextureTypes type;
 
 
         // Methods
@@ -34,7 +34,7 @@ namespace Recellection.Code.Models
         public TerrainType()
         {
             // Assume default type.
-            this.type = Globals.TerrainTypes.Membrane;
+            this.type = Globals.TextureTypes.Membrane;
             this.dmgMod = 0;
             this.spdMod = 10;
             this.rscMod = 10;
@@ -43,33 +43,33 @@ namespace Recellection.Code.Models
         /// Creates a TerrainType of the type specified in t.
         /// </summary>
         /// <param name="t">A type of Globals.TerrainTypes.</param>
-        public TerrainType(Globals.TerrainTypes t)
+        public TerrainType(Globals.TextureTypes t)
         {
             this.type = t;
             switch (t)
             {
-                case (Globals.TerrainTypes.Membrane):
+                case (Globals.TextureTypes.Membrane):
                     {
                         this.dmgMod = 0;
                         this.spdMod = 10;
                         this.rscMod = 10;
                         break;
                     }
-                case (Globals.TerrainTypes.Mucus):
+                case (Globals.TextureTypes.Mucus):
                     {
                         this.dmgMod = 0;
                         this.spdMod = 8;
                         this.rscMod = 12;
                         break;
                     }
-                case (Globals.TerrainTypes.Slow):
+                case (Globals.TextureTypes.Slow):
                     {
                         this.dmgMod = 0;
                         this.spdMod = 5;
                         this.rscMod = 10;
                         break;
                     }
-                case (Globals.TerrainTypes.Infected):
+                case (Globals.TextureTypes.Infected):
                     {
                         this.dmgMod = 5;
                         this.spdMod = 10;
@@ -85,7 +85,7 @@ namespace Recellection.Code.Models
         /// Gets the type of this TerrainType.
         /// </summary>
         /// <returns>Enum of the TerrainType-type</returns>
-        public Globals.TerrainTypes GetEnum()
+        public Globals.TextureTypes GetEnum()
         {
             return this.type;
         }
@@ -93,7 +93,7 @@ namespace Recellection.Code.Models
         /// Change the type of this TerrainType.
         /// </summary>
         /// <param name="newType">Enum of the new type of type.</param>
-        public void setType(Globals.TerrainTypes newType)
+        public void setType(Globals.TextureTypes newType)
         {
             this.type = newType;
         }

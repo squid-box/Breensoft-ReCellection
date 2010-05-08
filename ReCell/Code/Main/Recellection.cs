@@ -188,6 +188,29 @@ namespace Recellection
                 logger.Debug("Disabling sound effects.");
                 audioPlayer.SetSoundVolume(0);
             }
+            if (kBState.IsKeyDown(Keys.F) && lastKBState.IsKeyUp(Keys.F))
+            {
+                System.Windows.Forms.Form form = (System.Windows.Forms.Form)System.Windows.Forms.Control.FromHandle(this.Window.Handle);
+                if (form.Width > 800)
+                {
+
+                    form.Location = new System.Drawing.Point(0, 0);
+                    form.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
+                    form.TopMost = true;
+                    Recellection.graphics.PreferredBackBufferWidth = 800;
+                    Recellection.graphics.PreferredBackBufferHeight = 600;
+                    Recellection.graphics.ApplyChanges();
+                }
+                else
+                {                    
+                    form.Location = new System.Drawing.Point(0, 0);
+                    form.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
+                    form.TopMost = true;
+                    Recellection.graphics.PreferredBackBufferWidth = System.Windows.Forms.SystemInformation.PrimaryMonitorSize.Width;
+                    Recellection.graphics.PreferredBackBufferHeight = System.Windows.Forms.SystemInformation.PrimaryMonitorSize.Height;
+                    Recellection.graphics.ApplyChanges();
+                }
+            }
         }
 
         /// <summary>
@@ -206,7 +229,7 @@ namespace Recellection
         private void PrintHelp()
         {
             spriteBatch.Begin();
-            spriteBatch.DrawString(screenFont, "M: Toggle music\nI: Turn SFX off\nO: Turn SFX on\nA: Acid sound\nB: Explosion sound\nF1: Toggle Console", Vector2.Zero, Color.White);
+            spriteBatch.DrawString(screenFont, "M: Toggle music\nI: Turn SFX off\nO: Turn SFX on\nA: Acid sound\nB: Explosion sound\nF1: Toggle Console\nF: \"full\" screen", Vector2.Zero, Color.Red);
             spriteBatch.End();
         }
     }

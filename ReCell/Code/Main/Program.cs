@@ -35,13 +35,15 @@ namespace Recellection
 
             #region let's fullscreen this bastard
             
-            Recellection.graphics.PreferredBackBufferWidth = System.Windows.Forms.SystemInformation.PrimaryMonitorSize.Width;
-            Recellection.graphics.PreferredBackBufferHeight = System.Windows.Forms.SystemInformation.PrimaryMonitorSize.Height;
-            Recellection.graphics.ApplyChanges();
+            
             System.Windows.Forms.Form form = (System.Windows.Forms.Form)System.Windows.Forms.Control.FromHandle(game.Window.Handle);
             form.Location = new System.Drawing.Point(0, 0);
             form.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
+            form.Focus();
             form.TopMost = true;
+            Recellection.graphics.PreferredBackBufferWidth = System.Windows.Forms.SystemInformation.PrimaryMonitorSize.Width;
+            Recellection.graphics.PreferredBackBufferHeight = System.Windows.Forms.SystemInformation.PrimaryMonitorSize.Height;
+            Recellection.graphics.ApplyChanges();
 
             #endregion
 

@@ -7,6 +7,8 @@ using Microsoft.Xna.Framework.Graphics;
 using Recellection.Code.Views;
 using Microsoft.Xna.Framework.Content;
 using Recellection.Code.Utility.Logger;
+using Recellection.Code.Models;
+using Recellection.Code.Controllers;
 
 
 namespace Recellection
@@ -14,7 +16,7 @@ namespace Recellection
     public class GraphicsRenderer
 	{
 		private static Logger logger = LoggerFactory.GetLogger();
-		public static IRenderable currentState = new TestView();
+        public static IRenderable currentState = null;
 		
         public GraphicsRenderer()
         {
@@ -22,12 +24,18 @@ namespace Recellection
         }
 
         public void Draw(ContentManager content, SpriteBatch spriteBatch)
-        {
-			List<DrawData> drawData = GraphicsRenderer.currentState.GetDrawData(content);
-            Recellection.graphics.GraphicsDevice.SetRenderTarget(0, null);
-            Recellection.graphics.GraphicsDevice.Clear(Recellection.breen);
+		{
+			Recellection.graphics.GraphicsDevice.SetRenderTarget(0, null);
+			Recellection.graphics.GraphicsDevice.Clear(Color.Black);
 			
-			//logger.Info("Viewport size: "+Recellection.viewPort.Width+"x"+Recellection.viewPort.Height);
+			if( currentState == null)
+			{
+				logger.Warn("No state to render!");
+				return;
+			}
+			
+			List<DrawData> drawData = GraphicsRenderer.currentState.GetDrawData(content);
+            
 			
             spriteBatch.Begin(SpriteBlendMode.AlphaBlend, SpriteSortMode.Immediate, SaveStateMode.None);
             foreach (DrawData d in drawData)
