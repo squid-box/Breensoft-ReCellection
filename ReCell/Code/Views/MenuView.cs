@@ -77,7 +77,7 @@ namespace Recellection
 		public List<DrawData> GetDrawData(ContentManager content)
 		{
 			graphics.Clear();
-			graphics.Add(new DrawData(new Vector2(0, 0), currentMenu.getMenuPic(), 0, 0, Recellection.viewPort.Height, Recellection.viewPort.Width));
+			graphics.Add(new DrawData(currentMenu.getMenuPic(), new Rectangle(0, 0, Recellection.viewPort.Width, Recellection.viewPort.Height)));
 			return graphics;
 		}
 	}

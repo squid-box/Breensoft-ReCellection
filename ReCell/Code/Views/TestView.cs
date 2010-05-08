@@ -6,6 +6,8 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Input;
+using Recellection.Code.Models;
+using Recellection.Code.Controllers;
 
 namespace Recellection.Code.Views
 {
@@ -17,8 +19,8 @@ namespace Recellection.Code.Views
         int angle = 0;
         public List<DrawData> GetDrawData(ContentManager content)
         {
-            Texture2D tex = content.Load<Texture2D>("Graphics/dracula");
-            DrawData d = new DrawData(new Vector2(x, y), tex, angle, 0, size, size);
+            Texture2D tex = content.Load<Texture2D>("Graphics/logo");
+            DrawData d = new DrawData(tex, new Rectangle(x, y, size, size), angle, 0);
 
             if(Keyboard.GetState().IsKeyDown(Keys.Right))
             {
@@ -43,6 +45,13 @@ namespace Recellection.Code.Views
                 {
                     angle = angle - 360;
                 }
+            }
+
+            if (Keyboard.GetState().IsKeyDown(Keys.X))
+            {
+                World w = WorldGenerator.GenerateWorld(1);
+
+                GraphicsRenderer.currentState = new WorldView(w, new Player(PlayerColour.BLUE, "Tester"));
             }
             
             List<DrawData> ret = new List<DrawData>();
