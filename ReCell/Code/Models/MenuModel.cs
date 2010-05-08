@@ -53,11 +53,12 @@ namespace Recellection.Code.Models
         public Menu Peek()
         {
             Menu m = null;
+            
             try
             {
                 m = menuStack.Peek();
             }
-            catch (Exception e)
+            catch (InvalidOperationException)
             {
                 //nothing on the stack yet
                 return m;
