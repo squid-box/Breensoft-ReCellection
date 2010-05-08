@@ -31,6 +31,7 @@ namespace Recellection
 		/// <param name="targetRectangle">Where to draw the texture.</param>
 		/// <param name="rotation">How much the texture should be rotated.</param>
 		/// <param name="currentFrame">The current frame? :S</param>
+		[System.Obsolete("You won't be using this no more!")]
 		public DrawData(Texture2D texture, Rectangle targetRectangle, float rotation, int currentFrame) : this(texture, targetRectangle)
 		{
 			rot = rotation;
@@ -42,6 +43,7 @@ namespace Recellection
 		/// </summary>
 		/// <param name="texture">The texture to draw.</param>
 		/// <param name="targetRectangle">Where to draw the texture.</param>
+		[System.Obsolete("You won't be using this no more!")]
 		public DrawData(Texture2D texture, Rectangle rect, byte opacity)
 		{
 			tex = texture;
@@ -54,6 +56,7 @@ namespace Recellection
 		/// </summary>
 		/// <param name="texture">The texture to draw.</param>
 		/// <param name="targetRectangle">Where to draw the texture.</param>
+		[System.Obsolete("You won't be using this no more!")]
 		public DrawData(Texture2D texture, Rectangle rect)
 		{
 			tex = texture;

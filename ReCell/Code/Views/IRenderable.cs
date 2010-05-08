@@ -7,7 +7,8 @@ using Microsoft.Xna.Framework.Content;
 namespace Recellection.Code.Views
 {
     public interface IRenderable
-    {
+	{
+		[System.Obsolete("Use Draw instead!")]
         List<DrawData> GetDrawData(ContentManager content);
     }
 }

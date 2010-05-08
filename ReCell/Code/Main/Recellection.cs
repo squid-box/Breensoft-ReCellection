@@ -45,8 +45,14 @@ namespace Recellection
         SpriteBatch spriteBatch;
 
 
-        //Graphics
-        GraphicsRenderer graphicsRenderer;
+        // Current state!
+        private static IView currentState;
+        public static IView CurrentState
+        { 
+			get { return currentState; }
+			set { currentState = value; }
+		}
+        
 
         // Python console
         SpriteFont consoleFont;
@@ -59,14 +65,12 @@ namespace Recellection
         KeyboardState lastKBState, kBState;
         MouseState lastMouseState, mouseState;
 
-        public Recellection(GraphicsRenderer gfx)
+        public Recellection()
         {
             tobiiController = TobiiController.GetInstance(this.Window.Handle);
             tobiiController.Init();
             graphics = new GraphicsDeviceManager(this);            
 			Content.RootDirectory = "Content";
-			graphicsRenderer = gfx;
-       
         }
 
         /// <summary>
@@ -182,8 +186,10 @@ namespace Recellection
         /// </summary>
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Draw(GameTime gameTime)
-        {
-            graphicsRenderer.Draw(Content, spriteBatch);
+		{
+			spriteBatch.Begin(SpriteBlendMode.AlphaBlend, SpriteSortMode.Immediate, SaveStateMode.None);
+			currentState.Draw(spriteBatch);
+			spriteBatch.End();
             base.Draw(gameTime);
         }
 

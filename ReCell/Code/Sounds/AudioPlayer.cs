@@ -35,7 +35,7 @@ namespace Recellection
 
             soundVolume = 1.0f;
             songs = new Song[1];
-            songs[0] = content.Load<Song>("Sounds/Songs/getdown");
+            songs[0] = content.Load<Song>("Sounds/Songs/Castlevania");
 
             MediaPlayer.IsMuted = true;
         }

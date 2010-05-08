@@ -7,6 +7,7 @@ using Recellection.Code.Utility.Events;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework;
 using Recellection.Code.Utility.Logger;
+using Microsoft.Xna.Framework.Graphics;
 
 namespace Recellection.Code.Views
 {
@@ -16,7 +17,7 @@ namespace Recellection.Code.Views
     /// to the player. The World View contains the information that is relevant to a single player, and
     /// therefore has a reference to a Player-object.
     /// </summary>
-    class WorldView : IRenderable
+    class WorldView : IView
     {
         public Logger myLogger;
         private List<DrawData> tileCollection;
@@ -88,16 +89,9 @@ namespace Recellection.Code.Views
             throw new NotImplementedException();
         }
 
-        public List<DrawData> GetDrawData(ContentManager content)
-        {
-            List<DrawData> ret = new List<DrawData>();
-            ret.AddRange(tileCollection);
-
-            // Do stuff:
-
-
-
-            return ret;
-        }
-    }
+		override public void Draw(SpriteBatch spriteBatch)
+		{
+			// TODO: Paint here.
+		}
+	}
 }
