@@ -78,7 +78,7 @@ namespace Recellection
 
             // Initialize the python console
             console = new PythonInterpreter(this, consoleFont);
-            console.AddGlobal("game", this);
+			console.AddGlobal("game", this);
 
             windowHandle = this.Window.Handle;
             
@@ -124,10 +124,6 @@ namespace Recellection
         protected override void Update(GameTime gameTime)
         {
             HandleDebugInput();
-
-
-            audioPlayer.Update();
-
             base.Update(gameTime);
         }
 
@@ -191,7 +187,7 @@ namespace Recellection
             base.Draw(gameTime);
         }
 
-        private void Help()
+        public void Help()
         {
             console.Console.WriteLine("M: Toggle music\nI: Turn SFX off\nO: Turn SFX on\nA: Acid sound\nB: Explosion sound\nF1: Toggle Console\nF: \"full\" screen");
         }

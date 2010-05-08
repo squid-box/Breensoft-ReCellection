@@ -247,7 +247,7 @@ namespace Recellection
         {
             for (; ; )
             {
-                System.Threading.Thread.Sleep(10); // so I heard you like hogging cpu time
+                System.Threading.Thread.Sleep(50); // so I heard you like hogging cpu time
                 if (newActivatedRegion != null)
                 {
                     return newActivatedRegion;
