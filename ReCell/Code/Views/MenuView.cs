@@ -13,7 +13,7 @@ using Microsoft.Xna.Framework.Content;
 namespace Recellection
 {
 
-	public sealed class MenuView : IRenderable
+	public sealed class MenuView : IView
 	{
 		/// <summary>
 		/// author: co
@@ -53,15 +53,10 @@ namespace Recellection
 		public void menuEventFunction(Object publisher, Event<Menu> ev)
 		{
 			currentMenu = ev.subject;
-		
-			graphics.Clear();
-
-            graphics.Add(new DrawData(currentMenu.getMenuPic(), 
-                new Rectangle(0, 0, Recellection.viewPort.Width, Recellection.viewPort.Height)));
-
+			
             //Recellection.graphics.GraphicsDevice.SetRenderTarget(0, textRenderTex);
             //Recellection.graphics.GraphicsDevice.Clear(Color.White);
-
+			/*
             foreach (MenuIcon mi in currentMenu.GetIcons())
             {
                 if (mi.texture != null)
@@ -72,7 +67,7 @@ namespace Recellection
                 {
                     //TODO Do this!
                 }
-            }
+            }*/
 			/*//graphics.Add();//TODO skriv ut text SEN inte nu, laga menu
 			Vector2 position = new Vector2(20, 20);
 			Vector2 scale = new Vector2(1.0f, 1.0f);
@@ -87,9 +82,21 @@ namespace Recellection
 			}*/
 		}
 		
-		public List<DrawData> GetDrawData(ContentManager content)
+		override public void Draw(SpriteBatch spriteBatch)
 		{
-			return graphics;
+			this.drawTexture(spriteBatch, currentMenu.getMenuPic(), new Rectangle(0, 0, Recellection.viewPort.Width, Recellection.viewPort.Height));
+			
+			foreach (MenuIcon mi in currentMenu.GetIcons())
+			{
+				if (mi.texture != null)
+				{
+					this.drawTexture(spriteBatch, mi.texture, mi.getIconPic().TargetRectangle);
+				}
+				else if (mi.getLabel() != null)
+				{
+					//TODO Do this!
+				}
+			}
 		}
 	}
 }

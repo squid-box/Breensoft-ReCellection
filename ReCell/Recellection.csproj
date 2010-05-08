@@ -128,7 +128,6 @@
     <Compile Include="Code\Controllers\WorldGenerator.cs" />
     <Compile Include="Code\Main\GameInitializer.cs" />
     <Compile Include="Code\Main\Globals.cs" />
-    <Compile Include="Code\Main\GraphicsRenderer.cs" />
     <Compile Include="Code\Main\Initializer.cs" />
     <Compile Include="Code\Main\Program.cs" />
     <Compile Include="Code\Main\Recellection.cs" />
@@ -170,6 +169,7 @@
     <Compile Include="Code\Utility\Logger\LogLevel.cs" />
     <Compile Include="Code\Views\AIView.cs" />
     <Compile Include="Code\Views\IRenderable.cs" />
+    <Compile Include="Code\Views\IView.cs" />
     <Compile Include="Code\Views\LoadView.cs" />
     <Compile Include="Code\Views\MenuView.cs" />
     <Compile Include="Code\Views\SplashView.cs" />
