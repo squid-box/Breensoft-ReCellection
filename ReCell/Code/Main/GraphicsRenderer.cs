@@ -17,8 +17,6 @@ namespace Recellection
 	{
 		private static Logger logger = LoggerFactory.GetLogger();
 
-        World w = WorldGenerator.GenerateWorld(1);
-
         public static IRenderable currentState = new TestView();
 		
         public GraphicsRenderer()
