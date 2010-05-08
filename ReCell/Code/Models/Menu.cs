@@ -15,21 +15,21 @@ namespace Recellection
 	{
 	    private List<MenuIcon> icons;
         private Texture2D menuPic;
-		private String text;
+        private String explanation;
 
-		public Menu(Globals.MenuLayout layout, List<MenuIcon> icons, String text)
+		public Menu(Globals.MenuLayout layout, List<MenuIcon> icons, String explanation)
 		{
-			this.text = text;
+            this.explanation = explanation;
 			switch (layout)
 			{
 				case Globals.MenuLayout.Prompt:
 					CreatePrompt(icons);
 					break;
 				case Globals.MenuLayout.NineMatrix:
-					//code
+                    CreateNByMMatrix(3, 3, icons);
 					break;
 				case Globals.MenuLayout.FourMatrix:
-					//code
+                    CreateNByMMatrix(2, 2, icons);
 					break;
 			}
 		}
@@ -63,7 +63,7 @@ namespace Recellection
 		private void CreatePrompt(List<MenuIcon> icons)
 		{
 			if (icons.Count != 2){
-				throw new Exception("Wrong amount of icons in menu");				
+				throw new ArgumentException("Wrong amount of icons in menu");				
 			}
 			menuPic = Recellection.textureMap.GetTexture(Globals.TextureTypes.PromptMenu);
 			icons[0] = new MenuIcon("Yes", null);
@@ -72,5 +72,30 @@ namespace Recellection
 			icons[1].setRegion(new GUIRegion(Recellection.windowHandle, new System.Windows.Rect(Recellection.viewPort.Width * 3 / 5, 0, Recellection.viewPort.Width, Recellection.viewPort.Height)));
 			this.icons = icons;
 		}
+
+        /// <summary>
+        /// This method sets the eye tracking region for a N*M matrix menu, the number
+        /// of icons in the list shall be N*M.
+        /// </summary>
+        /// <param name="cols">The number of cols of the matrix menu</param>
+        /// <param name="rows">The number of rows of the matrix menu</param>
+        /// <param name="icons">The list of icons</param>
+        private void CreateNByMMatrix(int cols, int rows, List<MenuIcon> icons)
+        {
+            if (icons.Count != cols*rows)
+            {
+                throw new ArgumentException("Wrong amount of icons in menu");
+            }
+            int iconWidth = (int)(Recellection.viewPort.Width / cols);
+            int iconHeight = (int)(Recellection.viewPort.Height / rows);
+
+            menuPic = Recellection.textureMap.GetTexture(Globals.TextureTypes.ThreeByThreeMenu);
+            for(int i = 0; i < cols*rows; i++)
+            {
+                icons[i].setRegion(new GUIRegion(Recellection.windowHandle, 
+                    new System.Windows.Rect((i%cols)*iconWidth,(i/rows)*iconHeight,(1+(i%cols))*iconWidth,(1+(i/rows))*iconHeight)));
+            }
+            this.icons = icons;
+        }
 	}
 }

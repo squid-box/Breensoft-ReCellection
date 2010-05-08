@@ -35,7 +35,7 @@ namespace Recellection
             BarrierBuilding, AggressiveBuilding, ResourceBuilding, Unit, Whitebg,
 
             MainMenu, OptionsMenu, Help, PromptMenu, GetIntMenu,
-            CommandMenu, SpecialCommandMenu
+            CommandMenu, SpecialCommandMenu, ThreeByThreeMenu, TwoByTwoMenu
         }
 
         public enum GameStates
