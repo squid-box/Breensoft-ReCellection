@@ -20,7 +20,7 @@ namespace Recellection
 		/// </summary>
 	
 		private SpriteBatch textDrawer = new SpriteBatch(Recellection.graphics.GraphicsDevice);
-        private RenderTarget2D textRenderTex = new RenderTarget2D(Recellection.graphics.GraphicsDevice, Recellection.viewPort.Width, Recellection.viewPort.Height, 0, Recellection.graphics.GraphicsDevice.DisplayMode.Format);
+        //private RenderTarget2D textRenderTex = new RenderTarget2D(Recellection.graphics.GraphicsDevice, Recellection.viewPort.Width, Recellection.viewPort.Height, 0, Recellection.graphics.GraphicsDevice.DisplayMode.Format);
         private float fontSzInPx = 14;
 		List<DrawData> graphics;
         static readonly object padlock = new object();
