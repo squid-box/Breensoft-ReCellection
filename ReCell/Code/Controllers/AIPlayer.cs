@@ -18,7 +18,6 @@ namespace Recellection.Code.Controllers
         private List<Player> m_opponents;
         private List<Vector2> m_interrestPoints;
         private List<Vector2> m_enemyPoints;
-
         private int distanceThreshold;
 
 
@@ -108,8 +107,8 @@ namespace Recellection.Code.Controllers
             int diff = enemy - friendly;
             if (diff > 0) //more enemy units than friendly
             {
-                int weight = m_graph.GetWeight(building);
-                m_graph.SetWeight(building, weight + (diff/2)); //increase the weight by the difference in units / 2
+                int weight = GraphController.Instance.GetWeight(building);
+                GraphController.Instance.SetWeight(building, weight + (diff/2)); //increase the weight by the difference in units / 2
             }
         }
 
