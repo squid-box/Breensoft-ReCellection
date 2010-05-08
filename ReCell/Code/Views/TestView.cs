@@ -18,7 +18,7 @@ namespace Recellection.Code.Views
         public List<DrawData> GetDrawData(ContentManager content)
         {
             Texture2D tex = content.Load<Texture2D>("Graphics/dracula");
-            DrawData d = new DrawData(new Vector2(x, y), tex, angle, 0, size, size);
+            DrawData d = new DrawData(tex, new Rectangle(x, y, size, size), angle, 0);
 
             if(Keyboard.GetState().IsKeyDown(Keys.Right))
             {
