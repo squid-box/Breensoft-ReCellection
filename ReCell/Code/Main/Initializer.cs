@@ -5,6 +5,8 @@ using System.Text;
 using Recellection.Code.Utility.Logger;
 using Recellection.Code.Controllers;
 using Recellection.Code.Models;
+using ReCell.Code.Views;
+using Recellection.Code.Views;
 
 namespace Recellection.Code.Main
 {
@@ -25,7 +27,16 @@ namespace Recellection.Code.Main
 		public void Run()
 		{
 			logger.Debug("Initializer is running.");
-			
+
+
+            //Glader splashscreen start
+            SplashView splash = SplashView.Instance;
+            GraphicsRenderer.currentState = splash; 
+            int pauseTime = 2000;
+            System.Threading.Thread.Sleep(pauseTime);
+            //Glader splashscreen end
+
+
 			// TODO: Sound logo!
 			
 			MenuIcon yes = new MenuIcon("Yes", null);
