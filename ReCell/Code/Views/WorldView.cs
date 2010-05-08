@@ -93,5 +93,8 @@ namespace Recellection.Code.Views
 		{
 			// TODO: Paint here.
 		}
+		override public void Update(GameTime passedTime)
+		{
+		}
 	}
 }
