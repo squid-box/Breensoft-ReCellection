@@ -41,6 +41,7 @@ namespace Recellection
             System.Windows.Forms.Form form = (System.Windows.Forms.Form)System.Windows.Forms.Control.FromHandle(game.Window.Handle);
             form.Location = new System.Drawing.Point(0, 0);
             form.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
+            form.Focus();
             form.TopMost = true;
 
             #endregion
