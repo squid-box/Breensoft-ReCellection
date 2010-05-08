@@ -8,7 +8,7 @@ using Microsoft.Xna.Framework;
 using Recellection.Code.Views;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace ReCell.Code.Views
+namespace Recellection.Code.Views
 {
     /**
      * Most of this code is cannibalized from the MenuView Class and then slightly edited.
@@ -24,25 +24,25 @@ namespace ReCell.Code.Views
         int y = 150;
         int width = 400;
         int height = 334;
-        int angle = 0;
+        String splashFile = "Graphics/dracula";
 
-        static SplashView instance = null;
         static readonly object padlock = new object(); 
         //No idea how the padlock works but I'm not one to argue with code that works.
 
-        public static SplashView Instance
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public SplashView()
         {
-            get
-            {
-                lock (padlock)
-                {
-                    if (instance == null)
-                    {
-                        instance = new SplashView();
-                    }
-                    return instance;
-                }
-            }
+        }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="fileName"></param>
+        public SplashView(String fileName)
+        {
+            splashFile = fileName;
         }
 
         /// <summary>
@@ -52,8 +52,8 @@ namespace ReCell.Code.Views
         /// <returns></returns>
         public List<DrawData> GetDrawData(ContentManager content)
         {
-            Texture2D tex = content.Load<Texture2D>("Graphics/dracula");
-            DrawData d = new DrawData(new Vector2(x, y), tex, angle, 0, height, width);
+            Texture2D tex = content.Load<Texture2D>(splashFile);
+            DrawData d = new DrawData(tex, new Rectangle(x, y, x + width, y + height));
 
 
             List<DrawData> ret = new List<DrawData>();
