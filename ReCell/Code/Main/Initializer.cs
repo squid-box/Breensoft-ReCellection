@@ -46,12 +46,14 @@ namespace Recellection.Code.Main
 			
             logger.Info("Waiting for Tobii input...");
             MenuIcon response = MenuController.GetInput();
+            
 
             logger.Info("Got input!");
             if (response.getLabel() == yes.getLabel())
             {
                 for (int i = 0; i < 3; i++)
                 {
+                    Sounds.Instance.LoadSound("prego").Play();
 					Console.Beep(440, 1000);
 					Console.Beep(37, 500);
 				}
