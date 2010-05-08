@@ -59,13 +59,16 @@ namespace Recellection
             graphics.Add(new DrawData(currentMenu.getMenuPic(), 
                 new Rectangle(0, 0, Recellection.viewPort.Width, Recellection.viewPort.Height)));
 
+            //Recellection.graphics.GraphicsDevice.SetRenderTarget(0, textRenderTex);
+            //Recellection.graphics.GraphicsDevice.Clear(Color.White);
+
             foreach (MenuIcon mi in currentMenu.GetIcons())
             {
                 if (mi.texture != null)
                 {
                     graphics.Add(mi.getIconPic());
                 }
-                else
+                else if(mi.getLabel() != null)
                 {
                     //TODO Do this!
                 }
