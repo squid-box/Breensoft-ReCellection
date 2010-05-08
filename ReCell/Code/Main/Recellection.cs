@@ -62,10 +62,10 @@ namespace Recellection
         {
             tobiiController = TobiiController.GetInstance(this.Window.Handle);
             tobiiController.Init();
-            graphics = new GraphicsDeviceManager(this);
-            graphics.IsFullScreen = false;
+            graphics = new GraphicsDeviceManager(this);            
 			Content.RootDirectory = "Content";
 			graphicsRenderer = gfx;
+       
         }
 
         /// <summary>
@@ -80,6 +80,8 @@ namespace Recellection
             console.AddGlobal("game", this);
 
             windowHandle = this.Window.Handle;
+            
+            //graphics.ApplyChanges();
             LogicThread.Start();
         }
         
@@ -102,6 +104,8 @@ namespace Recellection
             audioPlayer.PlaySong(Globals.Songs.Theme);
 
             viewPort = graphics.GraphicsDevice.Viewport;
+
+            
         }
 
         /// <summary>
@@ -159,6 +163,11 @@ namespace Recellection
             {
                 logger.Debug("Playing boom sound.");
                 audioPlayer.PlaySound("boom");
+            
+                
+                //graphics.PreferredBackBufferWidth = 1024;
+                //graphics.PreferredBackBufferHeight = 768;
+                //graphics.ToggleFullScreen();
             }
 
             if (kBState.IsKeyDown(Keys.M) && lastKBState.IsKeyUp(Keys.M))
