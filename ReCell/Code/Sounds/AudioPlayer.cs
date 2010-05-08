@@ -25,6 +25,7 @@ namespace Recellection
         private float soundVolume;
         private Song[] songs;
 
+		[System.Obsolete("NOOB!")]
         public AudioPlayer(ContentManager content)
         {
             engine = new AudioEngine("Content/Sounds/RecellectionSounds.xgs");
@@ -34,7 +35,7 @@ namespace Recellection
 
             soundVolume = 1.0f;
             songs = new Song[1];
-            songs[0] = content.Load<Song>("Sounds/Songs/Castlevania");
+            songs[0] = content.Load<Song>("Sounds/Songs/getdown");
 
             MediaPlayer.IsMuted = true;
         }

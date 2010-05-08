@@ -83,14 +83,39 @@ namespace Recellection.Code.Controllers
 		/// Adds a base building. Base buildings forms their own graphs, and thus a new graph is created here.
 		/// </summary>
 		/// <param name="newBaseBuilding">The fresh base building to create a graph from.</param>
+        /// <param name="sourceBuilding">The building using to build this, if the source building
+        /// has no base building in its graph create a new one otherwise</param>
 		/// <returns>The created graph.</returns>
-		public Graph AddBaseBuilding(BaseBuilding newBaseBuilding)
+		public Graph AddBaseBuilding(BaseBuilding newBaseBuilding, Building sourceBuilding)
 		{
-			logger.Info("Added base building " + newBaseBuilding + " and created a new graph from it.");
-			Graph graph = new Graph(newBaseBuilding);
-			components.Add(graph);
-			return graph;
+            if (GetGraph(sourceBuilding).baseBuilding.IsAlive())
+            {
+                logger.Info("Added base building " + newBaseBuilding + " and created a new graph from it.");
+                Graph graph = new Graph(newBaseBuilding);
+                components.Add(graph);
+                return graph;
+            }
+            else
+            {
+                logger.Info("Added base building " + newBaseBuilding + " to a graph missing an alive base building.");
+                Graph graph = GetGraph(sourceBuilding);
+                graph.baseBuilding = newBaseBuilding;
+                return graph;
+            }
 		}
+
+        /// <summary>
+        /// Adds a base building. Base buildings forms their own graphs, and thus a new graph is created here.
+        /// </summary>
+        /// <param name="newBaseBuilding">The fresh base building to create a graph from.</param>
+        /// <returns>The created graph.</returns>
+        public Graph AddBaseBuilding(BaseBuilding newBaseBuilding)
+        {
+            logger.Info("Added base building " + newBaseBuilding + " and created a new graph from it.");
+            Graph graph = new Graph(newBaseBuilding);
+            components.Add(graph);
+            return graph;
+        }
 		
 		/// <summary>
 		/// Sets the weight of a building.

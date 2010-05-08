@@ -5,6 +5,9 @@ using System.Text;
 using Recellection.Code.Utility.Logger;
 using Recellection.Code.Controllers;
 using Recellection.Code.Models;
+using Microsoft.Xna.Framework.Audio;
+using System.Threading;
+using Recellection.Code.Views;
 
 namespace Recellection.Code.Main
 {
@@ -27,6 +30,8 @@ namespace Recellection.Code.Main
 			logger.Debug("Initializer is running.");
 			
 			// TODO: Sound logo!
+
+			Cue backgroundSound = Sounds.Instance.LoadSound("Menu");
 			
 			MenuIcon yes = new MenuIcon("Yes", null);
 			MenuIcon no = new MenuIcon("No", null);
@@ -36,7 +41,8 @@ namespace Recellection.Code.Main
 			options.Add(no);
 			
 			Menu mainMenu = new Menu(Globals.MenuLayout.Prompt, options, "Do you wanna play a game?");
-			
+
+			backgroundSound.Play();
 			MenuView view = MenuView.Instance;
 			
 			// Just to make sure everything is in there...
@@ -46,25 +52,30 @@ namespace Recellection.Code.Main
 			
             logger.Info("Waiting for Tobii input...");
             MenuIcon response = MenuController.GetInput();
+            
 
             logger.Info("Got input!");
+            backgroundSound.Stop(AudioStopOptions.Immediate);
             if (response.getLabel() == yes.getLabel())
             {
-                for (int i = 0; i < 3; i++)
-                {
-					Console.Beep(440, 1000);
-					Console.Beep(37, 500);
+				Cue prego = Sounds.Instance.LoadSound("prego");
+				prego.Play();
+				while(prego.IsPlaying)
+				{
+					Thread.Sleep(10);
 				}
+                GraphicsRenderer.currentState = new TestView();
             }
             else
             {
-                for (int i = 0; i < 7; i++)
-                {
-                    Console.Beep(4711, 100);
-                }
+				Console.Beep(440, 1000);
+				Console.Beep(37, 500);
+				Console.Beep(440, 1000);
+				Console.Beep(37, 500);
+				Console.Beep(440, 1000);
             }
 
-            Environment.Exit(0);
+           // Environment.Exit(0);
 			
 			// TODO: Tell the graphic renderer what is the current view
 			// TODO: Spawn main menu, tell it to run.

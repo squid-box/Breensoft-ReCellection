@@ -62,10 +62,10 @@ namespace Recellection
         {
             tobiiController = TobiiController.GetInstance(this.Window.Handle);
             tobiiController.Init();
-            graphics = new GraphicsDeviceManager(this);
-            graphics.IsFullScreen = false;
+            graphics = new GraphicsDeviceManager(this);            
 			Content.RootDirectory = "Content";
 			graphicsRenderer = gfx;
+       
         }
 
         /// <summary>
@@ -80,6 +80,8 @@ namespace Recellection
             console.AddGlobal("game", this);
 
             windowHandle = this.Window.Handle;
+            
+            //graphics.ApplyChanges();
             LogicThread.Start();
         }
         
@@ -102,6 +104,8 @@ namespace Recellection
             audioPlayer.PlaySong(Globals.Songs.Theme);
 
             viewPort = graphics.GraphicsDevice.Viewport;
+
+            
         }
 
         /// <summary>
@@ -159,6 +163,11 @@ namespace Recellection
             {
                 logger.Debug("Playing boom sound.");
                 audioPlayer.PlaySound("boom");
+            
+                
+                //graphics.PreferredBackBufferWidth = 1024;
+                //graphics.PreferredBackBufferHeight = 768;
+                //graphics.ToggleFullScreen();
             }
 
             if (kBState.IsKeyDown(Keys.M) && lastKBState.IsKeyUp(Keys.M))
@@ -179,6 +188,16 @@ namespace Recellection
                 logger.Debug("Disabling sound effects.");
                 audioPlayer.SetSoundVolume(0);
             }
+            if (kBState.IsKeyDown(Keys.F) && lastKBState.IsKeyUp(Keys.F))
+            {
+                Recellection.graphics.PreferredBackBufferWidth = System.Windows.Forms.SystemInformation.PrimaryMonitorSize.Width;
+                Recellection.graphics.PreferredBackBufferHeight = System.Windows.Forms.SystemInformation.PrimaryMonitorSize.Height;
+                Recellection.graphics.ApplyChanges();
+                System.Windows.Forms.Form form = (System.Windows.Forms.Form)System.Windows.Forms.Control.FromHandle(this.Window.Handle);
+                form.Location = new System.Drawing.Point(0, 0);
+                form.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;                
+                form.TopMost = true;
+            }
         }
 
         /// <summary>
@@ -197,7 +216,7 @@ namespace Recellection
         private void PrintHelp()
         {
             spriteBatch.Begin();
-            spriteBatch.DrawString(screenFont, "M: Toggle music\nI: Turn SFX off\nO: Turn SFX on\nA: Acid sound\nB: Explosion sound\nF1: Toggle Console", Vector2.Zero, Color.White);
+            spriteBatch.DrawString(screenFont, "M: Toggle music\nI: Turn SFX off\nO: Turn SFX on\nA: Acid sound\nB: Explosion sound\nF1: Toggle Console\nF: \"full\" screen", Vector2.Zero, Color.Red);
             spriteBatch.End();
         }
     }
