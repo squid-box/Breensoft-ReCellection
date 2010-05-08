@@ -24,20 +24,20 @@ namespace Recellection.Code.Views
         int y = 150;
         int width = 400;
         int height = 334;
-        String splashFile = "Graphics/dracula";
+        String splashFile = "Graphics/logo";
 
         static readonly object padlock = new object(); 
         //No idea how the padlock works but I'm not one to argue with code that works.
 
 
         /// <summary>
-        /// 
+        /// Instantiates a SplashView with the default Breensoft logo
         /// </summary>
         public SplashView()
         {
         }
         /// <summary>
-        /// 
+        /// Instantiates a SplashView using a given logo
         /// </summary>
         /// <param name="fileName"></param>
         public SplashView(String fileName)

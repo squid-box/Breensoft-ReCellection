@@ -29,17 +29,9 @@ namespace Recellection.Code.Main
 		{
 			logger.Debug("Initializer is running.");
 
+            ShowSplashScreen(2000); //Display the breensoft logo for 2 seconds
 
-            //Glader splashscreen start
-            SplashView splash = new SplashView();
-            GraphicsRenderer.currentState = splash; 
-            Sounds.Instance.LoadSound("logoIntro").Play();
-            int pauseTime = 2000;
-            System.Threading.Thread.Sleep(pauseTime);
-            //Glader splashscreen end
-
-
-			// TODO: Sound logo!
+            //TODO Display Tobii logo
 
 			Cue backgroundSound = Sounds.Instance.LoadSound("Menu");
 			
@@ -90,5 +82,19 @@ namespace Recellection.Code.Main
 			// TODO: Tell the graphic renderer what is the current view
 			// TODO: Spawn main menu, tell it to run.
 		}
+
+
+        /// <summary>
+        /// Displays the breensoft logo for a given amount of time
+        /// and plays the logoIntro sound.
+        /// </summary>
+        /// <param name="time"></param>
+        private void ShowSplashScreen(int time)
+        {
+            SplashView splash = new SplashView();
+            GraphicsRenderer.currentState = splash;
+            Sounds.Instance.LoadSound("logoIntro").Play();
+            System.Threading.Thread.Sleep(time);
+        }
 	}
 }
