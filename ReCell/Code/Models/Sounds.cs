@@ -12,7 +12,8 @@ namespace Recellection.Code.Models
     public sealed class Sounds : IModel
     {
         private static AudioEngine audioEngine;
-        private static SoundBank soundBank;
+        private static SoundBank soundBank;        
+        private static WaveBank waveBank;
 
         public static Sounds Instance { get; private set; }
 
@@ -25,6 +26,7 @@ namespace Recellection.Code.Models
         {
             audioEngine = new AudioEngine("Content/Sounds/RecellectionSounds.xgs");
             soundBank = new SoundBank(audioEngine, "Content/Sounds/Sound Bank.xsb");
+			waveBank = new WaveBank(audioEngine, "Content/Sounds/Wave Bank.xwb");
         }
 
         public Cue LoadSound(string sound)
