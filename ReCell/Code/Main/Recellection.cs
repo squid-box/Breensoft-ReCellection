@@ -151,44 +151,11 @@ namespace Recellection
 
             #endregion
 
-            if (kBState.IsKeyDown(Keys.Escape))
-                this.Exit();
-
-            if (kBState.IsKeyDown(Keys.A) && lastKBState.IsKeyUp(Keys.A))
-            {
-                logger.Debug("Playing acid sound.");
-                audioPlayer.PlaySound("acid");
-            }
-
-            if (kBState.IsKeyDown(Keys.B) && lastKBState.IsKeyUp(Keys.B))
-            {
-                logger.Debug("Playing boom sound.");
-                audioPlayer.PlaySound("boom");
-            
-                
-                //graphics.PreferredBackBufferWidth = 1024;
-                //graphics.PreferredBackBufferHeight = 768;
-                //graphics.ToggleFullScreen();
-            }
-
-            if (kBState.IsKeyDown(Keys.M) && lastKBState.IsKeyUp(Keys.M))
-            {
-                logger.Debug("Toggling music mute.");
-                GraphicsRenderer.currentState = new TestView();
-                audioPlayer.ToggleMusicMute();
-            }
-
-            if (kBState.IsKeyDown(Keys.O) && lastKBState.IsKeyUp(Keys.O))
-            {
-                logger.Debug("Enabling sound effects.");
-                audioPlayer.SetSoundVolume(1f);
-            }
-
-            if (kBState.IsKeyDown(Keys.I) && lastKBState.IsKeyUp(Keys.I))
-            {
-                logger.Debug("Disabling sound effects.");
-                audioPlayer.SetSoundVolume(0);
-            }
+			if (kBState.IsKeyDown(Keys.Escape))
+			{
+				this.Exit();
+			}
+			
             if (kBState.IsKeyDown(Keys.F) && lastKBState.IsKeyUp(Keys.F))
             {
                 System.Windows.Forms.Form form = (System.Windows.Forms.Form)System.Windows.Forms.Control.FromHandle(this.Window.Handle);
@@ -221,17 +188,12 @@ namespace Recellection
         protected override void Draw(GameTime gameTime)
         {
             graphicsRenderer.Draw(Content, spriteBatch);
-
-            PrintHelp();
-
             base.Draw(gameTime);
         }
 
-        private void PrintHelp()
+        private void Help()
         {
-            spriteBatch.Begin();
-            spriteBatch.DrawString(screenFont, "M: Toggle music\nI: Turn SFX off\nO: Turn SFX on\nA: Acid sound\nB: Explosion sound\nF1: Toggle Console\nF: \"full\" screen", Vector2.Zero, Color.Red);
-            spriteBatch.End();
+            console.Console.WriteLine("M: Toggle music\nI: Turn SFX off\nO: Turn SFX on\nA: Acid sound\nB: Explosion sound\nF1: Toggle Console\nF: \"full\" screen");
         }
     }
 }

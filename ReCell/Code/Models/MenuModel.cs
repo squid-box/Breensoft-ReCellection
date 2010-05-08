@@ -73,7 +73,7 @@ namespace Recellection.Code.Models
         public Menu Pop()
         {
             Menu m = menuStack.Pop();
-            if (MenuEvent != null)
+            if (MenuEvent != null && menuStack.Count() > 0)
             {
                 MenuEvent(this, new Event<Menu>(menuStack.Peek(), EventType.REMOVE));
             }
