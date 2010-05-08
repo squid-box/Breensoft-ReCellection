@@ -26,7 +26,8 @@ using System.Threading;
 namespace Recellection
 {
     /// <summary>
-    /// This is the main type for your game
+    /// This is the main type for your game.
+	/// It's the SEX-na thread! / Joel
     /// </summary>
     public class Recellection : Microsoft.Xna.Framework.Game
     {
