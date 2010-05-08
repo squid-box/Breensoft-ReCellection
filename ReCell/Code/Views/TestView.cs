@@ -22,6 +22,10 @@ namespace Recellection.Code.Views
         {
 		}
 		
+		override public void Update(GameTime passedTime)
+		{
+		}
+		
 		override public void Draw(SpriteBatch spriteBatch)
 		{
 		}

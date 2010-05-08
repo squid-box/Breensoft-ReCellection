@@ -10,6 +10,7 @@ namespace Recellection.Code.Views
 {
 	public abstract class IView
 	{
+		public abstract void Update(GameTime passedTime);
 		public abstract void Draw(SpriteBatch spriteBatch);
 		
 		public void drawTexture(SpriteBatch spriteBatch, Texture2D t, Rectangle targetArea)

@@ -75,9 +75,7 @@ namespace Recellection.Code.Main
             else
 			{
 				Console.Beep(440, 1000);
-				Thread.Sleep(100);
 				Console.Beep(540, 1000);
-				Thread.Sleep(100);
 				Console.Beep(640, 1000);
 				Environment.Exit(0);
             }

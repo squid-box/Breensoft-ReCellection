@@ -81,6 +81,10 @@ namespace Recellection
 				
 			}*/
 		}
+
+		override public void Update(GameTime passedTime)
+		{
+		}
 		
 		override public void Draw(SpriteBatch spriteBatch)
 		{
