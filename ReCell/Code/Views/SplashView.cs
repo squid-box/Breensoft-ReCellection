@@ -45,6 +45,7 @@ namespace Recellection.Code.Views
 			if (opacity < 255)
 			{
 				fadeTime += passedTime.ElapsedRealTime.Milliseconds;
+				fadeTime = Math.Min(1000f, fadeTime);
 				opacity = (byte)(255.0f * (fadeTime / 1000.0f));
 			}
 		}
