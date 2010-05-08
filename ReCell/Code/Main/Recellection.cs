@@ -12,6 +12,7 @@ using Microsoft.Xna.Framework.Net;
 using Microsoft.Xna.Framework.Storage;
 using Recellection.Code.Utility.Console;
 using Recellection.Code.Utility.Logger;
+using Recellection.Code.Views;
 using Recellection.Code.Models;
 using System.Threading;
 
@@ -62,7 +63,7 @@ namespace Recellection
             tobiiController = TobiiController.GetInstance(this.Window.Handle);
             tobiiController.Init();
             graphics = new GraphicsDeviceManager(this);
-            graphics.IsFullScreen = true;
+            graphics.IsFullScreen = false;
 			Content.RootDirectory = "Content";
 			graphicsRenderer = gfx;
         }
@@ -82,9 +83,9 @@ namespace Recellection
             LogicThread.Start();
         }
         
-        public void lawl()
+        public void lawl(string sound)
 		{
-			audioPlayer.PlaySound("boom");
+			audioPlayer.PlaySound(sound);
         }
 
         /// <summary>
@@ -163,6 +164,7 @@ namespace Recellection
             if (kBState.IsKeyDown(Keys.M) && lastKBState.IsKeyUp(Keys.M))
             {
                 logger.Debug("Toggling music mute.");
+                GraphicsRenderer.currentState = new TestView();
                 audioPlayer.ToggleMusicMute();
             }
 
