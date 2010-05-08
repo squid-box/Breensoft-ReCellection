@@ -5,6 +5,7 @@ using System.Text;
 using System.Windows;
 using Recellection.Code.Utility.Events;
 using Recellection.Code.Utility.Logger;
+using Microsoft.Xna.Framework;
 
 namespace Recellection.Code.Models
 {
@@ -15,6 +16,7 @@ namespace Recellection.Code.Models
     public class World : IModel
     {
         public Logger myLogger;
+        public Vector2 lookingAt { get; set; }
 
         # region Inner Class Map
         /// <summary>
@@ -37,7 +39,6 @@ namespace Recellection.Code.Models
             /// <param name="map">The matrix of tiles that will form the map</param>
             public Map(Tile[,] map)
             {
-                
                 this.map = map;
                 this.Rows = map.GetLength(0);
                 this.Cols = map.GetLength(1);
@@ -118,6 +119,7 @@ namespace Recellection.Code.Models
             players = new List<Player>();
             this.seed = seed;
             SetMap(map);
+            this.lookingAt = Vector2.Zero;
         }
 
         /// <summary>
