@@ -26,10 +26,10 @@ namespace Recellection
 					CreatePrompt(icons);
 					break;
 				case Globals.MenuLayout.NineMatrix:
-                    CreateNByMMatrix(3, 3, icons);
+                    CreateNByMMatrix(3, 3, icons, Globals.TextureTypes.ThreeByThreeMenu);
 					break;
 				case Globals.MenuLayout.FourMatrix:
-                    CreateNByMMatrix(2, 2, icons);
+                    CreateNByMMatrix(2, 2, icons, Globals.TextureTypes.TwoByTwoMenu);
 					break;
 			}
 		}
@@ -80,7 +80,7 @@ namespace Recellection
         /// <param name="cols">The number of cols of the matrix menu</param>
         /// <param name="rows">The number of rows of the matrix menu</param>
         /// <param name="icons">The list of icons</param>
-        private void CreateNByMMatrix(int cols, int rows, List<MenuIcon> icons)
+        private void CreateNByMMatrix(int cols, int rows, List<MenuIcon> icons,Globals.TextureTypes menuTexture)
         {
             if (icons.Count != cols*rows)
             {
@@ -89,7 +89,7 @@ namespace Recellection
             int iconWidth = (int)(Recellection.viewPort.Width / cols);
             int iconHeight = (int)(Recellection.viewPort.Height / rows);
 
-            menuPic = Recellection.textureMap.GetTexture(Globals.TextureTypes.ThreeByThreeMenu);
+            menuPic = Recellection.textureMap.GetTexture(menuTexture);
             for(int i = 0; i < cols*rows; i++)
             {
                 icons[i].setRegion(new GUIRegion(Recellection.windowHandle, 
