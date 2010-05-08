@@ -53,9 +53,10 @@ namespace Recellection.Code.Views
         /// <returns></returns>
         public List<DrawData> GetDrawData(ContentManager content)
         {
-            Texture2D bg = content.Load<Texture2D>(background);
-            Texture2D tex = content.Load<Texture2D>(splashFile);
-            DrawData c = new DrawData(bg, new Rectangle(0, 0, 800, 600));
+
+            Texture2D bg = Recellection.textureMap.GetTexture(Globals.TextureTypes.white);
+            Texture2D tex = Recellection.textureMap.GetTexture(Globals.TextureTypes.logo);
+            DrawData c = new DrawData(bg, new Rectangle(0, 0, Recellection.viewPort.Width, Recellection.viewPort.Height));
             DrawData d = new DrawData(tex, new Rectangle(x, y, x + width, y + height));
 
 

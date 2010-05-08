@@ -32,7 +32,7 @@ namespace Recellection
         public enum TextureTypes
         {
             Membrane, Mucus, Water, Slow, Infected, BaseBuilding,
-            BarrierBuilding, AggressiveBuilding, ResourceBuilding, Unit, Whitebg,
+            BarrierBuilding, AggressiveBuilding, ResourceBuilding, Unit, white, logo,
 
             MainMenu, OptionsMenu, Help, PromptMenu, GetIntMenu,
             CommandMenu, SpecialCommandMenu, ThreeByThreeMenu, TwoByTwoMenu
