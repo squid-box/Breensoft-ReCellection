@@ -19,6 +19,8 @@ namespace Recellection.Code.Views
     class WorldView : IRenderable
     {
         public Logger myLogger;
+        private List<DrawData> tileCollection;
+
         /// <summary>
         /// The player whose view of the world this is.
         /// </summary>
@@ -28,18 +30,31 @@ namespace Recellection.Code.Views
         /// </summary>
         public World.Map Map { get; private set; }
 
-        // TODO Figure out the Rectangle class...
-        // public Rect CurrentScreen { get; set; }
-
         public WorldView(World world, Player player)
         {
             this.Player = player;
+            this.Map = world.map;
             world.MapEvent += OnMapEvent;
             world.GetMap().TileEvent += OnTileEvent;
             myLogger = LoggerFactory.GetLogger();
             myLogger.SetTarget(Console.Out);
             myLogger.Info("Created a WorldView.");
-            this.Map = world.map;
+
+            // First, add all tiles from the map:
+            myLogger.Info("Getting tiles from World.map.");
+            Tile[,] tiles = this.Map.map;
+            myLogger.Info("Got tiles.");
+
+            tileCollection = new List<DrawData>();
+            myLogger.Info("Iterating over tiles.");
+            foreach (Tile t in tiles)
+            {
+                int x = (int)t.position.X;
+                int y = (int)t.position.Y;
+                tileCollection.Add(new DrawData(Recellection.textureMap.GetTexture(t.GetTerrainType().GetEnum()), new Rectangle(x * Globals.TILE_SIZE, y * Globals.TILE_SIZE, Globals.TILE_SIZE, Globals.TILE_SIZE)));
+            }
+            myLogger.Info("Tiles done..");
+
         }
 
         /// <summary>
@@ -73,29 +88,16 @@ namespace Recellection.Code.Views
             throw new NotImplementedException();
         }
 
-        #region IDrawable Members
-        
         public List<DrawData> GetDrawData(ContentManager content)
         {
             List<DrawData> ret = new List<DrawData>();
+            ret.AddRange(tileCollection);
 
-            myLogger.Info("Getting tiles from World.map.");
-            // First, add all tiles from the map:
-            Tile[,] tiles = this.Map.map;
-            myLogger.Info("Got tiles.");
+            // Do stuff:
 
-            myLogger.Info("Iterating over tiles.");
-            foreach (Tile t in tiles)
-            {
-                int x = (int) t.position.X;
-                int y = (int) t.position.Y;
-                ret.Add(new DrawData(Recellection.textureMap.GetTexture(t.GetTerrainType().GetEnum()),new Rectangle(x*Globals.TILE_SIZE, y*Globals.TILE_SIZE, Globals.TILE_SIZE, Globals.TILE_SIZE)));
-            }
-            myLogger.Info("Tiles done..");
+
 
             return ret;
         }
-
-        #endregion
     }
 }

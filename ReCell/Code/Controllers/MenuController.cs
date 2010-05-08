@@ -61,8 +61,12 @@ namespace Recellection.Code.Controllers
 		/// </summary>
 		public static void UnloadMenu()
 		{
-            tobiiController.UnloadMenu(menuModel.Pop());			
-			tobiiController.LoadMenu(menuModel.Peek());
+            tobiiController.UnloadMenu(menuModel.Pop());
+            
+            if (menuModel.Peek() != null)
+            {			
+				tobiiController.LoadMenu(menuModel.Peek());
+			}
 		}
 
 		/// <summary>
@@ -72,6 +76,8 @@ namespace Recellection.Code.Controllers
 		public static MenuIcon GetInput()
 		{
 			GUIRegion activated = tobiiController.GetActivatedRegion();
+			tobiiController.UnloadMenu(menuModel.Peek());
+			
 			List<MenuIcon> options = menuModel.Peek().GetIcons();
 			foreach(MenuIcon mi in options)
 			{
