@@ -41,13 +41,8 @@ namespace Recellection
             foreach (DrawData d in drawData)
             {
 				logger.Trace("Drawing " + d + " at rectangle (" + d.TargetRectangle + ")");
-				
-				Color c = Color.White;
-				
-				if (d.Opacity < 1.0f)
-				{
-					c = new Color(255, 255, 255, d.Opacity*255);
-				}
+
+				Color c = new Color(255, 255, 255, d.Opacity);
 				
                 spriteBatch.Draw(d.Texture, 
 					d.TargetRectangle,

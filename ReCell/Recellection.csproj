@@ -131,7 +131,7 @@
     <Compile Include="Code\Main\GraphicsRenderer.cs" />
     <Compile Include="Code\Main\Initializer.cs" />
     <Compile Include="Code\Main\Program.cs" />
-    <Compile Include="Code\Main\Recellection.cs" />
+    <Compile Include="Code\Models\Recellection.cs" />
     <Compile Include="Code\Models\AggressiveBuilding.cs" />
     <Compile Include="Code\Models\BarrierBuilding.cs" />
     <Compile Include="Code\Models\BaseBuilding.cs" />
