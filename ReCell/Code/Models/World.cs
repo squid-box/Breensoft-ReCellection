@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Windows;
 using Recellection.Code.Utility.Events;
+using Recellection.Code.Utility.Logger;
 
 namespace Recellection.Code.Models
 {
@@ -13,6 +14,7 @@ namespace Recellection.Code.Models
     /// </summary>
     public class World : IModel
     {
+        public Logger myLogger;
 
         # region Inner Class Map
         /// <summary>
@@ -35,6 +37,7 @@ namespace Recellection.Code.Models
             /// <param name="map">The matrix of tiles that will form the map</param>
             public Map(Tile[,] map)
             {
+                
                 this.map = map;
                 this.Rows = map.GetLength(0);
                 this.Cols = map.GetLength(1);
@@ -111,6 +114,7 @@ namespace Recellection.Code.Models
         /// <param name="cols">Number of columns in the map of the world</param>
         public World(Tile[,] map, int seed)
         {
+            myLogger = LoggerFactory.GetLogger();
             players = new List<Player>();
             this.seed = seed;
             SetMap(map);
