@@ -25,7 +25,7 @@ namespace Recellection.Code.Models
         public void init()
         {
             t1 = new Tile(0,0);
-            t2 = new Tile(1,1,Globals.TerrainTypes.Slow);
+            t2 = new Tile(1, 1, Globals.TextureTypes.Slow);
             p = new Player();
             u1 = new Unit(p, Vector2.Zero);
             u2 = new Unit(p, Vector2.Zero);
@@ -38,10 +38,10 @@ namespace Recellection.Code.Models
         [Test]
         public void CheckType()
         {
-            Assert.AreEqual(Globals.TerrainTypes.Membrane, t1.GetTerrainType().GetEnum());
-            Assert.AreEqual(Globals.TerrainTypes.Slow, t2.GetTerrainType().GetEnum());
+            Assert.AreEqual(Globals.TextureTypes.Membrane, t1.GetTerrainType().GetEnum());
+            Assert.AreEqual(Globals.TextureTypes.Slow, t2.GetTerrainType().GetEnum());
 
-            t1.ChangeTerrainType(Globals.TerrainTypes.Mucus);
+            t1.ChangeTerrainType(Globals.TextureTypes.Mucus);
 
             Assert.AreEqual(Globals.TerrainTypes.Mucus, t1.GetTerrainType().GetEnum());
         }
