@@ -21,8 +21,8 @@ namespace Recellection
 		private int curFrame = 0;
 		public int CurrentFrame { get { return curFrame; } }
 		
-		private float alpha = 1.0f;
-		public float Opacity { get { return  alpha; } set { alpha = value; } }
+		private byte alpha = 255;
+		public byte Opacity { get { return alpha; } set { alpha = value; } }
 		
 		/// <summary>
 		/// A Wrapper class that describes a drawable object for the Graphics Renderer.
@@ -42,7 +42,7 @@ namespace Recellection
 		/// </summary>
 		/// <param name="texture">The texture to draw.</param>
 		/// <param name="targetRectangle">Where to draw the texture.</param>
-		public DrawData(Texture2D texture, Rectangle rect, float opacity)
+		public DrawData(Texture2D texture, Rectangle rect, byte opacity)
 		{
 			tex = texture;
 			targetRectangle = rect;

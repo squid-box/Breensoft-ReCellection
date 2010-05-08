@@ -20,13 +20,11 @@ namespace Recellection.Code.Views
     public sealed class SplashView : IRenderable
     {
 
-        int x = 150;
-        int y = 150;
-        int width = 400;
-        int height = 334;
-        String splashFile = "Graphics/logo";
-        String background = "Graphics/white";
-
+		DrawData back;
+		DrawData front;
+		
+		List<DrawData> drawData;
+		
         static readonly object padlock = new object(); 
         //No idea how the padlock works but I'm not one to argue with code that works.
 
@@ -35,15 +33,19 @@ namespace Recellection.Code.Views
         /// Instantiates a SplashView with the default Breensoft logo
         /// </summary>
         public SplashView()
-        {
-        }
-        /// <summary>
-        /// Instantiates a SplashView using a given logo
-        /// </summary>
-        /// <param name="fileName"></param>
-        public SplashView(String fileName)
-        {
-            splashFile = fileName;
+		{
+			Texture2D bg = Recellection.textureMap.GetTexture(Globals.TextureTypes.white);
+			Texture2D tex = Recellection.textureMap.GetTexture(Globals.TextureTypes.logo);
+
+			back = new DrawData(bg, new Rectangle(0, 0, Recellection.viewPort.Width, Recellection.viewPort.Height));
+
+			int x = Recellection.viewPort.Width / 2 - tex.Width / 2;
+			int y = Recellection.viewPort.Height / 2 - tex.Height / 2;
+			front = new DrawData(tex, new Rectangle(x, y, tex.Width, tex.Height), 0);
+
+			drawData = new List<DrawData>();
+			drawData.Add(back);
+			drawData.Add(front);
         }
 
         /// <summary>
@@ -53,18 +55,9 @@ namespace Recellection.Code.Views
         /// <returns></returns>
         public List<DrawData> GetDrawData(ContentManager content)
         {
-
-            Texture2D bg = Recellection.textureMap.GetTexture(Globals.TextureTypes.white);
-            Texture2D tex = Recellection.textureMap.GetTexture(Globals.TextureTypes.logo);
-            DrawData c = new DrawData(bg, new Rectangle(0, 0, Recellection.viewPort.Width, Recellection.viewPort.Height));
-            DrawData d = new DrawData(tex, new Rectangle(x, y, x + width, y + height));
-
-
-            List<DrawData> ret = new List<DrawData>();
-            ret.Add(c);
-            ret.Add(d);
-
-            return ret;
+			front.Opacity = (byte)Math.Min(front.Opacity + 5, 255);
+			
+            return drawData;
         }
     }
 }
