@@ -6,6 +6,7 @@ using Recellection.Code.Models;
 using Recellection.Code.Utility.Events;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework;
+using Recellection.Code.Utility.Logger;
 
 namespace Recellection.Code.Views
 {
@@ -17,6 +18,7 @@ namespace Recellection.Code.Views
     /// </summary>
     class WorldView : IRenderable
     {
+        public Logger myLogger;
         /// <summary>
         /// The player whose view of the world this is.
         /// </summary>
@@ -34,6 +36,10 @@ namespace Recellection.Code.Views
             this.Player = player;
             world.MapEvent += OnMapEvent;
             world.GetMap().TileEvent += OnTileEvent;
+            myLogger = LoggerFactory.GetLogger();
+            myLogger.SetTarget(Console.Out);
+            myLogger.Info("Created a WorldView.");
+            this.Map = world.map;
         }
 
         /// <summary>
@@ -72,17 +78,21 @@ namespace Recellection.Code.Views
         public List<DrawData> GetDrawData(ContentManager content)
         {
             List<DrawData> ret = new List<DrawData>();
-            
+
+            myLogger.Info("Getting tiles from World.map.");
             // First, add all tiles from the map:
             Tile[,] tiles = this.Map.map;
+            myLogger.Info("Got tiles.");
 
+            myLogger.Info("Iterating over tiles.");
             foreach (Tile t in tiles)
             {
                 int x = (int) t.position.X;
                 int y = (int) t.position.Y;
-                ret.Add(new DrawData(Recellection.textureMap.GetTexture(t.GetTerrainType().GetEnum()),new Rectangle(x, y, Globals.TILE_SIZE, Globals.TILE_SIZE)));
+                ret.Add(new DrawData(Recellection.textureMap.GetTexture(t.GetTerrainType().GetEnum()),new Rectangle(x*Globals.TILE_SIZE, y*Globals.TILE_SIZE, Globals.TILE_SIZE, Globals.TILE_SIZE)));
             }
-            
+            myLogger.Info("Tiles done..");
+
             return ret;
         }
 
