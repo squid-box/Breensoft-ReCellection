@@ -6,6 +6,8 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Input;
+using Recellection.Code.Models;
+using Recellection.Code.Controllers;
 
 namespace Recellection.Code.Views
 {
@@ -43,6 +45,13 @@ namespace Recellection.Code.Views
                 {
                     angle = angle - 360;
                 }
+            }
+
+            if (Keyboard.GetState().IsKeyDown(Keys.X))
+            {
+                World w = WorldGenerator.GenerateWorld(1);
+
+                GraphicsRenderer.currentState = new WorldView(w, new Player(PlayerColour.BLUE, "Tester"));
             }
             
             List<DrawData> ret = new List<DrawData>();
