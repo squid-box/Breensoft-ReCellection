@@ -5,6 +5,7 @@ using System.Text;
 using Recellection.Code.Models;
 using Recellection.Code.Utility.Events;
 using Microsoft.Xna.Framework.Content;
+using Microsoft.Xna.Framework;
 
 namespace Recellection.Code.Views
 {
@@ -70,7 +71,19 @@ namespace Recellection.Code.Views
         
         public List<DrawData> GetDrawData(ContentManager content)
         {
-            throw new NotImplementedException();
+            List<DrawData> ret = new List<DrawData>();
+            
+            // First, add all tiles from the map:
+            Tile[,] tiles = this.Map.map;
+
+            foreach (Tile t in tiles)
+            {
+                int x = (int) t.position.X;
+                int y = (int) t.position.Y;
+                ret.Add(new DrawData(Recellection.textureMap.GetTexture(t.GetTerrainType().GetEnum()),new Rectangle(x, y, Globals.TILE_SIZE, Globals.TILE_SIZE)));
+            }
+            
+            return ret;
         }
 
         #endregion

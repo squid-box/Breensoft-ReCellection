@@ -9,7 +9,7 @@ namespace Recellection
 {
     public sealed class Globals
     {
-        public static GameStates gameState;
+        public const int TILE_SIZE = 128;
 
         public enum Songs
         {

@@ -7,6 +7,8 @@ using Microsoft.Xna.Framework.Graphics;
 using Recellection.Code.Views;
 using Microsoft.Xna.Framework.Content;
 using Recellection.Code.Utility.Logger;
+using Recellection.Code.Models;
+using Recellection.Code.Controllers;
 
 
 namespace Recellection
@@ -14,7 +16,8 @@ namespace Recellection
     public class GraphicsRenderer
 	{
 		private static Logger logger = LoggerFactory.GetLogger();
-		public static IRenderable currentState = new TestView();
+
+        public static IRenderable currentState = new TestView();
 		
         public GraphicsRenderer()
         {
