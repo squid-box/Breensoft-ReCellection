@@ -18,7 +18,7 @@ namespace Recellection
 		
         public GraphicsRenderer()
         {
-
+			logger.SetThreshold(LogLevel.INFO);
         }
 
         public void Draw(ContentManager content, SpriteBatch spriteBatch)
@@ -32,6 +32,8 @@ namespace Recellection
             spriteBatch.Begin(SpriteBlendMode.AlphaBlend, SpriteSortMode.Immediate, SaveStateMode.None);
             foreach (DrawData d in drawData)
             {
+				logger.Trace("Drawing "+d+" at rectangle ("+(int)d.Position.X+", "+(int)d.Position.Y+", "+((int)d.Position.X+d.SpriteWidth)+", "+((int)d.Position.Y+d.SpriteHeight)+")");
+				
                 spriteBatch.Draw(d.Texture, 
 					new Rectangle((int)d.Position.X, (int)d.Position.Y, (int)d.Position.X+d.SpriteWidth, (int)d.Position.Y+d.SpriteHeight),
 					null,
