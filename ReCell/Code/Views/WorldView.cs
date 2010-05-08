@@ -37,7 +37,9 @@ namespace Recellection.Code.Views
             world.MapEvent += OnMapEvent;
             world.GetMap().TileEvent += OnTileEvent;
             myLogger = LoggerFactory.GetLogger();
+            myLogger.SetTarget(Console.Out);
             myLogger.Info("Created a WorldView.");
+            this.Map = world.map;
         }
 
         /// <summary>
@@ -87,10 +89,10 @@ namespace Recellection.Code.Views
             {
                 int x = (int) t.position.X;
                 int y = (int) t.position.Y;
-                ret.Add(new DrawData(Recellection.textureMap.GetTexture(t.GetTerrainType().GetEnum()),new Rectangle(x, y, Globals.TILE_SIZE, Globals.TILE_SIZE)));
-                myLogger.Info("Tile done..");
+                ret.Add(new DrawData(Recellection.textureMap.GetTexture(t.GetTerrainType().GetEnum()),new Rectangle(x*Globals.TILE_SIZE, y*Globals.TILE_SIZE, Globals.TILE_SIZE, Globals.TILE_SIZE)));
             }
-            
+            myLogger.Info("Tiles done..");
+
             return ret;
         }
 
