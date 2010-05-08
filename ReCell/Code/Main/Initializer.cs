@@ -30,7 +30,8 @@ namespace Recellection.Code.Main
             ShowSplashScreen();
 
 			Cue backgroundSound = Sounds.Instance.LoadSound("Menu");
-						
+			
+			#region Show main menu. TODO: Make a real menu.
 			MenuIcon yes = new MenuIcon("Yes", null);
 			MenuIcon no = new MenuIcon("No", null);
 			
@@ -47,7 +48,7 @@ namespace Recellection.Code.Main
 			new MenuController(TobiiController.GetInstance(this.windowHandle), mainMenu);
 
 			Recellection.CurrentState = view;
-			
+			#endregion
             logger.Info("Waiting for Tobii input...");
 			MenuIcon response = MenuController.GetInput();
             
@@ -81,9 +82,6 @@ namespace Recellection.Code.Main
             }
 
            // Environment.Exit(0);
-			
-			// TODO: Tell the graphic renderer what is the current view
-			// TODO: Spawn main menu, tell it to run.
 		}
 
 
