@@ -17,13 +17,10 @@ namespace Recellection.Code.Views
      * Author: Lukas Mattsson
      */
 
-    public sealed class SplashView : IRenderable
+    public sealed class SplashView : IView
     {
-
-		DrawData back;
-		DrawData front;
-		
-		List<DrawData> drawData;
+		private Texture2D back;
+		private Texture2D front;
 		
         static readonly object padlock = new object(); 
         //No idea how the padlock works but I'm not one to argue with code that works.
@@ -34,30 +31,19 @@ namespace Recellection.Code.Views
         /// </summary>
         public SplashView()
 		{
-			Texture2D bg = Recellection.textureMap.GetTexture(Globals.TextureTypes.white);
-			Texture2D tex = Recellection.textureMap.GetTexture(Globals.TextureTypes.logo);
-
-			back = new DrawData(bg, new Rectangle(0, 0, Recellection.viewPort.Width, Recellection.viewPort.Height));
-
-			int x = Recellection.viewPort.Width / 2 - tex.Width / 2;
-			int y = Recellection.viewPort.Height / 2 - tex.Height / 2;
-			front = new DrawData(tex, new Rectangle(x, y, tex.Width, tex.Height), 0);
-
-			drawData = new List<DrawData>();
-			drawData.Add(back);
-			drawData.Add(front);
+			back = Recellection.textureMap.GetTexture(Globals.TextureTypes.white);
+			front = Recellection.textureMap.GetTexture(Globals.TextureTypes.logo);
         }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="content"></param>
-        /// <returns></returns>
-        public List<DrawData> GetDrawData(ContentManager content)
+        
+        override public void Draw(SpriteBatch spriteBatch)
         {
-			front.Opacity = (byte)Math.Min(front.Opacity + 5, 255);
-			
-            return drawData;
+			//front.Opacity = (byte)Math.Min(front.Opacity + 5, 255);
+
+			drawTexture(spriteBatch, back, new Rectangle(0, 0, Recellection.viewPort.Width, Recellection.viewPort.Height));
+
+			int x = Recellection.viewPort.Width / 2 - front.Width / 2;
+			int y = Recellection.viewPort.Height / 2 - front.Height / 2;
+			drawTexture(spriteBatch, front, new Rectangle(x, y, front.Width, front.Height));
         }
     }
 }

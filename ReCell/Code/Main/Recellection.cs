@@ -45,8 +45,14 @@ namespace Recellection
         SpriteBatch spriteBatch;
 
 
-        //Graphics
-        GraphicsRenderer graphicsRenderer;
+        // Current state!
+        private static IView currentState;
+        public static IView CurrentState
+        { 
+			get { return currentState; }
+			set { currentState = value; }
+		}
+        
 
         // Python console
         SpriteFont consoleFont;
@@ -59,14 +65,12 @@ namespace Recellection
         KeyboardState lastKBState, kBState;
         MouseState lastMouseState, mouseState;
 
-        public Recellection(GraphicsRenderer gfx)
+        public Recellection()
         {
             tobiiController = TobiiController.GetInstance(this.Window.Handle);
             tobiiController.Init();
             graphics = new GraphicsDeviceManager(this);            
 			Content.RootDirectory = "Content";
-			graphicsRenderer = gfx;
-       
         }
 
         /// <summary>
@@ -78,7 +82,7 @@ namespace Recellection
 
             // Initialize the python console
             console = new PythonInterpreter(this, consoleFont);
-            console.AddGlobal("game", this);
+			console.AddGlobal("game", this);
 
             windowHandle = this.Window.Handle;
             
@@ -124,10 +128,6 @@ namespace Recellection
         protected override void Update(GameTime gameTime)
         {
             HandleDebugInput();
-
-
-            audioPlayer.Update();
-
             base.Update(gameTime);
         }
 
@@ -186,12 +186,14 @@ namespace Recellection
         /// </summary>
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Draw(GameTime gameTime)
-        {
-            graphicsRenderer.Draw(Content, spriteBatch);
+		{
+			spriteBatch.Begin(SpriteBlendMode.AlphaBlend, SpriteSortMode.Immediate, SaveStateMode.None);
+			currentState.Draw(spriteBatch);
+			spriteBatch.End();
             base.Draw(gameTime);
         }
 
-        private void Help()
+        public void Help()
         {
             console.Console.WriteLine("M: Toggle music\nI: Turn SFX off\nO: Turn SFX on\nA: Acid sound\nB: Explosion sound\nF1: Toggle Console\nF: \"full\" screen");
         }

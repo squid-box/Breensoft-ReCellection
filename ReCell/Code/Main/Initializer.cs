@@ -15,13 +15,11 @@ namespace Recellection.Code.Main
 	{
 		private static Logger logger = LoggerFactory.GetLogger();
 
-		private GraphicsRenderer graphicRendering;
         private IntPtr windowHandle;
 		
-		public Initializer(GraphicsRenderer gfx, IntPtr windowHandle)
+		public Initializer(IntPtr windowHandle)
 		{
 			logger.Debug("Initializer was instantiated.");
-			this.graphicRendering = gfx;
             this.windowHandle = windowHandle;
 		}
 		
@@ -48,7 +46,7 @@ namespace Recellection.Code.Main
 			// Just to make sure everything is in there...
 			new MenuController(TobiiController.GetInstance(this.windowHandle), mainMenu);
 
-			GraphicsRenderer.currentState = view;
+			Recellection.CurrentState = view;
 			
             logger.Info("Waiting for Tobii input...");
 			MenuIcon response = MenuController.GetInput();
@@ -66,7 +64,7 @@ namespace Recellection.Code.Main
 				
 				// START THE GAME ALREADY!
 				World w = WorldGenerator.GenerateWorld(1);
-				GraphicsRenderer.currentState = new WorldView(w, new Player(PlayerColour.BLUE, "Tester"));
+				Recellection.CurrentState = new WorldView(w, new Player(PlayerColour.BLUE, "Tester"));
 				// Call blocking state? :S
 				while(true)
 				{
@@ -100,7 +98,7 @@ namespace Recellection.Code.Main
         {
             SplashView splash = new SplashView();
             
-            GraphicsRenderer.currentState = splash;
+            Recellection.CurrentState = splash;
             
 			Cue intro = Sounds.Instance.LoadSound("logoIntro");
 			intro.Play();
