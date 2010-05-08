@@ -26,13 +26,18 @@ namespace Recellection
 			// This is the bridge between XNA and the logic
 			GraphicsRenderer graphicRendering = new GraphicsRenderer();
 
-			Recellection game = new Recellection(graphicRendering);
-			Initializer logic = new Initializer(graphicRendering, game.Window.Handle);
+            Recellection game = new Recellection(graphicRendering);
+            Initializer logic = new Initializer(graphicRendering, game.Window.Handle);
+            Thread gameLogic = new Thread(logic.Run);
 
-			Thread gameLogic = new Thread(logic.Run);
+            game.LogicThread = gameLogic;
 
-			gameLogic.Start();
+			Recellection.textureMap = new SpriteTextureMap(game.Content);
+
 			game.Run();
+			gameLogic.Abort();
+			Environment.Exit(0);
+			// MOAR EXITS! MOAR!!! DEATH TO ALL APPLICATION!
         }
     }
 }

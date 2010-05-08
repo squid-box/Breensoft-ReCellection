@@ -12,7 +12,9 @@ using Microsoft.Xna.Framework.Net;
 using Microsoft.Xna.Framework.Storage;
 using Recellection.Code.Utility.Console;
 using Recellection.Code.Utility.Logger;
+using Recellection.Code.Views;
 using Recellection.Code.Models;
+using System.Threading;
 
 /*
  * BREENSOFT GAME OMG OMG OMG
@@ -36,6 +38,7 @@ namespace Recellection
         public static SpriteFont screenFont;
         public static Color breen = new Color(new Vector3(0.4f, 0.3f, 0.1f));
         public static GraphicsDeviceManager graphics;
+        public Thread LogicThread { get; set; }
 
         TobiiController tobiiController;
         SpriteBatch spriteBatch;
@@ -72,13 +75,17 @@ namespace Recellection
         {
             base.Initialize();
 
-            Globals.gameState = Globals.GameStates.Game;
-
             // Initialize the python console
             console = new PythonInterpreter(this, consoleFont);
             console.AddGlobal("game", this);
 
             windowHandle = this.Window.Handle;
+            LogicThread.Start();
+        }
+        
+        public void lawl(string sound)
+		{
+			audioPlayer.PlaySound(sound);
         }
 
         /// <summary>
@@ -157,6 +164,7 @@ namespace Recellection
             if (kBState.IsKeyDown(Keys.M) && lastKBState.IsKeyUp(Keys.M))
             {
                 logger.Debug("Toggling music mute.");
+                GraphicsRenderer.currentState = new TestView();
                 audioPlayer.ToggleMusicMute();
             }
 
@@ -179,14 +187,7 @@ namespace Recellection
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Draw(GameTime gameTime)
         {
-            List<DrawData> objectsToDraw = new List<DrawData>();
-
-            Texture2D tex = Content.Load<Texture2D>("Graphics/Terrains/art");
-            DrawData d = new DrawData(new Vector2(50, 50), tex, 0, 0, 128);
-
-            objectsToDraw.Add(d);
-
-            graphicsRenderer.Draw(spriteBatch, objectsToDraw);
+            graphicsRenderer.Draw(Content, spriteBatch);
 
             PrintHelp();
 
@@ -199,6 +200,5 @@ namespace Recellection
             spriteBatch.DrawString(screenFont, "M: Toggle music\nI: Turn SFX off\nO: Turn SFX on\nA: Acid sound\nB: Explosion sound\nF1: Toggle Console", Vector2.Zero, Color.White);
             spriteBatch.End();
         }
-
     }
 }

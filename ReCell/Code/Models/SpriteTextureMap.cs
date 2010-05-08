@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -24,10 +24,12 @@ namespace Recellection.Code.Models
         public const String IMAGE_FORMAT = "png";
 
         //The map which each of the texture image file will be placed
-        public const String TEXTURE_FOLDER = "Textures";
+        public const String TEXTURE_FOLDER = "Graphics";
 
         //The array containing each of the Texture2D.
         private Texture2D[] textures;
+
+        private ContentManager contentHandle;
 
         /// <summary>
         /// Constructor for the SpriteTextureMap
@@ -36,6 +38,10 @@ namespace Recellection.Code.Models
         /// SpriteTextureMap will use to load the images</param>
         public SpriteTextureMap(ContentManager content)
         {
+
+            this.contentHandle = content;
+
+            /*
             textures = new Texture2D[
                 Enum.GetValues(typeof(Globals.TextureTypes)).Length];
 
@@ -46,13 +52,21 @@ namespace Recellection.Code.Models
 
             for(int i = 0; i < textures.Length; i++) 
             {
-                //For each of the enum name load the same texture image file.
-                textures[i] =
-                    content.Load<Texture2D>(
+                try
+                {
+                    //For each of the enum name load the same texture image file.
+                    textures[i] =
+                        content.Load<Texture2D>(
 
-                    TEXTURE_FOLDER+"/"+textureNames[i] + "." + IMAGE_FORMAT);
+                        TEXTURE_FOLDER + "/" + textureNames[i] + "." + IMAGE_FORMAT);
+                }
+                catch (ContentLoadException e)
+                {
+                    
+                    throw new ContentLoadException("You need to add the graphics for: "+textureNames[i]);
+                }
 
-            }
+            }*/
 
         }
         
@@ -65,7 +79,7 @@ namespace Recellection.Code.Models
         /// <returns>The requested Texture2D</returns>
         public Texture2D GetTexture(Globals.TextureTypes texture)
         {
-            return textures[(int)texture];
+            return contentHandle.Load<Texture2D>("Graphics/"+texture);
         }
     }
 }

@@ -126,6 +126,7 @@
     <Compile Include="Code\Controllers\VictorTurner.cs" />
     <Compile Include="Code\Controllers\WorldController.cs" />
     <Compile Include="Code\Controllers\WorldGenerator.cs" />
+    <Compile Include="Code\Main\GameInitializer.cs" />
     <Compile Include="Code\Main\Globals.cs" />
     <Compile Include="Code\Main\GraphicsRenderer.cs" />
     <Compile Include="Code\Main\Initializer.cs" />
@@ -168,7 +169,9 @@
     <Compile Include="Code\Utility\Logger\LogLevel.cs" />
     <Compile Include="Code\Views\AIView.cs" />
     <Compile Include="Code\Views\IRenderable.cs" />
+    <Compile Include="Code\Views\LoadView.cs" />
     <Compile Include="Code\Views\MenuView.cs" />
+    <Compile Include="Code\Views\TestView.cs" />
     <Compile Include="Code\Views\WorldView.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -221,7 +224,7 @@
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\XNA Game Studio\Microsoft.Xna.GameStudio.targets" />
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
   </Target>
