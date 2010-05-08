@@ -31,8 +31,9 @@ namespace Recellection.Code.Main
 
 
             //Glader splashscreen start
-            SplashView splash = SplashView.Instance;
+            SplashView splash = new SplashView();
             GraphicsRenderer.currentState = splash; 
+            Sounds.Instance.LoadSound("logoIntro").Play();
             int pauseTime = 2000;
             System.Threading.Thread.Sleep(pauseTime);
             //Glader splashscreen end
