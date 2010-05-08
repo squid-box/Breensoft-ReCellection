@@ -15,7 +15,6 @@ namespace Recellection.Code.Controllers
          * Variables
          */
         private AIView m_view;
-        private World m_world;
         private GraphController m_graph;
         private List<Player> m_opponents;
         private List<Vector2> m_interrestPoints;
@@ -30,11 +29,9 @@ namespace Recellection.Code.Controllers
         /// </summary>
         /// <param name="opponents"></param>
         /// <param name="view"></param>
-        /// <param name="world"></param>
         /// <param name="graph"></param>
-        public AIPlayer(List<Player> opponents, AIView view, World world, GraphController graph){
+        public AIPlayer(List<Player> opponents, AIView view, GraphController graph){
             m_view = view;
-            m_world = world;
             m_graph = graph;
             m_opponents = opponents;
             m_interrestPoints = new List<Vector2>();
@@ -248,7 +245,7 @@ namespace Recellection.Code.Controllers
         /// <param name="buildingType"></param>
         private void IssueBuildOrder(Vector2 point, Building baseBuilding, Globals.BuildingTypes buildingType)
         {
-            BuildingController.AddBuilding(buildingType, baseBuilding, point, m_world);
+            BuildingController.AddBuilding(buildingType, baseBuilding, point, m_view.world);
         }
 
     }

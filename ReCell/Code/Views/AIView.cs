@@ -16,9 +16,9 @@ namespace Recellection.Code
     class AIView
     {
         private Player ai;
-        private World world;
+        internal World world;
         public List<Building> myBuildings { get; internal set; }
-        public Building baseBuilding;
+        internal Building baseBuilding;
 
 
         /// <summary>
