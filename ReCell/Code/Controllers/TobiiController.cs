@@ -104,11 +104,27 @@ namespace Recellection
         public void LoadMenu(Menu menu)
         {
             //Interaction.Regions.Clear();    // This seems to break, at least on my laptop.
+            //Interaction.
             foreach(GUIRegion region in menu.GetRegions())
             {
                 AddRegion(region);
             }
 
+        }
+
+        /// <summary>
+        /// Unloads a Menu, preferably only provide this
+        /// function with the menu that is currently loaded
+        /// </summary>
+        /// <param name="menu"></param>
+        [Obsolete("not tested yet")]
+        public void UnloadMenu(Menu menu)
+        {
+            
+            foreach (GUIRegion region in menu.GetRegions())
+            {
+                Interaction.RemoveRegion(region.RegionIdentifier);
+            }
         }
 
         /// <summary>
