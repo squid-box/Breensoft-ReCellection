@@ -66,7 +66,7 @@ namespace Recellection.Code.Main
                 }
             }
 
-            Environment.Exit(0);
+           // Environment.Exit(0);
 			
 			// TODO: Tell the graphic renderer what is the current view
 			// TODO: Spawn main menu, tell it to run.
