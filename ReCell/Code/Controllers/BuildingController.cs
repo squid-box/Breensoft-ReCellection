@@ -3,18 +3,21 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Recellection.Code.Models;
+using Recellection.Code.Utility.Logger;
 using Microsoft.Xna.Framework;
 
 namespace Recellection.Code.Controllers
 {
     class BuildingController
     {
+        private static Logger logger = LoggerFactory.GetLogger();
         /// <summary>
         /// Let all Aggressive Buildings for the player Acquire Target(s)
         /// </summary>
         /// <param name="player">The Player</param>
         public static void AggressiveBuildingAct(Player player)
         {
+            logger.Trace("Searching for aggressive buildings");
             foreach (Graph g in player.GetGraphs())
             {
                 foreach (Building b in g.GetBuildings())
@@ -36,6 +39,7 @@ namespace Recellection.Code.Controllers
         /// <param name="b"></param>
         private static void AttackTargets(AggressiveBuilding b)
         {
+            logger.Trace("Attacking targets around a aggressive building at x: "+b.coordinates.X+" y: "+b.coordinates.Y );
             foreach (Unit u in b.currentTargets)
             {
                 //Show kill graphix and make sound.
@@ -52,6 +56,7 @@ namespace Recellection.Code.Controllers
         /// <param name="player"></param>
         public static void ConstructBuilding(Player player)
         {
+            logger.Trace("Constructing a building for a player");
             //TODO Somehow present a menu to the player, and then 
             //use the information to ADD (not the document) the building.
         }
@@ -62,6 +67,7 @@ namespace Recellection.Code.Controllers
         /// <param name="player"></param>
         public static void RazeBuilding(Player player)
         {
+            logger.Trace("Razing a building for a player");
 
         }
 
@@ -81,8 +87,10 @@ namespace Recellection.Code.Controllers
             //The Base building is handled in another way due to it's nature.
             if (buildingType == Globals.BuildingTypes.Base)
             {
+                logger.Trace("Adding a Base Building and also constructing a new graph");
                 GraphController.Instance.AddBaseBuilding(new BaseBuilding("Base Buidling",
-                (int)targetCoordinate.X, (int)targetCoordinate.Y, sourceBuilding.owner,controlZone));
+                (int)targetCoordinate.X, (int)targetCoordinate.Y, sourceBuilding.owner,controlZone),
+                sourceBuilding);
             }
             else
             {
@@ -92,16 +100,19 @@ namespace Recellection.Code.Controllers
                 switch (buildingType)
                 {
                     case Globals.BuildingTypes.Aggressive:
+                        logger.Trace("Building a new Aggressive building");
                         newBuilding = new AggressiveBuilding("Aggresive Building",
                             (int)targetCoordinate.X, (int)targetCoordinate.Y, sourceBuilding.owner,
                             GraphController.Instance.GetGraph(sourceBuilding).baseBuilding, controlZone);
                         break;
                     case Globals.BuildingTypes.Barrier:
+                        logger.Trace("Building a new Barrier building");
                         newBuilding = new BarrierBuilding("Barrier Building",
                             (int)targetCoordinate.X, (int)targetCoordinate.Y, sourceBuilding.owner,
                             GraphController.Instance.GetGraph(sourceBuilding).baseBuilding, controlZone);
                         break;
                     case Globals.BuildingTypes.Resource:
+                        logger.Trace("Building a new Resource building");
                         newBuilding = new ResourceBuilding("Resource Building",
                             (int)targetCoordinate.X, (int)targetCoordinate.Y, sourceBuilding.owner,
                             GraphController.Instance.GetGraph(sourceBuilding).baseBuilding, controlZone);
