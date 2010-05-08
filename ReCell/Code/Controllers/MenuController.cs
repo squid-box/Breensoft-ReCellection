@@ -47,6 +47,11 @@ namespace Recellection.Code.Controllers
 		/// <param name="m">The menu to load.</param>
 		public static void LoadMenu(Menu m)
 		{
+            //for the case where there is nothing on the stack yet
+            if (menuModel.Peek() != null)
+            {
+                tobiiController.UnloadMenu(menuModel.Peek());
+            }
 			menuModel.Push(m);
 			tobiiController.LoadMenu(m);
 		}
@@ -56,7 +61,7 @@ namespace Recellection.Code.Controllers
 		/// </summary>
 		public static void UnloadMenu()
 		{
-			menuModel.Pop();
+            tobiiController.UnloadMenu(menuModel.Pop());			
 			tobiiController.LoadMenu(menuModel.Peek());
 		}
 
