@@ -17,7 +17,7 @@ namespace Recellection
 	{
 		private static Logger logger = LoggerFactory.GetLogger();
 
-        public static IRenderable currentState = new TestView();
+        public static IRenderable currentState = null;
 		
         public GraphicsRenderer()
         {
@@ -26,11 +26,15 @@ namespace Recellection
 
         public void Draw(ContentManager content, SpriteBatch spriteBatch)
         {
+			if( currentState == null)
+			{
+				logger.Warn("No state to render!");
+				return;
+			}
+			
 			List<DrawData> drawData = GraphicsRenderer.currentState.GetDrawData(content);
             Recellection.graphics.GraphicsDevice.SetRenderTarget(0, null);
             Recellection.graphics.GraphicsDevice.Clear(Recellection.breen);
-			
-			//logger.Info("Viewport size: "+Recellection.viewPort.Width+"x"+Recellection.viewPort.Height);
 			
             spriteBatch.Begin(SpriteBlendMode.AlphaBlend, SpriteSortMode.Immediate, SaveStateMode.None);
             foreach (DrawData d in drawData)
