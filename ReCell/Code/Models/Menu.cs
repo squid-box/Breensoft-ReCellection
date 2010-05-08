@@ -26,7 +26,7 @@ namespace Recellection
 					CreatePrompt(icons);
 					break;
 				case Globals.MenuLayout.NineMatrix:
-                    CreateNByMMatrix(3, 3, icons, Globals.TextureTypes.ThreeByThreeMenu);
+                    CreateJapaneseFlagLayout(icons);
 					break;
 				case Globals.MenuLayout.FourMatrix:
                     CreateSwitzerlandFlagLayout(icons);
@@ -66,11 +66,16 @@ namespace Recellection
 				throw new ArgumentException("Wrong amount of icons in menu");				
 			}
 			menuPic = Recellection.textureMap.GetTexture(Globals.TextureTypes.PromptMenu);
+
 			icons[0].setRegion(new GUIRegion(Recellection.windowHandle, 
                 new System.Windows.Rect(0, 0, Recellection.viewPort.Width * 2 / 5, Recellection.viewPort.Height)));
+            icons[0].setRectangle(
+                new Microsoft.Xna.Framework.Rectangle(0, 0, Recellection.viewPort.Width * 2 / 5, Recellection.viewPort.Height));
 
 			icons[1].setRegion(new GUIRegion(Recellection.windowHandle, 
                 new System.Windows.Rect(Recellection.viewPort.Width * 3 / 5, 0, Recellection.viewPort.Width, Recellection.viewPort.Height)));
+            icons[1].setRectangle(
+                new Microsoft.Xna.Framework.Rectangle(Recellection.viewPort.Width * 3 / 5, 0, Recellection.viewPort.Width, Recellection.viewPort.Height));
 
 			this.icons = icons;
 		}
@@ -94,6 +99,8 @@ namespace Recellection
             menuPic = Recellection.textureMap.GetTexture(menuTexture);
             for(int i = 0; i < cols*rows; i++)
             {
+                icons[i].setRectangle(new Microsoft.Xna.Framework.Rectangle((i % cols) * iconWidth, (i / rows) * iconHeight, iconWidth, iconHeight));
+
                 icons[i].setRegion(new GUIRegion(Recellection.windowHandle,
                     new System.Windows.Rect((i%cols)*iconWidth,(i/rows)*iconHeight,iconWidth,iconHeight)));
             }
@@ -102,15 +109,23 @@ namespace Recellection
 
         private void CreateSwitzerlandFlagLayout(List<MenuIcon> icons)
         {
+            if (icons.Count != 4)
+            {
+                throw new ArgumentException("Wrong amount of icons in menu");
+            }
+
             int windowWidth = Recellection.viewPort.Width;
             int windowHeight = Recellection.viewPort.Height;
 
-            menuPic = Recellection.textureMap.GetTexture(Globals.TextureTypes.TwoByTwoMenu);
+            menuPic = Recellection.textureMap.GetTexture(Globals.TextureTypes.TwoByTwo);
 
             for (int i = 0; i < 4; i++)
             {
+                icons[i].setRectangle(
+                    new Microsoft.Xna.Framework.Rectangle((i % 2) * (windowWidth * 3 / 5), (i / 2) * (windowHeight * 3 / 5), (windowWidth * 2 / 5), (windowHeight * 2 / 5)));
+
                 icons[i].setRegion(new GUIRegion(Recellection.windowHandle,
-                    new System.Windows.Rect((i % 2) * (windowWidth / 3), (i / 2) * (windowHeight / 3), (windowHeight / 3), (windowHeight / 3))));
+                    new System.Windows.Rect((i % 2) * (windowWidth * 3 / 5), (i / 2) * (windowHeight * 3 / 5), (windowWidth * 2 / 5), (windowHeight * 2 / 5))));
             }
             this.icons = icons;
         }
@@ -124,13 +139,16 @@ namespace Recellection
             int iconWidth = (int)(Recellection.viewPort.Width / 3);
             int iconHeight = (int)(Recellection.viewPort.Height / 3);
 
-            menuPic = Recellection.textureMap.GetTexture(Globals.TextureTypes.ThreeByThreeMenu);
+            menuPic = Recellection.textureMap.GetTexture(Globals.TextureTypes.ThreeByThree);
             for (int i = 0; i < 9; i++)
             {
                 if (i == 5)
                 {
                     continue;
                 }
+                icons[i].setRectangle(
+                    new Microsoft.Xna.Framework.Rectangle((i % 3) * iconWidth, (i / 3) * iconHeight, iconWidth, iconHeight));
+
                 icons[i].setRegion(new GUIRegion(Recellection.windowHandle,
                     new System.Windows.Rect((i % 3) * iconWidth, (i / 3) * iconHeight, iconWidth, iconHeight)));
             }
