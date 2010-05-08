@@ -7,6 +7,7 @@ using Recellection.Code.Controllers;
 using Recellection.Code.Models;
 using Microsoft.Xna.Framework.Audio;
 using System.Threading;
+using Recellection.Code.Views;
 
 namespace Recellection.Code.Main
 {
@@ -63,6 +64,7 @@ namespace Recellection.Code.Main
 				{
 					Thread.Sleep(10);
 				}
+                GraphicsRenderer.currentState = new TestView();
             }
             else
             {

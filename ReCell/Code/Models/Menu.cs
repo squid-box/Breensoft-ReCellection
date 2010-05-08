@@ -29,7 +29,7 @@ namespace Recellection
                     CreateNByMMatrix(3, 3, icons, Globals.TextureTypes.ThreeByThreeMenu);
 					break;
 				case Globals.MenuLayout.FourMatrix:
-                    CreateNByMMatrix(2, 2, icons, Globals.TextureTypes.TwoByTwoMenu);
+                    CreateSwitzerlandFlagLayout(icons);
 					break;
 			}
 		}
@@ -66,10 +66,12 @@ namespace Recellection
 				throw new ArgumentException("Wrong amount of icons in menu");				
 			}
 			menuPic = Recellection.textureMap.GetTexture(Globals.TextureTypes.PromptMenu);
-			icons[0] = new MenuIcon("Yes", null);
-			icons[1] = new MenuIcon("No", null);
-			icons[0].setRegion(new GUIRegion(Recellection.windowHandle, new System.Windows.Rect(0, 0, Recellection.viewPort.Width * 2 / 5, Recellection.viewPort.Height)));
-			icons[1].setRegion(new GUIRegion(Recellection.windowHandle, new System.Windows.Rect(Recellection.viewPort.Width * 3 / 5, 0, Recellection.viewPort.Width, Recellection.viewPort.Height)));
+			icons[0].setRegion(new GUIRegion(Recellection.windowHandle, 
+                new System.Windows.Rect(0, 0, Recellection.viewPort.Width * 2 / 5, Recellection.viewPort.Height)));
+
+			icons[1].setRegion(new GUIRegion(Recellection.windowHandle, 
+                new System.Windows.Rect(Recellection.viewPort.Width * 3 / 5, 0, Recellection.viewPort.Width, Recellection.viewPort.Height)));
+
 			this.icons = icons;
 		}
 
@@ -92,10 +94,46 @@ namespace Recellection
             menuPic = Recellection.textureMap.GetTexture(menuTexture);
             for(int i = 0; i < cols*rows; i++)
             {
-                icons[i].setRegion(new GUIRegion(Recellection.windowHandle, 
-                    new System.Windows.Rect((i%cols)*iconWidth,(i/rows)*iconHeight,(1+(i%cols))*iconWidth,(1+(i/rows))*iconHeight)));
+                icons[i].setRegion(new GUIRegion(Recellection.windowHandle,
+                    new System.Windows.Rect((i%cols)*iconWidth,(i/rows)*iconHeight,iconWidth,iconHeight)));
             }
             this.icons = icons;
         }
-	}
+
+        private void CreateSwitzerlandFlagLayout(List<MenuIcon> icons)
+        {
+            int windowWidth = Recellection.viewPort.Width;
+            int windowHeight = Recellection.viewPort.Height;
+
+            menuPic = Recellection.textureMap.GetTexture(Globals.TextureTypes.TwoByTwoMenu);
+
+            for (int i = 0; i < 4; i++)
+            {
+                icons[i].setRegion(new GUIRegion(Recellection.windowHandle,
+                    new System.Windows.Rect((i % 2) * (windowWidth / 3), (i / 2) * (windowHeight / 3), (windowHeight / 3), (windowHeight / 3))));
+            }
+            this.icons = icons;
+        }
+
+        private void CreateJapaneseFlagLayout(List<MenuIcon> icons)
+        {
+            if (icons.Count != 8)
+            {
+                throw new ArgumentException("Wrong amount of icons in menu");
+            }
+            int iconWidth = (int)(Recellection.viewPort.Width / 3);
+            int iconHeight = (int)(Recellection.viewPort.Height / 3);
+
+            menuPic = Recellection.textureMap.GetTexture(Globals.TextureTypes.ThreeByThreeMenu);
+            for (int i = 0; i < 9; i++)
+            {
+                if (i == 5)
+                {
+                    continue;
+                }
+                icons[i].setRegion(new GUIRegion(Recellection.windowHandle,
+                    new System.Windows.Rect((i % 3) * iconWidth, (i / 3) * iconHeight, iconWidth, iconHeight)));
+            }
+        }
+    }
 }
