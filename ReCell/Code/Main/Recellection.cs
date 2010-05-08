@@ -190,13 +190,26 @@ namespace Recellection
             }
             if (kBState.IsKeyDown(Keys.F) && lastKBState.IsKeyUp(Keys.F))
             {
-                Recellection.graphics.PreferredBackBufferWidth = System.Windows.Forms.SystemInformation.PrimaryMonitorSize.Width;
-                Recellection.graphics.PreferredBackBufferHeight = System.Windows.Forms.SystemInformation.PrimaryMonitorSize.Height;
-                Recellection.graphics.ApplyChanges();
                 System.Windows.Forms.Form form = (System.Windows.Forms.Form)System.Windows.Forms.Control.FromHandle(this.Window.Handle);
-                form.Location = new System.Drawing.Point(0, 0);
-                form.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;                
-                form.TopMost = true;
+                if (form.Width > 800)
+                {
+
+                    form.Location = new System.Drawing.Point(0, 0);
+                    form.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
+                    form.TopMost = true;
+                    Recellection.graphics.PreferredBackBufferWidth = 800;
+                    Recellection.graphics.PreferredBackBufferHeight = 600;
+                    Recellection.graphics.ApplyChanges();
+                }
+                else
+                {                    
+                    form.Location = new System.Drawing.Point(0, 0);
+                    form.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
+                    form.TopMost = true;
+                    Recellection.graphics.PreferredBackBufferWidth = System.Windows.Forms.SystemInformation.PrimaryMonitorSize.Width;
+                    Recellection.graphics.PreferredBackBufferHeight = System.Windows.Forms.SystemInformation.PrimaryMonitorSize.Height;
+                    Recellection.graphics.ApplyChanges();
+                }
             }
         }
 
