@@ -26,6 +26,8 @@ namespace Recellection.Code.Main
 		{
 			logger.Debug("Initializer is running.");
 			
+			// TODO: Sound logo!
+			
 			MenuIcon yes = new MenuIcon("Yes", null);
 			MenuIcon no = new MenuIcon("No", null);
 			
@@ -33,20 +35,26 @@ namespace Recellection.Code.Main
 			options.Add(yes);
 			options.Add(no);
 			
-			Menu mainMenu = new Menu(Globals.MenuLayout.Prompt, options);
+			Menu mainMenu = new Menu(Globals.MenuLayout.Prompt, options, "Do you wanna play a game?");
 			
-			//MenuIcon input = MenuController.GetInput();
+			MenuView view = MenuView.Instance;
+			
+			// Just to make sure everything is in there...
+			new MenuController(TobiiController.GetInstance(this.windowHandle), mainMenu);
 
-            // Just to make sure everything is in there...
-            new MenuController(TobiiController.GetInstance(this.windowHandle), mainMenu);
-
+			GraphicsRenderer.currentState = view;
+			
             logger.Info("Waiting for Tobii input...");
             MenuIcon response = MenuController.GetInput();
 
             logger.Info("Got input!");
             if (response.getLabel() == yes.getLabel())
             {
-                Console.Beep(37, 1000);
+                for (int i = 0; i < 3; i++)
+                {
+					Console.Beep(440, 1000);
+					Console.Beep(37, 500);
+				}
             }
             else
             {

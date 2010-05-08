@@ -1,10 +1,9 @@
 
 # Ignore shit
 
-Recellection/bin
-Recellection/obj
-RecellectionTests/bin
-RecellectionTests/obj
+bin/
+obj/
+Content/obj
 TestResult.xml
 *.user
 *.suo
