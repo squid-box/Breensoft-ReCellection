@@ -147,6 +147,7 @@
     <Compile Include="Code\Models\MenuModel.cs" />
     <Compile Include="Code\Models\Player.cs" />
     <Compile Include="Code\Models\ResourceBuilding.cs" />
+    <Compile Include="Code\Models\Sounds.cs" />
     <Compile Include="Code\Models\SpriteTextureMap.cs" />
     <Compile Include="Code\Models\TerrainType.cs" />
     <Compile Include="Code\Models\Tile.cs" />
