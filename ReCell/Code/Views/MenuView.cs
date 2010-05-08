@@ -53,17 +53,30 @@ namespace Recellection
 		public void menuEventFunction(Object publisher, Event<Menu> ev)
 		{
 			currentMenu = ev.subject;
-		/*
-			Menu m = ev.subject;
+		
 			graphics.Clear();
-			graphics.Add(new DrawData(new Vector2(0,0), m.getMenuPic(), 0, 0, Recellection.viewPort.Height, Recellection.viewPort.Width));
-			//graphics.Add();//TODO skriv ut text SEN inte nu, laga menu
+
+            graphics.Add(new DrawData(currentMenu.getMenuPic(), 
+                new Rectangle(0, 0, Recellection.viewPort.Width, Recellection.viewPort.Height)));
+
+            //Recellection.graphics.GraphicsDevice.SetRenderTarget(0, textRenderTex);
+            //Recellection.graphics.GraphicsDevice.Clear(Color.White);
+
+            foreach (MenuIcon mi in currentMenu.GetIcons())
+            {
+                if (mi.texture != null)
+                {
+                    graphics.Add(mi.getIconPic());
+                }
+                else if(mi.getLabel() != null)
+                {
+                    //TODO Do this!
+                }
+            }
+			/*//graphics.Add();//TODO skriv ut text SEN inte nu, laga menu
 			Vector2 position = new Vector2(20, 20);
 			Vector2 scale = new Vector2(1.0f, 1.0f);
-			textDrawer.Begin();
-			textDrawer.DrawString(Recellection.screenFont, "LOL", 
-				position, Color.Black, 0, Vector2.Zero, scale, SpriteEffects.None, 0);
-			textDrawer.End();
+
 			if(ev.type == EventType.ADD)
 			{
 				
@@ -76,8 +89,6 @@ namespace Recellection
 		
 		public List<DrawData> GetDrawData(ContentManager content)
 		{
-			graphics.Clear();
-			graphics.Add(new DrawData(currentMenu.getMenuPic(), new Rectangle(0, 0, Recellection.viewPort.Width, Recellection.viewPort.Height)));
 			return graphics;
 		}
 	}

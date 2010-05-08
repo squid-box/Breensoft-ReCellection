@@ -29,12 +29,10 @@ namespace Recellection.Code.Main
 		{
 			logger.Debug("Initializer is running.");
 
-            ShowSplashScreen(2000); //Display the breensoft logo for 2 seconds
-
-            //TODO Display Tobii logo
+            ShowSplashScreen();
 
 			Cue backgroundSound = Sounds.Instance.LoadSound("Menu");
-			
+						
 			MenuIcon yes = new MenuIcon("Yes", null);
 			MenuIcon no = new MenuIcon("No", null);
 			
@@ -53,11 +51,10 @@ namespace Recellection.Code.Main
 			GraphicsRenderer.currentState = view;
 			
             logger.Info("Waiting for Tobii input...");
-            MenuIcon response = MenuController.GetInput();
+			MenuIcon response = MenuController.GetInput();
             
-
             logger.Info("Got input!");
-            backgroundSound.Stop(AudioStopOptions.Immediate);
+            backgroundSound.Pause();
             if (response.getLabel() == yes.getLabel())
             {
 				Cue prego = Sounds.Instance.LoadSound("prego");
@@ -66,15 +63,25 @@ namespace Recellection.Code.Main
 				{
 					Thread.Sleep(10);
 				}
-                GraphicsRenderer.currentState = new TestView();
+				
+				// START THE GAME ALREADY!
+				World w = WorldGenerator.GenerateWorld(1);
+				GraphicsRenderer.currentState = new WorldView(w, new Player(PlayerColour.BLUE, "Tester"));
+				// Call blocking state? :S
+				while(true)
+				{
+					Thread.Sleep(1000);
+					Console.Beep(340, 10);
+				}
             }
             else
-            {
+			{
 				Console.Beep(440, 1000);
-				Console.Beep(37, 500);
-				Console.Beep(440, 1000);
-				Console.Beep(37, 500);
-				Console.Beep(440, 1000);
+				Thread.Sleep(100);
+				Console.Beep(540, 1000);
+				Thread.Sleep(100);
+				Console.Beep(640, 1000);
+				Environment.Exit(0);
             }
 
            // Environment.Exit(0);
@@ -89,12 +96,18 @@ namespace Recellection.Code.Main
         /// and plays the logoIntro sound.
         /// </summary>
         /// <param name="time"></param>
-        private void ShowSplashScreen(int time)
+        private void ShowSplashScreen()
         {
             SplashView splash = new SplashView();
+            
             GraphicsRenderer.currentState = splash;
-            Sounds.Instance.LoadSound("logoIntro").Play();
-            System.Threading.Thread.Sleep(time);
+            
+			Cue intro = Sounds.Instance.LoadSound("logoIntro");
+			intro.Play();
+			while (intro.IsPlaying)
+			{
+				Thread.Sleep(10);
+			}
         }
 	}
 }
