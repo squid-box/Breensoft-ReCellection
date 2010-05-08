@@ -182,6 +182,13 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Sounds\Songs\getdown.mp3">
+      <Name>getdown</Name>
+      <Importer>Mp3Importer</Importer>
+      <Processor>SongProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
     <Folder Include="Graphics\Buildings\" />
     <Folder Include="Graphics\Terrains\" />
     <Folder Include="Graphics\Units\" />
