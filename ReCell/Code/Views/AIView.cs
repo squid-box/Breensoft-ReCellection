@@ -16,9 +16,11 @@ namespace Recellection.Code
     class AIView
     {
         private Player ai;
-        private World world;
+        internal World world;
         public List<Building> myBuildings { get; internal set; }
-        public Building baseBuilding;
+        internal Building baseBuilding;
+        internal int mapHeight;
+        internal int mapWidth;
 
 
         /// <summary>
@@ -28,6 +30,8 @@ namespace Recellection.Code
         public AIView(World p_world)
         {
             world = p_world;
+            mapHeight = world.GetMap().map.GetLength(0);
+            mapWidth = world.GetMap().map.GetLength(1);
         }
 
         /// <summary>

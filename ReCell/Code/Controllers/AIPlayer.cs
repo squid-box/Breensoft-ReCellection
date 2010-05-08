@@ -15,10 +15,10 @@ namespace Recellection.Code.Controllers
          * Variables
          */
         private AIView m_view;
-        private World m_world;
         private GraphController m_graph;
-        private List<Vector2> interrestPoints;
-        private List<Vector2> enemyPoints;
+        private List<Player> m_opponents;
+        private List<Vector2> m_interrestPoints;
+        private List<Vector2> m_enemyPoints;
 
         private int distanceThreshold;
 
@@ -27,17 +27,15 @@ namespace Recellection.Code.Controllers
         /// <summary>
         /// Constructor. The AIPlayer requires quite alot of external controllers.
         /// </summary>
+        /// <param name="opponents"></param>
         /// <param name="view"></param>
-        /// <param name="world"></param>
-        /// <param name="graph"></param>
-        public AIPlayer(AIView view, World world, GraphController graph){
+        public AIPlayer(List<Player> opponents, AIView view){
             m_view = view;
-            m_world = world;
-            m_graph = graph;
-            interrestPoints = new List<Vector2>();
-            enemyPoints = new List<Vector2>();
+            m_opponents = opponents;
+            m_interrestPoints = new List<Vector2>();
+            m_enemyPoints = new List<Vector2>();
             view.registerPlayer(this);
-            distanceThreshold = 3;
+            distanceThreshold = 3; //Arbitrary number at the moment
         }
 
         /// <summary>
@@ -46,9 +44,9 @@ namespace Recellection.Code.Controllers
         /// </summary>
         public void MakeMove(){
 
-            for (int i = 0; i < interrestPoints.Count; i++)
+            for (int i = 0; i < m_interrestPoints.Count; i++)
             {
-                Vector2 current = interrestPoints[i];
+                Vector2 current = m_interrestPoints[i];
 
                 if (m_view.ContainsResourcePoint(current))
                 {
@@ -59,22 +57,22 @@ namespace Recellection.Code.Controllers
                     CalculateWeight(m_view.GetBuildingAt(current));
                 }
             }
-            if (enemyPoints.Count == 0)
+            if (m_enemyPoints.Count == 0)
             {
                 Explore();
             }
             else
             {
-                for (int i = 0; i < enemyPoints.Count; i++)
+                for (int i = 0; i < m_enemyPoints.Count; i++)
                 {
-                    Vector2 current = enemyPoints[i];
-                    Vector2 nearby = GetClosestPointFromList(current, interrestPoints);
+                    Vector2 current = m_enemyPoints[i];
+                    Vector2 nearby = GetClosestPointFromList(current, m_interrestPoints);
                     if (Vector2.Distance(current, nearby) > distanceThreshold)
                     {
                         nearby = CalculatePointNear(current);
-                        interrestPoints[interrestPoints.Count] = nearby;
+                        m_interrestPoints[m_interrestPoints.Count] = nearby;
                     }
-                    SendUnits(nearby); //TODO: How many to send?
+                    CalculateWeight(m_view.GetBuildingAt(nearby));
                 }
             }
         }
@@ -106,9 +104,14 @@ namespace Recellection.Code.Controllers
         /// <param name="building"></param>
         private void CalculateWeight(Building building)
         {
-            m_graph.GetWeight(building);
-
-            throw new NotImplementedException();
+            int friendly = unitCountAt(building.coordinates, this);
+            int enemy = unitCountAt(GetClosestPointFromList(building.coordinates, m_enemyPoints), m_opponents[0]);
+            int diff = enemy - friendly;
+            if (diff > 0) //more enemy units than friendly
+            {
+                int weight = m_graph.GetWeight(building);
+                m_graph.SetWeight(building, weight + (diff/2)); //increase the weight by the difference in units / 2
+            }
         }
 
         /// <summary>
@@ -116,18 +119,9 @@ namespace Recellection.Code.Controllers
         /// </summary>
         private void Explore()
         {
-
             throw new NotImplementedException();
         }
 
-        /// <summary>
-        /// Decides what direction/location to scout.
-        /// </summary>
-        /// <returns></returns>
-        private object CalculateScoutDirection()
-        {
-            throw new NotFiniteNumberException();
-        }
 
         /// <summary>
         /// Figure out where to add a new point of interrest that is close enough to the given point.
@@ -164,8 +158,7 @@ namespace Recellection.Code.Controllers
                 if (CanHoldPoint(point))
                     return;
 
-                SendUnits(point);
-                IncreaseWeight(m_view.GetBuildingAt(point));
+                CalculateWeight(m_view.GetBuildingAt(point));
             }
             if (CanHoldPoint(point))
             {
@@ -173,7 +166,7 @@ namespace Recellection.Code.Controllers
             }
             else
             {
-                SendUnits(point);
+                CalculateWeight(m_view.GetBuildingAt(point));
             }
         }
 
@@ -210,14 +203,14 @@ namespace Recellection.Code.Controllers
         }
 
         /// <summary>
-        /// Evaluates whether or not the given point can be defended against a potential attack
+        /// Evaluates whether or not the given point can be defended against a potential/ongoing attack
         /// from nearby enemy buildings.
         /// </summary>
         /// <param name="point"></param>
         /// <returns></returns>
         private bool CanHoldPoint(Vector2 point)
         {
-            if (unitCountAt(point) > unitCountAt(GetClosestPointFromList(point, enemyPoints)))
+            if (unitCountAt(point, this) > (unitCountAt(point, m_opponents[0])+ unitCountAt(GetClosestPointFromList(point, m_enemyPoints), m_opponents[0])))
             {
                 return true;
             }
@@ -225,14 +218,17 @@ namespace Recellection.Code.Controllers
         }
 
         /// <summary>
-        /// Returns the number of units located at the given coordinates.
+        /// Returns the number of units located at the given coordinates belonging to the given player.
         /// </summary>
         /// <param name="point"></param>
+        /// <param name="player"></param>
         /// <returns></returns>
-        private int unitCountAt(Vector2 point)
+        private int unitCountAt(Vector2 point, Player player)
         {
-            return m_view.getTileAt(point).GetUnits(this).ToArray().Length;
+            return m_view.getTileAt(point).GetUnits(player).ToArray().Length;
         }
+
+
 
         private void SendUnits(Vector2 point)
         {
@@ -241,14 +237,15 @@ namespace Recellection.Code.Controllers
         }
 
         /// <summary>
-        /// Called when a new building should be created
+        /// Called when a new building should be created. Creates a building of a given type at the 
+        /// given point from the given base building.
         /// </summary>
         /// <param name="point"></param>
         /// <param name="baseBuilding"></param>
         /// <param name="buildingType"></param>
         private void IssueBuildOrder(Vector2 point, Building baseBuilding, Globals.BuildingTypes buildingType)
         {
-            BuildingController.AddBuilding(buildingType, baseBuilding, point, m_world);
+            BuildingController.AddBuilding(buildingType, baseBuilding, point, m_view.world);
         }
 
     }
