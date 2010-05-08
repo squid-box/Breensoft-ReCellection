@@ -23,11 +23,8 @@ namespace Recellection
 
 			Language.Instance.SetLanguage("English");
 
-			// This is the bridge between XNA and the logic
-			GraphicsRenderer graphicRendering = new GraphicsRenderer();
-
-            Recellection game = new Recellection(graphicRendering);
-            Initializer logic = new Initializer(graphicRendering, game.Window.Handle);
+            Recellection game = new Recellection();
+            Initializer logic = new Initializer(game.Window.Handle);
             Thread gameLogic = new Thread(logic.Run);
 
             game.LogicThread = gameLogic;

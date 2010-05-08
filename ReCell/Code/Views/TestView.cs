@@ -11,12 +11,22 @@ using Recellection.Code.Controllers;
 
 namespace Recellection.Code.Views
 {
-    public class TestView : IRenderable
+	public class TestView : IView 
     {
         int x = 250;
         int y = 250;
         int size = 512;
         int angle = 0;
+        
+        public TestView()
+        {
+		}
+		
+		override public void Draw(SpriteBatch spriteBatch)
+		{
+		}
+        
+        [System.Obsolete("Use Draw instead!")]
         public List<DrawData> GetDrawData(ContentManager content)
         {
             Texture2D tex = content.Load<Texture2D>("Graphics/logo");
@@ -51,7 +61,7 @@ namespace Recellection.Code.Views
             {
                 World w = WorldGenerator.GenerateWorld(1);
 
-                GraphicsRenderer.currentState = new WorldView(w, new Player(PlayerColour.BLUE, "Tester"));
+                Recellection.CurrentState = new WorldView(w, new Player(PlayerColour.BLUE, "Tester"));
             }
             
             List<DrawData> ret = new List<DrawData>();
