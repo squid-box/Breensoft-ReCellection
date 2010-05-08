@@ -29,10 +29,8 @@ namespace Recellection.Code.Controllers
         /// </summary>
         /// <param name="opponents"></param>
         /// <param name="view"></param>
-        /// <param name="graph"></param>
-        public AIPlayer(List<Player> opponents, AIView view, GraphController graph){
+        public AIPlayer(List<Player> opponents, AIView view){
             m_view = view;
-            m_graph = graph;
             m_opponents = opponents;
             m_interrestPoints = new List<Vector2>();
             m_enemyPoints = new List<Vector2>();
@@ -74,7 +72,7 @@ namespace Recellection.Code.Controllers
                         nearby = CalculatePointNear(current);
                         m_interrestPoints[m_interrestPoints.Count] = nearby;
                     }
-                    SendUnits(nearby); //TODO: How many to send?
+                    CalculateWeight(m_view.GetBuildingAt(nearby));
                 }
             }
         }
@@ -121,7 +119,6 @@ namespace Recellection.Code.Controllers
         /// </summary>
         private void Explore()
         {
-
             throw new NotImplementedException();
         }
 
@@ -169,7 +166,7 @@ namespace Recellection.Code.Controllers
             }
             else
             {
-                SendUnits(point);
+                CalculateWeight(m_view.GetBuildingAt(point));
             }
         }
 
@@ -231,6 +228,8 @@ namespace Recellection.Code.Controllers
             return m_view.getTileAt(point).GetUnits(player).ToArray().Length;
         }
 
+
+
         private void SendUnits(Vector2 point)
         {
 
@@ -238,7 +237,8 @@ namespace Recellection.Code.Controllers
         }
 
         /// <summary>
-        /// Called when a new building should be created
+        /// Called when a new building should be created. Creates a building of a given type at the 
+        /// given point from the given base building.
         /// </summary>
         /// <param name="point"></param>
         /// <param name="baseBuilding"></param>
