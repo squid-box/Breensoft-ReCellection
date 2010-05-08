@@ -196,8 +196,13 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Graphics\white.png">
-      <Name>white</Name>
+    <Compile Include="Graphics\ThreeByThree.png">
+      <Name>ThreeByThree</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="Graphics\TwoByTwo.png">
+      <Name>TwoByTwo</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>
