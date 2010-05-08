@@ -72,12 +72,12 @@ namespace Recellection.Code.Controllers
         {
 
             int randomTile = randomer.Next(
-                Enum.GetValues(typeof(Globals.TerrainTypes)).Length - 1);
+                Enum.GetValues(typeof(Globals.TextureTypes)).Length - 1);
 
-            Type enumType = typeof(Globals.TerrainTypes);
+            Type enumType = typeof(Globals.TextureTypes);
 
 
-            return new Tile(0,0,(Globals.TerrainTypes)
+            return new Tile(0, 0, (Globals.TextureTypes)
                 Enum.ToObject(enumType, randomTile));
 
         }

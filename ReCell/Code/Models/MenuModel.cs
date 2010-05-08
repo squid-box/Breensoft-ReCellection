@@ -52,7 +52,16 @@ namespace Recellection.Code.Models
         /// <returns></returns>
         public Menu Peek()
         {
-            Menu m = menuStack.Peek();
+            Menu m = null;
+            try
+            {
+                m = menuStack.Peek();
+            }
+            catch (Exception e)
+            {
+                //nothing on the stack yet
+                return m;
+            }
             return m;
         }
 

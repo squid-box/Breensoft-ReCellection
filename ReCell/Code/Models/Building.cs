@@ -162,7 +162,7 @@ namespace Recellection.Code.Models
         /// Checks if the health of the Building is more then zero
         /// </summary>
         /// <returns>If the current health is more then zero
-        /// it returns true other wise false</returns>
+        /// it returns true otherwise false</returns>
         public bool IsAlive()
         {
             return currentHealth > 0;
@@ -351,7 +351,7 @@ namespace Recellection.Code.Models
 
         /// <returns>Returns the buy price for a building, it is set
         /// at its health divided by 10. Upkeep should be added elsewhere.</returns>
-        public int getBuyPrice()
+        public int GetBuyPrice()
         {
             return maxHealth / 10;
         }

@@ -9,7 +9,7 @@ namespace Recellection
 {
     public sealed class Globals
     {
-        public static GameStates gameState;
+        public const int TILE_SIZE = 128;
 
         public enum Songs
         {
@@ -35,7 +35,7 @@ namespace Recellection
             BarrierBuilding, AggressiveBuilding, ResourceBuilding, Unit, Whitebg,
 
             MainMenu, OptionsMenu, Help, PromptMenu, GetIntMenu,
-            CommandMenu, SpecialCommandMenu
+            CommandMenu, SpecialCommandMenu, ThreeByThreeMenu, TwoByTwoMenu
         }
 
         public enum GameStates
