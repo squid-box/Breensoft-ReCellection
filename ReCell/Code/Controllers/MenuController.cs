@@ -81,7 +81,7 @@ namespace Recellection.Code.Controllers
 			List<MenuIcon> options = menuModel.Peek().GetIcons();
 			foreach(MenuIcon mi in options)
 			{
-				if (mi.getRegion() == activated)
+				if (mi.region == activated)
 					return mi;
 			}
 			throw new NonExistantInputException();

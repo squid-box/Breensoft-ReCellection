@@ -13,6 +13,9 @@ namespace Recellection
 
 	public class Menu
 	{
+        private const int FONT_SIZE = 38;
+        private const int FONT_WIDTH = 16;
+        
 	    private List<MenuIcon> icons;
         private Texture2D menuPic;
         private String explanation;
@@ -45,7 +48,7 @@ namespace Recellection
 			return icons;
 		}
 		
-		public Texture2D getMenuPic()
+		public Texture2D GetMenuPic()
 		{
 			return menuPic;
 		}
@@ -55,7 +58,7 @@ namespace Recellection
 			List<GUIRegion> regions = new List<GUIRegion>();
 			foreach(MenuIcon mi in icons)
 			{
-				regions.Add(mi.getRegion());
+				regions.Add(mi.region);
 			}
 			return regions;
 		}
@@ -67,16 +70,38 @@ namespace Recellection
 			}
 			menuPic = Recellection.textureMap.GetTexture(Globals.TextureTypes.PromptMenu);
 
-			icons[0].setRegion(new GUIRegion(Recellection.windowHandle, 
-                new System.Windows.Rect(0, 0, Recellection.viewPort.Width * 2 / 5, Recellection.viewPort.Height)));
-            icons[0].setRectangle(
-                new Microsoft.Xna.Framework.Rectangle(0, 0, Recellection.viewPort.Width * 2 / 5, Recellection.viewPort.Height));
+            for (int i = 0; i < 2; i++)
+            {
+                icons[i].region = new GUIRegion(Recellection.windowHandle,
+                new System.Windows.Rect(i*Recellection.viewPort.Width * 3 / 5, 0, 
+                    Recellection.viewPort.Width * 2 / 5 + i*Recellection.viewPort.Width* 3 / 5, Recellection.viewPort.Height));
 
-			icons[1].setRegion(new GUIRegion(Recellection.windowHandle, 
-                new System.Windows.Rect(Recellection.viewPort.Width * 3 / 5, 0, Recellection.viewPort.Width, Recellection.viewPort.Height)));
-            icons[1].setRectangle(
-                new Microsoft.Xna.Framework.Rectangle(Recellection.viewPort.Width * 3 / 5, 0, Recellection.viewPort.Width, Recellection.viewPort.Height));
+                if ( icons[i].texture != null)
+                {
+                    icons[i].targetRectangle =
+                    new Microsoft.Xna.Framework.Rectangle(i*Recellection.viewPort.Width * 3 / 5+Recellection.viewPort.Width * 1 / 5 - icons[i].texture.Width / 2,
+                        Recellection.viewPort.Height / 2 - icons[i].texture.Height / 2,
+                        icons[i].texture.Width,
+                        icons[i].texture.Height);
+                }
+                else if( icons[i].label != null)
+                {
+                    int textWidth = icons[i].label.Length * FONT_WIDTH;
+                    icons[i].targetRectangle =
+                    new Microsoft.Xna.Framework.Rectangle(i * Recellection.viewPort.Width * 3 / 5 + Recellection.viewPort.Width * 1 / 5 - textWidth / 2 ,
+                        Recellection.viewPort.Height / 2 - FONT_SIZE / 2,
+                        textWidth,
+                        FONT_SIZE);
+                }
+                
+            }
+			
 
+			/*icons[1].region = new GUIRegion(Recellection.windowHandle, 
+                new System.Windows.Rect(, 0, Recellection.viewPort.Width, Recellection.viewPort.Height));
+            icons[1].targetRectangle =
+                new Microsoft.Xna.Framework.Rectangle(Recellection.viewPort.Width * 3 / 5, 0, Recellection.viewPort.Width, Recellection.viewPort.Height);
+            */
 			this.icons = icons;
 		}
 
@@ -99,10 +124,10 @@ namespace Recellection
             menuPic = Recellection.textureMap.GetTexture(menuTexture);
             for(int i = 0; i < cols*rows; i++)
             {
-                icons[i].setRectangle(new Microsoft.Xna.Framework.Rectangle((i % cols) * iconWidth, (i / rows) * iconHeight, iconWidth, iconHeight));
+                icons[i].targetRectangle = new Microsoft.Xna.Framework.Rectangle((i % cols) * iconWidth, (i / rows) * iconHeight, iconWidth, iconHeight);
 
-                icons[i].setRegion(new GUIRegion(Recellection.windowHandle,
-                    new System.Windows.Rect((i%cols)*iconWidth,(i/rows)*iconHeight,iconWidth,iconHeight)));
+                icons[i].region = new GUIRegion(Recellection.windowHandle,
+                    new System.Windows.Rect((i%cols)*iconWidth,(i/rows)*iconHeight,iconWidth,iconHeight));
             }
             this.icons = icons;
         }
@@ -121,11 +146,29 @@ namespace Recellection
 
             for (int i = 0; i < 4; i++)
             {
-                icons[i].setRectangle(
-                    new Microsoft.Xna.Framework.Rectangle((i % 2) * (windowWidth * 3 / 5), (i / 2) * (windowHeight * 3 / 5), (windowWidth * 2 / 5), (windowHeight * 2 / 5)));
+                if (icons[i].texture != null)
+                {
+                    icons[i].targetRectangle =
+                        new Microsoft.Xna.Framework.Rectangle(
+                            (i % 2) * (windowWidth * 3 / 5) / 2 - icons[i].texture.Width / 2, 
+                            (i / 2) * (windowHeight * 3 / 5) / 2 - icons[i].texture.Height / 2,
+                            (icons[i].texture.Width),
+                            (icons[i].texture.Height));
 
-                icons[i].setRegion(new GUIRegion(Recellection.windowHandle,
-                    new System.Windows.Rect((i % 2) * (windowWidth * 3 / 5), (i / 2) * (windowHeight * 3 / 5), (windowWidth * 2 / 5), (windowHeight * 2 / 5))));
+                }
+                else if (icons[i].label != null)
+                {
+                    int textWidth = icons[i].label.Length * FONT_WIDTH;
+                    icons[i].targetRectangle =
+                        new Microsoft.Xna.Framework.Rectangle(
+                            (i % 2) * (windowWidth * 3 / 5) / 2 - textWidth / 2,
+                            (i / 2) * (windowHeight * 3 / 5) / 2 - FONT_SIZE / 2,
+                            (textWidth),
+                            (FONT_SIZE));
+                }
+                
+                icons[i].region = new GUIRegion(Recellection.windowHandle,
+                    new System.Windows.Rect((i % 2) * (windowWidth * 3 / 5), (i / 2) * (windowHeight * 3 / 5), (windowWidth * 2 / 5), (windowHeight * 2 / 5)));
             }
             this.icons = icons;
         }
@@ -146,11 +189,30 @@ namespace Recellection
                 {
                     continue;
                 }
-                icons[i].setRectangle(
-                    new Microsoft.Xna.Framework.Rectangle((i % 3) * iconWidth, (i / 3) * iconHeight, iconWidth, iconHeight));
 
-                icons[i].setRegion(new GUIRegion(Recellection.windowHandle,
-                    new System.Windows.Rect((i % 3) * iconWidth, (i / 3) * iconHeight, iconWidth, iconHeight)));
+                if (icons[i].texture != null)
+                {
+                    icons[i].targetRectangle =
+                        new Microsoft.Xna.Framework.Rectangle(
+                            (i % 3) * iconWidth / 2 - icons[i].texture.Width / 2,
+                            (i / 3) * iconHeight / 2 - icons[i].texture.Height / 2,
+                            (icons[i].texture.Width),
+                            (icons[i].texture.Height));
+
+                }
+                else if (icons[i].label != null)
+                {
+                    int textWidth = icons[i].label.Length * FONT_WIDTH;
+                    icons[i].targetRectangle =
+                        new Microsoft.Xna.Framework.Rectangle(
+                            (i % 3) * iconWidth / 2 - textWidth / 2,
+                            (i / 3) * iconHeight / 2 - FONT_SIZE / 2,
+                            (textWidth),
+                            (FONT_SIZE));
+                }
+
+                icons[i].region = new GUIRegion(Recellection.windowHandle,
+                    new System.Windows.Rect((i % 3) * iconWidth, (i / 3) * iconHeight, iconWidth, iconHeight));
             }
         }
     }

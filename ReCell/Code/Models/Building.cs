@@ -82,7 +82,7 @@ namespace Recellection.Code.Models
 
             }
 
-            logger.Trace("Constructing new Building with choosed values");
+            logger.Trace("Constructing new Building with choosen values");
             this.name = name;
             this.coordinates = new Vector2(posX,posY);
             this.maxHealth = maxHealth;
@@ -127,7 +127,7 @@ namespace Recellection.Code.Models
 
             }
 
-            logger.Trace("Constructing new Building with choosed values");
+            logger.Trace("Constructing new Building with choosen values");
             this.name = name;
             this.coordinates = new Vector2(posX, posY);
             this.maxHealth = maxHealth;
