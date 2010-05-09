@@ -10,6 +10,8 @@ namespace Recellection
     public sealed class Globals
     {
         public const int TILE_SIZE = 128;
+        public static int VIEWPORT_WIDTH = 1024;
+        public static int VIEWPORT_HEIGHT = 768;
 
         public enum Songs
         {

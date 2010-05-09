@@ -20,42 +20,45 @@ namespace Recellection.Code.Views
     class WorldView : IView
     {
         public Logger myLogger;
-        private List<DrawData> tileCollection;
+        private List<Tile> tilecollection;
 
-        /// <summary>
-        /// The player whose view of the world this is.
-        /// </summary>
-        public Player Player { get; private set; }
-        /// <summary>
-        /// The map of the world being viewed
-        /// </summary>
-        public World.Map Map { get; private set; }
+        public World World { get; private set; }
 
-        public WorldView(World world, Player player)
+        public WorldView(World world)
         {
-            this.Player = player;
-            this.Map = world.map;
+            this.World = world;
             world.MapEvent += OnMapEvent;
             world.GetMap().TileEvent += OnTileEvent;
             myLogger = LoggerFactory.GetLogger();
             myLogger.SetTarget(Console.Out);
             myLogger.Info("Created a WorldView.");
 
+            this.tilecollection = CreateCurrentView();
+        }
+
+        private List<Tile> CreateCurrentView()
+        {
             // First, add all tiles from the map:
             myLogger.Info("Getting tiles from World.map.");
-            Tile[,] tiles = this.Map.map;
-            myLogger.Info("Got tiles.");
+            Tile[,] tiles = this.World.map.map;
 
-            tileCollection = new List<DrawData>();
-            myLogger.Info("Iterating over tiles.");
-            foreach (Tile t in tiles)
+            List<Tile> tileCollection = new List<Tile>();
+            myLogger.Info("I'm going to start working on those tiles now...");
+
+            int currentX = (int)this.World.lookingAt.X;
+            int currentY = (int)this.World.lookingAt.Y;
+
+            for (int i = currentX; i < Globals.VIEWPORT_WIDTH / Globals.TILE_SIZE; i++)
             {
-                int x = (int)t.position.X;
-                int y = (int)t.position.Y;
-                tileCollection.Add(new DrawData(Recellection.textureMap.GetTexture(t.GetTerrainType().GetEnum()), new Rectangle(x * Globals.TILE_SIZE, y * Globals.TILE_SIZE, Globals.TILE_SIZE, Globals.TILE_SIZE)));
+                for (int j = currentY; j < Globals.VIEWPORT_HEIGHT / Globals.TILE_SIZE; j++)
+                {
+                    tileCollection.Add(tiles[i,j]);
+                }
             }
-            myLogger.Info("Tiles done..");
 
+            myLogger.Info("Done with the Tiles!");
+
+            return tileCollection;
         }
 
         /// <summary>
@@ -65,7 +68,7 @@ namespace Recellection.Code.Views
         /// <param name="ev"></param>
         public void OnMapEvent(Object o, Event<World.Map> ev)
         {
-            Map = ev.subject; 
+            //this.World.Map = ev.subject; 
         }
 
         public void OnTileEvent(Object o, Event<Tile> ev)
@@ -91,7 +94,10 @@ namespace Recellection.Code.Views
 
 		override public void Draw(SpriteBatch spriteBatch)
 		{
-			// TODO: Paint here.
+			foreach(Tile t in tilecollection)
+            {
+                this.drawTexture(spriteBatch, Recellection.textureMap.GetTexture(t.GetTerrainType().GetEnum()), t.GetRectangle());
+            }
 		}
 		override public void Update(GameTime passedTime)
 		{
