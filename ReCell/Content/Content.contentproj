@@ -199,8 +199,6 @@
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>
-  </ItemGroup>
-  <ItemGroup>
     <Compile Include="Graphics\white.png">
       <Name>white</Name>
       <Importer>TextureImporter</Importer>

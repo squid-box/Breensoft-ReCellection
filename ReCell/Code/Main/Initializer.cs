@@ -8,6 +8,7 @@ using Recellection.Code.Models;
 using Microsoft.Xna.Framework.Audio;
 using System.Threading;
 using Recellection.Code.Views;
+using Microsoft.Xna.Framework.Graphics;
 
 namespace Recellection.Code.Main
 {
@@ -30,9 +31,10 @@ namespace Recellection.Code.Main
             ShowSplashScreen();
 
 			Cue backgroundSound = Sounds.Instance.LoadSound("Menu");
-						
-			MenuIcon yes = new MenuIcon("Yes", null);
-			MenuIcon no = new MenuIcon("No", null);
+			
+			#region Show main menu. TODO: Make a real menu.
+			MenuIcon yes = new MenuIcon("Yes", null,Color.Black);
+			MenuIcon no = new MenuIcon("No", null,Color.Black);
 			
 			List<MenuIcon> options = new List<MenuIcon>();
 			options.Add(yes);
@@ -47,13 +49,13 @@ namespace Recellection.Code.Main
 			new MenuController(TobiiController.GetInstance(this.windowHandle), mainMenu);
 
 			Recellection.CurrentState = view;
-			
+			#endregion
             logger.Info("Waiting for Tobii input...");
 			MenuIcon response = MenuController.GetInput();
             
             logger.Info("Got input!");
             backgroundSound.Pause();
-            if (response.getLabel() == yes.getLabel())
+            if (response.label == yes.label)
             {
 				Cue prego = Sounds.Instance.LoadSound("prego");
 				prego.Play();
@@ -63,29 +65,26 @@ namespace Recellection.Code.Main
 				}
 				
 				// START THE GAME ALREADY!
-				World w = WorldGenerator.GenerateWorld(1);
-				Recellection.CurrentState = new WorldView(w, new Player(PlayerColour.BLUE, "Tester"));
+
 				// Call blocking state? :S
+                int freq = 45;
 				while(true)
 				{
-					Thread.Sleep(1000);
-					Console.Beep(340, 10);
+					Thread.Sleep(100);
+					Console.Beep(freq, 100);
+                    freq += 15;
 				}
+
+                GameInitializer g = new GameInitializer();
+
             }
             else
 			{
-				Console.Beep(440, 1000);
-				Thread.Sleep(100);
-				Console.Beep(540, 1000);
-				Thread.Sleep(100);
-				Console.Beep(640, 1000);
+				playBeethoven();
 				Environment.Exit(0);
             }
 
            // Environment.Exit(0);
-			
-			// TODO: Tell the graphic renderer what is the current view
-			// TODO: Spawn main menu, tell it to run.
 		}
 
 
@@ -106,6 +105,66 @@ namespace Recellection.Code.Main
 			{
 				Thread.Sleep(10);
 			}
+        }
+
+		private void playBeethoven()
+		{
+			Console.Beep(659, 120);  // Treble E
+			Console.Beep(622, 120);  // Treble D#
+			
+			Thread.Sleep(60);
+
+			Console.Beep(659, 120);  // Treble E
+			Console.Beep(622, 120);  // Treble D#
+			Console.Beep(659, 120);  // Treble E
+			Console.Beep(494, 120);  // Treble B
+			Console.Beep(587, 120);  // Treble D
+			Console.Beep(523, 120);  // Treble C
+
+			Thread.Sleep(70);
+			
+			Console.Beep(440, 120);  // Treble A
+			Console.Beep(262, 120);  // Middle C
+			Console.Beep(330, 120);  // Treble E
+			Console.Beep(440, 120);  // Treble A
+
+			Thread.Sleep(70);
+			
+			Console.Beep(494, 120);  // Treble B
+			Console.Beep(330, 120);  // Treble E
+			Console.Beep(415, 120);  // Treble G#
+			Console.Beep(494, 120);  // Treble B
+
+			Thread.Sleep(70);
+			
+			Console.Beep(523, 120);  // Treble C
+			Console.Beep(330, 120);  // Treble E
+			Console.Beep(659, 120);  // Treble E
+			Console.Beep(622, 120);  // Treble D#
+
+			Thread.Sleep(70);
+			
+			Console.Beep(659, 120);  // Treble E
+			Console.Beep(622, 120);  // Treble D#
+			Console.Beep(659, 120);  // Treble E
+			Console.Beep(494, 120);  // Treble B
+			Console.Beep(587, 120);  // Treble D
+			Console.Beep(523, 120);  // Treble C
+			
+			Thread.Sleep(70);
+
+			Console.Beep(440, 120);  // Treble A
+			Console.Beep(262, 120);  // Middle C
+			Console.Beep(330, 120);  // Treble E
+			Console.Beep(440, 120);  // Treble A
+
+			Thread.Sleep(70);
+
+			Console.Beep(494, 120);  // Treble B
+			Console.Beep(330, 120);  // Treble E
+			Console.Beep(523, 120);  // Treble C
+			Console.Beep(494, 120);  // Treble B
+			Console.Beep(440, 120);  // Treble A
         }
 	}
 }
