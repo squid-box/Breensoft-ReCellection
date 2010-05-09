@@ -11,9 +11,10 @@ namespace Recellection.Code.Main
 {
     public class GameInitializer
     {
-        World theWorld;
+        public World theWorld { get; private set; }
+        public Dictionary<Player,UnitAccountant> suitGuys { get; private set; }
 
-        GameInitializer()
+        public GameInitializer()
         {
             CreateGameObjects(4711);
         }
@@ -35,6 +36,11 @@ namespace Recellection.Code.Main
 
                 SpawnPoints(theWorld.players, theWorld.map.Cols, theWorld.map.Rows, randomer);
 
+                foreach(Player p in theWorld.players)
+                {
+                    suitGuys[p] = new UnitAccountant(p);
+                    suitGuys[p].ProduceUnits();
+                }
                 return true;
             }
             catch (Exception)
