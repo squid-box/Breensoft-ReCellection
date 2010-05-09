@@ -192,8 +192,10 @@ namespace Recellection
         protected override void Draw(GameTime gameTime)
 		{
 			spriteBatch.Begin(SpriteBlendMode.AlphaBlend, SpriteSortMode.Immediate, SaveStateMode.None);
-			if (currentState != null)
+            spriteBatch.GraphicsDevice.Clear(Color.White);
+            if (currentState != null)
 			{
+                logger.Info("*** I AM DRAWING ***");
 				currentState.Draw(spriteBatch);
 			}
 			spriteBatch.End();
