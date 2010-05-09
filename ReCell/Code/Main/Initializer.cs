@@ -33,7 +33,7 @@ namespace Recellection.Code.Main
 			Cue backgroundSound = Sounds.Instance.LoadSound("Menu");
 			
 			#region Show main menu. TODO: Make a real menu.
-			MenuIcon yes = new MenuIcon("Yes        !!!!!!!!", null,Color.Black);
+			MenuIcon yes = new MenuIcon("Yes", null,Color.Black);
 			MenuIcon no = new MenuIcon("No", null,Color.Black);
 			
 			List<MenuIcon> options = new List<MenuIcon>();
