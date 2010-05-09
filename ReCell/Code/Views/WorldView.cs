@@ -33,7 +33,6 @@ namespace Recellection.Code.Views
 
             this.World.lookingAtEvent += CreateCurrentView;
 
-            //this.World.LookingAt = this.World.players[0].GetGraphs()[0].baseBuilding.coordinates;
             this.World.LookingAt = new Vector2(0, 0);
         }
 
@@ -49,9 +48,9 @@ namespace Recellection.Code.Views
             int currentX = (int)this.World.LookingAt.X;
             int currentY = (int)this.World.LookingAt.Y;
 
-            for (int i = currentX; i <= Globals.VIEWPORT_WIDTH / Globals.TILE_SIZE; i++)
+            for (int i = currentX; i <= (Globals.VIEWPORT_WIDTH / Globals.TILE_SIZE) + currentX; i++)
             {
-                for (int j = currentY; j <= Globals.VIEWPORT_HEIGHT / Globals.TILE_SIZE; j++)
+                for (int j = currentY; j <= (Globals.VIEWPORT_HEIGHT / Globals.TILE_SIZE) + currentY+1; j++)
                 {
                      tileCollection.Add(tiles[i,j]);
                 }
@@ -71,12 +70,19 @@ namespace Recellection.Code.Views
         }
 
 		override public void Draw(SpriteBatch spriteBatch)
-		{
+        {
+            myLogger.Info("*** I AM DRAWING "+tileCollection.Count+" TILES! :O ***");
+
+            if (tileCollection.Count == 0)
+            {
+                myLogger.Info("World.lookingAt is set to: ("+World.LookingAt.X+" : "+World.LookingAt.Y+").");
+            }
+            
             Building b;
             foreach(Tile t in tileCollection)
             {
-                int x = (int) (t.position.X - (128 * World.LookingAt.X));
-                int y = (int) (t.position.Y - (128 * World.LookingAt.Y));
+                int x = (int) (t.position.X - (World.LookingAt.X));
+                int y = (int) (t.position.Y - (World.LookingAt.Y));
 
                 Rectangle r = new Rectangle(x*Globals.TILE_SIZE, y*Globals.TILE_SIZE, Globals.TILE_SIZE, Globals.TILE_SIZE);
                 this.drawTexture(spriteBatch, Recellection.textureMap.GetTexture(t.GetTerrainType().GetEnum()), r);
@@ -93,11 +99,11 @@ namespace Recellection.Code.Views
 		{
             KeyboardState ks = Keyboard.GetState();
 
-            float f = 1f;
+            float f = 0.1f;
             
             if(ks.IsKeyDown(Keys.X))
             {
-                World.LookingAt = new Vector2(1, 1);
+                this.World.LookingAt = this.World.players[0].GetGraphs()[0].baseBuilding.coordinates;
             }
 
             if (ks.IsKeyDown(Keys.Left))
@@ -111,20 +117,20 @@ namespace Recellection.Code.Views
             if (ks.IsKeyDown(Keys.Right))
             {
                 this.World.LookingAt = new Vector2(this.World.LookingAt.X + f, this.World.LookingAt.Y);
-                if (this.World.LookingAt.X > this.World.map.Cols-16)
+                if (this.World.LookingAt.X > this.World.map.Cols-18)
                 {
-                    this.World.LookingAt = new Vector2(this.World.map.Cols, this.World.LookingAt.Y-16);
-                }
-            }
-            if (ks.IsKeyDown(Keys.Up))
-            {
-                this.World.LookingAt = new Vector2(this.World.LookingAt.X, this.World.LookingAt.Y+f);
-                if (this.World.LookingAt.Y > this.World.map.Rows-10)
-                {
-                    this.World.LookingAt = new Vector2(this.World.LookingAt.X, this.World.map.Rows-10);
+                    this.World.LookingAt = new Vector2(this.World.map.Cols, this.World.LookingAt.Y);
                 }
             }
             if (ks.IsKeyDown(Keys.Down))
+            {
+                this.World.LookingAt = new Vector2(this.World.LookingAt.X, this.World.LookingAt.Y+f);
+                if (this.World.LookingAt.Y > this.World.map.Rows-12)
+                {
+                    this.World.LookingAt = new Vector2(this.World.LookingAt.X, this.World.map.Rows-12);
+                }
+            }
+            if (ks.IsKeyDown(Keys.Up))
             {
                 this.World.LookingAt = new Vector2(this.World.LookingAt.X, this.World.LookingAt.Y - f);
                 if (this.World.LookingAt.Y < 0)
