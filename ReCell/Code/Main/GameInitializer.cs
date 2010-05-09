@@ -89,8 +89,8 @@ namespace Recellection.Code.Main
                 myLogger.Info("Create random spawn point?");
                 do
                 {
-                    randomPlaceX = randomer.Next(0, 1);
-                    randomPlaceY = randomer.Next(0, 1);
+                    randomPlaceX = randomer.Next(0, 2);
+                    randomPlaceY = randomer.Next(0, 2);
                 }
                 while (previousPlaceX == randomPlaceX && previousPlaceY == randomPlaceY);
 
