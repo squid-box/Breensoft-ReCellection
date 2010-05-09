@@ -319,5 +319,12 @@ namespace Recellection.Code.Models
         {
             return base.GetHashCode();
         }
+
+        public Rectangle GetRectangle()
+        {
+            int x = (int) this.position.X;
+            int y = (int) this.position.Y;
+            return new Rectangle(x, y, Globals.TILE_SIZE, Globals.TILE_SIZE);
+        }
     }
 }
