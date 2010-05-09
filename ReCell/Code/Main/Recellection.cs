@@ -126,7 +126,11 @@ namespace Recellection
         /// </summary>
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Update(GameTime gameTime)
-        {
+		{
+			if (currentState != null)
+			{
+				currentState.Update(gameTime);
+			}
             HandleDebugInput();
             base.Update(gameTime);
         }
@@ -188,7 +192,10 @@ namespace Recellection
         protected override void Draw(GameTime gameTime)
 		{
 			spriteBatch.Begin(SpriteBlendMode.AlphaBlend, SpriteSortMode.Immediate, SaveStateMode.None);
-			currentState.Draw(spriteBatch);
+			if (currentState != null)
+			{
+				currentState.Draw(spriteBatch);
+			}
 			spriteBatch.End();
             base.Draw(gameTime);
         }

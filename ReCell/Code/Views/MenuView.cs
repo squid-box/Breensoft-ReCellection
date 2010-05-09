@@ -19,9 +19,8 @@ namespace Recellection
 		/// author: co
 		/// </summary>
 	
-		private SpriteBatch textDrawer = new SpriteBatch(Recellection.graphics.GraphicsDevice);
+		//private SpriteBatch textDrawer = new SpriteBatch(Recellection.graphics.GraphicsDevice);
         //private RenderTarget2D textRenderTex = new RenderTarget2D(Recellection.graphics.GraphicsDevice, Recellection.viewPort.Width, Recellection.viewPort.Height, 0, Recellection.graphics.GraphicsDevice.DisplayMode.Format);
-        private float fontSzInPx = 14;
 		List<DrawData> graphics;
         static readonly object padlock = new object();
         static MenuView instance = null;
@@ -81,20 +80,24 @@ namespace Recellection
 				
 			}*/
 		}
+
+		override public void Update(GameTime passedTime)
+		{
+		}
 		
 		override public void Draw(SpriteBatch spriteBatch)
 		{
-			this.drawTexture(spriteBatch, currentMenu.getMenuPic(), new Rectangle(0, 0, Recellection.viewPort.Width, Recellection.viewPort.Height));
-			
+			this.drawTexture(spriteBatch, currentMenu.GetMenuPic(), new Rectangle(0, 0, Recellection.viewPort.Width, Recellection.viewPort.Height));
+
 			foreach (MenuIcon mi in currentMenu.GetIcons())
 			{
 				if (mi.texture != null)
 				{
-					this.drawTexture(spriteBatch, mi.texture, mi.getIconPic().TargetRectangle);
+					this.drawTexture(spriteBatch, mi.texture, mi.targetRectangle);
 				}
-				else if (mi.getLabel() != null)
+				if (mi.label != null)
 				{
-					//TODO Do this!
+                    spriteBatch.DrawString(Recellection.screenFont, mi.label, new Vector2(mi.targetRectangle.X, mi.targetRectangle.Y), mi.labelColor);
 				}
 			}
 		}

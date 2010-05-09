@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Recellection.Code.Models;
+using Microsoft.Xna.Framework;
 
 namespace Recellection.Code.Controllers
 {
@@ -44,6 +45,7 @@ namespace Recellection.Code.Controllers
         /// </summary>
         public void ProduceUnits()
         {
+            Random randomer = new Random(owner.GetHashCode());
             List<Unit> res;
             
             foreach (Graph g in owner.GetGraphs())
@@ -54,7 +56,12 @@ namespace Recellection.Code.Controllers
 
                 for (int i = 0; i < b.RateOfProduction; i++)
                 {
-                    b.AddUnit(new Unit(b.owner, b.coordinates));
+                    //Places them randomly around the building. - John
+                    Vector2 coords = b.coordinates;
+                    coords.X += (float)randomer.NextDouble() * Globals.TILE_SIZE;
+                    coords.Y += (float)randomer.NextDouble() * Globals.TILE_SIZE;
+
+                    b.AddUnit(new Unit(b.owner, coords));
                 }
                 b.AddUnits(res);
             }

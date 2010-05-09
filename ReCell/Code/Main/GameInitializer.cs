@@ -11,9 +11,10 @@ namespace Recellection.Code.Main
 {
     public class GameInitializer
     {
-        World theWorld;
+        public World theWorld { get; private set; }
+        public Dictionary<Player,UnitAccountant> suitGuys { get; private set; }
 
-        GameInitializer()
+        public GameInitializer()
         {
             CreateGameObjects(4711);
         }
@@ -26,11 +27,20 @@ namespace Recellection.Code.Main
 
                 Random randomer = new Random(seed);
 
-                theWorld.AddPlayer(new Player(PlayerColour.BLUE, "Sebastian"));
-                //theWorld.AddPlayer(new AIPlayer(new AIView(theWorld),theWorld,
+                Player temp = new Player(PlayerColour.BLUE, "John");
+                theWorld.AddPlayer(temp);
+
+                List<Player> temp2 = new List<Player>();
+                temp2.Add(temp);
+                theWorld.AddPlayer(new AIPlayer(temp2, new AIView(theWorld)));
 
                 SpawnPoints(theWorld.players, theWorld.map.Cols, theWorld.map.Rows, randomer);
 
+                foreach(Player p in theWorld.players)
+                {
+                    suitGuys[p] = new UnitAccountant(p);
+                    suitGuys[p].ProduceUnits();
+                }
                 return true;
             }
             catch (Exception)
