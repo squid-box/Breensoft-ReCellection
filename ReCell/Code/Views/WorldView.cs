@@ -8,6 +8,7 @@ using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework;
 using Recellection.Code.Utility.Logger;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
 
 namespace Recellection.Code.Views
 {
@@ -30,8 +31,9 @@ namespace Recellection.Code.Views
             world.MapEvent += OnMapEvent;
             world.GetMap().TileEvent += OnTileEvent;
             myLogger = LoggerFactory.GetLogger();
-            myLogger.SetTarget(Console.Out);
             myLogger.Info("Created a WorldView.");
+
+            this.World.lookingAt = this.World.players[0].GetGraphs()[0].baseBuilding.coordinates;
 
             this.tilecollection = CreateCurrentView();
         }
@@ -66,11 +68,13 @@ namespace Recellection.Code.Views
         /// </summary>
         /// <param name="o"></param>
         /// <param name="ev"></param>
+        [Obsolete]
         public void OnMapEvent(Object o, Event<World.Map> ev)
         {
-            //this.World.Map = ev.subject; 
+            //this.World.map = ev.subject; 
         }
 
+        [Obsolete]
         public void OnTileEvent(Object o, Event<Tile> ev)
         {
             
@@ -79,6 +83,7 @@ namespace Recellection.Code.Views
         /// <summary>
         /// I have no idea what this is supposed to do.
         /// </summary>
+        [Obsolete]
         public void UpdateScreen()
         {
             throw new NotImplementedException();
@@ -87,6 +92,7 @@ namespace Recellection.Code.Views
         /// <summary>
         /// I have no idea what this is supposed to do.
         /// </summary>
+        [Obsolete]
         public void UpdateMapMatrix()
         {
             throw new NotImplementedException();
@@ -101,6 +107,24 @@ namespace Recellection.Code.Views
 		}
 		override public void Update(GameTime passedTime)
 		{
+            this.tilecollection = CreateCurrentView();
+            
+            if (Keyboard.GetState().IsKeyDown(Keys.Left))
+            {
+                this.World.lookingAt = new Vector2(this.World.lookingAt.X-1, this.World.lookingAt.Y);
+            }
+            if (Keyboard.GetState().IsKeyDown(Keys.Right))
+            {
+                this.World.lookingAt = new Vector2(this.World.lookingAt.X + 1, this.World.lookingAt.Y);
+            }
+            if (Keyboard.GetState().IsKeyDown(Keys.Up))
+            {
+                this.World.lookingAt = new Vector2(this.World.lookingAt.X, this.World.lookingAt.Y+1);
+            }
+            if (Keyboard.GetState().IsKeyDown(Keys.Down))
+            {
+                this.World.lookingAt = new Vector2(this.World.lookingAt.X, this.World.lookingAt.Y - 1);
+            }
 		}
 	}
 }
