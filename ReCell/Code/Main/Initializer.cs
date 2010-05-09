@@ -66,17 +66,14 @@ namespace Recellection.Code.Main
 				
 				// START THE GAME ALREADY!
 
-				// Call blocking state? :S
-                int freq = 45;
-				while(true)
-				{
-					Thread.Sleep(100);
-					Console.Beep(freq, 100);
-                    freq += 15;
-				}
+                Recellection.CurrentState = new WorldView(new GameInitializer().theWorld);
 
-                GameInitializer g = new GameInitializer();
-
+                // Heartbeat
+                while (true)
+                {
+                    Thread.Sleep(100);
+                    Console.Beep(66, 150);
+                }
             }
             else
 			{

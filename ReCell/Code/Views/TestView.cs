@@ -60,13 +60,6 @@ namespace Recellection.Code.Views
                     angle = angle - 360;
                 }
             }
-
-            if (Keyboard.GetState().IsKeyDown(Keys.X))
-            {
-                World w = WorldGenerator.GenerateWorld(1);
-
-                Recellection.CurrentState = new WorldView(w, new Player(PlayerColour.BLUE, "Tester"));
-            }
             
             List<DrawData> ret = new List<DrawData>();
             ret.Add(d);
