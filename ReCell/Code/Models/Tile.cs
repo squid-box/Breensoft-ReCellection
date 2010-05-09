@@ -324,7 +324,7 @@ namespace Recellection.Code.Models
         {
             int x = (int) this.position.X;
             int y = (int) this.position.Y;
-            return new Rectangle(x, y, Globals.TILE_SIZE, Globals.TILE_SIZE);
+            return new Rectangle(x * Globals.TILE_SIZE, y * Globals.TILE_SIZE, Globals.TILE_SIZE, Globals.TILE_SIZE);
         }
     }
 }
