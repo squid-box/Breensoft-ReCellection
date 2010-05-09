@@ -8,6 +8,7 @@ using Recellection.Code.Models;
 using Microsoft.Xna.Framework.Audio;
 using System.Threading;
 using Recellection.Code.Views;
+using Microsoft.Xna.Framework.Graphics;
 
 namespace Recellection.Code.Main
 {
@@ -32,8 +33,8 @@ namespace Recellection.Code.Main
 			Cue backgroundSound = Sounds.Instance.LoadSound("Menu");
 			
 			#region Show main menu. TODO: Make a real menu.
-			MenuIcon yes = new MenuIcon("Yes", null);
-			MenuIcon no = new MenuIcon("No", null);
+			MenuIcon yes = new MenuIcon("Yes", null,Color.Black);
+			MenuIcon no = new MenuIcon("No", null,Color.Black);
 			
 			List<MenuIcon> options = new List<MenuIcon>();
 			options.Add(yes);
@@ -54,7 +55,7 @@ namespace Recellection.Code.Main
             
             logger.Info("Got input!");
             backgroundSound.Pause();
-            if (response.getLabel() == yes.getLabel())
+            if (response.label == yes.label)
             {
 				Cue prego = Sounds.Instance.LoadSound("prego");
 				prego.Play();
