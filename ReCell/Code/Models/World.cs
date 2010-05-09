@@ -16,15 +16,22 @@ namespace Recellection.Code.Models
     public class World : IModel
     {
         public Logger myLogger;
-        public Vector2 lookingAt 
-        { 
-          get{ return lookingAt;} 
-          set{ lookingAt = value;
-          if (lookingAtEvent != null)
-          {
-              lookingAtEvent(this,new Event<Vector2>(lookingAt,EventType.ALTER));
-          }
-          } 
+
+        private Vector2 lookingAt;
+        public Vector2 LookingAt
+        {
+            get
+            {
+                return lookingAt;
+            }
+            set
+            {
+                lookingAt = value;
+                if (lookingAtEvent != null)
+                {
+                    lookingAtEvent(this, new Event<Vector2>(value, EventType.ALTER));
+                }
+            }
         }
 
         public event Publish<Vector2> lookingAtEvent;

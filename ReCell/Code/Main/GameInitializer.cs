@@ -51,7 +51,7 @@ namespace Recellection.Code.Main
                     suitGuys[p].ProduceUnits();
                 }
 
-                theWorld.lookingAt = theWorld.players[0].GetGraphs()[0].baseBuilding.coordinates;
+                theWorld.LookingAt = theWorld.players[0].GetGraphs()[0].baseBuilding.coordinates;
 
                 return true;
             }
