@@ -6,16 +6,20 @@ using System.Text;
 using Recellection.Code.Models;
 using Recellection.Code.Controllers;
 using Recellection.Code.Views;
+using Recellection.Code.Utility.Logger;
 
 namespace Recellection.Code.Main
 {
     public class GameInitializer
     {
         public World theWorld { get; private set; }
+        public Logger myLogger;
         public Dictionary<Player,UnitAccountant> suitGuys { get; private set; }
 
         public GameInitializer()
         {
+            myLogger = LoggerFactory.GetLogger();
+            myLogger.Info("Beginning Game Initialization.");
             CreateGameObjects(4711);
         }
 
@@ -23,10 +27,13 @@ namespace Recellection.Code.Main
         {
             try
             {
+                myLogger.Info("Generating world.");
                 theWorld = WorldGenerator.GenerateWorld(seed);
+                myLogger.Info("Done.");
 
                 Random randomer = new Random(seed);
 
+                myLogger.Info("Adding players.");
                 Player temp = new Player(PlayerColour.BLUE, "John");
                 theWorld.AddPlayer(temp);
 
@@ -34,8 +41,10 @@ namespace Recellection.Code.Main
                 temp2.Add(temp);
                 theWorld.AddPlayer(new AIPlayer(temp2, new AIView(theWorld)));
 
+                myLogger.Info("Creating spawnpoints.");
                 SpawnPoints(theWorld.players, theWorld.map.Cols, theWorld.map.Rows, randomer);
 
+                myLogger.Info("Spawning units.");
                 foreach(Player p in theWorld.players)
                 {
                     suitGuys[p] = new UnitAccountant(p);
@@ -45,6 +54,8 @@ namespace Recellection.Code.Main
             }
             catch (Exception e)
             {
+                myLogger.Info("Something went wrong.");
+                myLogger.Info(e.GetType() + " : " + e.Message);
                 Console.Beep(75, 1500);
                 Console.Error.WriteLine(e.GetType() + " : " + e.Message);
                 return false;
@@ -75,6 +86,7 @@ namespace Recellection.Code.Main
                 //Calculate the length of the vector between the new spawn
                 //point and the last one.
 
+                myLogger.Info("Create random spawn point?");
                 do
                 {
                     randomPlaceX = randomer.Next(0, 1);
@@ -106,6 +118,7 @@ namespace Recellection.Code.Main
         /// graph.</param>
         private void SpawnGraph(int xCoord, int yCoord, Player owner)
         {
+            myLogger.Info("Creating graph for player: "+ owner +" .");
             owner.AddGraph(new Graph(
                 new BaseBuilding("base", xCoord, yCoord, owner)));
         }
