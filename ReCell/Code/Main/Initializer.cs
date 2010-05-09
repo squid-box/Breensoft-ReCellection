@@ -57,12 +57,13 @@ namespace Recellection.Code.Main
             backgroundSound.Pause();
             if (response.label == yes.label)
             {
-				Cue prego = Sounds.Instance.LoadSound("prego");
-				prego.Play();
-				while(prego.IsPlaying)
-				{
-					Thread.Sleep(10);
-				}
+				// Det börjar bli jobbigt...
+				//Cue prego = Sounds.Instance.LoadSound("prego");
+				//prego.Play();
+				//while(prego.IsPlaying)
+				//{
+				//	Thread.Sleep(10);
+				//}
 				
 				// START THE GAME ALREADY!
 
