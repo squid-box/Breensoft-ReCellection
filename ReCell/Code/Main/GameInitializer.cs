@@ -50,6 +50,9 @@ namespace Recellection.Code.Main
                     suitGuys[p] = new UnitAccountant(p);
                     suitGuys[p].ProduceUnits();
                 }
+
+                theWorld.lookingAt = theWorld.players[0].GetGraphs()[0].baseBuilding.coordinates;
+
                 return true;
             }
             catch (Exception e)
