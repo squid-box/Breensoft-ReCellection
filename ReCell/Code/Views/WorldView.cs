@@ -21,7 +21,7 @@ namespace Recellection.Code.Views
     class WorldView : IView
     {
         public Logger myLogger;
-        private List<Tile> tilecollection;
+        private List<Tile> tileCollection;
 
         public World World { get; private set; }
 
@@ -33,22 +33,24 @@ namespace Recellection.Code.Views
             myLogger = LoggerFactory.GetLogger();
             myLogger.Info("Created a WorldView.");
 
-            this.World.lookingAt = this.World.players[0].GetGraphs()[0].baseBuilding.coordinates;
+            this.World.lookingAtEvent += CreateCurrentView;
 
-            this.tilecollection = CreateCurrentView();
+            this.World.LookingAt = this.World.players[0].GetGraphs()[0].baseBuilding.coordinates;
+
+            CreateCurrentView(null, null);
         }
 
-        private List<Tile> CreateCurrentView()
+        private void CreateCurrentView(Object o, Event<Vector2> ev)
         {
             // First, add all tiles from the map:
             myLogger.Info("Getting tiles from World.map.");
             Tile[,] tiles = this.World.map.map;
 
-            List<Tile> tileCollection = new List<Tile>();
+            tileCollection = new List<Tile>();
             myLogger.Info("I'm going to start working on those tiles now...");
 
-            int currentX = (int)this.World.lookingAt.X;
-            int currentY = (int)this.World.lookingAt.Y;
+            int currentX = (int)this.World.LookingAt.X;
+            int currentY = (int)this.World.LookingAt.Y;
 
             for (int i = currentX; i < Globals.VIEWPORT_WIDTH / Globals.TILE_SIZE; i++)
             {
@@ -59,8 +61,6 @@ namespace Recellection.Code.Views
             }
 
             myLogger.Info("Done with the Tiles!");
-
-            return tileCollection;
         }
 
         /// <summary>
@@ -100,30 +100,28 @@ namespace Recellection.Code.Views
 
 		override public void Draw(SpriteBatch spriteBatch)
 		{
-			foreach(Tile t in tilecollection)
+			foreach(Tile t in tileCollection)
             {
                 this.drawTexture(spriteBatch, Recellection.textureMap.GetTexture(t.GetTerrainType().GetEnum()), t.GetRectangle());
             }
 		}
 		override public void Update(GameTime passedTime)
 		{
-            this.tilecollection = CreateCurrentView();
-            
             if (Keyboard.GetState().IsKeyDown(Keys.Left))
             {
-                this.World.lookingAt = new Vector2(this.World.lookingAt.X-1, this.World.lookingAt.Y);
+                this.World.LookingAt = new Vector2(this.World.LookingAt.X-1, this.World.LookingAt.Y);
             }
             if (Keyboard.GetState().IsKeyDown(Keys.Right))
             {
-                this.World.lookingAt = new Vector2(this.World.lookingAt.X + 1, this.World.lookingAt.Y);
+                this.World.LookingAt = new Vector2(this.World.LookingAt.X + 1, this.World.LookingAt.Y);
             }
             if (Keyboard.GetState().IsKeyDown(Keys.Up))
             {
-                this.World.lookingAt = new Vector2(this.World.lookingAt.X, this.World.lookingAt.Y+1);
+                this.World.LookingAt = new Vector2(this.World.LookingAt.X, this.World.LookingAt.Y+1);
             }
             if (Keyboard.GetState().IsKeyDown(Keys.Down))
             {
-                this.World.lookingAt = new Vector2(this.World.lookingAt.X, this.World.lookingAt.Y - 1);
+                this.World.LookingAt = new Vector2(this.World.LookingAt.X, this.World.LookingAt.Y - 1);
             }
 		}
 	}
