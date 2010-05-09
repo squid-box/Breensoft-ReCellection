@@ -5,6 +5,7 @@ using System.Text;
 
 using Recellection.Code.Models;
 using Recellection.Code.Controllers;
+using Recellection.Code.Main;
 
 namespace Recellection.Code.Controllers
 {
@@ -20,16 +21,18 @@ namespace Recellection.Code.Controllers
 
         private World world;
 
+        private GameInitializer gameInitializer;
+
         Boolean finished = false;
         /// <summary>
         /// The constructor used to initiate the Victor Turner
         /// </summary>
         /// <param name="players">The players in the game</param>
         /// <param name="world">The world the game takes place in</param>
-        public VictorTurner(List<Player> players,World world)
+        public VictorTurner(GameInitializer gameInitializer)
         {
-            this.players = players;
-            this.world = world;
+            this.players = gameInitializer.theWorld.players;
+            this.world = gameInitializer.theWorld;
         }
 
         public void Run()
@@ -39,6 +42,8 @@ namespace Recellection.Code.Controllers
             {
                 foreach (Player player in players)
                 {
+                    gameInitializer.suitGuys[player].ProduceUnits(); 
+
                     if(HasLost(player))
                     {
                         world.RemovePlayer(player);

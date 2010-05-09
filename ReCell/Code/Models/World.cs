@@ -16,7 +16,18 @@ namespace Recellection.Code.Models
     public class World : IModel
     {
         public Logger myLogger;
-        public Vector2 lookingAt { get; set; }
+        public Vector2 lookingAt 
+        { 
+          get{ return lookingAt;} 
+          set{ lookingAt = value;
+          if (lookingAtEvent != null)
+          {
+              lookingAtEvent(this,new Event<Vector2>(lookingAt,EventType.ALTER));
+          }
+          } 
+        }
+
+        public event Publish<Vector2> lookingAtEvent;
 
         # region Inner Class Map
         /// <summary>
