@@ -75,12 +75,16 @@ namespace Recellection.Code.Views
 			Building b;
             foreach(Tile t in tileCollection)
             {
-                this.drawTexture(spriteBatch, Recellection.textureMap.GetTexture(t.GetTerrainType().GetEnum()), t.GetRectangle());
+                int x = (int) (t.position.X - (128 * World.LookingAt.X));
+                int y = (int) (t.position.Y - (128 * World.LookingAt.Y));
+
+                Rectangle r = new Rectangle(x, y, Globals.TILE_SIZE, Globals.TILE_SIZE);
+                this.drawTexture(spriteBatch, Recellection.textureMap.GetTexture(t.GetTerrainType().GetEnum()), r);
                 b = t.GetBuilding();
                 if (b != null)
                 {
-                    int x = (int)t.position.X;
-                    int y = (int)t.position.Y;
+                    x = (int)t.position.X;
+                    y = (int)t.position.Y;
                     this.drawTexture(spriteBatch, b.GetSprite(), new Rectangle(x * 128 + 32, y * 128 + 32, b.GetSprite().Width, b.GetSprite().Height));
                 }
             }
@@ -89,7 +93,7 @@ namespace Recellection.Code.Views
 		{
             KeyboardState ks = Keyboard.GetState();
 
-            float f = 1f;
+            float f = 0.5f;
             
             if (ks.IsKeyDown(Keys.Left))
             {
@@ -102,17 +106,17 @@ namespace Recellection.Code.Views
             if (ks.IsKeyDown(Keys.Right))
             {
                 this.World.LookingAt = new Vector2(this.World.LookingAt.X + f, this.World.LookingAt.Y);
-                if (this.World.LookingAt.X > this.World.map.Cols)
+                if (this.World.LookingAt.X > this.World.map.Cols-8)
                 {
-                    this.World.LookingAt = new Vector2(this.World.map.Cols, this.World.LookingAt.Y);
+                    this.World.LookingAt = new Vector2(this.World.map.Cols, this.World.LookingAt.Y-8);
                 }
             }
             if (ks.IsKeyDown(Keys.Up))
             {
                 this.World.LookingAt = new Vector2(this.World.LookingAt.X, this.World.LookingAt.Y+f);
-                if (this.World.LookingAt.Y > this.World.map.Rows)
+                if (this.World.LookingAt.Y > this.World.map.Rows-8)
                 {
-                    this.World.LookingAt = new Vector2(this.World.LookingAt.X, this.World.map.Rows);
+                    this.World.LookingAt = new Vector2(this.World.LookingAt.X, this.World.map.Rows-8);
                 }
             }
             if (ks.IsKeyDown(Keys.Down))
