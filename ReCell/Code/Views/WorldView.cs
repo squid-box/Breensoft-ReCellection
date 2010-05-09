@@ -20,7 +20,7 @@ namespace Recellection.Code.Views
     class WorldView : IView
     {
         public Logger myLogger;
-        private List<DrawData> tiles;
+        private List<Tile> tilecollection;
 
         public World World { get; private set; }
 
@@ -33,16 +33,16 @@ namespace Recellection.Code.Views
             myLogger.SetTarget(Console.Out);
             myLogger.Info("Created a WorldView.");
 
-            this.tiles = CreateCurrentView();
+            this.tilecollection = CreateCurrentView();
         }
 
-        private List<DrawData> CreateCurrentView()
+        private List<Tile> CreateCurrentView()
         {
             // First, add all tiles from the map:
             myLogger.Info("Getting tiles from World.map.");
             Tile[,] tiles = this.World.map.map;
 
-            List<DrawData> tileCollection = new List<DrawData>();
+            List<Tile> tileCollection = new List<Tile>();
             myLogger.Info("I'm going to start working on those tiles now...");
 
             int currentX = (int)this.World.lookingAt.X;
@@ -52,8 +52,7 @@ namespace Recellection.Code.Views
             {
                 for (int j = currentY; j < Globals.VIEWPORT_HEIGHT / Globals.TILE_SIZE; j++)
                 {
-                    Tile t = tiles[i, j];
-                    tileCollection.Add(new DrawData(Recellection.textureMap.GetTexture(t.GetTerrainType().GetEnum()), t.GetRectangle()));
+                    tileCollection.Add(tiles[i,j]);
                 }
             }
 
@@ -95,9 +94,9 @@ namespace Recellection.Code.Views
 
 		override public void Draw(SpriteBatch spriteBatch)
 		{
-			foreach(DrawData d in this.tiles)
+			foreach(Tile t in tilecollection)
             {
-                spriteBatch.Draw(d.Texture, d.TargetRectangle, Color.White);
+                this.drawTexture(spriteBatch, Recellection.textureMap.GetTexture(t.GetTerrainType().GetEnum()), t.GetRectangle());
             }
 		}
 		override public void Update(GameTime passedTime)
