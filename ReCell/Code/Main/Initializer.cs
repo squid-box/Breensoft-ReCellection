@@ -77,7 +77,7 @@ namespace Recellection.Code.Main
             }
             else
 			{
-				playBeethoven();
+				Recellection.playBeethoven();
 				Environment.Exit(0);
             }
 
@@ -104,64 +104,5 @@ namespace Recellection.Code.Main
 			}
         }
 
-		private void playBeethoven()
-		{
-			Console.Beep(659, 120);  // Treble E
-			Console.Beep(622, 120);  // Treble D#
-			
-			Thread.Sleep(60);
-
-			Console.Beep(659, 120);  // Treble E
-			Console.Beep(622, 120);  // Treble D#
-			Console.Beep(659, 120);  // Treble E
-			Console.Beep(494, 120);  // Treble B
-			Console.Beep(587, 120);  // Treble D
-			Console.Beep(523, 120);  // Treble C
-
-			Thread.Sleep(70);
-			
-			Console.Beep(440, 120);  // Treble A
-			Console.Beep(262, 120);  // Middle C
-			Console.Beep(330, 120);  // Treble E
-			Console.Beep(440, 120);  // Treble A
-
-			Thread.Sleep(70);
-			
-			Console.Beep(494, 120);  // Treble B
-			Console.Beep(330, 120);  // Treble E
-			Console.Beep(415, 120);  // Treble G#
-			Console.Beep(494, 120);  // Treble B
-
-			Thread.Sleep(70);
-			
-			Console.Beep(523, 120);  // Treble C
-			Console.Beep(330, 120);  // Treble E
-			Console.Beep(659, 120);  // Treble E
-			Console.Beep(622, 120);  // Treble D#
-
-			Thread.Sleep(70);
-			
-			Console.Beep(659, 120);  // Treble E
-			Console.Beep(622, 120);  // Treble D#
-			Console.Beep(659, 120);  // Treble E
-			Console.Beep(494, 120);  // Treble B
-			Console.Beep(587, 120);  // Treble D
-			Console.Beep(523, 120);  // Treble C
-			
-			Thread.Sleep(70);
-
-			Console.Beep(440, 120);  // Treble A
-			Console.Beep(262, 120);  // Middle C
-			Console.Beep(330, 120);  // Treble E
-			Console.Beep(440, 120);  // Treble A
-
-			Thread.Sleep(70);
-
-			Console.Beep(494, 120);  // Treble B
-			Console.Beep(330, 120);  // Treble E
-			Console.Beep(523, 120);  // Treble C
-			Console.Beep(494, 120);  // Treble B
-			Console.Beep(440, 120);  // Treble A
-        }
 	}
 }
