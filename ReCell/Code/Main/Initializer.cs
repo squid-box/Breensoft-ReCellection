@@ -64,14 +64,18 @@ namespace Recellection.Code.Main
 				}
 				
 				// START THE GAME ALREADY!
-				World w = WorldGenerator.GenerateWorld(1);
-				Recellection.CurrentState = new WorldView(w, new Player(PlayerColour.BLUE, "Tester"));
+
 				// Call blocking state? :S
+                int freq = 45;
 				while(true)
 				{
-					Thread.Sleep(1000);
-					Console.Beep(340, 10);
+					Thread.Sleep(100);
+					Console.Beep(freq, 100);
+                    freq += 15;
 				}
+
+                GameInitializer g = new GameInitializer();
+
             }
             else
 			{
