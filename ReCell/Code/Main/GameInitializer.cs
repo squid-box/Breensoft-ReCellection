@@ -43,8 +43,10 @@ namespace Recellection.Code.Main
                 }
                 return true;
             }
-            catch (Exception)
+            catch (Exception e)
             {
+                Console.Beep(75, 1500);
+                Console.Error.WriteLine(e.GetType() + " : " + e.Message);
                 return false;
             }
             

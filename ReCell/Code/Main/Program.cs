@@ -38,8 +38,10 @@ namespace Recellection
             form.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
             form.Focus();
             form.TopMost = true;
-            Recellection.graphics.PreferredBackBufferWidth = System.Windows.Forms.SystemInformation.PrimaryMonitorSize.Width;
-            Recellection.graphics.PreferredBackBufferHeight = System.Windows.Forms.SystemInformation.PrimaryMonitorSize.Height;
+            Globals.VIEWPORT_HEIGHT = System.Windows.Forms.SystemInformation.PrimaryMonitorSize.Height;
+            Globals.VIEWPORT_WIDTH = System.Windows.Forms.SystemInformation.PrimaryMonitorSize.Width;
+            Recellection.graphics.PreferredBackBufferWidth = Globals.VIEWPORT_WIDTH;
+            Recellection.graphics.PreferredBackBufferHeight = Globals.VIEWPORT_HEIGHT;
             Recellection.graphics.ApplyChanges();
 
             #endregion
