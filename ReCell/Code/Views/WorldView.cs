@@ -71,7 +71,7 @@ namespace Recellection.Code.Views
         [Obsolete]
         public void OnMapEvent(Object o, Event<World.Map> ev)
         {
-            this.World.map = ev.subject; 
+            //this.World.map = ev.subject; 
         }
 
         [Obsolete]
