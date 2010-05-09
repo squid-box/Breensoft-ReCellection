@@ -28,16 +28,13 @@ namespace Recellection.Code.Views
         public WorldView(World world)
         {
             this.World = world;
-            world.MapEvent += OnMapEvent;
-            world.GetMap().TileEvent += OnTileEvent;
             myLogger = LoggerFactory.GetLogger();
             myLogger.Info("Created a WorldView.");
 
             this.World.lookingAtEvent += CreateCurrentView;
 
-            this.World.LookingAt = this.World.players[0].GetGraphs()[0].baseBuilding.coordinates;
-
-            CreateCurrentView(null, null);
+            //this.World.LookingAt = this.World.players[0].GetGraphs()[0].baseBuilding.coordinates;
+            this.World.LookingAt = new Vector2(0, 0);
         }
 
         private void CreateCurrentView(Object o, Event<Vector2> ev)
@@ -52,9 +49,9 @@ namespace Recellection.Code.Views
             int currentX = (int)this.World.LookingAt.X;
             int currentY = (int)this.World.LookingAt.Y;
 
-            for (int i = currentX; i < Globals.VIEWPORT_WIDTH / Globals.TILE_SIZE; i++)
+            for (int i = currentX; i <= Globals.VIEWPORT_WIDTH / Globals.TILE_SIZE; i++)
             {
-                for (int j = currentY; j < Globals.VIEWPORT_HEIGHT / Globals.TILE_SIZE; j++)
+                for (int j = currentY; j <= Globals.VIEWPORT_HEIGHT / Globals.TILE_SIZE; j++)
                 {
                     tileCollection.Add(tiles[i,j]);
                 }
@@ -63,31 +60,6 @@ namespace Recellection.Code.Views
             myLogger.Info("Done with the Tiles!");
         }
 
-        /// <summary>
-        /// Defines the action to be taken when the MapEvent is invoked in World.
-        /// </summary>
-        /// <param name="o"></param>
-        /// <param name="ev"></param>
-        [Obsolete]
-        public void OnMapEvent(Object o, Event<World.Map> ev)
-        {
-            //this.World.map = ev.subject; 
-        }
-
-        [Obsolete]
-        public void OnTileEvent(Object o, Event<Tile> ev)
-        {
-            
-        }
-
-        /// <summary>
-        /// I have no idea what this is supposed to do.
-        /// </summary>
-        [Obsolete]
-        public void UpdateScreen()
-        {
-            throw new NotImplementedException();
-        }
 
         /// <summary>
         /// I have no idea what this is supposed to do.
@@ -100,28 +72,56 @@ namespace Recellection.Code.Views
 
 		override public void Draw(SpriteBatch spriteBatch)
 		{
-			foreach(Tile t in tileCollection)
+			Building b;
+            foreach(Tile t in tileCollection)
             {
                 this.drawTexture(spriteBatch, Recellection.textureMap.GetTexture(t.GetTerrainType().GetEnum()), t.GetRectangle());
+                b = t.GetBuilding();
+                if (b != null)
+                {
+                    int x = (int)t.position.X;
+                    int y = (int)t.position.Y;
+                    this.drawTexture(spriteBatch, b.GetSprite(), new Rectangle(x * 128 + 32, y * 128 + 32, b.GetSprite().Width, b.GetSprite().Height));
+                }
             }
 		}
 		override public void Update(GameTime passedTime)
 		{
-            if (Keyboard.GetState().IsKeyDown(Keys.Left))
+            KeyboardState ks = Keyboard.GetState();
+
+            float f = 1f;
+            
+            if (ks.IsKeyDown(Keys.Left))
             {
-                this.World.LookingAt = new Vector2(this.World.LookingAt.X-1, this.World.LookingAt.Y);
+                this.World.LookingAt = new Vector2(this.World.LookingAt.X-f, this.World.LookingAt.Y);
+                if (this.World.LookingAt.X < 0)
+                {
+                    this.World.LookingAt = new Vector2(0, this.World.LookingAt.Y);
+                }
             }
-            if (Keyboard.GetState().IsKeyDown(Keys.Right))
+            if (ks.IsKeyDown(Keys.Right))
             {
-                this.World.LookingAt = new Vector2(this.World.LookingAt.X + 1, this.World.LookingAt.Y);
+                this.World.LookingAt = new Vector2(this.World.LookingAt.X + f, this.World.LookingAt.Y);
+                if (this.World.LookingAt.X > this.World.map.Cols)
+                {
+                    this.World.LookingAt = new Vector2(this.World.map.Cols, this.World.LookingAt.Y);
+                }
             }
-            if (Keyboard.GetState().IsKeyDown(Keys.Up))
+            if (ks.IsKeyDown(Keys.Up))
             {
-                this.World.LookingAt = new Vector2(this.World.LookingAt.X, this.World.LookingAt.Y+1);
+                this.World.LookingAt = new Vector2(this.World.LookingAt.X, this.World.LookingAt.Y+f);
+                if (this.World.LookingAt.Y > this.World.map.Rows)
+                {
+                    this.World.LookingAt = new Vector2(this.World.LookingAt.X, this.World.map.Rows);
+                }
             }
-            if (Keyboard.GetState().IsKeyDown(Keys.Down))
+            if (ks.IsKeyDown(Keys.Down))
             {
-                this.World.LookingAt = new Vector2(this.World.LookingAt.X, this.World.LookingAt.Y - 1);
+                this.World.LookingAt = new Vector2(this.World.LookingAt.X, this.World.LookingAt.Y - f);
+                if (this.World.LookingAt.Y < 0)
+                {
+                    this.World.LookingAt = new Vector2(this.World.LookingAt.X, 0);
+                }
             }
 		}
 	}
