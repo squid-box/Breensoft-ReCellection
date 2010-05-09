@@ -218,12 +218,8 @@ Global Settings
     Compression Preset
     {
         Name = Lossy;
-        Xbox Format Tag = 357;
-        Target Sample Rate = 48000;
-        XMA Quality = 60;
-        Find Best Quality = 0;
-        High Freq Cut = 0;
-        Loop = 0;
+        Xbox Format Tag = 353;
+        WMA Quality = 60;
         PC Format Tag = 353;
         WMA Quality = 60;
     }
@@ -231,14 +227,10 @@ Global Settings
     Compression Preset
     {
         Name = Better;
-        Xbox Format Tag = 357;
-        Target Sample Rate = 48000;
-        XMA Quality = 60;
-        Find Best Quality = 0;
-        High Freq Cut = 0;
-        Loop = 0;
+        Xbox Format Tag = 353;
+        WMA Quality = 60;
         PC Format Tag = 353;
-        WMA Quality = 80;
+        WMA Quality = 60;
     }
 }
 
@@ -249,23 +241,20 @@ Wave Bank
     Windows File = Wave Bank.xwb;
     Xbox Bank Path Edited = 1;
     Windows Bank Path Edited = 1;
+    Streaming = 1;
     Seek Tables = 1;
-    Compression Preset Name = Better;
-    Xbox Bank Last Modified Low = 0;
-    Xbox Bank Last Modified High = 0;
-    PC Bank Last Modified Low = 0;
-    PC Bank Last Modified High = 0;
+    Compression Preset Name = <none>;
     Header Last Modified Low = 0;
     Header Last Modified High = 0;
-    Bank Last Revised Low = 737952602;
-    Bank Last Revised High = 30076575;
+    Bank Last Revised Low = 1644615074;
+    Bank Last Revised High = 30076774;
 
     Wave
     {
         Name = boom;
         File = kaboom.wav;
-        Build Settings Last Modified Low = 839683334;
-        Build Settings Last Modified High = 30076572;
+        Build Settings Last Modified Low = 1516917770;
+        Build Settings Last Modified High = 30076774;
 
         Cache
         {
@@ -287,8 +276,8 @@ Wave Bank
     {
         Name = acid;
         File = acid.wav;
-        Build Settings Last Modified Low = 839703335;
-        Build Settings Last Modified High = 30076572;
+        Build Settings Last Modified Low = 1516917770;
+        Build Settings Last Modified High = 30076774;
 
         Cache
         {
@@ -310,8 +299,8 @@ Wave Bank
     {
         Name = buildingDeath;
         File = buildingDeath.wav;
-        Build Settings Last Modified Low = 839703335;
-        Build Settings Last Modified High = 30076572;
+        Build Settings Last Modified Low = 1516917770;
+        Build Settings Last Modified High = 30076774;
 
         Cache
         {
@@ -333,8 +322,8 @@ Wave Bank
     {
         Name = buildingPlacement;
         File = buildingPlacement.wav;
-        Build Settings Last Modified Low = 839713336;
-        Build Settings Last Modified High = 30076572;
+        Build Settings Last Modified Low = 1516917770;
+        Build Settings Last Modified High = 30076774;
 
         Cache
         {
@@ -356,8 +345,8 @@ Wave Bank
     {
         Name = cellDeath1;
         File = cellDeath1.wav;
-        Build Settings Last Modified Low = 839713336;
-        Build Settings Last Modified High = 30076572;
+        Build Settings Last Modified Low = 1516917770;
+        Build Settings Last Modified High = 30076774;
 
         Cache
         {
@@ -379,8 +368,8 @@ Wave Bank
     {
         Name = cellDeath2;
         File = cellDeath2.wav;
-        Build Settings Last Modified Low = 839713336;
-        Build Settings Last Modified High = 30076572;
+        Build Settings Last Modified Low = 1516917770;
+        Build Settings Last Modified High = 30076774;
 
         Cache
         {
@@ -402,8 +391,8 @@ Wave Bank
     {
         Name = cellDeath3;
         File = cellDeath3.wav;
-        Build Settings Last Modified Low = 839723336;
-        Build Settings Last Modified High = 30076572;
+        Build Settings Last Modified Low = 1516917770;
+        Build Settings Last Modified High = 30076774;
 
         Cache
         {
@@ -425,8 +414,8 @@ Wave Bank
     {
         Name = cellDeath4;
         File = cellDeath4.wav;
-        Build Settings Last Modified Low = 839723336;
-        Build Settings Last Modified High = 30076572;
+        Build Settings Last Modified Low = 1516917770;
+        Build Settings Last Modified High = 30076774;
 
         Cache
         {
@@ -448,8 +437,8 @@ Wave Bank
     {
         Name = cellDeath5;
         File = cellDeath5.wav;
-        Build Settings Last Modified Low = 839733337;
-        Build Settings Last Modified High = 30076572;
+        Build Settings Last Modified Low = 1516917770;
+        Build Settings Last Modified High = 30076774;
 
         Cache
         {
@@ -471,8 +460,8 @@ Wave Bank
     {
         Name = logoIntro;
         File = logoIntro.wav;
-        Build Settings Last Modified Low = 839733337;
-        Build Settings Last Modified High = 30076572;
+        Build Settings Last Modified Low = 1516917770;
+        Build Settings Last Modified High = 30076774;
 
         Cache
         {
@@ -494,8 +483,8 @@ Wave Bank
     {
         Name = prego;
         File = prego.wav;
-        Build Settings Last Modified Low = 839733337;
-        Build Settings Last Modified High = 30076572;
+        Build Settings Last Modified Low = 1516917770;
+        Build Settings Last Modified High = 30076774;
 
         Cache
         {
@@ -517,8 +506,8 @@ Wave Bank
     {
         Name = Menu;
         File = Songs\Menu.wav;
-        Build Settings Last Modified Low = 2394959015;
-        Build Settings Last Modified High = 30076574;
+        Build Settings Last Modified Low = 1516917770;
+        Build Settings Last Modified High = 30076774;
 
         Cache
         {
