@@ -102,11 +102,11 @@ namespace Recellection
                 else if( icons[i].label != null)
                 {
                     int textWidth = icons[i].label.Length * FONT_WIDTH;
+                    Vector2 temp = calculateDrawCoordinates(new Vector2(
+                        i * Recellection.viewPort.Width * 3 / 5 + Recellection.viewPort.Width * 1 / 5, Recellection.viewPort.Height / 2), icons[i].label);
+
                     icons[i].targetRectangle =
-                    new Microsoft.Xna.Framework.Rectangle(i * Recellection.viewPort.Width * 3 / 5 + Recellection.viewPort.Width * 1 / 5 - textWidth / 2 ,
-                        Recellection.viewPort.Height / 2 - FONT_SIZE / 2,
-                        textWidth,
-                        FONT_SIZE);
+                    new Microsoft.Xna.Framework.Rectangle((int)temp.X, (int)temp.Y, textWidth, FONT_SIZE);
                 }
                 
             }
@@ -174,12 +174,12 @@ namespace Recellection
                 else if (icons[i].label != null)
                 {
                     int textWidth = icons[i].label.Length * FONT_WIDTH;
+
+                    Vector2 temp = calculateDrawCoordinates(new Vector2(
+                       (i % 2) * (windowWidth * 3 / 5) / 2, (i / 2) * (windowHeight * 3 / 5) / 2), icons[i].label);
+
                     icons[i].targetRectangle =
-                        new Microsoft.Xna.Framework.Rectangle(
-                            (i % 2) * (windowWidth * 3 / 5) / 2 - textWidth / 2,
-                            (i / 2) * (windowHeight * 3 / 5) / 2 - FONT_SIZE / 2,
-                            (textWidth),
-                            (FONT_SIZE));
+                        new Microsoft.Xna.Framework.Rectangle((int) temp.X, (int) temp.Y, (textWidth), (FONT_SIZE));
                 }
                 
                 icons[i].region = new GUIRegion(Recellection.windowHandle,
@@ -218,12 +218,12 @@ namespace Recellection
                 else if (icons[i].label != null)
                 {
                     int textWidth = icons[i].label.Length * FONT_WIDTH;
+
+                    Vector2 temp = calculateDrawCoordinates(new Vector2(
+                       (i % 3) * (iconWidth) / 2, (i / 3) * (iconHeight) / 2), icons[i].label);
+
                     icons[i].targetRectangle =
-                        new Microsoft.Xna.Framework.Rectangle(
-                            (i % 3) * iconWidth / 2 - textWidth / 2,
-                            (i / 3) * iconHeight / 2 - FONT_SIZE / 2,
-                            (textWidth),
-                            (FONT_SIZE));
+                        new Microsoft.Xna.Framework.Rectangle((int) temp.X,(int)temp.Y,(textWidth),(FONT_SIZE));
                 }
 
                 icons[i].region = new GUIRegion(Recellection.windowHandle,
