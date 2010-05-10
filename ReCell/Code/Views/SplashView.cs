@@ -11,13 +11,12 @@ using Recellection.Code.Utility.Logger;
 
 namespace Recellection.Code.Views
 {
-    /**
-     * Most of this code is cannibalized from the MenuView Class and then slightly edited.
-     * 
-     * 
-     * Author: Lukas Mattsson
-     */
-
+	/// <summary>
+	/// Show a splash screen with the logo fading in.
+	/// 
+	///  Author: Lukas Mattsson
+	///  Co-author: Martin Nycander
+	/// </summary>
     public sealed class SplashView : IView
     {
 		private static Logger logger = LoggerFactory.GetLogger();
@@ -26,10 +25,6 @@ namespace Recellection.Code.Views
 		
 		private byte opacity;
 		private float fadeInTime = 1.5f;
-		
-        static readonly object padlock = new object(); 
-        //No idea how the padlock works but I'm not one to argue with code that works.
-
 
         /// <summary>
         /// Instantiates a SplashView with the default Breensoft logo
@@ -44,6 +39,10 @@ namespace Recellection.Code.Views
 			logger.SetTarget(Console.Out);
         }
 
+		/// <summary>
+		/// Updates the view by slowly fading in the logo.
+		/// </summary>
+		/// <param name="passedTime">The XNA gametime object.</param>
 		override public void Update(GameTime passedTime)
 		{
 			if (opacity < 255)
@@ -53,6 +52,10 @@ namespace Recellection.Code.Views
 			}
 		}
 		
+		/// <summary>
+		/// Draw the splashview.
+		/// </summary>
+		/// <param name="spriteBatch">The spritebatch to draw upon.</param>
         override public void Draw(SpriteBatch spriteBatch)
         {
 			drawTexture(spriteBatch, back, new Rectangle(0, 0, Recellection.viewPort.Width, Recellection.viewPort.Height));
