@@ -62,6 +62,8 @@ namespace Recellection
 		{
 			this.drawTexture(spriteBatch, currentMenu.GetMenuPic(), new Rectangle(0, 0, Recellection.viewPort.Width, Recellection.viewPort.Height));
 
+            spriteBatch.DrawString(Recellection.screenFont, currentMenu.explanation, currentMenu.explanationDrawPos, currentMenu.explanationColor);
+
 			foreach (MenuIcon mi in currentMenu.GetIcons())
 			{
 				if (mi.texture != null)
@@ -74,5 +76,7 @@ namespace Recellection
 				}
 			}
 		}
+
+        
 	}
 }
