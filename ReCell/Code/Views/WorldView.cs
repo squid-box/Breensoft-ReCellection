@@ -71,24 +71,28 @@ namespace Recellection.Code.Views
 
 		override public void Draw(SpriteBatch spriteBatch)
         {
-            myLogger.Info("*** I AM DRAWING "+tileCollection.Count+" TILES! :O ***");
-
-            if (tileCollection.Count == 0)
-            {
-                myLogger.Info("World.lookingAt is set to: ("+World.LookingAt.X+" : "+World.LookingAt.Y+").");
-            }
-            
             Building b;
             foreach(Tile t in tileCollection)
             {
+                // Calculate start coordinates for the tile, corrected into view.
                 int x = (int) (t.position.X - (World.LookingAt.X));
                 int y = (int) (t.position.Y - (World.LookingAt.Y));
 
+                // Construct rectangle for tile and add tile to drawTexture.
                 Rectangle r = new Rectangle(x*Globals.TILE_SIZE, y*Globals.TILE_SIZE, Globals.TILE_SIZE, Globals.TILE_SIZE);
                 this.drawTexture(spriteBatch, Recellection.textureMap.GetTexture(t.GetTerrainType().GetEnum()), r);
+
+                foreach (Unit u in t.GetUnits())
+                {
+                    x = (int)u.GetPosition().X;
+                    y = (int)u.GetPosition().Y;
+                    this.drawTexture(spriteBatch, u.GetSprite(), new Rectangle(x * 128 + 32, y * 128 + 32, u.GetSprite().Width, u.GetSprite().Height));
+                }
+
                 b = t.GetBuilding();
                 if (b != null)
                 {
+                    myLogger.Info("Building on tile ("+t.position.X+" : "+t.position.Y+") is not null!");
                     x = (int)t.position.X;
                     y = (int)t.position.Y;
                     this.drawTexture(spriteBatch, b.GetSprite(), new Rectangle(x * 128 + 32, y * 128 + 32, b.GetSprite().Width, b.GetSprite().Height));
@@ -108,34 +112,30 @@ namespace Recellection.Code.Views
 
             if (ks.IsKeyDown(Keys.Left))
             {
-                this.World.LookingAt = new Vector2(this.World.LookingAt.X-f, this.World.LookingAt.Y);
-                if (this.World.LookingAt.X < 0)
+                if (!(this.World.LookingAt.X-f < 0))
                 {
-                    this.World.LookingAt = new Vector2(0, this.World.LookingAt.Y);
+                    this.World.LookingAt = new Vector2(this.World.LookingAt.X - f, this.World.LookingAt.Y);
                 }
             }
             if (ks.IsKeyDown(Keys.Right))
             {
-                this.World.LookingAt = new Vector2(this.World.LookingAt.X + f, this.World.LookingAt.Y);
-                if (this.World.LookingAt.X > this.World.map.Cols-18)
+                if (!(this.World.LookingAt.X+f > this.World.map.Cols-10))
                 {
-                    this.World.LookingAt = new Vector2(this.World.map.Cols, this.World.LookingAt.Y);
+                    this.World.LookingAt = new Vector2(this.World.LookingAt.X + f, this.World.LookingAt.Y);
                 }
             }
             if (ks.IsKeyDown(Keys.Down))
             {
-                this.World.LookingAt = new Vector2(this.World.LookingAt.X, this.World.LookingAt.Y+f);
-                if (this.World.LookingAt.Y > this.World.map.Rows-12)
+                if (!(this.World.LookingAt.Y+f > this.World.map.Rows-14))
                 {
-                    this.World.LookingAt = new Vector2(this.World.LookingAt.X, this.World.map.Rows-12);
+                    this.World.LookingAt = new Vector2(this.World.LookingAt.X, this.World.LookingAt.Y + f);
                 }
             }
             if (ks.IsKeyDown(Keys.Up))
             {
-                this.World.LookingAt = new Vector2(this.World.LookingAt.X, this.World.LookingAt.Y - f);
-                if (this.World.LookingAt.Y < 0)
+                if (!(this.World.LookingAt.Y-f < 0))
                 {
-                    this.World.LookingAt = new Vector2(this.World.LookingAt.X, 0);
+                    this.World.LookingAt = new Vector2(this.World.LookingAt.X, this.World.LookingAt.Y - f);
                 }
             }
 		}
