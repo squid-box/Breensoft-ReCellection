@@ -40,6 +40,7 @@ namespace Recellection.Code.Views
 			front = Recellection.textureMap.GetTexture(Globals.TextureTypes.logo);
 			opacity = 0;
 			
+			logger.SetThreshold(LogLevel.ERROR);
 			logger.SetTarget(Console.Out);
         }
 
