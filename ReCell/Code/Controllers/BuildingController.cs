@@ -88,9 +88,12 @@ namespace Recellection.Code.Controllers
             if (buildingType == Globals.BuildingTypes.Base)
             {
                 logger.Trace("Adding a Base Building and also constructing a new graph");
-                GraphController.Instance.AddBaseBuilding(new BaseBuilding("Base Buidling",
-                (int)targetCoordinate.X, (int)targetCoordinate.Y, sourceBuilding.owner,controlZone),
-                sourceBuilding);
+                BaseBuilding baseBuilding = new BaseBuilding("Base Buidling",
+                (int)targetCoordinate.X, (int)targetCoordinate.Y, sourceBuilding.owner,controlZone);
+
+                world.map.GetTile((int)targetCoordinate.Y, (int)targetCoordinate.X).SetBuilding(baseBuilding);
+
+                GraphController.Instance.AddBaseBuilding(baseBuilding, sourceBuilding);
             }
             else
             {
@@ -119,6 +122,8 @@ namespace Recellection.Code.Controllers
                         break;
 
                 }
+
+                world.map.GetTile((int)targetCoordinate.Y, (int)targetCoordinate.X).SetBuilding(newBuilding);
                 GraphController.Instance.AddBuilding(sourceBuilding,newBuilding);
 
             }

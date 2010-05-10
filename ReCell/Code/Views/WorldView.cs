@@ -33,7 +33,9 @@ namespace Recellection.Code.Views
 
             this.World.lookingAtEvent += CreateCurrentView;
 
-            this.World.LookingAt = new Vector2(0, 0);
+            //this.World.LookingAt = new Vector2(0, 0);
+            CreateCurrentView(this, new Event<Vector2>(this.World.LookingAt,EventType.ALTER));
+
         }
 
         private void CreateCurrentView(Object o, Event<Vector2> ev)
@@ -89,8 +91,9 @@ namespace Recellection.Code.Views
                 b = t.GetBuilding();
                 if (b != null)
                 {
-                    x = (int)t.position.X;
-                    y = (int)t.position.Y;
+                    myLogger.Info("Found a building on the tile.");
+                    //x = (int)t.position.X;
+                    //y = (int)t.position.Y;
                     this.drawTexture(spriteBatch, b.GetSprite(), new Rectangle(x * 128 + 32, y * 128 + 32, b.GetSprite().Width, b.GetSprite().Height));
                 }
             }
@@ -100,7 +103,12 @@ namespace Recellection.Code.Views
             KeyboardState ks = Keyboard.GetState();
 
             float f = 0.1f;
-            
+            /**
+             * A note from John, due to the confusion between Marcos rows/cols in map 
+             * and most of the other code using coordinates by X,Y there is some fail.
+             * Currently X is used for Rows (even though they are represented as cols)
+             * and wise versa.
+             **/
             if(ks.IsKeyDown(Keys.X))
             {
                 this.World.LookingAt = this.World.players[0].GetGraphs()[0].baseBuilding.coordinates;
@@ -117,7 +125,7 @@ namespace Recellection.Code.Views
             if (ks.IsKeyDown(Keys.Right))
             {
                 this.World.LookingAt = new Vector2(this.World.LookingAt.X + f, this.World.LookingAt.Y);
-                if (this.World.LookingAt.X > this.World.map.Cols-18)
+                if (this.World.LookingAt.X > this.World.map.Rows-18)
                 {
                     this.World.LookingAt = new Vector2(this.World.map.Cols, this.World.LookingAt.Y);
                 }
@@ -125,7 +133,7 @@ namespace Recellection.Code.Views
             if (ks.IsKeyDown(Keys.Down))
             {
                 this.World.LookingAt = new Vector2(this.World.LookingAt.X, this.World.LookingAt.Y+f);
-                if (this.World.LookingAt.Y > this.World.map.Rows-12)
+                if (this.World.LookingAt.Y > this.World.map.Cols-12)
                 {
                     this.World.LookingAt = new Vector2(this.World.LookingAt.X, this.World.map.Rows-12);
                 }

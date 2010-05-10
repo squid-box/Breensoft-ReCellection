@@ -7,6 +7,7 @@ using Recellection.Code.Models;
 using Recellection.Code.Controllers;
 using Recellection.Code.Views;
 using Recellection.Code.Utility.Logger;
+using Microsoft.Xna.Framework;
 
 namespace Recellection.Code.Main
 {
@@ -25,8 +26,8 @@ namespace Recellection.Code.Main
 
         private bool CreateGameObjects(int seed)
         {
-            try
-            {
+            //try
+            //{
                 myLogger.Info("Generating world.");
                 theWorld = WorldGenerator.GenerateWorld(seed);
                 myLogger.Info("Done.");
@@ -45,24 +46,29 @@ namespace Recellection.Code.Main
                 SpawnPoints(theWorld.players, theWorld.map.Cols, theWorld.map.Rows, randomer);
 
                 myLogger.Info("Spawning units.");
+                suitGuys = new Dictionary<Player, UnitAccountant>(2);
                 foreach(Player p in theWorld.players)
                 {
                     suitGuys[p] = new UnitAccountant(p);
                     suitGuys[p].ProduceUnits();
                 }
+                
+                theWorld.LookingAt = new Vector2(
+                    theWorld.players[0].GetGraphs()[0].baseBuilding.coordinates.X,
+                    theWorld.players[0].GetGraphs()[0].baseBuilding.coordinates.Y);
 
-                theWorld.LookingAt = theWorld.players[0].GetGraphs()[0].baseBuilding.coordinates;
+                myLogger.Info("Setting lookingAt to X: " + theWorld.LookingAt.X + "  y: " + theWorld.LookingAt.Y);
 
                 return true;
-            }
-            catch (Exception e)
+            //}
+            /*catch (Exception e)
             {
                 myLogger.Info("Something went wrong.");
                 myLogger.Info(e.GetType() + " : " + e.Message);
                 Console.Beep(75, 1500);
                 Console.Error.WriteLine(e.GetType() + " : " + e.Message);
                 return false;
-            }
+            }*/
             
         }
         /// <summary>
@@ -121,9 +127,11 @@ namespace Recellection.Code.Main
         /// graph.</param>
         private void SpawnGraph(int xCoord, int yCoord, Player owner)
         {
+            BaseBuilding baseBuilding = new BaseBuilding("base", xCoord, yCoord, owner);
+
+            theWorld.map.GetTile(xCoord, yCoord).SetBuilding(baseBuilding);
             myLogger.Info("Creating graph for player: "+ owner +" .");
-            owner.AddGraph(new Graph(
-                new BaseBuilding("base", xCoord, yCoord, owner)));
+            owner.AddGraph(new Graph(baseBuilding));
         }
     }
 
