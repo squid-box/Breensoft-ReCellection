@@ -119,15 +119,26 @@ namespace Recellection.Code.Views
 
                 Rectangle r = new Rectangle(x*Globals.TILE_SIZE, y*Globals.TILE_SIZE, Globals.TILE_SIZE, Globals.TILE_SIZE);
                 this.drawTexture(spriteBatch, Recellection.textureMap.GetTexture(t.GetTerrainType().GetEnum()), r);
+                
+                // Building? On my Tile?! It's more likely than you think.
                 b = t.GetBuilding();
                 if (b != null)
                 {
                     myLogger.Info("Found a building on the tile.");
-                    //x = (int)t.position.X;
-                    //y = (int)t.position.Y;
                     this.drawTexture(spriteBatch, b.GetSprite(),
                         new Rectangle(x * Globals.TILE_SIZE + 32, y * Globals.TILE_SIZE + 32, b.GetSprite().Width, b.GetSprite().Height),
                         b.owner.color);
+                }
+
+                // Find those units!
+                HashSet<Unit> units = t.GetUnits();
+                if (units.Count != 0)
+                {
+                    myLogger.Info("Found unit(s) on the tile.");
+                    foreach (Unit u in units)
+                    {
+                        this.drawTexture(spriteBatch, u.GetSprite(), new Rectangle(x * Globals.TILE_SIZE, y * Globals.TILE_SIZE, u.GetSprite().Width, u.GetSprite().Height), u.GetOwner().color);
+                    }
                 }
             }
 		}
