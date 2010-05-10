@@ -31,6 +31,9 @@ namespace Recellection.Code.Views
             myLogger = LoggerFactory.GetLogger();
             myLogger.Info("Created a WorldView.");
 
+            //To make sure the lookingAt in world would make the world view draw tiles that does not exists align it.
+            alignViewport();
+
             this.World.lookingAtEvent += CreateCurrentView;
 
             //this.World.LookingAt = new Vector2(0, 0);
@@ -44,6 +47,8 @@ namespace Recellection.Code.Views
             myLogger.Info("Getting tiles from World.map.");
             Tile[,] tiles = this.World.map.map;
 
+            //Vector2 copyLookingAt = alignViewport(ev.subject);
+
             tileCollection = new List<Tile>();
             myLogger.Info("I'm going to start working on those tiles now...");
 
@@ -52,13 +57,39 @@ namespace Recellection.Code.Views
 
             for (int i = currentX; i <= (Globals.VIEWPORT_WIDTH / Globals.TILE_SIZE) + currentX; i++)
             {
-                for (int j = currentY; j <= (Globals.VIEWPORT_HEIGHT / Globals.TILE_SIZE) + currentY+1; j++)
+                for (int j = currentY; j <= (Globals.VIEWPORT_HEIGHT / Globals.TILE_SIZE) + currentY; j++)
                 {
                      tileCollection.Add(tiles[i,j]);
                 }
             }
 
             myLogger.Info("Done with the Tiles!");
+        }
+
+        private void alignViewport()
+        {
+            if (this.World.LookingAt.X < 0)
+            {
+                this.World.LookingAt = new Vector2(0, this.World.LookingAt.Y);
+            }
+
+            if (this.World.LookingAt.X >= this.World.map.Rows - (Recellection.viewPort.Width / Globals.TILE_SIZE) -1)
+            {
+                this.World.LookingAt = new Vector2(
+                    this.World.map.Rows - (Recellection.viewPort.Width / Globals.TILE_SIZE) - 1,
+                    this.World.LookingAt.Y);
+            }
+
+            if (this.World.LookingAt.Y >= this.World.map.Cols - (Recellection.viewPort.Height / Globals.TILE_SIZE) -1)
+            {
+                this.World.LookingAt = new Vector2(this.World.LookingAt.X,
+                    this.World.map.Cols - (Recellection.viewPort.Height / Globals.TILE_SIZE) - 1);
+            }
+
+            if (this.World.LookingAt.Y < 0)
+            {
+                this.World.LookingAt = new Vector2(this.World.LookingAt.X, 0);
+            }
         }
 
 
@@ -94,7 +125,9 @@ namespace Recellection.Code.Views
                     myLogger.Info("Found a building on the tile.");
                     //x = (int)t.position.X;
                     //y = (int)t.position.Y;
-                    this.drawTexture(spriteBatch, b.GetSprite(), new Rectangle(x * 128 + 32, y * 128 + 32, b.GetSprite().Width, b.GetSprite().Height));
+                    this.drawTexture(spriteBatch, b.GetSprite(),
+                        new Rectangle(x * Globals.TILE_SIZE + 32, y * Globals.TILE_SIZE + 32, b.GetSprite().Width, b.GetSprite().Height),
+                        b.owner.color);
                 }
             }
 		}
@@ -117,35 +150,25 @@ namespace Recellection.Code.Views
             if (ks.IsKeyDown(Keys.Left))
             {
                 this.World.LookingAt = new Vector2(this.World.LookingAt.X-f, this.World.LookingAt.Y);
-                if (this.World.LookingAt.X < 0)
-                {
-                    this.World.LookingAt = new Vector2(0, this.World.LookingAt.Y);
-                }
+                
             }
             if (ks.IsKeyDown(Keys.Right))
             {
                 this.World.LookingAt = new Vector2(this.World.LookingAt.X + f, this.World.LookingAt.Y);
-                if (this.World.LookingAt.X > this.World.map.Rows-18)
-                {
-                    this.World.LookingAt = new Vector2(this.World.map.Cols, this.World.LookingAt.Y);
-                }
+                
             }
             if (ks.IsKeyDown(Keys.Down))
             {
                 this.World.LookingAt = new Vector2(this.World.LookingAt.X, this.World.LookingAt.Y+f);
-                if (this.World.LookingAt.Y > this.World.map.Cols-12)
-                {
-                    this.World.LookingAt = new Vector2(this.World.LookingAt.X, this.World.map.Rows-12);
-                }
+                
             }
             if (ks.IsKeyDown(Keys.Up))
             {
                 this.World.LookingAt = new Vector2(this.World.LookingAt.X, this.World.LookingAt.Y - f);
-                if (this.World.LookingAt.Y < 0)
-                {
-                    this.World.LookingAt = new Vector2(this.World.LookingAt.X, 0);
-                }
+                
             }
+
+            alignViewport();
 		}
 	}
 }

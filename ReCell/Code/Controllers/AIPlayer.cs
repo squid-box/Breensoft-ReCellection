@@ -5,6 +5,7 @@ using System.Text;
 using Recellection.Code;
 using Recellection.Code.Models;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 
 namespace Recellection.Code.Controllers
 {
@@ -27,7 +28,7 @@ namespace Recellection.Code.Controllers
         /// </summary>
         /// <param name="opponents"></param>
         /// <param name="view"></param>
-        public AIPlayer(List<Player> opponents, AIView view){
+        public AIPlayer(List<Player> opponents, AIView view, Color c):base(c,"AIPLAYER"){
             m_view = view;
             m_opponents = opponents;
             m_interrestPoints = new List<Vector2>();
