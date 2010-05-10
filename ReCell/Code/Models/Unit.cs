@@ -146,12 +146,12 @@ namespace Recellection.Code.Models
         // Graphical representation
 
         /// <summary>
-        /// Not Yet Implemented, waiting for Sprite-class?
+        /// Returns texture for a unit.
         /// </summary>
-        /// <returns>null</returns>
+        /// <returns>Texture of this unit.</returns>
         public Texture2D GetSprite()
         {
-            return null;
+            return Recellection.textureMap.GetTexture(Globals.TextureTypes.Unit);
         }
         /// <summary>
         /// Get current angle of this unit.
