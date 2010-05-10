@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework.Graphics;
 using Recellection.Code.Models;
+using Microsoft.Xna.Framework;
 
 
 namespace Recellection
@@ -14,15 +15,19 @@ namespace Recellection
 	public class Menu
 	{
         private const int FONT_SIZE = 38;
-        private const int FONT_WIDTH = 16;
+        private const int FONT_WIDTH = 23;
         
 	    private List<MenuIcon> icons;
         private Texture2D menuPic;
-        private String explanation;
+        public String explanation { get; private set; }
+        public Vector2 explanationDrawPos { get; private set; }
+        public Color explanationColor { get; private set; }
 
-		public Menu(Globals.MenuLayout layout, List<MenuIcon> icons, String explanation)
+		public Menu(Globals.MenuLayout layout, List<MenuIcon> icons, String explanation, Color explanationColor)
 		{
             this.explanation = explanation;
+            this.explanationColor = explanationColor;
+            this.explanationDrawPos = calculateDrawCoordinates(new Vector2(Recellection.viewPort.Width / 2, Recellection.viewPort.Height / 2),explanation);
 			switch (layout)
 			{
 				case Globals.MenuLayout.Prompt:
@@ -62,6 +67,16 @@ namespace Recellection
 			}
 			return regions;
 		}
+
+        private Vector2 calculateDrawCoordinates(Vector2 middlePointOfString, String text)
+        {
+            int textWidth = text.IndexOf('\n') * FONT_WIDTH;
+
+            float x = middlePointOfString.X - textWidth / 2;
+            float y = middlePointOfString.Y - FONT_SIZE / 2;
+
+            return new Vector2(x, y);
+        }
 		
 		private void CreatePrompt(List<MenuIcon> icons)
 		{

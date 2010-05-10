@@ -40,7 +40,7 @@ namespace Recellection.Code.Main
 			options.Add(yes);
 			options.Add(no);
 			
-			Menu mainMenu = new Menu(Globals.MenuLayout.Prompt, options, "Do you wanna play a game?");
+			Menu mainMenu = new Menu(Globals.MenuLayout.Prompt, options, "Do you wanna play a\ngame?",Color.Black);
 
 			backgroundSound.Play();
 			MenuView view = MenuView.Instance;
