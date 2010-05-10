@@ -7,6 +7,7 @@ using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework;
 using Recellection.Code.Views;
 using Microsoft.Xna.Framework.Graphics;
+using Recellection.Code.Utility.Logger;
 
 namespace Recellection.Code.Views
 {
@@ -19,11 +20,12 @@ namespace Recellection.Code.Views
 
     public sealed class SplashView : IView
     {
+		private static Logger logger = LoggerFactory.GetLogger();
 		private Texture2D back;
 		private Texture2D front;
 		
 		private byte opacity;
-		private float fadeTime;
+		private float fadeInTime = 1.5f;
 		
         static readonly object padlock = new object(); 
         //No idea how the padlock works but I'm not one to argue with code that works.
@@ -37,16 +39,17 @@ namespace Recellection.Code.Views
 			back = Recellection.textureMap.GetTexture(Globals.TextureTypes.white);
 			front = Recellection.textureMap.GetTexture(Globals.TextureTypes.logo);
 			opacity = 0;
-			fadeTime = 0.0f;
+			
+			logger.SetThreshold(LogLevel.ERROR);
+			logger.SetTarget(Console.Out);
         }
 
 		override public void Update(GameTime passedTime)
 		{
 			if (opacity < 255)
 			{
-				fadeTime += passedTime.ElapsedRealTime.Milliseconds;
-				fadeTime = Math.Min(1000f, fadeTime);
-				opacity = (byte)(255.0f * (fadeTime / 1000.0f));
+				opacity += (byte)((float)passedTime.ElapsedGameTime.TotalSeconds * (255f / fadeInTime));
+				logger.Trace("Passed time: " + passedTime.ElapsedGameTime.TotalSeconds + ", Opacity = " + opacity);
 			}
 		}
 		
