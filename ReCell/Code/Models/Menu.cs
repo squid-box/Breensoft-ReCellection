@@ -41,6 +41,29 @@ namespace Recellection
 					break;
 			}
 		}
+
+        public Menu(Globals.MenuLayout layout, List<MenuIcon> icons, String explanation, Color explanationColor, bool scrollZone, int n, int m, 
+            Globals.TextureTypes texture)
+        {
+            this.explanation = explanation;
+            this.explanationColor = explanationColor;
+            this.explanationDrawPos = calculateDrawCoordinates(new Vector2(Recellection.viewPort.Width / 2, Recellection.viewPort.Height / 2), explanation);
+            switch (layout)
+            {
+                case Globals.MenuLayout.Prompt:
+                    CreatePrompt(icons);
+                    break;
+                case Globals.MenuLayout.NineMatrix:
+                    CreateJapaneseFlagLayout(icons);
+                    break;
+                case Globals.MenuLayout.FourMatrix:
+                    CreateSwitzerlandFlagLayout(icons);
+                    break;
+                case Globals.MenuLayout.FreeStyle:
+                    CreateNByMMatrix(n, m, icons, texture, scrollZone);
+                    break;
+            }
+        }
 		
 		public Menu(Texture2D menuPic, List<MenuIcon> icons)
 		{
@@ -127,7 +150,7 @@ namespace Recellection
         /// <param name="cols">The number of cols of the matrix menu</param>
         /// <param name="rows">The number of rows of the matrix menu</param>
         /// <param name="icons">The list of icons</param>
-        private void CreateNByMMatrix(int cols, int rows, List<MenuIcon> icons,Globals.TextureTypes menuTexture)
+        private void CreateNByMMatrix(int cols, int rows, List<MenuIcon> icons,Globals.TextureTypes menuTexture, bool scrollZone)
         {
             if (icons.Count != cols*rows)
             {
@@ -136,13 +159,31 @@ namespace Recellection
             int iconWidth = (int)(Recellection.viewPort.Width / cols);
             int iconHeight = (int)(Recellection.viewPort.Height / rows);
 
-            menuPic = Recellection.textureMap.GetTexture(menuTexture);
-            for(int i = 0; i < cols*rows; i++)
+            if (menuTexture != Globals.TextureTypes.NoTexture)
             {
-                icons[i].targetRectangle = new Microsoft.Xna.Framework.Rectangle((i % cols) * iconWidth, (i / rows) * iconHeight, iconWidth, iconHeight);
+                menuPic = Recellection.textureMap.GetTexture(menuTexture);
+            }
+            if (scrollZone)
+            {
+                for (int i = 0; i < cols * rows; i++)
+                {
+                    if( i < cols && i % cols != 0 && 
+                    icons[i].targetRectangle = new Microsoft.Xna.Framework.Rectangle((i % cols) * iconWidth, (i / rows) * iconHeight, iconWidth, iconHeight);
 
-                icons[i].region = new GUIRegion(Recellection.windowHandle,
-                    new System.Windows.Rect((i%cols)*iconWidth,(i/rows)*iconHeight,iconWidth,iconHeight));
+                    icons[i].region = new GUIRegion(Recellection.windowHandle,
+                        new System.Windows.Rect((i % cols) * iconWidth, (i / rows) * iconHeight, iconWidth, iconHeight));
+                }
+
+            }
+            else
+            {
+                for (int i = 0; i < cols * rows; i++)
+                {
+                    icons[i].targetRectangle = new Microsoft.Xna.Framework.Rectangle((i % cols) * iconWidth, (i / rows) * iconHeight, iconWidth, iconHeight);
+
+                    icons[i].region = new GUIRegion(Recellection.windowHandle,
+                        new System.Windows.Rect((i % cols) * iconWidth, (i / rows) * iconHeight, iconWidth, iconHeight));
+                }
             }
             this.icons = icons;
         }
