@@ -23,6 +23,8 @@ namespace Recellection.Code.Views
         public Logger myLogger;
         private List<Tile> tileCollection;
 
+        private Texture2D backgroundTex;
+
         public World World { get; private set; }
 
         public WorldView(World world)
@@ -104,6 +106,12 @@ namespace Recellection.Code.Views
 
 		override public void Draw(SpriteBatch spriteBatch)
         {
+            #region THIS IS BACKGROUNDDRAWAGE!
+
+            //spriteBatch.Draw(backgroundTex, new Rectangle(0, 0, Recellection.viewPort.Width, Recellection.viewPort.Height), Color.White);
+
+            #endregion
+
             Building b;
             foreach(Tile t in tileCollection)
             {
@@ -178,6 +186,20 @@ namespace Recellection.Code.Views
                     this.World.LookingAt = new Vector2(this.World.LookingAt.X, 0);
                 }
             }
+        }
+
+        public void RenderToTex(SpriteBatch spriteBatch)
+        {
+            RenderTarget2D backgroundTarget = new RenderTarget2D(Recellection.graphics.GraphicsDevice, Recellection.viewPort.Width, Recellection.viewPort.Height, 1, Recellection.graphics.GraphicsDevice.DisplayMode.Format);
+
+            Recellection.graphics.GraphicsDevice.SetRenderTarget(0, backgroundTarget);
+            Recellection.graphics.GraphicsDevice.Clear(Color.White);
+
+            #region INSERT TILE DRAWING HEAR!!!!11
+            #endregion
+
+            Recellection.graphics.GraphicsDevice.SetRenderTarget(0, null);
+            backgroundTex = backgroundTarget.GetTexture();
         }
 	}
 }
