@@ -25,13 +25,16 @@ namespace Recellection.Code.Views
 
         private Texture2D backgroundTex;
 
+		private static int maxCols = (int)((float)Recellection.viewPort.Width / (float)Globals.TILE_SIZE);
+		private static int maxRows = (int)((float)Recellection.viewPort.Height / (float)Globals.TILE_SIZE);
+		
         public World World { get; private set; }
 
         public WorldView(World world)
         {
             this.World = world;
             myLogger = LoggerFactory.GetLogger();
-            myLogger.SetThreshold(LogLevel.ERROR);
+            myLogger.SetThreshold(LogLevel.INFO);
             myLogger.Info("Created a WorldView.");
 
             //To make sure the lookingAt in world would make the world view draw tiles that does not exists align it.
@@ -57,16 +60,15 @@ namespace Recellection.Code.Views
             int currentX = (int)this.World.LookingAt.X;
             int currentY = (int)this.World.LookingAt.Y;
 
-            myLogger.Trace("Rendering for X:" + currentX + " and Y:" + currentY + ".");
-
-            myLogger.Trace("Width:" + (Globals.VIEWPORT_WIDTH / Globals.TILE_SIZE) + " and Height:" + (Globals.VIEWPORT_HEIGHT / Globals.TILE_SIZE) + ".");
-            for (int x = currentX; x <= currentX+(int)((float)Globals.VIEWPORT_WIDTH / (float)Globals.TILE_SIZE); x++)
+            myLogger.Info("Rendering for X:" + currentX + " and Y:" + currentY + ".");
+            myLogger.Info("Width:" + maxCols + " and Height:" + maxRows + ".");
+			for (int x = currentX; x < currentX + maxCols; x++)
             {
-                for (int y = currentY; y <= currentY+(Globals.VIEWPORT_HEIGHT / Globals.TILE_SIZE); y++)
+				for (int y = currentY; y < currentY + maxRows; y++)
                 {
 					try
 					{
-						tileCollection.Add(tiles[x,y]);
+						tileCollection.Add(tiles[x, y]);
 					}
 					catch(IndexOutOfRangeException e)
 					{
@@ -116,10 +118,11 @@ namespace Recellection.Code.Views
         {
             #region THIS IS BACKGROUNDDRAWAGE!
 
-            //spriteBatch.Draw(backgroundTex, new Rectangle(0, 0, Recellection.viewPort.Width, Recellection.viewPort.Height), Color.White);
-
+			Texture2D back = Recellection.textureMap.GetTexture(Globals.TextureTypes.white);
+			Layer = 1.0f;
+			drawTexture(spriteBatch, back, new Rectangle(0, 0, Recellection.viewPort.Width, Recellection.viewPort.Height));
             #endregion
-
+			
             Building b;
             foreach(Tile t in tileCollection)
             {
@@ -127,7 +130,7 @@ namespace Recellection.Code.Views
                 int y = (int) (t.position.Y - (World.LookingAt.Y));
 
                 Rectangle r = new Rectangle(x*Globals.TILE_SIZE, y*Globals.TILE_SIZE, Globals.TILE_SIZE, Globals.TILE_SIZE);
-				this.Layer = 1f;
+				this.Layer = 0.9f;
                 this.drawTexture(spriteBatch, Recellection.textureMap.GetTexture(t.GetTerrainType().GetEnum()), r);
                 
                 // Building? On my Tile?! It's more likely than you think.
@@ -185,8 +188,8 @@ namespace Recellection.Code.Views
 				y += f;
             }
             
-            x = MathHelper.Clamp(x, 0, (int)((float)Globals.VIEWPORT_WIDTH  / (float)Globals.TILE_SIZE));
-            y = MathHelper.Clamp(y, 0, (int)((float)Globals.VIEWPORT_HEIGHT / (float)Globals.TILE_SIZE));
+            x = MathHelper.Clamp(x, 0, World.map.Cols - maxCols);
+            y = MathHelper.Clamp(y, 0, World.map.Rows - maxRows);
             
 			this.World.LookingAt = new Vector2(x, y);
         }
