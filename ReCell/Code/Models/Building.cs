@@ -351,9 +351,21 @@ namespace Recellection.Code.Models
 
         /// <returns>Returns the buy price for a building, it is set
         /// at its health divided by 10. Upkeep should be added elsewhere.</returns>
-        public int GetBuyPrice()
+        public static int GetBuyPrice(Globals.BuildingTypes type)
         {
-            return maxHealth / 10;
+            switch (type)
+            {
+                case Globals.BuildingTypes.Base:
+                    return BASE_BUILDING_HEALTH / 10;
+                case Globals.BuildingTypes.Aggressive:
+                    return AGGRESSIVE_BUILDING_HEALTH / 10;
+                case Globals.BuildingTypes.Barrier:
+                    return BARRIER_BUILDING_HEALTH / 10;
+                case Globals.BuildingTypes.Resource:
+                    return RESOURCE_BUILDING_HEALTH / 10;
+
+            }
+            return 0;
         }
     }
 }
