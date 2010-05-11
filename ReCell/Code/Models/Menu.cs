@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework.Graphics;
 using Recellection.Code.Models;
+using Microsoft.Xna.Framework;
 
 
 namespace Recellection
@@ -14,15 +15,19 @@ namespace Recellection
 	public class Menu
 	{
         private const int FONT_SIZE = 38;
-        private const int FONT_WIDTH = 16;
+        private const int FONT_WIDTH = 23;
         
 	    private List<MenuIcon> icons;
         private Texture2D menuPic;
-        private String explanation;
+        public String explanation { get; private set; }
+        public Vector2 explanationDrawPos { get; private set; }
+        public Color explanationColor { get; private set; }
 
-		public Menu(Globals.MenuLayout layout, List<MenuIcon> icons, String explanation)
+		public Menu(Globals.MenuLayout layout, List<MenuIcon> icons, String explanation, Color explanationColor)
 		{
             this.explanation = explanation;
+            this.explanationColor = explanationColor;
+            this.explanationDrawPos = calculateDrawCoordinates(new Vector2(Recellection.viewPort.Width / 2, Recellection.viewPort.Height / 2),explanation);
 			switch (layout)
 			{
 				case Globals.MenuLayout.Prompt:
@@ -62,6 +67,16 @@ namespace Recellection
 			}
 			return regions;
 		}
+
+        private Vector2 calculateDrawCoordinates(Vector2 middlePointOfString, String text)
+        {
+            int textWidth = text.IndexOf('\n') * FONT_WIDTH;
+
+            float x = middlePointOfString.X - textWidth / 2;
+            float y = middlePointOfString.Y - FONT_SIZE / 2;
+
+            return new Vector2(x, y);
+        }
 		
 		private void CreatePrompt(List<MenuIcon> icons)
 		{
@@ -87,11 +102,11 @@ namespace Recellection
                 else if( icons[i].label != null)
                 {
                     int textWidth = icons[i].label.Length * FONT_WIDTH;
+                    Vector2 temp = calculateDrawCoordinates(new Vector2(
+                        i * Recellection.viewPort.Width * 3 / 5 + Recellection.viewPort.Width * 1 / 5, Recellection.viewPort.Height / 2), icons[i].label);
+
                     icons[i].targetRectangle =
-                    new Microsoft.Xna.Framework.Rectangle(i * Recellection.viewPort.Width * 3 / 5 + Recellection.viewPort.Width * 1 / 5 - textWidth / 2 ,
-                        Recellection.viewPort.Height / 2 - FONT_SIZE / 2,
-                        textWidth,
-                        FONT_SIZE);
+                    new Microsoft.Xna.Framework.Rectangle((int)temp.X, (int)temp.Y, textWidth, FONT_SIZE);
                 }
                 
             }
@@ -159,12 +174,12 @@ namespace Recellection
                 else if (icons[i].label != null)
                 {
                     int textWidth = icons[i].label.Length * FONT_WIDTH;
+
+                    Vector2 temp = calculateDrawCoordinates(new Vector2(
+                       (i % 2) * (windowWidth * 3 / 5) / 2, (i / 2) * (windowHeight * 3 / 5) / 2), icons[i].label);
+
                     icons[i].targetRectangle =
-                        new Microsoft.Xna.Framework.Rectangle(
-                            (i % 2) * (windowWidth * 3 / 5) / 2 - textWidth / 2,
-                            (i / 2) * (windowHeight * 3 / 5) / 2 - FONT_SIZE / 2,
-                            (textWidth),
-                            (FONT_SIZE));
+                        new Microsoft.Xna.Framework.Rectangle((int) temp.X, (int) temp.Y, (textWidth), (FONT_SIZE));
                 }
                 
                 icons[i].region = new GUIRegion(Recellection.windowHandle,
@@ -203,12 +218,12 @@ namespace Recellection
                 else if (icons[i].label != null)
                 {
                     int textWidth = icons[i].label.Length * FONT_WIDTH;
+
+                    Vector2 temp = calculateDrawCoordinates(new Vector2(
+                       (i % 3) * (iconWidth) / 2, (i / 3) * (iconHeight) / 2), icons[i].label);
+
                     icons[i].targetRectangle =
-                        new Microsoft.Xna.Framework.Rectangle(
-                            (i % 3) * iconWidth / 2 - textWidth / 2,
-                            (i / 3) * iconHeight / 2 - FONT_SIZE / 2,
-                            (textWidth),
-                            (FONT_SIZE));
+                        new Microsoft.Xna.Framework.Rectangle((int) temp.X,(int)temp.Y,(textWidth),(FONT_SIZE));
                 }
 
                 icons[i].region = new GUIRegion(Recellection.windowHandle,

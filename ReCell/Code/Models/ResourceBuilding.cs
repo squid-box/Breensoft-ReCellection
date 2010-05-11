@@ -51,7 +51,7 @@ namespace Recellection.Code.Models
             Player owner, BaseBuilding baseBuilding, LinkedList<Tile> controlZone)
             : base(name, posX, posY, RESOURCE_BUILDING_HEALTH, owner, Globals.BuildingTypes.Resource, baseBuilding,controlZone)
         {
-
+            this.rateOfProduction = controlZone.First().GetTerrainType().getResourceModifier();
         }
 
         /// <summary>

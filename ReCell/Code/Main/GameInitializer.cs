@@ -7,6 +7,8 @@ using Recellection.Code.Models;
 using Recellection.Code.Controllers;
 using Recellection.Code.Views;
 using Recellection.Code.Utility.Logger;
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 
 namespace Recellection.Code.Main
 {
@@ -25,8 +27,8 @@ namespace Recellection.Code.Main
 
         private bool CreateGameObjects(int seed)
         {
-            try
-            {
+            //try
+            //{
                 myLogger.Info("Generating world.");
                 theWorld = WorldGenerator.GenerateWorld(seed);
                 myLogger.Info("Done.");
@@ -34,35 +36,44 @@ namespace Recellection.Code.Main
                 Random randomer = new Random(seed);
 
                 myLogger.Info("Adding players.");
-                Player temp = new Player(PlayerColour.BLUE, "John");
+                Player temp = new Player(Color.Blue, "John");
                 theWorld.AddPlayer(temp);
 
                 List<Player> temp2 = new List<Player>();
                 temp2.Add(temp);
-                theWorld.AddPlayer(new AIPlayer(temp2, new AIView(theWorld)));
+                theWorld.AddPlayer(new AIPlayer(temp2, new AIView(theWorld),Color.Red));
 
                 myLogger.Info("Creating spawnpoints.");
-                SpawnPoints(theWorld.players, theWorld.map.Cols, theWorld.map.Rows, randomer);
+                SpawnPoints(theWorld.players, theWorld.map.Rows, theWorld.map.Cols, randomer);
 
                 myLogger.Info("Spawning units.");
+                suitGuys = new Dictionary<Player, UnitAccountant>(2);
                 foreach(Player p in theWorld.players)
                 {
                     suitGuys[p] = new UnitAccountant(p);
                     suitGuys[p].ProduceUnits();
                 }
+                int xOffset = (Recellection.viewPort.Width/Globals.TILE_SIZE)/2;
+                int yOffset = (Recellection.viewPort.Height/Globals.TILE_SIZE)/2;
 
-                theWorld.lookingAt = theWorld.players[0].GetGraphs()[0].baseBuilding.coordinates;
+                theWorld.LookingAt = new Vector2(
+                    theWorld.players[0].GetGraphs()[0].baseBuilding.coordinates.X-xOffset,
+                    theWorld.players[0].GetGraphs()[0].baseBuilding.coordinates.Y-yOffset);
+
+                myLogger.Info("Setting lookingAt to X: " + theWorld.LookingAt.X + "  y: " + theWorld.LookingAt.Y);
+
+                theWorld.map.GetTile(2, 2).AddUnit(theWorld.players[0], new Unit(theWorld.players[0]));
 
                 return true;
-            }
-            catch (Exception e)
+            //}
+            /*catch (Exception e)
             {
                 myLogger.Info("Something went wrong.");
                 myLogger.Info(e.GetType() + " : " + e.Message);
                 Console.Beep(75, 1500);
                 Console.Error.WriteLine(e.GetType() + " : " + e.Message);
                 return false;
-            }
+            }*/
             
         }
         /// <summary>
@@ -97,8 +108,8 @@ namespace Recellection.Code.Main
                 }
                 while (previousPlaceX == randomPlaceX && previousPlaceY == randomPlaceY);
 
-                int xCoordinate = randomPlaceX == 0 ? 10 : width - 10;
-                int yCoordinate = randomPlaceY == 0 ? 10 : heigth - 10;
+                int xCoordinate = randomPlaceX == 0 ? 5 : width - 5;
+                int yCoordinate = randomPlaceY == 0 ? 5 : heigth - 5;
 
                 SpawnGraph(xCoordinate, yCoordinate, player);
 
@@ -121,9 +132,11 @@ namespace Recellection.Code.Main
         /// graph.</param>
         private void SpawnGraph(int xCoord, int yCoord, Player owner)
         {
-            myLogger.Info("Creating graph for player: "+ owner +" .");
-            owner.AddGraph(new Graph(
-                new BaseBuilding("base", xCoord, yCoord, owner)));
+            BaseBuilding baseBuilding = new BaseBuilding("base", xCoord, yCoord, owner);
+
+            theWorld.map.GetTile(xCoord, yCoord).SetBuilding(baseBuilding);
+            myLogger.Info("Creating graph for player: "+ owner +" at: "+xCoord+","+yCoord);
+            owner.AddGraph(new Graph(baseBuilding));
         }
     }
 
