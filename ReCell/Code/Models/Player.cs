@@ -3,13 +3,14 @@ using System.Collections.ObjectModel;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Microsoft.Xna.Framework.Graphics;
 
 namespace Recellection.Code.Models
 {
     /// <summary>
     /// Enum with available player colors
     /// </summary>
-    public enum PlayerColour {RED, BLUE, GREEN, YELLOW, PURPLE}
+    public enum PlayerColour { RED, BLUE , GREEN , YELLOW , PURPLE }
 
     /// <summary>
     /// Class representing a player in the world. Holds the buildings networks owned by the player
@@ -25,7 +26,9 @@ namespace Recellection.Code.Models
         /// <summary>
         /// The color of the player
         /// </summary>
-        protected PlayerColour colour {get; private set;}
+        public PlayerColour colour {get; private set;}
+
+        public Color color { get; private set; }
 
         /// <summary>
         /// The building networks owned by a player
@@ -50,6 +53,14 @@ namespace Recellection.Code.Models
             this.graphs = new List<Graph>();
         }
 
+        public Player(Color color, string name)
+        {
+            this.name = name;
+            this.color = color;
+
+            this.graphs = new List<Graph>();
+        }
+
         /// <summary>
         /// Construct a default player for testing purposes. DO NOT use in game.
         /// </summary>
@@ -68,6 +79,24 @@ namespace Recellection.Code.Models
         {
             return graphs;
         }
+
+        /*public Color GetColor()
+        {
+            switch (colour)
+            {
+                case PlayerColour.RED:
+                    return Color.Red;
+                case PlayerColour.BLUE:
+                    break;
+                case PlayerColour.GREEN:
+                    break;
+                case PlayerColour.YELLOW:
+                    break;
+                case PlayerColour.PURPLE:
+                    break;
+
+            }
+        }*/
 
         public void AddGraph(Graph g)
         {

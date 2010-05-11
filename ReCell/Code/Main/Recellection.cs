@@ -192,7 +192,7 @@ namespace Recellection
         protected override void Draw(GameTime gameTime)
 		{
 			spriteBatch.Begin(SpriteBlendMode.AlphaBlend, SpriteSortMode.Immediate, SaveStateMode.None);
-			if (currentState != null)
+            if (currentState != null)
 			{
 				currentState.Draw(spriteBatch);
 			}
@@ -204,5 +204,70 @@ namespace Recellection
         {
             console.Console.WriteLine("M: Toggle music\nI: Turn SFX off\nO: Turn SFX on\nA: Acid sound\nB: Explosion sound\nF1: Toggle Console\nF: \"full\" screen");
         }
+		
+		public void tudeloo()
+		{
+			playBeethoven();
+		}
+
+		public static void playBeethoven()
+		{
+			Console.Beep(659, 120);  // Treble E
+			Console.Beep(622, 120);  // Treble D#
+
+			Thread.Sleep(60);
+
+			Console.Beep(659, 120);  // Treble E
+			Console.Beep(622, 120);  // Treble D#
+			Console.Beep(659, 120);  // Treble E
+			Console.Beep(494, 120);  // Treble B
+			Console.Beep(587, 120);  // Treble D
+			Console.Beep(523, 120);  // Treble C
+
+			Thread.Sleep(70);
+
+			Console.Beep(440, 120);  // Treble A
+			Console.Beep(262, 120);  // Middle C
+			Console.Beep(330, 120);  // Treble E
+			Console.Beep(440, 120);  // Treble A
+
+			Thread.Sleep(70);
+
+			Console.Beep(494, 120);  // Treble B
+			Console.Beep(330, 120);  // Treble E
+			Console.Beep(415, 120);  // Treble G#
+			Console.Beep(494, 120);  // Treble B
+
+			Thread.Sleep(70);
+
+			Console.Beep(523, 120);  // Treble C
+			Console.Beep(330, 120);  // Treble E
+			Console.Beep(659, 120);  // Treble E
+			Console.Beep(622, 120);  // Treble D#
+
+			Thread.Sleep(70);
+
+			Console.Beep(659, 120);  // Treble E
+			Console.Beep(622, 120);  // Treble D#
+			Console.Beep(659, 120);  // Treble E
+			Console.Beep(494, 120);  // Treble B
+			Console.Beep(587, 120);  // Treble D
+			Console.Beep(523, 120);  // Treble C
+
+			Thread.Sleep(70);
+
+			Console.Beep(440, 120);  // Treble A
+			Console.Beep(262, 120);  // Middle C
+			Console.Beep(330, 120);  // Treble E
+			Console.Beep(440, 120);  // Treble A
+
+			Thread.Sleep(70);
+
+			Console.Beep(494, 120);  // Treble B
+			Console.Beep(330, 120);  // Treble E
+			Console.Beep(523, 120);  // Treble C
+			Console.Beep(494, 120);  // Treble B
+			Console.Beep(440, 120);  // Treble A
+		}
     }
 }

@@ -7,27 +7,24 @@ using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework;
 using Recellection.Code.Views;
 using Microsoft.Xna.Framework.Graphics;
+using Recellection.Code.Utility.Logger;
 
 namespace Recellection.Code.Views
 {
-    /**
-     * Most of this code is cannibalized from the MenuView Class and then slightly edited.
-     * 
-     * 
-     * Author: Lukas Mattsson
-     */
-
+	/// <summary>
+	/// Show a splash screen with the logo fading in.
+	/// 
+	///  Author: Lukas Mattsson
+	///  Co-author: Martin Nycander
+	/// </summary>
     public sealed class SplashView : IView
     {
+		private static Logger logger = LoggerFactory.GetLogger();
 		private Texture2D back;
 		private Texture2D front;
 		
 		private byte opacity;
-		private float fadeTime;
-		
-        static readonly object padlock = new object(); 
-        //No idea how the padlock works but I'm not one to argue with code that works.
-
+		private float fadeInTime = 1.5f;
 
         /// <summary>
         /// Instantiates a SplashView with the default Breensoft logo
@@ -37,19 +34,28 @@ namespace Recellection.Code.Views
 			back = Recellection.textureMap.GetTexture(Globals.TextureTypes.white);
 			front = Recellection.textureMap.GetTexture(Globals.TextureTypes.logo);
 			opacity = 0;
-			fadeTime = 0.0f;
+			
+			logger.SetThreshold(LogLevel.ERROR);
+			logger.SetTarget(Console.Out);
         }
 
+		/// <summary>
+		/// Updates the view by slowly fading in the logo.
+		/// </summary>
+		/// <param name="passedTime">The XNA gametime object.</param>
 		override public void Update(GameTime passedTime)
 		{
 			if (opacity < 255)
 			{
-				fadeTime += passedTime.ElapsedRealTime.Milliseconds;
-				fadeTime = Math.Min(1000f, fadeTime);
-				opacity = (byte)(255.0f * (fadeTime / 1000.0f));
+				opacity = (byte)((float)passedTime.TotalGameTime.TotalSeconds * (255f / fadeInTime));
+				logger.Trace("Passed time: " + passedTime.TotalGameTime.TotalSeconds + ", Opacity = " + opacity);
 			}
 		}
 		
+		/// <summary>
+		/// Draw the splashview.
+		/// </summary>
+		/// <param name="spriteBatch">The spritebatch to draw upon.</param>
         override public void Draw(SpriteBatch spriteBatch)
         {
 			drawTexture(spriteBatch, back, new Rectangle(0, 0, Recellection.viewPort.Width, Recellection.viewPort.Height));

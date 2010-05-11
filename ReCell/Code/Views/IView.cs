@@ -17,5 +17,10 @@ namespace Recellection.Code.Views
 		{
 			spriteBatch.Draw(t, targetArea, null, Color.White, 0, new Vector2(0, 0), SpriteEffects.None, 0);
 		}
+
+        public void drawTexture(SpriteBatch spriteBatch, Texture2D t, Rectangle targetArea,Color color)
+        {
+            spriteBatch.Draw(t, targetArea, null, color, 0, new Vector2(0, 0), SpriteEffects.None, 0);
+        }
 	}
 }

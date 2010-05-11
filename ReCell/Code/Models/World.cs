@@ -16,7 +16,25 @@ namespace Recellection.Code.Models
     public class World : IModel
     {
         public Logger myLogger;
-        public Vector2 lookingAt { get; set; }
+
+        private Vector2 lookingAt;
+        public Vector2 LookingAt
+        {
+            get
+            {
+                return lookingAt;
+            }
+            set
+            {
+                lookingAt = value;
+                if (lookingAtEvent != null)
+                {
+                    lookingAtEvent(this, new Event<Vector2>(value, EventType.ALTER));
+                }
+            }
+        }
+
+        public event Publish<Vector2> lookingAtEvent;
 
         # region Inner Class Map
         /// <summary>
@@ -53,7 +71,7 @@ namespace Recellection.Code.Models
             /// <returns></returns>
             public Tile GetTile(int row, int col)
             {
-                if (row < Rows || col < Cols)
+                if (row > Rows || col > Cols)
                 {
                     throw new IndexOutOfRangeException("Attempted to set a tile outside the range of the map.");
                 }

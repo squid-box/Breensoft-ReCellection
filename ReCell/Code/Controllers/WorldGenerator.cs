@@ -17,8 +17,8 @@ namespace Recellection.Code.Controllers
     /// </summary>
     public class WorldGenerator
     {
-        public const int MINIMUM_MAP_SIZE = 100;
-        public const int MAXIMUM_MAP_SIZE = 200;
+        public const int MINIMUM_MAP_SIZE = 30;
+        public const int MAXIMUM_MAP_SIZE = 40;
 
         //IGONRE FOR NOW....
         private const int MINIMUM_SPREAD = 3;
@@ -39,7 +39,7 @@ namespace Recellection.Code.Controllers
         /// <param name="mapSeed">
         /// The seed that the random generater will use.</param>
         /// <returns>The newly initiated world</returns>
-        public static World GenerateWorld(int mapSeed) 
+        public static World GenerateWorld(int mapSeed)
         {
             myLogger = LoggerFactory.GetLogger();
 
@@ -71,7 +71,7 @@ namespace Recellection.Code.Controllers
             {
                 for (int j = 0; j < map_cols; j++)
                 {
-                    retur[i,j] = RandomTile(randomer,i,j);
+                    retur[i, j] = RandomTile(randomer, i, j);
                 }
 
             }
@@ -90,8 +90,8 @@ namespace Recellection.Code.Controllers
 
             Tile[,] retur = InitTileMatrix2(randomer);
 
-            
-            int numberOfRandomTiles = randomer.Next(50, 100);
+
+            int numberOfRandomTiles = randomer.Next(50, 90);
 
             int randomX;
             int randomY;
@@ -99,12 +99,12 @@ namespace Recellection.Code.Controllers
 
             while (numberOfRandomTiles > 0)
             {
-                randomY = randomer.Next(10,map_rows-10);
+                randomY = randomer.Next(1, map_rows - 1);
 
-                randomX = randomer.Next(10,map_cols-10);
+                randomX = randomer.Next(1, map_cols - 1);
 
 
-                numberOfTilesToRandomize = randomer.Next(MINIMUM_SPREAD, 
+                numberOfTilesToRandomize = randomer.Next(MINIMUM_SPREAD,
                     MAXIMUM_SPREAD);
 
 
@@ -165,7 +165,7 @@ namespace Recellection.Code.Controllers
             {
                 for (int j = 0; j < map_cols; j++)
                 {
-                    retur[i,j] = new Tile(i,j);
+                    retur[i, j] = new Tile(i, j);
                 }
 
             }
@@ -183,9 +183,9 @@ namespace Recellection.Code.Controllers
         {
             //randomize a number which is 0 to number of terrain types - 1.
             int randomTile = randomer.Next(GetNumberOfTerrainTypes());
-           
 
-            return new Tile(x,y,(Globals.TextureTypes)randomTile);
+
+            return new Tile(x, y, (Globals.TextureTypes)randomTile);
         }
 
         /// <summary>
@@ -197,10 +197,10 @@ namespace Recellection.Code.Controllers
         {
             //randomize a number which is 1 to number of terrain types - 1.
             //Ignores the default terrain type Membrane.
-            int randomType = randomer.Next(1,GetNumberOfTerrainTypes());
+            int randomType = randomer.Next(1, GetNumberOfTerrainTypes());
 
 
-            
+
             return (Globals.TextureTypes)randomType;
         }
 
@@ -213,36 +213,40 @@ namespace Recellection.Code.Controllers
         /// <param name="numberOfTiles"></param>
         /// <param name="type"></param>
         /// <param name="randomer"></param>
-        private static void SpreadTiles(Tile[,] tileMatrix, int xCoord, 
-            int yCoord, int numberOfTiles, Globals.TextureTypes type, 
+        private static void SpreadTiles(Tile[,] tileMatrix, int xCoord,
+            int yCoord, int numberOfTiles, Globals.TextureTypes type,
             Random randomer)
         {
 
-            tileMatrix[yCoord,xCoord] = new Tile(yCoord,xCoord,type);
+            tileMatrix[yCoord, xCoord] = new Tile(yCoord, xCoord, type);
 
             //4 represents the adjecent tiles
             //      X = 1
             //2 = X O X = 3
             //  4 = X
             //
+            if (numberOfTiles<=0 || !(xCoord > 1 && xCoord < tileMatrix.GetLength(1)-1 && yCoord > 1 && yCoord < tileMatrix.GetLength(0)-1))
+            {
+                return;
+            }
             switch (randomer.Next(4))
             {
-                case 1:
-                    SpreadTiles(tileMatrix, xCoord, yCoord - 1, 
+                case 0:
+                    SpreadTiles(tileMatrix, xCoord, yCoord - 1,
                         numberOfTiles - 1, type, randomer);
                     break;
 
-                case 2:
+                case 1:
                     SpreadTiles(tileMatrix, xCoord - 1, yCoord,
                         numberOfTiles - 1, type, randomer);
                     break;
 
-                case 3:
+                case 2:
                     SpreadTiles(tileMatrix, xCoord + 1, yCoord,
                         numberOfTiles - 1, type, randomer);
                     break;
 
-                case 4:
+                case 3:
                     SpreadTiles(tileMatrix, xCoord, yCoord + 1,
                         numberOfTiles - 1, type, randomer);
                     break;
@@ -258,7 +262,7 @@ namespace Recellection.Code.Controllers
         /// <param name="type">The int that corresponds to a Terrain Type enum
         /// in Globals.TerrainTypes.</param>
         /// <returns>The Terrain Type enum</returns>
-        private static Globals.TerrainTypes 
+        private static Globals.TerrainTypes
             GetTerrainTypeEnumFromInt(int type)
         {
             Type enumType = typeof(Globals.TerrainTypes);
