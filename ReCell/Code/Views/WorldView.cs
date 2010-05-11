@@ -29,6 +29,7 @@ namespace Recellection.Code.Views
         {
             this.World = world;
             myLogger = LoggerFactory.GetLogger();
+            myLogger.SetThreshold(LogLevel.FATAL);
             myLogger.Info("Created a WorldView.");
 
             //To make sure the lookingAt in world would make the world view draw tiles that does not exists align it.
