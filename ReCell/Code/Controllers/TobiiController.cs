@@ -254,5 +254,42 @@ namespace Recellection
                 }
             }
         }
+
+        /// <summary>
+        /// different method for adding regions
+        /// designed to make loading all the world regions
+        /// easier as the LoadMenu function was not appropriate
+        /// </summary>
+        /// <param name="menuMatrix"></param>
+        /// <param name="scrollZone"></param>
+        public void LoadWorldRegions(MenuIcon[,] menuMatrix, List<MenuIcon> scrollZone)
+        {
+            try
+            {
+                if (Interaction.Regions != null)
+                {
+                    Interaction.Regions.Clear();
+                }
+                else
+                {
+                    logger.Warn("Regions were null, so can't clear");
+                }
+            }
+            catch (Exception)
+            {
+                logger.Fatal("guess it really doesn't work then...");
+            }
+            finally
+            {
+                foreach (MenuIcon icon in menuMatrix)
+                {
+                    AddRegion(icon.region);
+                }
+                foreach (MenuIcon othericons in scrollZone)
+                {
+                    AddRegion(othericons.region);
+                }
+            }
+        }
     }
 }
