@@ -53,12 +53,13 @@ namespace Recellection.Code.Main
                     suitGuys[p] = new UnitAccountant(p);
                     suitGuys[p].ProduceUnits();
                 }
+                
                 int xOffset = (Recellection.viewPort.Width/Globals.TILE_SIZE)/2;
                 int yOffset = (Recellection.viewPort.Height/Globals.TILE_SIZE)/2;
 
-                theWorld.LookingAt = new Vector2(
-                    theWorld.players[0].GetGraphs()[0].baseBuilding.coordinates.X-xOffset,
-                    theWorld.players[0].GetGraphs()[0].baseBuilding.coordinates.Y-yOffset);
+                theWorld.LookingAt = new Point(
+                    (int)(theWorld.players[0].GetGraphs()[0].baseBuilding.coordinates.X-xOffset),
+                    (int)(theWorld.players[0].GetGraphs()[0].baseBuilding.coordinates.Y-yOffset));
 
                 myLogger.Info("Setting lookingAt to X: " + theWorld.LookingAt.X + "  y: " + theWorld.LookingAt.Y);
 
