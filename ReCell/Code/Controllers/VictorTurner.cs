@@ -6,6 +6,7 @@ using System.Text;
 using Recellection.Code.Models;
 using Recellection.Code.Controllers;
 using Recellection.Code.Main;
+using Recellection.Code.Utility.Logger;
 
 namespace Recellection.Code.Controllers
 {
@@ -22,7 +23,8 @@ namespace Recellection.Code.Controllers
         private World world;
 
         private GameInitializer gameInitializer;
-
+		private Logger logger = LoggerFactory.GetLogger();
+		
         Boolean finished = false;
         /// <summary>
         /// The constructor used to initiate the Victor Turner
@@ -56,7 +58,7 @@ namespace Recellection.Code.Controllers
                     }
                     new WorldController(player);
                 }
-                //UnitController.Update(world);
+                //UnitController.Update(world.GetMap().);
 
             }
 

@@ -47,7 +47,7 @@ namespace Recellection.Code.Models
         /// <summary>
         /// check which menu is on top of the stack
         /// and return it without popping.
-        /// i.e the "current menu"
+        /// x.e the "current menu"
         /// </summary>
         /// <returns></returns>
         public Menu Peek()

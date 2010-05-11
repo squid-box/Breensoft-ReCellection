@@ -58,11 +58,11 @@ namespace Recellection.Code.Controllers
         public void GenerateWorld()
         {
             /*Tile[,] toTest = WorldGenerator.GenerateWorld(SEED);
-            for (int i = 0; i < tileMatrix.Length; i++)
+            for (int x = 0; x < tileMatrix.Length; x++)
             {
-                for (int j = 0; j < width; j++)
+                for (int y = 0; y < width; y++)
                 {
-                    Assert.IsNotNull(toTest[i,j]);
+                    Assert.IsNotNull(toTest[x,y]);
 
                 }
             }
