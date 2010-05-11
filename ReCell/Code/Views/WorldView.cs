@@ -120,16 +120,18 @@ namespace Recellection.Code.Views
                 int y = (int) (t.position.Y - (World.LookingAt.Y));
 
                 Rectangle r = new Rectangle(x*Globals.TILE_SIZE, y*Globals.TILE_SIZE, Globals.TILE_SIZE, Globals.TILE_SIZE);
+				this.Layer = 1f;
                 this.drawTexture(spriteBatch, Recellection.textureMap.GetTexture(t.GetTerrainType().GetEnum()), r);
                 
                 // Building? On my Tile?! It's more likely than you think.
                 b = t.GetBuilding();
                 if (b != null)
                 {
-                    myLogger.Info("Found a building on the tile.");
+					myLogger.Info("Found a building on the tile.");
+					this.Layer = 0.0f;
                     this.drawTexture(spriteBatch, b.GetSprite(),
                         new Rectangle(x * Globals.TILE_SIZE + 32, y * Globals.TILE_SIZE + 32, b.GetSprite().Width, b.GetSprite().Height),
-                        b.owner.color);
+						b.owner.color);
                 }
 
                 // Find those units!
@@ -138,7 +140,8 @@ namespace Recellection.Code.Views
                 {
                     myLogger.Info("Found unit(s) on the tile.");
                     foreach (Unit u in units)
-                    {
+					{
+						this.Layer = 0.5f;
                         this.drawTexture(spriteBatch, u.GetSprite(), new Rectangle(x * Globals.TILE_SIZE, y * Globals.TILE_SIZE, u.GetSprite().Width, u.GetSprite().Height), u.GetOwner().color);
                     }
                 }
