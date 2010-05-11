@@ -16,7 +16,7 @@ namespace Recellection.Code.Controllers
         /// The different states this controller will assume
         /// </summary>
         private enum WCState { TILES, BUILDING, TILE, MENU, ZOOMED };
-        private bool finished;
+        public bool finished { get; set; }
         private WCState state;
         MenuIcon[,] menuMatrix;
         List<MenuIcon> scrollZone;
@@ -25,6 +25,9 @@ namespace Recellection.Code.Controllers
         public WorldController(Player p)
         {
             state = WCState.TILES;
+            //Debugging
+            finished = true;
+            createGUIRegionGridAndScrollZone();
             while (!finished)
             {
                 // Generate the appropriate menu for this state.
@@ -59,9 +62,9 @@ namespace Recellection.Code.Controllers
 
             //This will create a matrix with menuIcons, ignoring the ones
             //closest to the edge.
-            for (int x = 1; x < numOfCols-1; x++)
+            for (int x = 0; x < numOfCols; x++)
             {
-                for (int y = 1; y < numOfRows-1; y++)
+                for (int y = 0; y < numOfRows; y++)
                 {
                     menuMatrix[x, y] = new MenuIcon("" + x + " " + y, null,Color.NavajoWhite);
 
@@ -69,8 +72,9 @@ namespace Recellection.Code.Controllers
                     /*menuMatrix[x, y].targetRectangle = new Microsoft.Xna.Framework.Rectangle(
                         x * Globals.TILE_SIZE, y * Globals.TILE_SIZE, Globals.TILE_SIZE, Globals.TILE_SIZE);
                     */
+                    //x + 1 and y + 1 should make them not be placed at the edge.
                     menuMatrix[x, y].region = new GUIRegion(Recellection.windowHandle,
-                        new System.Windows.Rect(x * Globals.TILE_SIZE, y * Globals.TILE_SIZE, Globals.TILE_SIZE, Globals.TILE_SIZE));
+                        new System.Windows.Rect((x+1) * Globals.TILE_SIZE, (y+1) * Globals.TILE_SIZE, Globals.TILE_SIZE, Globals.TILE_SIZE));
                 }
 
             }
@@ -131,6 +135,8 @@ namespace Recellection.Code.Controllers
             
             scrollZone[7].region = new GUIRegion(Recellection.windowHandle, new System.Windows.Rect(windowWidth - Globals.TILE_SIZE, windowHeight - Globals.TILE_SIZE, Globals.TILE_SIZE, Globals.TILE_SIZE));
             #endregion
+
+            TobiiController.GetInstance(Recellection.windowHandle).LoadWorldRegions(menuMatrix, scrollZone);
         }
     }
 }
