@@ -22,6 +22,7 @@ namespace Recellection.Code.Models
         private bool isDead;        // Status of unit
         private float powerLevel;
         private Player owner;
+        private static World world;
 
 
         private const float MOVEMENT_SPEED = 0.01f;
@@ -72,6 +73,11 @@ namespace Recellection.Code.Models
 
         #endregion
 
+
+        public static void SetWorld(World w)
+        {
+            Unit.world = w;
+        }
 
         // Properites
 
@@ -203,7 +209,12 @@ namespace Recellection.Code.Models
         /// </summary>
         private void Move(float deltaTime)
         {
-            //TODO: Move unit towards target.
+            int x = (int)this.position.X;
+            int y = (int)this.position.Y;
+
+            Unit.world.map.GetTile(y, x).RemoveUnit(this);
+
+            // Move unit towards target.
             if (this.target.X != NO_TARGET)
             {
                 if (this.target.X > this.position.X)
@@ -239,6 +250,13 @@ namespace Recellection.Code.Models
                 }
                 this.target = new Vector2(NO_TARGET, NO_TARGET);
             }
+
+            // Tile management!
+
+            x = (int)this.position.X;
+            y = (int)this.position.Y;
+
+            Unit.world.map.GetTile(y, x).AddUnit(this);
         }
     }
 }
