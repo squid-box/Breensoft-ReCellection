@@ -131,6 +131,8 @@ namespace Recellection.Code.Controllers
             
             scrollZone[7].region = new GUIRegion(Recellection.windowHandle, new System.Windows.Rect(windowWidth - Globals.TILE_SIZE, windowHeight - Globals.TILE_SIZE, Globals.TILE_SIZE, Globals.TILE_SIZE));
             #endregion
+
+            TobiiController.GetInstance(Recellection.windowHandle).LoadWorldRegions(menuMatrix, scrollZone);
         }
     }
 }
