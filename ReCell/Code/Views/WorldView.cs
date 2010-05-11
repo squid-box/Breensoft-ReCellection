@@ -63,7 +63,7 @@ namespace Recellection.Code.Views
             {
                 for (int j = currentY; j <= (Globals.VIEWPORT_HEIGHT / Globals.TILE_SIZE) + currentY; j++)
                 {
-                      tileCollection.Add(tiles[i,j]);
+                       tileCollection.Add(tiles[i,j]);
                 }
             }
         }
