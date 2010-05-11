@@ -69,7 +69,10 @@ namespace Recellection.Code.Main
 				// START THE GAME ALREADY!
 
                 Recellection.CurrentState = new WorldView(new GameInitializer().theWorld);
-
+                
+                //This only makes the grid of GUIRegions and scroll zones, remove later.
+                new WorldController(new Player());
+                
                 // Heartbeat
                 while (true)
                 {
