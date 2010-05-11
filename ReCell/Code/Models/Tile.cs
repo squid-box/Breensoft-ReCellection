@@ -130,6 +130,10 @@ namespace Recellection.Code.Models
                 unitsChanged(this, new Event<IEnumerable<Unit>>(temp, EventType.ADD));
             }
         }
+        public void AddUnit(Unit u)
+        {
+            this.units[u.GetOwner()].Add(u);
+        }
 
         public void RemoveUnit(Player p, Unit u)
         {
@@ -143,6 +147,11 @@ namespace Recellection.Code.Models
                 unitsChanged(this, new Event<IEnumerable<Unit>>(temp, EventType.REMOVE));
             }
         }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="p"></param>
+        /// <param name="units"></param>
         public void RemoveUnit(Player p, List<Unit> units)
         {
             foreach (Unit u in units)
@@ -154,6 +163,14 @@ namespace Recellection.Code.Models
             {
                 unitsChanged(this, new Event<IEnumerable<Unit>>(units, EventType.REMOVE));
             }
+        }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="u"></param>
+        public void RemoveUnit(Unit u)
+        {
+            this.units[u.GetOwner()].Remove(u);
         }
 
         /// <summary>
