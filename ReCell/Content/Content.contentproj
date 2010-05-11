@@ -67,23 +67,8 @@
       <Name>Swedish</Name>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <Compile Include="Shader\calmripples.fx">
-      <Name>calmripples</Name>
-      <Importer>EffectImporter</Importer>
-      <Processor>EffectProcessor</Processor>
-    </Compile>
-    <Compile Include="Shader\expandripple.fx">
-      <Name>expandripple</Name>
-      <Importer>EffectImporter</Importer>
-      <Processor>EffectProcessor</Processor>
-    </Compile>
-    <Compile Include="Shader\grain.fx">
-      <Name>grain</Name>
-      <Importer>EffectImporter</Importer>
-      <Processor>EffectProcessor</Processor>
-    </Compile>
-    <Compile Include="Shader\ripple.fx">
-      <Name>ripple</Name>
+    <Compile Include="Shader\backgroundShaders.fx">
+      <Name>backgroundShaders</Name>
       <Importer>EffectImporter</Importer>
       <Processor>EffectProcessor</Processor>
     </Compile>
