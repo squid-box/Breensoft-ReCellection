@@ -15,7 +15,7 @@ namespace Recellection.Code.Models
     {
         /**
          * 
-         * varje GameOptions objekt har lagrar alla options i spelet som variabler och varje variabel ska ha en get och set metod.
+         * varje GameOptions objekt har lagrar alla options x spelet som variabler och varje variabel ska ha en get och set metod.
          * Det är upp till andra modular att kolla vílka options som är aktuella och rätta sig efter det.
          * 
          * TODO: alla options :P

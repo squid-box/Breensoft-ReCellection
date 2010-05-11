@@ -14,7 +14,7 @@ namespace Recellection.Code.Views
 {
     /// <summary>
     /// The purpose of the World View is to provide the necessary data to render the game
-    /// screen as described i the SRD 3.3. It also stores the information of the game state available
+    /// screen as described x the SRD 3.3. It also stores the information of the game state available
     /// to the player. The World View contains the information that is relevant to a single player, and
     /// therefore has a reference to a Player-object.
     /// </summary>
@@ -31,7 +31,7 @@ namespace Recellection.Code.Views
         {
             this.World = world;
             myLogger = LoggerFactory.GetLogger();
-            myLogger.SetThreshold(LogLevel.FATAL);
+            myLogger.SetThreshold(LogLevel.ERROR);
             myLogger.Info("Created a WorldView.");
 
             //To make sure the lookingAt in world would make the world view draw tiles that does not exists align it.
@@ -60,11 +60,18 @@ namespace Recellection.Code.Views
             myLogger.Trace("Rendering for X:" + currentX + " and Y:" + currentY + ".");
 
             myLogger.Trace("Width:" + (Globals.VIEWPORT_WIDTH / Globals.TILE_SIZE) + " and Height:" + (Globals.VIEWPORT_HEIGHT / Globals.TILE_SIZE) + ".");
-            for (int i = currentX; i <= (Globals.VIEWPORT_WIDTH / Globals.TILE_SIZE) + currentX; i++)
+            for (int x = currentX; x <= currentX+(int)((float)Globals.VIEWPORT_WIDTH / (float)Globals.TILE_SIZE); x++)
             {
-                for (int j = currentY; j <= (Globals.VIEWPORT_HEIGHT / Globals.TILE_SIZE) + currentY; j++)
+                for (int y = currentY; y <= currentY+(Globals.VIEWPORT_HEIGHT / Globals.TILE_SIZE); y++)
                 {
-                      tileCollection.Add(tiles[i,j]);
+					try
+					{
+						tileCollection.Add(tiles[x,y]);
+					}
+					catch(IndexOutOfRangeException e)
+					{
+						myLogger.Fatal("OMG FAIL");
+					}
                 }
             }
         }
@@ -155,41 +162,33 @@ namespace Recellection.Code.Views
 
             if (ks.IsKeyDown(Keys.X))
             {
-                this.World.LookingAt = this.World.players[0].GetGraphs()[0].baseBuilding.coordinates;
+                World.LookingAt = World.players[0].GetGraphs()[0].baseBuilding.coordinates;
             }
 
-            if (ks.IsKeyDown(Keys.Left))
-            {
-                this.World.LookingAt = new Vector2(this.World.LookingAt.X - f, this.World.LookingAt.Y);
-                if (this.World.LookingAt.X < 0)
-                {
-                    this.World.LookingAt = new Vector2(0, this.World.LookingAt.Y);
-                }
+			float x = World.LookingAt.X;
+			float y = World.LookingAt.Y;
+
+			if (ks.IsKeyDown(Keys.Left))
+			{
+				x -= f;
             }
             if (ks.IsKeyDown(Keys.Right))
-            {
-                this.World.LookingAt = new Vector2(this.World.LookingAt.X + f, this.World.LookingAt.Y);
-                if (this.World.LookingAt.X > this.World.map.Cols - 18)
-                {
-                    this.World.LookingAt = new Vector2(this.World.map.Cols, this.World.LookingAt.Y);
-                }
-            }
+			{
+				x += f;
+			}
+			if (ks.IsKeyDown(Keys.Up))
+			{
+				y -= f;
+			}
             if (ks.IsKeyDown(Keys.Down))
-            {
-                this.World.LookingAt = new Vector2(this.World.LookingAt.X, this.World.LookingAt.Y + f);
-                if (this.World.LookingAt.Y > this.World.map.Rows - 12)
-                {
-                    this.World.LookingAt = new Vector2(this.World.LookingAt.X, this.World.map.Rows - 12);
-                }
+			{
+				y += f;
             }
-            if (ks.IsKeyDown(Keys.Up))
-            {
-                this.World.LookingAt = new Vector2(this.World.LookingAt.X, this.World.LookingAt.Y - f);
-                if (this.World.LookingAt.Y < 0)
-                {
-                    this.World.LookingAt = new Vector2(this.World.LookingAt.X, 0);
-                }
-            }
+            
+            x = MathHelper.Clamp(x, 0, (int)((float)Globals.VIEWPORT_WIDTH  / (float)Globals.TILE_SIZE));
+            y = MathHelper.Clamp(y, 0, (int)((float)Globals.VIEWPORT_HEIGHT / (float)Globals.TILE_SIZE));
+            
+			this.World.LookingAt = new Vector2(x, y);
         }
 
         public void RenderToTex(SpriteBatch spriteBatch)
