@@ -57,14 +57,15 @@ namespace Recellection.Code.Views
 		/// </summary>
 		/// <param name="spriteBatch">The spritebatch to draw upon.</param>
         override public void Draw(SpriteBatch spriteBatch)
-        {
+		{
+			this.Layer = 1.0f;
 			drawTexture(spriteBatch, back, new Rectangle(0, 0, Recellection.viewPort.Width, Recellection.viewPort.Height));
 
 			int x = Recellection.viewPort.Width / 2 - front.Width / 2;
 			int y = Recellection.viewPort.Height / 2 - front.Height / 2;
-			
-			spriteBatch.Draw(front, new Rectangle(x, y, front.Width, front.Height), null, 
-				new Color(255, 255, 255, opacity), 0, new Vector2(0, 0), SpriteEffects.None, 0);
+
+			this.Layer = 0.0f;
+			drawTexture(spriteBatch, front, new Rectangle(x, y, front.Width, front.Height), new Color(255, 255, 255, opacity));
         }
     }
 }

@@ -10,8 +10,8 @@ namespace Recellection.Code.Views
 {
 	public abstract class IView
 	{	
-		private int currentLayer = 0;
-		public int Layer
+		private float currentLayer = 0;
+		public float Layer
 		{ 
 			get { return currentLayer; }
 			set { currentLayer = value; }
