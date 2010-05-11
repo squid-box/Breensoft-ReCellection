@@ -23,6 +23,8 @@ namespace Recellection.Code.Views
         public Logger myLogger;
         private List<Tile> tileCollection;
 
+        private Texture2D backgroundTex;
+
         public World World { get; private set; }
 
         public WorldView(World world)
@@ -51,20 +53,20 @@ namespace Recellection.Code.Views
             //Vector2 copyLookingAt = alignViewport(ev.subject);
 
             tileCollection = new List<Tile>();
-            myLogger.Info("I'm going to start working on those tiles now...");
 
             int currentX = (int)this.World.LookingAt.X;
             int currentY = (int)this.World.LookingAt.Y;
 
+            myLogger.Trace("Rendering for X:" + currentX + " and Y:" + currentY + ".");
+
+            myLogger.Trace("Width:" + (Globals.VIEWPORT_WIDTH / Globals.TILE_SIZE) + " and Height:" + (Globals.VIEWPORT_HEIGHT / Globals.TILE_SIZE) + ".");
             for (int i = currentX; i <= (Globals.VIEWPORT_WIDTH / Globals.TILE_SIZE) + currentX; i++)
             {
                 for (int j = currentY; j <= (Globals.VIEWPORT_HEIGHT / Globals.TILE_SIZE) + currentY; j++)
                 {
-                     tileCollection.Add(tiles[i,j]);
+                      tileCollection.Add(tiles[i,j]);
                 }
             }
-
-            myLogger.Info("Done with the Tiles!");
         }
 
         private void alignViewport()
@@ -105,13 +107,12 @@ namespace Recellection.Code.Views
 
 		override public void Draw(SpriteBatch spriteBatch)
         {
-            myLogger.Info("*** I AM DRAWING "+tileCollection.Count+" TILES! :O ***");
+            #region THIS IS BACKGROUNDDRAWAGE!
 
-            if (tileCollection.Count == 0)
-            {
-                myLogger.Info("World.lookingAt is set to: ("+World.LookingAt.X+" : "+World.LookingAt.Y+").");
-            }
-            
+            //spriteBatch.Draw(backgroundTex, new Rectangle(0, 0, Recellection.viewPort.Width, Recellection.viewPort.Height), Color.White);
+
+            #endregion
+
             Building b;
             foreach(Tile t in tileCollection)
             {
@@ -143,44 +144,63 @@ namespace Recellection.Code.Views
                 }
             }
 		}
-		override public void Update(GameTime passedTime)
-		{
+        override public void Update(GameTime passedTime)
+        {
             KeyboardState ks = Keyboard.GetState();
 
             float f = 0.1f;
-            /**
-             * A note from John, due to the confusion between Marcos rows/cols in map 
-             * and most of the other code using coordinates by X,Y there is some fail.
-             * Currently X is used for Rows (even though they are represented as cols)
-             * and wise versa.
-             **/
-            if(ks.IsKeyDown(Keys.X))
+
+            if (ks.IsKeyDown(Keys.X))
             {
                 this.World.LookingAt = this.World.players[0].GetGraphs()[0].baseBuilding.coordinates;
             }
 
             if (ks.IsKeyDown(Keys.Left))
             {
-                this.World.LookingAt = new Vector2(this.World.LookingAt.X-f, this.World.LookingAt.Y);
-                
+                this.World.LookingAt = new Vector2(this.World.LookingAt.X - f, this.World.LookingAt.Y);
+                if (this.World.LookingAt.X < 0)
+                {
+                    this.World.LookingAt = new Vector2(0, this.World.LookingAt.Y);
+                }
             }
             if (ks.IsKeyDown(Keys.Right))
             {
                 this.World.LookingAt = new Vector2(this.World.LookingAt.X + f, this.World.LookingAt.Y);
-                
+                if (this.World.LookingAt.X > this.World.map.Cols - 18)
+                {
+                    this.World.LookingAt = new Vector2(this.World.map.Cols, this.World.LookingAt.Y);
+                }
             }
             if (ks.IsKeyDown(Keys.Down))
             {
-                this.World.LookingAt = new Vector2(this.World.LookingAt.X, this.World.LookingAt.Y+f);
-                
+                this.World.LookingAt = new Vector2(this.World.LookingAt.X, this.World.LookingAt.Y + f);
+                if (this.World.LookingAt.Y > this.World.map.Rows - 12)
+                {
+                    this.World.LookingAt = new Vector2(this.World.LookingAt.X, this.World.map.Rows - 12);
+                }
             }
             if (ks.IsKeyDown(Keys.Up))
             {
                 this.World.LookingAt = new Vector2(this.World.LookingAt.X, this.World.LookingAt.Y - f);
-                
+                if (this.World.LookingAt.Y < 0)
+                {
+                    this.World.LookingAt = new Vector2(this.World.LookingAt.X, 0);
+                }
             }
+        }
 
-            alignViewport();
-		}
+        public void RenderToTex(SpriteBatch spriteBatch)
+        {
+            RenderTarget2D backgroundTarget = new RenderTarget2D(Recellection.graphics.GraphicsDevice, Recellection.viewPort.Width, Recellection.viewPort.Height, 1, Recellection.graphics.GraphicsDevice.DisplayMode.Format);
+
+            Recellection.graphics.GraphicsDevice.SetRenderTarget(0, backgroundTarget);
+            Recellection.graphics.GraphicsDevice.Clear(Color.White);
+
+            #region INSERT TILE DRAWING HEAR!!!!11
+            #endregion
+
+            Recellection.graphics.GraphicsDevice.SetRenderTarget(0, null);
+            backgroundTex = backgroundTarget.GetTexture();
+        }
 	}
 }
