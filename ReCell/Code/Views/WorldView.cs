@@ -50,20 +50,20 @@ namespace Recellection.Code.Views
             //Vector2 copyLookingAt = alignViewport(ev.subject);
 
             tileCollection = new List<Tile>();
-            myLogger.Info("I'm going to start working on those tiles now...");
 
             int currentX = (int)this.World.LookingAt.X;
             int currentY = (int)this.World.LookingAt.Y;
 
+            myLogger.Trace("Rendering for X:" + currentX + " and Y:" + currentY + ".");
+
+            myLogger.Trace("Width:" + (Globals.VIEWPORT_WIDTH / Globals.TILE_SIZE) + " and Height:" + (Globals.VIEWPORT_HEIGHT / Globals.TILE_SIZE) + ".");
             for (int i = currentX; i <= (Globals.VIEWPORT_WIDTH / Globals.TILE_SIZE) + currentX; i++)
             {
                 for (int j = currentY; j <= (Globals.VIEWPORT_HEIGHT / Globals.TILE_SIZE) + currentY; j++)
                 {
-                     tileCollection.Add(tiles[i,j]);
+                      tileCollection.Add(tiles[i,j]);
                 }
             }
-
-            myLogger.Info("Done with the Tiles!");
         }
 
         private void alignViewport()
@@ -135,44 +135,49 @@ namespace Recellection.Code.Views
                 }
             }
 		}
-		override public void Update(GameTime passedTime)
-		{
+        override public void Update(GameTime passedTime)
+        {
             KeyboardState ks = Keyboard.GetState();
 
-            float f = 1f;
-            /**
-             * A note from John, due to the confusion between Marcos rows/cols in map 
-             * and most of the other code using coordinates by X,Y there is some fail.
-             * Currently X is used for Rows (even though they are represented as cols)
-             * and wise versa.
-             **/
-            if(ks.IsKeyDown(Keys.X))
+            float f = 0.1f;
+
+            if (ks.IsKeyDown(Keys.X))
             {
                 this.World.LookingAt = this.World.players[0].GetGraphs()[0].baseBuilding.coordinates;
             }
 
             if (ks.IsKeyDown(Keys.Left))
             {
-                this.World.LookingAt = new Vector2(this.World.LookingAt.X-f, this.World.LookingAt.Y);
-                
+                this.World.LookingAt = new Vector2(this.World.LookingAt.X - f, this.World.LookingAt.Y);
+                if (this.World.LookingAt.X < 0)
+                {
+                    this.World.LookingAt = new Vector2(0, this.World.LookingAt.Y);
+                }
             }
             if (ks.IsKeyDown(Keys.Right))
             {
                 this.World.LookingAt = new Vector2(this.World.LookingAt.X + f, this.World.LookingAt.Y);
-                
+                if (this.World.LookingAt.X > this.World.map.Cols - 18)
+                {
+                    this.World.LookingAt = new Vector2(this.World.map.Cols, this.World.LookingAt.Y);
+                }
             }
             if (ks.IsKeyDown(Keys.Down))
             {
-                this.World.LookingAt = new Vector2(this.World.LookingAt.X, this.World.LookingAt.Y+f);
-                
+                this.World.LookingAt = new Vector2(this.World.LookingAt.X, this.World.LookingAt.Y + f);
+                if (this.World.LookingAt.Y > this.World.map.Rows - 12)
+                {
+                    this.World.LookingAt = new Vector2(this.World.LookingAt.X, this.World.map.Rows - 12);
+                }
             }
             if (ks.IsKeyDown(Keys.Up))
             {
                 this.World.LookingAt = new Vector2(this.World.LookingAt.X, this.World.LookingAt.Y - f);
-                
+                if (this.World.LookingAt.Y < 0)
+                {
+                    this.World.LookingAt = new Vector2(this.World.LookingAt.X, 0);
+                }
             }
-
-            alignViewport();
-		}
+        }
 	}
 }
