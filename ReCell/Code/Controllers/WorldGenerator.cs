@@ -17,8 +17,8 @@ namespace Recellection.Code.Controllers
     /// </summary>
     public class WorldGenerator
     {
-        public const int MINIMUM_MAP_SIZE = 30;
-        public const int MAXIMUM_MAP_SIZE = 40;
+        public const int MINIMUM_MAP_SIZE = 15;
+        public const int MAXIMUM_MAP_SIZE = 15;
 
         //IGONRE FOR NOW....
         private const int MINIMUM_SPREAD = 3;
