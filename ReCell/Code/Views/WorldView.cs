@@ -43,11 +43,11 @@ namespace Recellection.Code.Views
             this.World.lookingAtEvent += CreateCurrentView;
 
             //this.World.LookingAt = new Vector2(0, 0);
-            CreateCurrentView(this, new Event<Vector2>(this.World.LookingAt,EventType.ALTER));
+            CreateCurrentView(this, new Event<Point>(this.World.LookingAt,EventType.ALTER));
 
         }
 
-        private void CreateCurrentView(Object o, Event<Vector2> ev)
+        private void CreateCurrentView(Object o, Event<Point> ev)
         {
             // First, add all tiles from the map:
             myLogger.Info("Getting tiles from World.map.");
@@ -82,25 +82,25 @@ namespace Recellection.Code.Views
         {
             if (this.World.LookingAt.X < 0)
             {
-                this.World.LookingAt = new Vector2(0, this.World.LookingAt.Y);
+                this.World.LookingAt = new Point(0, this.World.LookingAt.Y);
             }
 
             if (this.World.LookingAt.X >= this.World.map.Rows - (Recellection.viewPort.Width / Globals.TILE_SIZE) -1)
             {
-                this.World.LookingAt = new Vector2(
+				this.World.LookingAt = new Point(
                     this.World.map.Rows - (Recellection.viewPort.Width / Globals.TILE_SIZE) - 1,
                     this.World.LookingAt.Y);
             }
 
             if (this.World.LookingAt.Y >= this.World.map.Cols - (Recellection.viewPort.Height / Globals.TILE_SIZE) -1)
             {
-                this.World.LookingAt = new Vector2(this.World.LookingAt.X,
+				this.World.LookingAt = new Point(this.World.LookingAt.X,
                     this.World.map.Cols - (Recellection.viewPort.Height / Globals.TILE_SIZE) - 1);
             }
 
             if (this.World.LookingAt.Y < 0)
             {
-                this.World.LookingAt = new Vector2(this.World.LookingAt.X, 0);
+				this.World.LookingAt = new Point(this.World.LookingAt.X, 0);
             }
         }
 
@@ -161,15 +161,17 @@ namespace Recellection.Code.Views
         {
             KeyboardState ks = Keyboard.GetState();
 
-            float f = 0.1f;
+            int f = 1;
 
             if (ks.IsKeyDown(Keys.X))
             {
-                World.LookingAt = World.players[0].GetGraphs()[0].baseBuilding.coordinates;
+                World.LookingAt = new Point(
+						(int)World.players[0].GetGraphs()[0].baseBuilding.coordinates.X, 
+						(int)World.players[0].GetGraphs()[0].baseBuilding.coordinates.Y);
             }
 
-			float x = World.LookingAt.X;
-			float y = World.LookingAt.Y;
+			int x = World.LookingAt.X;
+			int y = World.LookingAt.Y;
 
 			if (ks.IsKeyDown(Keys.Left))
 			{
@@ -188,10 +190,10 @@ namespace Recellection.Code.Views
 				y += f;
             }
             
-            x = MathHelper.Clamp(x, 0, World.map.Cols - maxCols);
-            y = MathHelper.Clamp(y, 0, World.map.Rows - maxRows);
+            x = (int)MathHelper.Clamp(x, 0, World.map.Cols - maxCols);
+            y = (int)MathHelper.Clamp(y, 0, World.map.Rows - maxRows);
             
-			this.World.LookingAt = new Vector2(x, y);
+			this.World.LookingAt = new Point(x, y);
         }
 
         public void RenderToTex(SpriteBatch spriteBatch)
