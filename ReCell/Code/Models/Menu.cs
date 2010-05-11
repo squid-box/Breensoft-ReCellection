@@ -163,18 +163,23 @@ namespace Recellection
             {
                 menuPic = Recellection.textureMap.GetTexture(menuTexture);
             }
-            if (scrollZone)
+            //This will not work, waiting for better way to implement.
+            /*if (scrollZone)
             {
-                for (int i = 0; i < cols * rows; i++)
-                {
-                    if( i < cols && i % cols != 0 && 
-                    icons[i].targetRectangle = new Microsoft.Xna.Framework.Rectangle((i % cols) * iconWidth, (i / rows) * iconHeight, iconWidth, iconHeight);
 
-                    icons[i].region = new GUIRegion(Recellection.windowHandle,
-                        new System.Windows.Rect((i % cols) * iconWidth, (i / rows) * iconHeight, iconWidth, iconHeight));
+                for (int i = cols + 1; i < cols * rows; i++)
+                {
+                    //Hax calc, ignores the edges
+                    if (i % cols != 0 && (i+1) % cols != 0 && i < (cols - 1) * rows)
+                    {
+                        icons[i].targetRectangle = new Microsoft.Xna.Framework.Rectangle((i % cols) * iconWidth, (i / rows) * iconHeight, iconWidth, iconHeight);
+
+                        icons[i].region = new GUIRegion(Recellection.windowHandle,
+                            new System.Windows.Rect((i % cols) * iconWidth, (i / rows) * iconHeight, iconWidth, iconHeight));
+                    }
                 }
 
-            }
+            }*/
             else
             {
                 for (int i = 0; i < cols * rows; i++)

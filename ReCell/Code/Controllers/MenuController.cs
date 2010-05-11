@@ -76,7 +76,8 @@ namespace Recellection.Code.Controllers
 		public static MenuIcon GetInput()
 		{
 			GUIRegion activated = tobiiController.GetActivatedRegion();
-			tobiiController.UnloadMenu(menuModel.Peek());
+			
+            //tobiiController.UnloadMenu(menuModel.Peek());
 			
 			List<MenuIcon> options = menuModel.Peek().GetIcons();
 			foreach(MenuIcon mi in options)
