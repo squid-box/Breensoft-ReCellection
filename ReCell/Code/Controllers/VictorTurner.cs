@@ -33,6 +33,7 @@ namespace Recellection.Code.Controllers
         /// <param name="world">The world the game takes place in</param>
         public VictorTurner(GameInitializer gameInitializer)
         {
+            this.gameInitializer = gameInitializer;
             this.players = gameInitializer.theWorld.players;
             this.world = gameInitializer.theWorld;
         }
