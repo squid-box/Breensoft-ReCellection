@@ -104,13 +104,6 @@ namespace Recellection.Code.Views
 
 		override public void Draw(SpriteBatch spriteBatch)
         {
-            myLogger.Info("*** I AM DRAWING "+tileCollection.Count+" TILES! :O ***");
-
-            if (tileCollection.Count == 0)
-            {
-                myLogger.Info("World.lookingAt is set to: ("+World.LookingAt.X+" : "+World.LookingAt.Y+").");
-            }
-            
             Building b;
             foreach(Tile t in tileCollection)
             {
@@ -146,7 +139,7 @@ namespace Recellection.Code.Views
 		{
             KeyboardState ks = Keyboard.GetState();
 
-            float f = 0.1f;
+            float f = 1f;
             /**
              * A note from John, due to the confusion between Marcos rows/cols in map 
              * and most of the other code using coordinates by X,Y there is some fail.
