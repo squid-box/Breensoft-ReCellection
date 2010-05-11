@@ -52,6 +52,7 @@ namespace Recellection.Code.Main
 			#endregion
             logger.Info("Waiting for Tobii input...");
 			MenuIcon response = MenuController.GetInput();
+            MenuController.UnloadMenu();
             
             logger.Info("Got input!");
             backgroundSound.Pause();
