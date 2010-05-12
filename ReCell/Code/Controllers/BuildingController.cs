@@ -39,7 +39,7 @@ namespace Recellection.Code.Controllers
         /// <param name="b"></param>
         private static void AttackTargets(AggressiveBuilding b)
         {
-            logger.Trace("Attacking targets around a aggressive building at x: "+b.coordinates.X+" y: "+b.coordinates.Y );
+            logger.Trace("Attacking targets around a aggressive building at x: "+b.position.X+" y: "+b.position.Y );
             foreach (Unit u in b.currentTargets)
             {
                 //Show kill graphix and make sound.
