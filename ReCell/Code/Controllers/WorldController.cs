@@ -59,6 +59,8 @@ namespace Recellection.Code.Controllers
                     case WCState.TILE:
                         // A tile has been selected, store it.
                         finished = true;
+						Cue prego = Sounds.Instance.LoadSound("prego");
+						prego.Play();
                         break;
                     case WCState.BUILDING:
                         // We are in a building menu, do the action mapped to the region on that building
@@ -71,8 +73,6 @@ namespace Recellection.Code.Controllers
                         break;
                     case WCState.SCROLL:
 						theWorld.LookingAt = new Point(point.X + theWorld.LookingAt.X, point.Y + theWorld.LookingAt.Y); 
-						Cue prego = Sounds.Instance.LoadSound("prego");
-						prego.Play();
                         break;
                 }
             }
