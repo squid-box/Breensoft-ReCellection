@@ -60,18 +60,17 @@ namespace Recellection.Code.Main
             {
 				// Det börjar bli jobbigt...
 				//Cue prego = Sounds.Instance.LoadSound("prego");
-				//prego.Play();
+				// prego.Play();
 				//while(prego.IsPlaying)
 				//{
 				//	Thread.Sleep(10);
 				//}
 				
 				// START THE GAME ALREADY!
-
-                Recellection.CurrentState = new WorldView(new GameInitializer().theWorld);
-                
-                //This only makes the grid of GUIRegions and scroll zones, remove later.
-                new WorldController(new Player());
+				GameInitializer gameInit = new GameInitializer();
+				Recellection.CurrentState = new WorldView(gameInit.theWorld);
+				VictorTurner vt = new VictorTurner(gameInit);
+				vt.Run();
                 
                 // Heartbeat
                 while (true)
