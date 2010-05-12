@@ -76,13 +76,13 @@ namespace Recellection.Code.Controllers
 		public static MenuIcon GetInput()
 		{
 			GUIRegion activated = tobiiController.GetActivatedRegion();
-			
+
             //tobiiController.UnloadMenu(menuModel.Peek());
-			
+            LoggerFactory.GetLogger().Trace(""+activated.BoundingGeometry);
 			List<MenuIcon> options = menuModel.Peek().GetIcons();
 			foreach(MenuIcon mi in options)
 			{
-				if (mi.region == activated)
+				if (mi.region.RegionIdentifier == activated.RegionIdentifier)
 					return mi;
 			}
 			throw new NonExistantInputException();
