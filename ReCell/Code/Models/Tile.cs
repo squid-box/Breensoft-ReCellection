@@ -132,7 +132,15 @@ namespace Recellection.Code.Models
         }
         public void AddUnit(Unit u)
         {
-            this.units[u.GetOwner()].Add(u);
+			HashSet<Unit> nits;
+			if (! this.units.TryGetValue(u.GetOwner(), out nits))
+			{
+				nits = new HashSet<Unit>();
+			}
+			
+			nits.Add(u);
+			
+			this.units[u.GetOwner()] = nits;
         }
 
         public void RemoveUnit(Player p, Unit u)
