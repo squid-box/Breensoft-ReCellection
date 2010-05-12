@@ -20,16 +20,14 @@ namespace Recellection.Code.Controllers
     public sealed class UnitAccountant
     {
         private Player owner;
-        private World theWorld;
 
         /// <summary>
         /// Constructs an UnitAccountant.
         /// </summary>
         /// <param name="owner">This UnitAccountant will belong to the player 'owner'.</param>
-        public UnitAccountant(Player owner, World theWorld)
+        public UnitAccountant(Player owner)
         {
             this.owner = owner;
-            this.theWorld = theWorld;
         }
 
         /// <summary>
@@ -71,7 +69,6 @@ namespace Recellection.Code.Controllers
                     
                     
                 }
-                theWorld.GetMap().GetTile((int)b.position.X, (int)b.position.Y).AddUnit(owner,res);
                 b.AddUnits(res);
             }
         }
