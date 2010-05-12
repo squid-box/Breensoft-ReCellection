@@ -83,7 +83,7 @@ namespace Recellection.Code.Controllers
         {
             foreach (Unit u in units)
             {
-                if (amount <= 0)
+                if (amount >= 0)
                 {
                     u.Kill();
                     amount--;
