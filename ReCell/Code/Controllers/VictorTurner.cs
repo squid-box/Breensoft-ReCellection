@@ -65,18 +65,18 @@ namespace Recellection.Code.Controllers
                     
 					if (player is AIPlayer)
 					{
-						logger.Debug(player.colour + " is a AIPlayer!");
+						logger.Debug(player.color + " is a AIPlayer!");
 						//((AIPlayer)player).MakeMove();
 					}
 					else if (player is Player)
 					{
-						logger.Debug(player.colour+" is human!");
+						logger.Debug(player.color+" is human!");
 						//This only makes the grid of GUIRegions and scroll zones, remove later.
                         humanControl.Run();
 					}
 					else
 					{
-						logger.Fatal("Could not identify "+player.colour+" player!");
+						logger.Fatal("Could not identify "+player.color+" player!");
 					}
 					
                 }
@@ -89,7 +89,7 @@ namespace Recellection.Code.Controllers
                 {
 					for(int y = 0; y < world.GetMap().height; y++)
 					{
-						UnitController.Update(theWholeFuckingWorld.GetTile(x, y).GetUnits(), 5);
+						UnitController.Update(theWholeFuckingWorld.GetTile(x, y).GetUnits(), 100);
 					}
                 }
 

@@ -5,6 +5,8 @@ using Microsoft.Xna.Framework;
 using System.Text;
 using Recellection.Code.Models;
 using Recellection.Code.Utility.Events;
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 
 namespace Recellection.Code.Models
 {
@@ -18,14 +20,13 @@ namespace Recellection.Code.Models
     /// 
     /// Signature: Name (date)
     /// Signature: Name (date)
-    public class Tile : IModel
+    public class Tile : Entity, IModel
     {
         // Data
         private TerrainType type;
         private HashSet<Player> visibleTo;
         private Dictionary<Player, HashSet<Unit>> units;
         private Building building;
-        public Vector2 position;
 
         // Events
         public event Publish<IEnumerable<Player>> visionChanged;
@@ -41,12 +42,11 @@ namespace Recellection.Code.Models
         /// </summary>
         /// <param name="x">Tile x-coordinate.</param>
         /// <param name="y">Tile y-coordinate.</param>
-        public Tile(int x, int y)
+        public Tile(int x, int y) : base (new Vector2((float)(x+0.5), (float)(y+0.5)), null)
         {
             this.type = new TerrainType();
             this.visibleTo = new HashSet<Player>();
             this.units = new Dictionary<Player, HashSet<Unit>>();
-            this.position = new Vector2((float)(x+0.5), (float)(y+0.5));
             this.building = null;
         }
 
@@ -56,7 +56,7 @@ namespace Recellection.Code.Models
         /// <param name="type">Enum of the terrain type.</param>
         /// <param name="x">Tile x-coordinate.</param>
         /// <param name="y">Tile y-coordinate.</param>
-        public Tile(int x, int y, Globals.TextureTypes type)
+        public Tile(int x, int y, Globals.TextureTypes type) : base(new Vector2(x, y), null)
         {
             this.type = new TerrainType(type);
             this.visibleTo = new HashSet<Player>();
@@ -350,6 +350,17 @@ namespace Recellection.Code.Models
             int x = (int) this.position.X;
             int y = (int) this.position.Y;
             return new Rectangle(x * Globals.TILE_SIZE, y * Globals.TILE_SIZE, Globals.TILE_SIZE, Globals.TILE_SIZE);
+        }
+
+        // Graphical representation
+
+        /// <summary>
+        /// Returns texture for a unit.
+        /// </summary>
+        /// <returns>Texture of this unit.</returns>
+        public override Texture2D GetSprite()
+        {
+            return Recellection.textureMap.GetTexture(this.GetTerrainType().GetEnum());
         }
     }
 }
