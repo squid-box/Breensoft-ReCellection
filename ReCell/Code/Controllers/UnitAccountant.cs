@@ -61,7 +61,7 @@ namespace Recellection.Code.Controllers
                     coords.X += (float)randomer.NextDouble() * Globals.TILE_SIZE;
                     coords.Y += (float)randomer.NextDouble() * Globals.TILE_SIZE;
 
-                    b.AddUnit(new Unit(b.owner, coords));
+                    b.AddUnit(new Unit(b.owner, coords, b));
                 }
                 b.AddUnits(res);
             }

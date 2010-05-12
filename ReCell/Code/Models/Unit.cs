@@ -57,13 +57,31 @@ namespace Recellection.Code.Models
             this.isDispersed = this.isDead = false;
             this.owner = owner;
         }
+
+		/// <summary>
+		/// Creates a unit.
+		/// </summary>
+		/// <param name="position">Position of unit.</param>
+		/// <param name="owner">Owner of this unit.</param>
+		public Unit(Player owner, Vector2 position)
+			: base(position, owner)
+		{
+			this.defaultTarget = null;
+			this.position = position;
+			this.targetPosition = new Vector2(NO_TARGET, NO_TARGET);
+			this.angle = 0;
+			this.isDispersed = this.isDead = false;
+			this.owner = owner;
+		}
+
         /// <summary>
         /// Creates a unit.
         /// </summary>
         /// <param name="position">Position of unit.</param>
         /// <param name="owner">Owner of this unit.</param>
-        public Unit(Player owner, Vector2 position) : base(position, owner)
+        public Unit(Player owner, Vector2 position, Entity target) : base(position, owner)
         {
+			this.defaultTarget = target;
             this.position = position;
             this.targetPosition = new Vector2(NO_TARGET, NO_TARGET);
             this.angle = 0;
@@ -89,11 +107,12 @@ namespace Recellection.Code.Models
 			{
 				targetPosition = targetEntity.position;
 			}
-			else if (!this.isDispersed)
+			else if (defaultTarget != null && !this.isDispersed)
 			{
 				targetEntity = defaultTarget;
 				updateTarget();
 			}
+			targetPosition = new Vector2(NO_TARGET, NO_TARGET);
         }
 
         // Graphical representation
@@ -120,6 +139,7 @@ namespace Recellection.Code.Models
         {
             if (!this.isDead)
             {
+				updateTarget();
                 this.Move(systemTime);
             }
         }
@@ -150,9 +170,6 @@ namespace Recellection.Code.Models
             int y = (int)this.position.Y;
 
             Unit.world.map.GetTile(x, y).RemoveUnit(this);
-
-			// Get our targets current position
-            updateTarget();
 
             // Move unit towards target.
             if (this.targetPosition.X != NO_TARGET)
