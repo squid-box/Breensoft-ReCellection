@@ -16,6 +16,9 @@ namespace Recellection.Code.Models
     {
         public Logger myLogger;
 
+        private static int maxCols = (int)((float)Recellection.viewPort.Width / (float)Globals.TILE_SIZE);
+        private static int maxRows = (int)((float)Recellection.viewPort.Height / (float)Globals.TILE_SIZE);
+
         private Point lookingAt;
         public Point LookingAt
         {
@@ -26,6 +29,8 @@ namespace Recellection.Code.Models
             set
             {
                 lookingAt = value;
+                lookingAt.X = (int)MathHelper.Clamp(lookingAt.X, 0, map.Cols - maxCols);
+                lookingAt.Y = (int)MathHelper.Clamp(lookingAt.Y, 0, map.Rows - maxRows);
                 if (lookingAtEvent != null)
                 {
                     lookingAtEvent(this, new Event<Point>(value, EventType.ALTER));
