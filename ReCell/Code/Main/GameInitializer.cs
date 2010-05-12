@@ -32,6 +32,9 @@ namespace Recellection.Code.Main
                 myLogger.Info("Generating world.");
                 theWorld = WorldGenerator.GenerateWorld(seed);
                 myLogger.Info("Done.");
+                
+                // Let all units belong to the world!
+                Unit.SetWorld(theWorld);
 
                 Random randomer = new Random(seed);
 
@@ -63,7 +66,6 @@ namespace Recellection.Code.Main
 
                 myLogger.Info("Setting lookingAt to X: " + theWorld.LookingAt.X + "  y: " + theWorld.LookingAt.Y);
 
-                theWorld.map.GetTile(2, 2).AddUnit(theWorld.players[0], new Unit(theWorld.players[0]));
 
                 return true;
             //}

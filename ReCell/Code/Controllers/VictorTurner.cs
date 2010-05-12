@@ -77,7 +77,17 @@ namespace Recellection.Code.Controllers
 					}
 					
                 }
-                //UnitController.Update(world.GetMap().);
+                
+                // FIXME: This ain't okay, hombrey
+                // Let the units move!
+                Code.Models.World.Map theWholeFuckingWorld = world.GetMap();
+                for(int x = 0; x < world.GetMap().Cols; x++)
+                {
+					for(int y = 0; y < world.GetMap().Rows; y++)
+					{
+						UnitController.Update(theWholeFuckingWorld.GetTile(y, x).GetUnits(), 5);
+					}
+                }
 
             }
 
