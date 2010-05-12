@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Windows;
 using Recellection.Code.Utility.Events;
 using Recellection.Code.Utility.Logger;
 using Microsoft.Xna.Framework;
@@ -17,8 +16,8 @@ namespace Recellection.Code.Models
     {
         public Logger myLogger;
 
-        private Vector2 lookingAt;
-        public Vector2 LookingAt
+        private Point lookingAt;
+        public Point LookingAt
         {
             get
             {
@@ -29,12 +28,12 @@ namespace Recellection.Code.Models
                 lookingAt = value;
                 if (lookingAtEvent != null)
                 {
-                    lookingAtEvent(this, new Event<Vector2>(value, EventType.ALTER));
+                    lookingAtEvent(this, new Event<Point>(value, EventType.ALTER));
                 }
             }
         }
 
-        public event Publish<Vector2> lookingAtEvent;
+        public event Publish<Point> lookingAtEvent;
 
         # region Inner Class Map
         /// <summary>
@@ -137,7 +136,7 @@ namespace Recellection.Code.Models
             players = new List<Player>();
             this.seed = seed;
             SetMap(map);
-            this.lookingAt = Vector2.Zero;
+			this.lookingAt = Point.Zero;
         }
 
         /// <summary>

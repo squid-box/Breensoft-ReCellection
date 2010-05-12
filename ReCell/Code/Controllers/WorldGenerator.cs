@@ -17,8 +17,8 @@ namespace Recellection.Code.Controllers
     /// </summary>
     public class WorldGenerator
     {
-        public const int MINIMUM_MAP_SIZE = 30;
-        public const int MAXIMUM_MAP_SIZE = 40;
+        public const int MINIMUM_MAP_SIZE = 15;
+        public const int MAXIMUM_MAP_SIZE = 15;
 
         //IGONRE FOR NOW....
         private const int MINIMUM_SPREAD = 3;
@@ -43,7 +43,7 @@ namespace Recellection.Code.Controllers
         {
             myLogger = LoggerFactory.GetLogger();
 
-            Tile[,] tileMatrix = GenerateTileMatrixFromSeed(mapSeed);
+            Tile[,] tileMatrix = GenerateTileMatrixFromSeed2(mapSeed);
 
 
             //Constructs a new world using the dimensions.

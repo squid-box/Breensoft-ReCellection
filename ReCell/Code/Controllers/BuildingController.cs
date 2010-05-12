@@ -54,7 +54,7 @@ namespace Recellection.Code.Controllers
         /// 
         /// </summary>
         /// <param name="player"></param>
-        public static void ConstructBuilding(Player player)
+        public static void ConstructBuilding(Player player, Tile constructTile, Building sourceBuilding)
         {
             logger.Trace("Constructing a building for a player");
             //TODO Somehow present a menu to the player, and then 
@@ -65,7 +65,7 @@ namespace Recellection.Code.Controllers
         /// 
         /// </summary>
         /// <param name="player"></param>
-        public static void RazeBuilding(Player player)
+        public static void RazeBuilding(Player player, Tile constructTile, Building sourceBuilding)
         {
             logger.Trace("Razing a building for a player");
 
@@ -79,9 +79,14 @@ namespace Recellection.Code.Controllers
         /// <param name="sourceBuilding">The building used to build this building.</param>
         /// <param name="targetCoordinate">The tile coordinates where the building will be built.</param>
         /// <param name="world">The world to build the building in.</param>
-        public static void AddBuilding(Globals.BuildingTypes buildingType,
+        public static bool AddBuilding(Globals.BuildingTypes buildingType,
             Building sourceBuilding, Vector2 targetCoordinate, World world)
         {
+            if (sourceBuilding.CountUnits() < Building.GetBuyPrice(buildingType))
+            {
+                return false;
+            }
+
             LinkedList<Tile> controlZone = CreateControlZone(targetCoordinate,world);
 
             //The Base building is handled in another way due to it's nature.
@@ -127,6 +132,8 @@ namespace Recellection.Code.Controllers
                 GraphController.Instance.AddBuilding(sourceBuilding,newBuilding);
 
             }
+            UnitController.KillUnits(sourceBuilding.units, Building.GetBuyPrice(buildingType));
+            return true;
         }
 
         /// <summary>
