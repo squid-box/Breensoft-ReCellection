@@ -43,7 +43,7 @@ namespace Recellection.Code.Controllers
         {
             myLogger = LoggerFactory.GetLogger();
 
-            Tile[,] tileMatrix = GenerateTileMatrixFromSeed(mapSeed);
+            Tile[,] tileMatrix = GenerateTileMatrixFromSeed2(mapSeed);
 
 
             //Constructs a new world using the dimensions.
