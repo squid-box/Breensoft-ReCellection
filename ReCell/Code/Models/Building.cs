@@ -18,7 +18,7 @@ namespace Recellection.Code.Models
     /// 
     /// Author: John Forsberg
     /// </summary>
-    public abstract class Building : IModel
+    public abstract class Building : Entity, IModel
     {
         protected const int AGGRESSIVE_BUILDING_HEALTH = 80;
         protected const int BARRIER_BUILDING_HEALTH = 90;
@@ -27,18 +27,11 @@ namespace Recellection.Code.Models
 
         // Simple values
         public string name { get; protected set; }
-        //public int posX { get; protected set; }
-        //public int posY { get; protected set; }
-
-        //TODO: Use Vector2 instead of ints!
-        public Vector2 coordinates { get; protected set; }
-
 
         public int currentHealth { get; protected set; }
         public int maxHealth { get; protected set; }
 
         // References
-        public Player owner { get; protected set; }
         public List<Unit> units { get; protected set; }
         public Globals.BuildingTypes type { get; protected set; }
         public BaseBuilding baseBuilding { get; protected set; }
@@ -73,7 +66,7 @@ namespace Recellection.Code.Models
         /// <param name="baseBuilding">The Base Building this building belongs
         /// to</param>
         public Building(String name, int posX, int posY, int maxHealth,
-            Player owner, Globals.BuildingTypes type, BaseBuilding baseBuilding)
+            Player owner, Globals.BuildingTypes type, BaseBuilding baseBuilding) : base(new Vector2(posX, posY), owner)
         {
             if (maxHealth <= 0)
             {
@@ -84,11 +77,9 @@ namespace Recellection.Code.Models
 
             logger.Trace("Constructing new Building with choosen values");
             this.name = name;
-            this.coordinates = new Vector2(posX,posY);
             this.maxHealth = maxHealth;
             this.currentHealth = maxHealth;
 
-            this.owner = owner;
             this.units = new List<Unit>();
             this.type = type;
 
@@ -118,7 +109,7 @@ namespace Recellection.Code.Models
         /// to</param>
         public Building(String name, int posX, int posY, int maxHealth,
             Player owner, Globals.BuildingTypes type, BaseBuilding baseBuilding,
-            LinkedList<Tile> controlZone)
+            LinkedList<Tile> controlZone) : base(new Vector2(posX, posY), owner)
         {
             if (maxHealth <= 0)
             {
@@ -129,11 +120,9 @@ namespace Recellection.Code.Models
 
             logger.Trace("Constructing new Building with choosen values");
             this.name = name;
-            this.coordinates = new Vector2(posX, posY);
             this.maxHealth = maxHealth;
             this.currentHealth = maxHealth;
 
-            this.owner = owner;
             this.units = new List<Unit>();
             this.type = type;
 
@@ -188,7 +177,7 @@ namespace Recellection.Code.Models
             return units.Count;
         }
 
-        public abstract Texture2D GetSprite();
+        //public abstract Texture2D GetSprite();
 
         /// <summary>
         /// Add one unit to the unit list if the building is alive

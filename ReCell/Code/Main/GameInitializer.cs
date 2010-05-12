@@ -57,8 +57,8 @@ namespace Recellection.Code.Main
                 int yOffset = (Recellection.viewPort.Height/Globals.TILE_SIZE)/2;
 
                 theWorld.LookingAt = new Vector2(
-                    theWorld.players[0].GetGraphs()[0].baseBuilding.coordinates.X-xOffset,
-                    theWorld.players[0].GetGraphs()[0].baseBuilding.coordinates.Y-yOffset);
+                    theWorld.players[0].GetGraphs()[0].baseBuilding.position.X-xOffset,
+                    theWorld.players[0].GetGraphs()[0].baseBuilding.position.Y-yOffset);
 
                 myLogger.Info("Setting lookingAt to X: " + theWorld.LookingAt.X + "  y: " + theWorld.LookingAt.Y);
 

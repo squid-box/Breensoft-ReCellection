@@ -103,8 +103,8 @@ namespace Recellection.Code.Controllers
         /// <param name="building"></param>
         private void CalculateWeight(Building building)
         {
-            int friendly = unitCountAt(building.coordinates, this);
-            int enemy = unitCountAt(GetClosestPointFromList(building.coordinates, m_enemyPoints), m_opponents[0]);
+            int friendly = unitCountAt(building.position, this);
+            int enemy = unitCountAt(GetClosestPointFromList(building.position, m_enemyPoints), m_opponents[0]);
             int diff = enemy - friendly;
             if (diff > 0) //more enemy units than friendly
             {

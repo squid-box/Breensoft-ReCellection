@@ -12,7 +12,7 @@ namespace Recellection.Code.Models
     /// </summary>
     /// <author>Joel Ahlgren</author>
     /// <date>2010-04-30</date>
-    public class Unit : IModel
+    public class Unit : Entity, IModel
     {
         // DATA
         private Vector2 position;   // Current tile
@@ -36,7 +36,7 @@ namespace Recellection.Code.Models
         /// <summary>
         /// Creates a "default unit".
         /// </summary>
-        public Unit(Player owner)
+        public Unit(Player owner) : base(new Vector2(NO_TARGET,NO_TARGET), owner)
         {
             this.position = new Vector2(0, 0);
             this.target = new Vector2(NO_TARGET,NO_TARGET);
@@ -49,7 +49,7 @@ namespace Recellection.Code.Models
         /// </summary>
         /// <param name="posX">Unit x-coordinate.</param>
         /// <param name="posY">Unit y-coordinate.</param>
-        public Unit(Player owner, float posX, float posY)
+        public Unit(Player owner, float posX, float posY) : base(new Vector2(posX, posY), owner)
         {
             this.position = new Vector2(posX, posY);
             this.target = new Vector2(NO_TARGET, NO_TARGET);
@@ -62,7 +62,7 @@ namespace Recellection.Code.Models
         /// </summary>
         /// <param name="position">Position of unit.</param>
         /// <param name="owner">Owner of this unit.</param>
-        public Unit(Player owner, Vector2 position)
+        public Unit(Player owner, Vector2 position) : base(position, owner)
         {
             this.position = position;
             this.target = new Vector2(NO_TARGET, NO_TARGET);
@@ -89,14 +89,7 @@ namespace Recellection.Code.Models
         {
             return isDead;
         }
-        /// <summary>
-        /// Returns the player which owns this Unit.
-        /// </summary>
-        /// <returns>Player that owns this Unit.</returns>
-        public Player GetOwner()
-        {
-            return this.owner;
-        }
+     
         /// <summary>
         /// 
         /// </summary>
@@ -112,22 +105,6 @@ namespace Recellection.Code.Models
         public void SetTarget(Vector2 newTarget)
         {
             this.target = newTarget;
-        }
-        /// <summary>
-        /// Get current position of this Unit.
-        /// </summary>
-        /// <returns>X and Y coordinates for tile.</returns>
-        public Vector2 GetPosition()
-        {
-            return this.position;
-        }
-        /// <summary>
-        /// Magically teleport this Unit somewhere.
-        /// </summary>
-        /// <param name="newPos">X and Y coordinate of destination tile.</param>
-        public void SetPosition(Vector2 newPos)
-        {
-            this.position = newPos;
         }
         /// <summary>
         /// Set whether or not this unit should recieve a new 
@@ -155,7 +132,7 @@ namespace Recellection.Code.Models
         /// Returns texture for a unit.
         /// </summary>
         /// <returns>Texture of this unit.</returns>
-        public Texture2D GetSprite()
+        public override Texture2D GetSprite()
         {
             return Recellection.textureMap.GetTexture(Globals.TextureTypes.Unit);
         }

@@ -98,7 +98,7 @@ namespace Recellection.Code
             List<Vector2> coordinates = new List<Vector2>();
             for (int i = 0; i < coordinates.Count; i++)
             {
-                coordinates.Add(myBuildings[i].coordinates);
+                coordinates.Add(myBuildings[i].position);
             }
             return coordinates;
         }

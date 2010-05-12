@@ -151,7 +151,7 @@ namespace Recellection.Code.Views
 
             if (ks.IsKeyDown(Keys.X))
             {
-                this.World.LookingAt = this.World.players[0].GetGraphs()[0].baseBuilding.coordinates;
+                this.World.LookingAt = this.World.players[0].GetGraphs()[0].baseBuilding.position;
             }
 
             if (ks.IsKeyDown(Keys.Left))
