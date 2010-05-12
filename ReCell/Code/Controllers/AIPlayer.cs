@@ -20,6 +20,7 @@ namespace Recellection.Code.Controllers
         private List<Vector2> m_interrestPoints;
         private List<Vector2> m_enemyPoints;
         private int distanceThreshold;
+        private Random randomFactory;
 
 
 
@@ -29,6 +30,7 @@ namespace Recellection.Code.Controllers
         /// <param name="opponents"></param>
         /// <param name="view"></param>
         public AIPlayer(List<Player> opponents, AIView view, Color c):base(c,"AIPLAYER"){
+            randomFactory = new Random();
             m_view = view;
             m_opponents = opponents;
             m_interrestPoints = new List<Vector2>();
@@ -118,7 +120,46 @@ namespace Recellection.Code.Controllers
         /// </summary>
         private void Explore()
         {
-            throw new NotImplementedException();
+            int scoutSize = 10;
+
+            //Take the units from the base building
+            Tile source = m_view.getTileAt(m_view.baseBuilding.GetPosition());
+
+            //Move the units to some location at the other end of the map
+            Tile dest = m_view.getTileAt(randomPointAtOppositeQuadrant());
+
+            UnitController.MoveUnits(scoutSize, source, dest);
+        }
+
+
+        /// <summary>
+        /// Returns a coordinate randomly chosen from the opposite quadrant of the map
+        /// relative to the AIs base.
+        /// </summary>
+        /// <returns></returns>
+        private Vector2 randomPointAtOppositeQuadrant()
+        {
+            Vector2 baseCoords = m_view.baseBuilding.GetPosition();
+
+            //Get the opposite end of the map relative to the base building.
+            Vector2 quadrantCenter = Vector2.Subtract(new Vector2(m_view.mapWidth, m_view.mapHeight), baseCoords);
+
+            //Create the "inner" border for the opposite quadrant. 
+            Vector2 quadrantEdge = Vector2.Subtract(quadrantCenter, baseCoords);
+            //Make sure that the coordinates are given positive values only
+            quadrantEdge = new Vector2(Math.Abs(quadrantEdge.X), Math.Abs(quadrantEdge.Y));
+            //Create the "outer" border for the opposite quadrant.
+            Vector2 quadrantEdge2 = Vector2.Add(quadrantCenter, baseCoords);
+            
+
+            //Finally pick a set of coordinates within the opposite quadrant.
+
+            float xVal = quadrantEdge.X + (float)randomFactory.NextDouble()*quadrantEdge2.X;
+            float yVal = quadrantEdge.Y + (float)randomFactory.NextDouble()*quadrantEdge2.Y;
+           
+            Vector2 result = new Vector2(xVal, yVal);
+
+            return result;
         }
 
 
@@ -161,19 +202,13 @@ namespace Recellection.Code.Controllers
             }
             if (CanHoldPoint(point))
             {
-                IssueBuildOrder(point, m_view.getBaseBuilding() , Globals.BuildingTypes.Resource);
+                IssueBuildOrder(point, m_view.baseBuilding , Globals.BuildingTypes.Resource);
             }
             else
             {
                 CalculateWeight(m_view.GetBuildingAt(point));
             }
         }
-
-        private void IncreaseWeight(Building building)
-        {
-            throw new NotImplementedException();
-        }
-
 
         
         /// <summary>
@@ -228,12 +263,6 @@ namespace Recellection.Code.Controllers
         }
 
 
-
-        private void SendUnits(Vector2 point)
-        {
-
-            throw new NotImplementedException();
-        }
 
         /// <summary>
         /// Called when a new building should be created. Creates a building of a given type at the 
