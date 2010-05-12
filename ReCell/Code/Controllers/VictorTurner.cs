@@ -81,17 +81,24 @@ namespace Recellection.Code.Controllers
 					
                 }
                 
+                // This is where we start "animating" all movement
+                
                 // FIXME: This ain't okay, hombrey
                 // Let the units move!
                 logger.Info("Moving units!");
-                Code.Models.World.Map theWholeFuckingWorld = world.GetMap();
-				for (int x = 0; x < theWholeFuckingWorld.width; x++)
+                
+                for(int i = 0; i < 100; i++)
                 {
-					for (int y = 0; y < theWholeFuckingWorld.height; y++)
+					Code.Models.World.Map theWholeFuckingWorld = world.GetMap();
+					for (int x = 0; x < theWholeFuckingWorld.width; x++)
 					{
-						UnitController.Update(theWholeFuckingWorld.GetTile(x, y).GetUnits(), 30);
+						for (int y = 0; y < theWholeFuckingWorld.height; y++)
+						{
+							UnitController.Update(theWholeFuckingWorld.GetTile(x, y).GetUnits(), 1);
+						}
 					}
-                }
+					System.Threading.Thread.Sleep(10);
+				}
 
             }
 

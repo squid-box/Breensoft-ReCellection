@@ -59,7 +59,7 @@ namespace Recellection.Code.Controllers
                     case WCState.TILE:
                         // A tile has been selected, store it.
                         finished = true;
-						Cue prego = Sounds.Instance.LoadSound("prego");
+						Cue prego = Sounds.Instance.LoadSound("acid");
 						prego.Play();
                         break;
                     case WCState.BUILDING:
