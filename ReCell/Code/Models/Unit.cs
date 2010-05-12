@@ -15,11 +15,13 @@ namespace Recellection.Code.Models
     public class Unit : Entity, IModel
     {
         // DATA
-        private Vector2 target;     // Target coordinate
-        private Entity targetEntity;    // T
-        private bool isDispersed;   // Whether or not this unit should recieve a new target from the dispersion procedure
-        private bool isDead;        // Status of unit
-        private float powerLevel;
+        public Vector2 targetPosition { get; set; }   // Target coordinate
+        public Entity targetEntity { get; set; }      // Target entity
+        public Entity defaultTarget { get; set; }		// Target to fall back to if the primary target disappears. Also acts as center of dispersion
+        public bool isDispersed { get; set; }         // Whether or not this unit should recieve a new target from the dispersion procedure
+		public bool hasArrived { get; set; }
+        public bool isDead { get; set; }              // Status of unit
+        public float powerLevel { get; set; }
         private static World world;
 
 
@@ -37,7 +39,7 @@ namespace Recellection.Code.Models
         public Unit(Player owner) : base(new Vector2(NO_TARGET,NO_TARGET), owner)
         {
             this.position = new Vector2(0, 0);
-            this.target = new Vector2(NO_TARGET,NO_TARGET);
+            this.targetPosition = new Vector2(NO_TARGET,NO_TARGET);
             this.angle = 0;
             this.isDispersed = this.isDead = false;
             this.owner = owner;
@@ -50,7 +52,7 @@ namespace Recellection.Code.Models
         public Unit(Player owner, float posX, float posY) : base(new Vector2(posX, posY), owner)
         {
             this.position = new Vector2(posX, posY);
-            this.target = new Vector2(NO_TARGET, NO_TARGET);
+            this.targetPosition = new Vector2(NO_TARGET, NO_TARGET);
             this.angle = 0;
             this.isDispersed = this.isDead = false;
             this.owner = owner;
@@ -63,7 +65,7 @@ namespace Recellection.Code.Models
         public Unit(Player owner, Vector2 position) : base(position, owner)
         {
             this.position = position;
-            this.target = new Vector2(NO_TARGET, NO_TARGET);
+            this.targetPosition = new Vector2(NO_TARGET, NO_TARGET);
             this.angle = 0;
             this.isDispersed = this.isDead = false;
             this.owner = owner;
@@ -79,50 +81,20 @@ namespace Recellection.Code.Models
 
         // Properites
 
-        /// <summary>
-        /// Returns status of this Unit.
-        /// </summary>
-        /// <returns>True if dead, False if alive.</returns>
-        public bool IsDead()
-        {
-            return isDead;
-        }
-     
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <returns>X and Y coordinates of target tile.</returns>
-        public Vector2 GetTarget()
-        {
-            return this.target;
-        }
-        /// <summary>
-        /// Change target.
-        /// </summary>
-        /// <param name="newTarget">X and Y coordinates of new target.</param>
-        public void SetTarget(Vector2 newTarget)
-        {
-            this.target = newTarget;
-        }
-        /// <summary>
-        /// Set whether or not this unit should recieve a new 
-        /// target from the dispersion procedure
-        /// </summary>
-        /// <param name="set">Self-explanatory boolean value.</param>
-        public void SetDispersed(bool set)
-        {
-            this.isDispersed = set;
-        }
-        /// <summary>
-        /// Get whether or not this unit should recieve a new 
-        /// target from the dispersion procedure.
-        /// </summary>
-        /// <returns>Self-explanatory boolean.</returns>
-        public bool IsDispersed()
-        {
-            return isDispersed;
-        }
+		
 
+        private void updateTarget()
+        {
+			if (targetEntity != null)
+			{
+				targetPosition = targetEntity.position;
+			}
+			else if (!this.isDispersed)
+			{
+				targetEntity = defaultTarget;
+				updateTarget();
+			}
+        }
 
         // Graphical representation
 
@@ -134,22 +106,12 @@ namespace Recellection.Code.Models
         {
             return Recellection.textureMap.GetTexture(Globals.TextureTypes.Unit);
         }
-        /// <summary>
-        /// Get current angle of this unit.
-        /// </summary>
-        public int GetAngle()
-        {
-            return this.angle;
-        }
-
-        // Modifiers
-        /// <summary>
-        /// Kill this unit.
-        /// </summary>
+        
         public void Kill()
         {
             this.isDead = true;
         }
+
         /// <summary>
         /// Cool override of XNA Update function.
         /// </summary>
@@ -189,46 +151,52 @@ namespace Recellection.Code.Models
 
             Unit.world.map.GetTile(x, y).RemoveUnit(this);
 
+			// Get our targets current position
+            updateTarget();
+
             // Move unit towards target.
-            if (this.target.X != NO_TARGET)
+            if (this.targetPosition.X != NO_TARGET)
             {
-                if (this.target.X > this.position.X)
+                if (this.targetPosition.X > this.position.X)
                 {
                     float newX = position.X + MOVEMENT_SPEED * deltaTime;
                     position = new Vector2(newX, position.Y);
                 }
-                else if (this.target.X < this.position.X)
+                else if (this.targetPosition.X < this.position.X)
                 {
                     float newX = position.X - MOVEMENT_SPEED * deltaTime;
                     position = new Vector2(newX, position.Y);
                 }
-                else
-                {
-                    this.target.X = NO_TARGET;
-                }
             }
-            if (this.target.Y != NO_TARGET)
+            if (this.targetPosition.Y != NO_TARGET)
             {
-                if (this.target.Y > this.position.Y)
+                if (this.targetPosition.Y > this.position.Y)
                 {
                     float newY = position.Y + MOVEMENT_SPEED * deltaTime;
                     position = new Vector2(position.X, newY);
                 }
-                else if (this.target.Y < this.position.Y)
+                else if (this.targetPosition.Y < this.position.Y)
                 {
                     float newY = position.Y - MOVEMENT_SPEED * deltaTime;
                     position = new Vector2(position.X, newY);
                 }
             }
-            // Reasonably close to target.
-            if ((Math.Abs(this.position.X - this.target.X) < TARGET_THRESHOLD) && (Math.Abs(this.position.Y - this.target.Y) < TARGET_THRESHOLD))
-            {
-                if (!isDispersed)
-                {
-                    isDispersed = true;
-                }
-                this.target = new Vector2(NO_TARGET, NO_TARGET);
-            }
+            // If we are reasonably close to target.
+			if ((Math.Abs(this.position.X - this.targetPosition.X) < TARGET_THRESHOLD) && (Math.Abs(this.position.Y - this.targetPosition.Y) < TARGET_THRESHOLD))
+			{
+				hasArrived = true;
+				// If we have no primary target we will be dispersed.
+				if (targetEntity == null)
+				{
+					// We will now recieve new positions within a radius of our secondary target.
+					isDispersed = true;
+				}
+				this.targetPosition = new Vector2(NO_TARGET, NO_TARGET);
+			}
+			else
+			{
+				isDispersed = false;
+			}
 
             // Tile management!
 
