@@ -140,14 +140,14 @@ namespace Recellection.Code.Views
 
                     Rectangle r = new Rectangle(x * Globals.TILE_SIZE, y * Globals.TILE_SIZE, Globals.TILE_SIZE, Globals.TILE_SIZE);
                     this.Layer = 0.9f;
-                    this.drawTexture(spriteBatch, Recellection.textureMap.GetTexture(t.GetTerrainType().GetEnum()), r);
+                    this.drawTexture(spriteBatch, t.GetSprite() , r);
 
                     // Building? On my Tile?! It's more likely than you think.
                     b = t.GetBuilding();
                     if (b != null)
                     {
                         myLogger.Info("Found a building on the tile.");
-                        this.Layer = 0.0f;
+						this.Layer = 0.0f;
                         this.drawTexture(spriteBatch, b.GetSprite(),
                             new Rectangle(x * Globals.TILE_SIZE + 32, y * Globals.TILE_SIZE + 32, b.GetSprite().Width, b.GetSprite().Height),
                             b.owner.color);
@@ -161,7 +161,9 @@ namespace Recellection.Code.Views
                         foreach (Unit u in units)
                         {
                             this.Layer = 0.5f;
-                            this.drawTexture(spriteBatch, u.GetSprite(), new Rectangle(x * Globals.TILE_SIZE, y * Globals.TILE_SIZE, u.GetSprite().Width, u.GetSprite().Height), u.GetOwner().color);
+							int ux = (int)Math.Round((u.position.X - World.LookingAt.X) * Globals.TILE_SIZE);
+							int uy = (int)Math.Round((u.position.Y - World.LookingAt.Y) * Globals.TILE_SIZE);
+                            this.drawTexture(spriteBatch, u.GetSprite(), new Rectangle(ux, uy, u.GetSprite().Width, u.GetSprite().Height), u.GetOwner().color);
                         }
                     }
                 }
