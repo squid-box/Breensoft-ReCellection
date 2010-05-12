@@ -18,7 +18,7 @@ namespace Recellection.Code.Controllers
         /// <summary>
         /// The different states this controller will assume
         /// </summary>
-        private enum WCState { TILES, BUILDING, TILE, MENU, ZOOMED, SCROLL };
+        private enum WCState { NONE, BUILDING, TILE, MENU, ZOOMED, SCROLL };
         private const long SCROLL_ZONE_DWELL_TIME = 2500000;
         private char[] REG_EXP = { '_' };
         public bool finished { get; set; }
@@ -33,7 +33,7 @@ namespace Recellection.Code.Controllers
         // Create 
         public WorldController(Player p, World theWorld)
         {
-            state = WCState.TILES;
+            state = WCState.NONE;
             //Debugging
             finished = false;
             myLogger = LoggerFactory.GetLogger();
@@ -45,6 +45,7 @@ namespace Recellection.Code.Controllers
 
         public void Run()
         {
+			finished = false;
             while (!finished)
             {
                 // Generate the appropriate menu for this state.
@@ -53,8 +54,9 @@ namespace Recellection.Code.Controllers
                 Point point = retriveCoordinateInformation(inputIcon);
                 switch (state)
                 {
-                    case WCState.TILES:
+                    case WCState.TILE:
                         // A tile has been selected, store it.
+                        finished = true;
                         break;
                     case WCState.BUILDING:
                         // We are in a building menu, do the action mapped to the region on that building
