@@ -107,7 +107,7 @@ namespace Recellection.Code.Controllers
                 // We we arrive to our target
                 if (u.hasArrived)
                 {
-                    Vector2 tilePos = u.targetPosition;
+                    Vector2 tilePos = u.position;
                     Vector2 min = new Vector2((float)Math.Floor(tilePos.X), (float)Math.Floor(tilePos.Y));
                     
                     Random r = new Random();
