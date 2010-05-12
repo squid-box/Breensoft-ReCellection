@@ -53,7 +53,7 @@ namespace Recellection.Code.Main
                 suitGuys = new Dictionary<Player, UnitAccountant>(2);
                 foreach(Player p in theWorld.players)
                 {
-                    suitGuys[p] = new UnitAccountant(p,theWorld);
+                    suitGuys[p] = new UnitAccountant(p);
                     suitGuys[p].ProduceUnits();
                 }
                 

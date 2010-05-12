@@ -43,6 +43,7 @@ namespace Recellection.Code.Models
             this.angle = 0;
             this.isDispersed = this.isDead = false;
             this.owner = owner;
+            world.GetMap().GetTile((int)position.X, (int)position.Y).AddUnit(this);
         }
         /// <summary>
         /// Creates a unit.
@@ -56,6 +57,7 @@ namespace Recellection.Code.Models
             this.angle = 0;
             this.isDispersed = this.isDead = false;
             this.owner = owner;
+            world.GetMap().GetTile((int)position.X, (int)position.Y).AddUnit(this);
         }
 
 		/// <summary>
@@ -72,6 +74,7 @@ namespace Recellection.Code.Models
 			this.angle = 0;
 			this.isDispersed = this.isDead = false;
 			this.owner = owner;
+            world.GetMap().GetTile((int)position.X, (int)position.Y).AddUnit(this);
 		}
 
         /// <summary>
@@ -87,6 +90,7 @@ namespace Recellection.Code.Models
             this.angle = 0;
             this.isDispersed = this.isDead = false;
             this.owner = owner;
+            world.GetMap().GetTile((int)position.X, (int)position.Y).AddUnit(this);
         }
 
         #endregion
