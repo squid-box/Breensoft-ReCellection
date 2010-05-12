@@ -71,8 +71,10 @@ namespace Recellection.Code.Main
                 Recellection.CurrentState = new WorldView(new GameInitializer().theWorld);
                 
                 //This only makes the grid of GUIRegions and scroll zones, remove later.
-                new WorldController(new Player());
-                
+                WorldController wc = new WorldController(new Player());
+                wc.retriveCoordinateInformation(MenuController.GetInput());
+                MenuController.UnloadMenu();
+
                 // Heartbeat
                 while (true)
                 {
