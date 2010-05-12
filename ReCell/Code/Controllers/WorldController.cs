@@ -19,7 +19,7 @@ namespace Recellection.Code.Controllers
         /// The different states this controller will assume
         /// </summary>
         private enum WCState { NONE, BUILDING, TILE, MENU, ZOOMED, SCROLL };
-        private const long SCROLL_ZONE_DWELL_TIME = 2500000;
+        private const long SCROLL_ZONE_DWELL_TIME = 0;//250000;
         private char[] REG_EXP = { '_' };
         public bool finished { get; set; }
         private Logger myLogger;
