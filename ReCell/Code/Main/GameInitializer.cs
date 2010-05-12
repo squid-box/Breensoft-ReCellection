@@ -65,10 +65,11 @@ namespace Recellection.Code.Main
                     (int)(theWorld.players[0].GetGraphs()[0].baseBuilding.position.Y-yOffset));
 
                 myLogger.Info("Setting lookingAt to X: " + theWorld.LookingAt.X + "  y: " + theWorld.LookingAt.Y);
-				
+
 				Building testBuilding = new BaseBuilding("Bajs", 7, 7, theWorld.players[0]);
-				Unit testUnit = new Unit(theWorld.players[0], new Vector2(2f, 2f), testBuilding);
 				theWorld.map.GetTile(7, 7).SetBuilding(testBuilding);
+				
+				Unit testUnit = new Unit(theWorld.players[0], new Vector2(2f, 2f), testBuilding);
 				theWorld.map.GetTile(2, 2).AddUnit(theWorld.players[0], testUnit);
 
                 return true;
