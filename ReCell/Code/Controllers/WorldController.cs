@@ -6,6 +6,7 @@ using Recellection.Code.Models;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework;
 using Recellection.Code.Utility.Logger;
+using Microsoft.Xna.Framework.Audio;
 
 namespace Recellection.Code.Controllers
 {
@@ -65,7 +66,9 @@ namespace Recellection.Code.Controllers
                         // We have selected a tile in zoomed-out mode.
                         break;
                     case WCState.SCROLL:
-                        theWorld.LookingAt = new Point(point.X+theWorld.LookingAt.X,point.Y+theWorld.LookingAt.Y);
+						theWorld.LookingAt = new Point(point.X + theWorld.LookingAt.X, point.Y + theWorld.LookingAt.Y); 
+						Cue prego = Sounds.Instance.LoadSound("prego");
+						prego.Play();
                         break;
                 }
             }
