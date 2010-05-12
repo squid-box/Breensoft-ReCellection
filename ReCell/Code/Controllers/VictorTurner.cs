@@ -6,6 +6,7 @@ using System.Text;
 using Recellection.Code.Models;
 using Recellection.Code.Controllers;
 using Recellection.Code.Main;
+using Recellection.Code.Utility.Logger;
 
 namespace Recellection.Code.Controllers
 {
@@ -22,7 +23,8 @@ namespace Recellection.Code.Controllers
         private World world;
 
         private GameInitializer gameInitializer;
-
+		private Logger logger = LoggerFactory.GetLogger();
+		
         Boolean finished = false;
         /// <summary>
         /// The constructor used to initiate the Victor Turner
@@ -31,6 +33,7 @@ namespace Recellection.Code.Controllers
         /// <param name="world">The world the game takes place in</param>
         public VictorTurner(GameInitializer gameInitializer)
         {
+            this.gameInitializer = gameInitializer;
             this.players = gameInitializer.theWorld.players;
             this.world = gameInitializer.theWorld;
         }
@@ -39,7 +42,8 @@ namespace Recellection.Code.Controllers
         {
 
             while (!finished)
-            {
+            {	
+				logger.Debug("Victor turner is turning the page!");
                 foreach (Player player in players)
                 {
                     gameInitializer.suitGuys[player].ProduceUnits(); 
@@ -54,9 +58,26 @@ namespace Recellection.Code.Controllers
                         finished = true;
                         break;  
                     }
-                    new WorldController(player);
+                    
+                    
+					if (player is AIPlayer)
+					{
+						logger.Debug(player.colour + " is a AIPlayer!");
+						//((AIPlayer)player).MakeMove();
+					}
+					else if (player is Player)
+					{
+						logger.Debug(player.colour+" is human!");
+						//This only makes the grid of GUIRegions and scroll zones, remove later.
+						new WorldController(player);
+					}
+					else
+					{
+						logger.Fatal("Could not identify "+player.colour+" player!");
+					}
+					
                 }
-                //UnitController.Update(world);
+                //UnitController.Update(world.GetMap().);
 
             }
 

@@ -52,6 +52,7 @@ namespace Recellection.Code.Main
 			#endregion
             logger.Info("Waiting for Tobii input...");
 			MenuIcon response = MenuController.GetInput();
+            MenuController.UnloadMenu();
             
             logger.Info("Got input!");
             backgroundSound.Pause();
@@ -66,9 +67,11 @@ namespace Recellection.Code.Main
 				//}
 				
 				// START THE GAME ALREADY!
-
-                Recellection.CurrentState = new WorldView(new GameInitializer().theWorld);
-
+				GameInitializer gameInit = new GameInitializer();
+				Recellection.CurrentState = new WorldView(gameInit.theWorld);
+				VictorTurner vt = new VictorTurner(gameInit);
+				vt.Run();
+                
                 // Heartbeat
                 while (true)
                 {
