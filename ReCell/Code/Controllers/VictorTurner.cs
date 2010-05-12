@@ -83,12 +83,13 @@ namespace Recellection.Code.Controllers
                 
                 // FIXME: This ain't okay, hombrey
                 // Let the units move!
+                logger.Info("Moving units!");
                 Code.Models.World.Map theWholeFuckingWorld = world.GetMap();
-                for(int x = 0; x < world.GetMap().Cols; x++)
+                for(int x = 0; x < world.GetMap().width; x++)
                 {
-					for(int y = 0; y < world.GetMap().Rows; y++)
+					for(int y = 0; y < world.GetMap().height; y++)
 					{
-						UnitController.Update(theWholeFuckingWorld.GetTile(y, x).GetUnits(), 5);
+						UnitController.Update(theWholeFuckingWorld.GetTile(x, y).GetUnits(), 5);
 					}
                 }
 

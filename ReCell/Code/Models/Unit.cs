@@ -149,7 +149,7 @@ namespace Recellection.Code.Models
             int x = (int)this.position.X;
             int y = (int)this.position.Y;
 
-            Unit.world.map.GetTile(y, x).RemoveUnit(this);
+            Unit.world.map.GetTile(x, y).RemoveUnit(this);
 
 			// Get our targets current position
             updateTarget();
@@ -203,7 +203,7 @@ namespace Recellection.Code.Models
             x = (int)this.position.X;
             y = (int)this.position.Y;
 
-            Unit.world.map.GetTile(y, x).AddUnit(this);
+            Unit.world.map.GetTile(x, y).AddUnit(this);
         }
     }
 }
