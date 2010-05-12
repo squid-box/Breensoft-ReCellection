@@ -78,7 +78,7 @@ namespace Recellection.Code.Controllers
 			GUIRegion activated = tobiiController.GetActivatedRegion();
 
             //tobiiController.UnloadMenu(menuModel.Peek());
-            LoggerFactory.GetLogger().Trace(""+activated.BoundingGeometry);
+
 			List<MenuIcon> options = menuModel.Peek().GetIcons();
 			foreach(MenuIcon mi in options)
 			{
