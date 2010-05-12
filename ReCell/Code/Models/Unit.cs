@@ -101,19 +101,6 @@ namespace Recellection.Code.Models
 
 		
 
-        private void updateTarget()
-        {
-			if (targetEntity != null)
-			{
-				targetPosition = targetEntity.position;
-			}
-			else if (defaultTarget != null && !this.isDispersed)
-			{
-				targetEntity = defaultTarget;
-				updateTarget();
-			}
-			targetPosition = new Vector2(NO_TARGET, NO_TARGET);
-        }
 
         // Graphical representation
 
@@ -142,7 +129,24 @@ namespace Recellection.Code.Models
 				updateTarget();
                 this.Move(systemTime);
             }
-        }
+		}
+		
+		private void updateTarget()
+		{
+			if (targetEntity != null)
+			{
+				targetPosition = targetEntity.position;
+			}
+			else if (defaultTarget != null && !this.isDispersed)
+			{
+				targetEntity = defaultTarget;
+				updateTarget();
+			}
+			else
+			{
+				targetPosition = new Vector2(NO_TARGET, NO_TARGET);
+			}
+		}
 
         /// <summary>
         /// Modify or set a new powerlevel for this unit.
