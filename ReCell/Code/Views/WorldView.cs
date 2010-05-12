@@ -40,10 +40,14 @@ namespace Recellection.Code.Views
             //To make sure the lookingAt in world would make the world view draw tiles that does not exists align it.
             alignViewport();
 
+            tileCollection = new List<Tile>();
+
             this.World.lookingAtEvent += CreateCurrentView;
 
             //this.World.LookingAt = new Vector2(0, 0);
             CreateCurrentView(this, new Event<Point>(this.World.LookingAt,EventType.ALTER));
+
+            
 
         }
 
@@ -55,25 +59,28 @@ namespace Recellection.Code.Views
 
             //Vector2 copyLookingAt = alignViewport(ev.subject);
 
-            tileCollection = new List<Tile>();
-
-            int currentX = (int)this.World.LookingAt.X;
-            int currentY = (int)this.World.LookingAt.Y;
-
-            myLogger.Info("Rendering for X:" + currentX + " and Y:" + currentY + ".");
-            myLogger.Info("Width:" + maxCols + " and Height:" + maxRows + ".");
-			for (int x = currentX; x < currentX + maxCols; x++)
+            lock (tileCollection)
             {
-				for (int y = currentY; y < currentY + maxRows; y++)
+                tileCollection.Clear();
+
+                int currentX = (int)this.World.LookingAt.X;
+                int currentY = (int)this.World.LookingAt.Y;
+
+                myLogger.Info("Rendering for X:" + currentX + " and Y:" + currentY + ".");
+                myLogger.Info("Width:" + maxCols + " and Height:" + maxRows + ".");
+                for (int x = currentX; x < currentX + maxCols; x++)
                 {
-					try
-					{
-						tileCollection.Add(tiles[x, y]);
-					}
-					catch(IndexOutOfRangeException e)
-					{
-						myLogger.Fatal("OMG FAIL");
-					}
+                    for (int y = currentY; y < currentY + maxRows; y++)
+                    {
+                        try
+                        {
+                            tileCollection.Add(tiles[x, y]);
+                        }
+                        catch (IndexOutOfRangeException e)
+                        {
+                            myLogger.Fatal("OMG FAIL");
+                        }
+                    }
                 }
             }
         }
@@ -124,35 +131,38 @@ namespace Recellection.Code.Views
             #endregion
 			
             Building b;
-            foreach(Tile t in tileCollection)
+            lock (tileCollection)
             {
-                int x = (int) (t.position.X - (World.LookingAt.X));
-                int y = (int) (t.position.Y - (World.LookingAt.Y));
-
-                Rectangle r = new Rectangle(x*Globals.TILE_SIZE, y*Globals.TILE_SIZE, Globals.TILE_SIZE, Globals.TILE_SIZE);
-				this.Layer = 0.9f;
-                this.drawTexture(spriteBatch, t.GetSprite() , r);
-                
-                // Building? On my Tile?! It's more likely than you think.
-                b = t.GetBuilding();
-                if (b != null)
+                foreach (Tile t in tileCollection)
                 {
-					myLogger.Info("Found a building on the tile.");
-					this.Layer = 0.0f;
-                    this.drawTexture(spriteBatch, b.GetSprite(),
-                        new Rectangle(x * Globals.TILE_SIZE + 32, y * Globals.TILE_SIZE + 32, b.GetSprite().Width, b.GetSprite().Height),
-						b.owner.color);
-                }
+                    int x = (int)(t.position.X - (World.LookingAt.X));
+                    int y = (int)(t.position.Y - (World.LookingAt.Y));
 
-                // Find those units!
-                HashSet<Unit> units = t.GetUnits();
-                if (units.Count != 0)
-                {
-                    myLogger.Info("Found unit(s) on the tile.");
-                    foreach (Unit u in units)
-					{
-						this.Layer = 0.5f;
-                        this.drawTexture(spriteBatch, u.GetSprite(), new Rectangle(x * Globals.TILE_SIZE, y * Globals.TILE_SIZE, u.GetSprite().Width, u.GetSprite().Height), u.GetOwner().color);
+                    Rectangle r = new Rectangle(x * Globals.TILE_SIZE, y * Globals.TILE_SIZE, Globals.TILE_SIZE, Globals.TILE_SIZE);
+                    this.Layer = 0.9f;
+                    this.drawTexture(spriteBatch, t.GetSprite() , r);
+
+                    // Building? On my Tile?! It's more likely than you think.
+                    b = t.GetBuilding();
+                    if (b != null)
+                    {
+                        myLogger.Info("Found a building on the tile.");
+                        this.Layer = 0.0f;
+                        this.drawTexture(spriteBatch, b.GetSprite(),
+                            new Rectangle(x * Globals.TILE_SIZE + 32, y * Globals.TILE_SIZE + 32, b.GetSprite().Width, b.GetSprite().Height),
+                            b.owner.color);
+                    }
+
+                    // Find those units!
+                    HashSet<Unit> units = t.GetUnits();
+                    if (units.Count != 0)
+                    {
+                        myLogger.Info("Found unit(s) on the tile.");
+                        foreach (Unit u in units)
+                        {
+                            this.Layer = 0.5f;
+                            this.drawTexture(spriteBatch, u.GetSprite(), new Rectangle(x * Globals.TILE_SIZE, y * Globals.TILE_SIZE, u.GetSprite().Width, u.GetSprite().Height), u.GetOwner().color);
+                        }
                     }
                 }
             }

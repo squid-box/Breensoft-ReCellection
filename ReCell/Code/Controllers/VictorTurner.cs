@@ -24,6 +24,8 @@ namespace Recellection.Code.Controllers
 
         private GameInitializer gameInitializer;
 		private Logger logger = LoggerFactory.GetLogger();
+
+        private WorldController humanControl;
 		
         Boolean finished = false;
         /// <summary>
@@ -36,6 +38,7 @@ namespace Recellection.Code.Controllers
             this.gameInitializer = gameInitializer;
             this.players = gameInitializer.theWorld.players;
             this.world = gameInitializer.theWorld;
+            this.humanControl = new WorldController(players[0],world);
         }
 
         public void Run()
@@ -69,7 +72,7 @@ namespace Recellection.Code.Controllers
 					{
 						logger.Debug(player.colour+" is human!");
 						//This only makes the grid of GUIRegions and scroll zones, remove later.
-						new WorldController(player);
+                        humanControl.Run();
 					}
 					else
 					{
@@ -77,7 +80,17 @@ namespace Recellection.Code.Controllers
 					}
 					
                 }
-                //UnitController.Update(world.GetMap().);
+                
+                // FIXME: This ain't okay, hombrey
+                // Let the units move!
+                Code.Models.World.Map theWholeFuckingWorld = world.GetMap();
+                for(int x = 0; x < world.GetMap().Cols; x++)
+                {
+					for(int y = 0; y < world.GetMap().Rows; y++)
+					{
+						UnitController.Update(theWholeFuckingWorld.GetTile(y, x).GetUnits(), 5);
+					}
+                }
 
             }
 
