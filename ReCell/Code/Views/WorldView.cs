@@ -166,8 +166,8 @@ namespace Recellection.Code.Views
             if (ks.IsKeyDown(Keys.X))
             {
                 World.LookingAt = new Point(
-						(int)World.players[0].GetGraphs()[0].baseBuilding.coordinates.X, 
-						(int)World.players[0].GetGraphs()[0].baseBuilding.coordinates.Y);
+						(int)World.players[0].GetGraphs()[0].baseBuilding.position.X, 
+						(int)World.players[0].GetGraphs()[0].baseBuilding.position.Y);
             }
 
 			int x = World.LookingAt.X;

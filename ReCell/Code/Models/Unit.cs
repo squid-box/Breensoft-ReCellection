@@ -12,16 +12,14 @@ namespace Recellection.Code.Models
     /// </summary>
     /// <author>Joel Ahlgren</author>
     /// <date>2010-04-30</date>
-    public class Unit : IModel
+    public class Unit : Entity, IModel
     {
         // DATA
-        private Vector2 position;   // Current tile
         private Vector2 target;     // Target coordinate
-        private int angle;          // Angle of unit, for drawing
+        private Entity targetEntity;    // T
         private bool isDispersed;   // Whether or not this unit should recieve a new target from the dispersion procedure
         private bool isDead;        // Status of unit
         private float powerLevel;
-        private Player owner;
         private static World world;
 
 
@@ -36,7 +34,7 @@ namespace Recellection.Code.Models
         /// <summary>
         /// Creates a "default unit".
         /// </summary>
-        public Unit(Player owner)
+        public Unit(Player owner) : base(new Vector2(NO_TARGET,NO_TARGET), owner)
         {
             this.position = new Vector2(0, 0);
             this.target = new Vector2(NO_TARGET,NO_TARGET);
@@ -49,7 +47,7 @@ namespace Recellection.Code.Models
         /// </summary>
         /// <param name="posX">Unit x-coordinate.</param>
         /// <param name="posY">Unit y-coordinate.</param>
-        public Unit(Player owner, float posX, float posY)
+        public Unit(Player owner, float posX, float posY) : base(new Vector2(posX, posY), owner)
         {
             this.position = new Vector2(posX, posY);
             this.target = new Vector2(NO_TARGET, NO_TARGET);
@@ -62,7 +60,7 @@ namespace Recellection.Code.Models
         /// </summary>
         /// <param name="position">Position of unit.</param>
         /// <param name="owner">Owner of this unit.</param>
-        public Unit(Player owner, Vector2 position)
+        public Unit(Player owner, Vector2 position) : base(position, owner)
         {
             this.position = position;
             this.target = new Vector2(NO_TARGET, NO_TARGET);
@@ -89,14 +87,7 @@ namespace Recellection.Code.Models
         {
             return isDead;
         }
-        /// <summary>
-        /// Returns the player which owns this Unit.
-        /// </summary>
-        /// <returns>Player that owns this Unit.</returns>
-        public Player GetOwner()
-        {
-            return this.owner;
-        }
+     
         /// <summary>
         /// 
         /// </summary>
@@ -112,22 +103,6 @@ namespace Recellection.Code.Models
         public void SetTarget(Vector2 newTarget)
         {
             this.target = newTarget;
-        }
-        /// <summary>
-        /// Get current position of this Unit.
-        /// </summary>
-        /// <returns>X and Y coordinates for tile.</returns>
-        public Vector2 GetPosition()
-        {
-            return this.position;
-        }
-        /// <summary>
-        /// Magically teleport this Unit somewhere.
-        /// </summary>
-        /// <param name="newPos">X and Y coordinate of destination tile.</param>
-        public void SetPosition(Vector2 newPos)
-        {
-            this.position = newPos;
         }
         /// <summary>
         /// Set whether or not this unit should recieve a new 
@@ -155,7 +130,7 @@ namespace Recellection.Code.Models
         /// Returns texture for a unit.
         /// </summary>
         /// <returns>Texture of this unit.</returns>
-        public Texture2D GetSprite()
+        public override Texture2D GetSprite()
         {
             return Recellection.textureMap.GetTexture(Globals.TextureTypes.Unit);
         }
@@ -219,11 +194,13 @@ namespace Recellection.Code.Models
             {
                 if (this.target.X > this.position.X)
                 {
-                    this.position.X += MOVEMENT_SPEED * deltaTime;
+                    float newX = position.X + MOVEMENT_SPEED * deltaTime;
+                    position = new Vector2(newX, position.Y);
                 }
                 else if (this.target.X < this.position.X)
                 {
-                    this.position.X += MOVEMENT_SPEED * deltaTime;
+                    float newX = position.X - MOVEMENT_SPEED * deltaTime;
+                    position = new Vector2(newX, position.Y);
                 }
                 else
                 {
@@ -234,11 +211,13 @@ namespace Recellection.Code.Models
             {
                 if (this.target.Y > this.position.Y)
                 {
-                    this.position.Y += MOVEMENT_SPEED * deltaTime;
+                    float newY = position.Y + MOVEMENT_SPEED * deltaTime;
+                    position = new Vector2(position.X, newY);
                 }
                 else if (this.target.Y < this.position.Y)
                 {
-                    this.position.Y += MOVEMENT_SPEED * deltaTime;
+                    float newY = position.Y - MOVEMENT_SPEED * deltaTime;
+                    position = new Vector2(position.X, newY);
                 }
             }
             // Reasonably close to target.

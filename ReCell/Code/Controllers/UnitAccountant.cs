@@ -57,7 +57,7 @@ namespace Recellection.Code.Controllers
                 for (int i = 0; i < b.RateOfProduction; i++)
                 {
                     //Places them randomly around the building. - John
-                    Vector2 coords = b.coordinates;
+                    Vector2 coords = b.position;
                     coords.X += (float)randomer.NextDouble() * Globals.TILE_SIZE;
                     coords.Y += (float)randomer.NextDouble() * Globals.TILE_SIZE;
 
