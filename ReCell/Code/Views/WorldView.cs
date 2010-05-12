@@ -92,17 +92,17 @@ namespace Recellection.Code.Views
                 this.World.LookingAt = new Point(0, this.World.LookingAt.Y);
             }
 
-            if (this.World.LookingAt.X >= this.World.map.Rows - (Recellection.viewPort.Width / Globals.TILE_SIZE) -1)
+            if (this.World.LookingAt.X >= this.World.map.width - (Recellection.viewPort.Width / Globals.TILE_SIZE) -1)
             {
 				this.World.LookingAt = new Point(
-                    this.World.map.Rows - (Recellection.viewPort.Width / Globals.TILE_SIZE) - 1,
+                    this.World.map.height - (Recellection.viewPort.Width / Globals.TILE_SIZE) - 1,
                     this.World.LookingAt.Y);
             }
 
-            if (this.World.LookingAt.Y >= this.World.map.Cols - (Recellection.viewPort.Height / Globals.TILE_SIZE) -1)
+            if (this.World.LookingAt.Y >= this.World.map.width - (Recellection.viewPort.Height / Globals.TILE_SIZE) - 1)
             {
 				this.World.LookingAt = new Point(this.World.LookingAt.X,
-                    this.World.map.Cols - (Recellection.viewPort.Height / Globals.TILE_SIZE) - 1);
+                    this.World.map.width - (Recellection.viewPort.Height / Globals.TILE_SIZE) - 1);
             }
 
             if (this.World.LookingAt.Y < 0)
@@ -200,8 +200,8 @@ namespace Recellection.Code.Views
 				y += f;
             }
             
-            x = (int)MathHelper.Clamp(x, 0, World.map.Cols - maxCols);
-            y = (int)MathHelper.Clamp(y, 0, World.map.Rows - maxRows);
+            x = (int)MathHelper.Clamp(x, 0, World.map.width - maxCols);
+            y = (int)MathHelper.Clamp(y, 0, World.map.height - maxRows);
             
 			this.World.LookingAt = new Point(x, y);
         }
