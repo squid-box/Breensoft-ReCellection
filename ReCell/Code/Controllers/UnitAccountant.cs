@@ -20,14 +20,16 @@ namespace Recellection.Code.Controllers
     public sealed class UnitAccountant
     {
         private Player owner;
+        private World theWorld;
 
         /// <summary>
         /// Constructs an UnitAccountant.
         /// </summary>
         /// <param name="owner">This UnitAccountant will belong to the player 'owner'.</param>
-        public UnitAccountant(Player owner)
+        public UnitAccountant(Player owner, World theWorld)
         {
             this.owner = owner;
+            this.theWorld = theWorld;
         }
 
         /// <summary>
@@ -45,9 +47,10 @@ namespace Recellection.Code.Controllers
         /// </summary>
         public void ProduceUnits()
         {
-            Random randomer = new Random(owner.GetHashCode());
+            Random randomer = new Random();
             List<Unit> res;
-            
+            Unit temp;
+
             foreach (Graph g in owner.GetGraphs())
             {
                 res = new List<Unit>();
@@ -58,11 +61,17 @@ namespace Recellection.Code.Controllers
                 {
                     //Places them randomly around the building. - John
                     Vector2 coords = b.position;
-                    coords.X += (float)randomer.NextDouble() * Globals.TILE_SIZE;
-                    coords.Y += (float)randomer.NextDouble() * Globals.TILE_SIZE;
+                    coords.X += (float)randomer.NextDouble();
+                    coords.Y += (float)randomer.NextDouble();
 
-                    b.AddUnit(new Unit(b.owner, coords, b));
+                    temp = new Unit(b.owner, coords, b);
+                    temp.targetEntity = b;
+
+                    res.Add(temp);
+                    
+                    
                 }
+                theWorld.GetMap().GetTile((int)b.position.X, (int)b.position.Y).AddUnit(owner,res);
                 b.AddUnits(res);
             }
         }

@@ -96,18 +96,21 @@ namespace Recellection.Code.Models
         /// <param name="units">Units to be added to this Tile.</param>
         public void AddUnit(Player p, List<Unit> units)
         {
-            if (!this.units.ContainsKey(p))
+            lock (units)
             {
-                this.units.Add(p, new HashSet<Unit>());
-            }
-            foreach (Unit u in units)
-            {
-                this.units[p].Add(u);
-            }
+                if (!this.units.ContainsKey(p))
+                {
+                    this.units.Add(p, new HashSet<Unit>());
+                }
+                foreach (Unit u in units)
+                {
+                    this.units[p].Add(u);
+                }
 
-            if (unitsChanged != null)
-            {
-                unitsChanged(this, new Event<IEnumerable<Unit>>(units, EventType.ADD));
+                if (unitsChanged != null)
+                {
+                    unitsChanged(this, new Event<IEnumerable<Unit>>(units, EventType.ADD));
+                }
             }
         }
         /// <summary>
@@ -116,43 +119,52 @@ namespace Recellection.Code.Models
         /// <param name="units">Units to be added to this Tile.</param>
         public void AddUnit(Player p, Unit u)
         {
-            if (!this.units.ContainsKey(p))
+            lock (units)
             {
-                this.units.Add(p, new HashSet<Unit>());
-            }
-            this.units[p].Add(u);
+                if (!this.units.ContainsKey(p))
+                {
+                    this.units.Add(p, new HashSet<Unit>());
+                }
+                this.units[p].Add(u);
 
-            if (unitsChanged != null)
-            {
-                //I'm sorry for this ugly hax - John
-                List<Unit> temp = new List<Unit>();
-                temp.Add(u);
-                unitsChanged(this, new Event<IEnumerable<Unit>>(temp, EventType.ADD));
+                if (unitsChanged != null)
+                {
+                    //I'm sorry for this ugly hax - John
+                    List<Unit> temp = new List<Unit>();
+                    temp.Add(u);
+                    unitsChanged(this, new Event<IEnumerable<Unit>>(temp, EventType.ADD));
+                }
             }
         }
         public void AddUnit(Unit u)
         {
-			HashSet<Unit> nits;
-			if (! this.units.TryGetValue(u.GetOwner(), out nits))
-			{
-				nits = new HashSet<Unit>();
-			}
-			
-			nits.Add(u);
-			
-			this.units[u.GetOwner()] = nits;
+            lock (units)
+            {
+                HashSet<Unit> nits;
+                if (!this.units.TryGetValue(u.GetOwner(), out nits))
+                {
+                    nits = new HashSet<Unit>();
+                }
+
+                nits.Add(u);
+
+                this.units[u.GetOwner()] = nits;
+            }
         }
 
         public void RemoveUnit(Player p, Unit u)
         {
-            this.units[p].Remove(u);
-
-            if (unitsChanged != null)
+            lock (units)
             {
-                //I'm sorry for this ugly hax - John
-                List<Unit> temp = new List<Unit>();
-                temp.Add(u);
-                unitsChanged(this, new Event<IEnumerable<Unit>>(temp, EventType.REMOVE));
+                this.units[p].Remove(u);
+
+                if (unitsChanged != null)
+                {
+                    //I'm sorry for this ugly hax - John
+                    List<Unit> temp = new List<Unit>();
+                    temp.Add(u);
+                    unitsChanged(this, new Event<IEnumerable<Unit>>(temp, EventType.REMOVE));
+                }
             }
         }
         /// <summary>
@@ -162,14 +174,17 @@ namespace Recellection.Code.Models
         /// <param name="units"></param>
         public void RemoveUnit(Player p, List<Unit> units)
         {
-            foreach (Unit u in units)
+            lock (units)
             {
-                this.units[p].Remove(u);
-            }
+                foreach (Unit u in units)
+                {
+                    this.units[p].Remove(u);
+                }
 
-            if (unitsChanged != null)
-            {
-                unitsChanged(this, new Event<IEnumerable<Unit>>(units, EventType.REMOVE));
+                if (unitsChanged != null)
+                {
+                    unitsChanged(this, new Event<IEnumerable<Unit>>(units, EventType.REMOVE));
+                }
             }
         }
         /// <summary>
@@ -178,7 +193,10 @@ namespace Recellection.Code.Models
         /// <param name="u"></param>
         public void RemoveUnit(Unit u)
         {
-            this.units[u.GetOwner()].Remove(u);
+            lock (units)
+            {
+                this.units[u.GetOwner()].Remove(u);
+            }
         }
 
         /// <summary>
@@ -187,15 +205,17 @@ namespace Recellection.Code.Models
         public HashSet<Unit> GetUnits()
         {
             HashSet<Unit> ret = new HashSet<Unit>();
-
-            foreach(KeyValuePair<Player, HashSet<Unit>> pair in this.units)
+            lock (units)
             {
-                foreach(Unit u in pair.Value)
+                foreach (KeyValuePair<Player, HashSet<Unit>> pair in this.units)
                 {
-                    ret.Add(u);
+                    foreach (Unit u in pair.Value)
+                    {
+                        ret.Add(u);
+                    }
                 }
-            }
 
+            }
             return ret;
         }
 
@@ -206,13 +226,16 @@ namespace Recellection.Code.Models
         /// <returns>HashSet of units in this tile.</returns>
         public HashSet<Unit> GetUnits(Player p)
         {
-            if(this.units.ContainsKey(p))
+            lock (units)
             {
-                return this.units[p];
-            }
-            else
-            {
-                return new HashSet<Unit>();
+                if (this.units.ContainsKey(p))
+                {
+                    return this.units[p];
+                }
+                else
+                {
+                    return new HashSet<Unit>();
+                }
             }
         }
 

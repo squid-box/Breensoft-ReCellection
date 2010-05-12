@@ -27,7 +27,7 @@ namespace Recellection.Code.Models
 
         private const float MOVEMENT_SPEED = 0.01f;
         private const float NO_TARGET = -1;
-        private const float TARGET_THRESHOLD = 0.05f;
+        private const float TARGET_THRESHOLD = 0.000005f;
 
         // METHODS
 
