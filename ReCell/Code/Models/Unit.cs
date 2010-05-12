@@ -187,7 +187,7 @@ namespace Recellection.Code.Models
             int x = (int)this.position.X;
             int y = (int)this.position.Y;
 
-            Unit.world.map.GetTile(y, x).RemoveUnit(this);
+            Unit.world.map.GetTile(x, y).RemoveUnit(this);
 
             // Move unit towards target.
             if (this.target.X != NO_TARGET)
@@ -235,7 +235,7 @@ namespace Recellection.Code.Models
             x = (int)this.position.X;
             y = (int)this.position.Y;
 
-            Unit.world.map.GetTile(y, x).AddUnit(this);
+            Unit.world.map.GetTile(x, y).AddUnit(this);
         }
     }
 }
