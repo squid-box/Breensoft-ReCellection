@@ -15,13 +15,11 @@ namespace Recellection.Code.Models
     public class Unit : Entity, IModel
     {
         // DATA
-        private Vector2 position;   // Current tile
         private Vector2 target;     // Target coordinate
-        private int angle;          // Angle of unit, for drawing
+        private Entity targetEntity;    // T
         private bool isDispersed;   // Whether or not this unit should recieve a new target from the dispersion procedure
         private bool isDead;        // Status of unit
         private float powerLevel;
-        private Player owner;
         private static World world;
 
 
@@ -196,11 +194,13 @@ namespace Recellection.Code.Models
             {
                 if (this.target.X > this.position.X)
                 {
-                    this.position.X += MOVEMENT_SPEED * deltaTime;
+                    float newX = position.X + MOVEMENT_SPEED * deltaTime;
+                    position = new Vector2(newX, position.Y);
                 }
                 else if (this.target.X < this.position.X)
                 {
-                    this.position.X += MOVEMENT_SPEED * deltaTime;
+                    float newX = position.X - MOVEMENT_SPEED * deltaTime;
+                    position = new Vector2(newX, position.Y);
                 }
                 else
                 {
@@ -211,11 +211,13 @@ namespace Recellection.Code.Models
             {
                 if (this.target.Y > this.position.Y)
                 {
-                    this.position.Y += MOVEMENT_SPEED * deltaTime;
+                    float newY = position.Y + MOVEMENT_SPEED * deltaTime;
+                    position = new Vector2(position.X, newY);
                 }
                 else if (this.target.Y < this.position.Y)
                 {
-                    this.position.Y += MOVEMENT_SPEED * deltaTime;
+                    float newY = position.Y - MOVEMENT_SPEED * deltaTime;
+                    position = new Vector2(position.X, newY);
                 }
             }
             // Reasonably close to target.
