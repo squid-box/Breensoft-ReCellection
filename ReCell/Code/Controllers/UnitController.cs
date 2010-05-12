@@ -102,12 +102,10 @@ namespace Recellection.Code.Controllers
         {
             foreach (Unit u in units)
             {
-                // Check whether or not we just arrived to our target
-                bool travelling = u.isDispersed;
                 
                 u.Update(systemTime);
                 // We we arrive to our target
-                if (travelling && u.isDispersed)
+                if (u.hasArrived)
                 {
                     Vector2 tilePos = u.targetPosition;
                     Vector2 min = new Vector2((float)Math.Floor(tilePos.X), (float)Math.Floor(tilePos.Y));
@@ -117,6 +115,7 @@ namespace Recellection.Code.Controllers
                     float rY = (float)r.NextDouble() + min.Y;
 
                     u.targetPosition = new Vector2(rX, rY);
+					u.hasArrived = false;
                 }
             }
         }
