@@ -17,7 +17,8 @@ namespace Recellection.Code
     {
         private Player ai;
         internal World world;
-        public List<Building> myBuildings { get; internal set; }
+        internal List<Building> myBuildings { get; private set; }
+        internal List<Vector2> roamingUnits { get; private set; }
         internal Building baseBuilding;
         internal int mapHeight;
         internal int mapWidth;
@@ -32,6 +33,9 @@ namespace Recellection.Code
             world = p_world;
             mapHeight = world.GetMap().map.GetLength(0);
             mapWidth = world.GetMap().map.GetLength(1);
+            myBuildings = new List<Building>();
+
+            roamingUnits = new List<Vector2>(); //A list of all units not located at a building.
         }
 
         /// <summary>
@@ -98,18 +102,9 @@ namespace Recellection.Code
             List<Vector2> coordinates = new List<Vector2>();
             for (int i = 0; i < coordinates.Count; i++)
             {
-                coordinates.Add(myBuildings[i].coordinates);
+                coordinates.Add(myBuildings[i].position);
             }
             return coordinates;
-        }
-
-        /// <summary>
-        /// Returns the AIPlayers first BaseBuilding
-        /// </summary>
-        /// <returns></returns>
-        internal Building getBaseBuilding()
-        {
-            return baseBuilding;
         }
     }
 }

@@ -24,6 +24,8 @@ namespace Recellection.Code.Controllers
 
         private GameInitializer gameInitializer;
 		private Logger logger = LoggerFactory.GetLogger();
+
+        private WorldController humanControl;
 		
         Boolean finished = false;
         /// <summary>
@@ -36,13 +38,15 @@ namespace Recellection.Code.Controllers
             this.gameInitializer = gameInitializer;
             this.players = gameInitializer.theWorld.players;
             this.world = gameInitializer.theWorld;
+            this.humanControl = new WorldController(players[0],world);
         }
 
         public void Run()
         {
 
             while (!finished)
-            {
+            {	
+				logger.Debug("Victor turner is turning the page!");
                 foreach (Player player in players)
                 {
                     gameInitializer.suitGuys[player].ProduceUnits(); 
@@ -57,9 +61,44 @@ namespace Recellection.Code.Controllers
                         finished = true;
                         break;  
                     }
-                    new WorldController(player);
+                    
+                    
+					if (player is AIPlayer)
+					{
+						logger.Debug(player.color + " is a AIPlayer!");
+						//((AIPlayer)player).MakeMove();
+					}
+					else if (player is Player)
+					{
+						logger.Debug(player.color+" is human!");
+						//This only makes the grid of GUIRegions and scroll zones, remove later.
+                        humanControl.Run();
+					}
+					else
+					{
+						logger.Fatal("Could not identify "+player.color+" player!");
+					}
+					
                 }
-                //UnitController.Update(world.GetMap().);
+                
+                // This is where we start "animating" all movement
+                
+                // FIXME: This ain't okay, hombrey
+                // Let the units move!
+                logger.Info("Moving units!");
+                
+                for(int i = 0; i < 100; i++)
+                {
+					Code.Models.World.Map theWholeFuckingWorld = world.GetMap();
+					for (int x = 0; x < theWholeFuckingWorld.width; x++)
+					{
+						for (int y = 0; y < theWholeFuckingWorld.height; y++)
+						{
+							UnitController.Update(theWholeFuckingWorld.GetTile(x, y).GetUnits(), 1);
+						}
+					}
+					System.Threading.Thread.Sleep(10);
+				}
 
             }
 

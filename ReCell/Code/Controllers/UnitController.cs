@@ -47,11 +47,11 @@ namespace Recellection.Code.Controllers
             {
                 if (amount <= 0)
                     break;
-                u.SetTarget(to.position);
-                if (u.IsDispersed())
+                u.targetPosition = to.position;
+                if (u.isDispersed)
                 {
                     tempUnit.Add(u);
-                    u.SetDispersed(false);
+                    u.isDispersed = true;
                     amount--;
                 }
             }
@@ -83,7 +83,7 @@ namespace Recellection.Code.Controllers
         {
             foreach (Unit u in units)
             {
-                if (amount <= 0)
+                if (amount >= 0)
                 {
                     u.Kill();
                     amount--;
@@ -102,21 +102,20 @@ namespace Recellection.Code.Controllers
         {
             foreach (Unit u in units)
             {
-                // Check whether or not we just arrived to our target
-                bool travelling = u.IsDispersed();
                 
                 u.Update(systemTime);
                 // We we arrive to our target
-                if (travelling && u.IsDispersed())
+                if (u.hasArrived)
                 {
-                    Vector2 tilePos = u.GetTarget();
+                    Vector2 tilePos = u.targetPosition;
                     Vector2 min = new Vector2((float)Math.Floor(tilePos.X), (float)Math.Floor(tilePos.Y));
                     
                     Random r = new Random();
                     float rX = (float)r.NextDouble() + min.X;
                     float rY = (float)r.NextDouble() + min.Y;
 
-                    u.SetTarget(new Vector2(rX, rY));
+                    u.targetPosition = new Vector2(rX, rY);
+					u.hasArrived = false;
                 }
             }
         }

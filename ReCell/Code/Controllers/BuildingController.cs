@@ -39,7 +39,7 @@ namespace Recellection.Code.Controllers
         /// <param name="b"></param>
         private static void AttackTargets(AggressiveBuilding b)
         {
-            logger.Trace("Attacking targets around a aggressive building at x: "+b.coordinates.X+" y: "+b.coordinates.Y );
+            logger.Trace("Attacking targets around a aggressive building at x: "+b.position.X+" y: "+b.position.Y );
             foreach (Unit u in b.currentTargets)
             {
                 //Show kill graphix and make sound.
@@ -96,7 +96,7 @@ namespace Recellection.Code.Controllers
                 BaseBuilding baseBuilding = new BaseBuilding("Base Buidling",
                 (int)targetCoordinate.X, (int)targetCoordinate.Y, sourceBuilding.owner,controlZone);
 
-                world.map.GetTile((int)targetCoordinate.Y, (int)targetCoordinate.X).SetBuilding(baseBuilding);
+                world.map.GetTile((int)targetCoordinate.X, (int)targetCoordinate.Y).SetBuilding(baseBuilding);
 
                 GraphController.Instance.AddBaseBuilding(baseBuilding, sourceBuilding);
             }
@@ -128,7 +128,7 @@ namespace Recellection.Code.Controllers
 
                 }
 
-                world.map.GetTile((int)targetCoordinate.Y, (int)targetCoordinate.X).SetBuilding(newBuilding);
+                world.map.GetTile((int)targetCoordinate.X, (int)targetCoordinate.Y).SetBuilding(newBuilding);
                 GraphController.Instance.AddBuilding(sourceBuilding,newBuilding);
 
             }

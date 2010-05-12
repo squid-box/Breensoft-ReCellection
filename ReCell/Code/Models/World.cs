@@ -16,6 +16,9 @@ namespace Recellection.Code.Models
     {
         public Logger myLogger;
 
+        private static int maxCols = (int)((float)Recellection.viewPort.Width / (float)Globals.TILE_SIZE);
+        private static int maxRows = (int)((float)Recellection.viewPort.Height / (float)Globals.TILE_SIZE);
+
         private Point lookingAt;
         public Point LookingAt
         {
@@ -26,6 +29,8 @@ namespace Recellection.Code.Models
             set
             {
                 lookingAt = value;
+                lookingAt.X = (int)MathHelper.Clamp(lookingAt.X, 0, map.width - maxCols);
+                lookingAt.Y = (int)MathHelper.Clamp(lookingAt.Y, 0, map.height - maxRows);
                 if (lookingAtEvent != null)
                 {
                     lookingAtEvent(this, new Event<Point>(value, EventType.ALTER));
@@ -46,9 +51,9 @@ namespace Recellection.Code.Models
 
             public Tile[, ] map { get; private set; }
 
-            public int Rows { get; private set; }
+            public int height { get; private set; }
 
-            public int Cols { get; private set; }
+            public int width { get; private set; }
 
             /// <summary>
             /// Constructs a new Map model from a matrix of tiles.
@@ -57,8 +62,8 @@ namespace Recellection.Code.Models
             public Map(Tile[,] map)
             {
                 this.map = map;
-                this.Rows = map.GetLength(0);
-                this.Cols = map.GetLength(1);
+                this.width = map.GetLength(0);
+                this.height = map.GetLength(1);
             }
 
 
@@ -68,13 +73,13 @@ namespace Recellection.Code.Models
             /// <param name="row">The row of the tile to be retrieved</param>
             /// <param name="col">The column of the tile to be retrieved</param>
             /// <returns></returns>
-            public Tile GetTile(int row, int col)
+            public Tile GetTile(int x, int y)
             {
-                if (row > Rows || col > Cols)
+                if (x > width || y > height)
                 {
                     throw new IndexOutOfRangeException("Attempted to set a tile outside the range of the map.");
                 }
-                return map[row, col];
+                return map[x, y];
             }
 
             /// <summary>
@@ -85,13 +90,13 @@ namespace Recellection.Code.Models
             /// <param name="row">The row in which the tile will be set (index 0).</param>
             /// <param name="col">The column in which the tile will be set (index 0).</param>
             /// <param name="t">Tile tile to be set.</param>
-            public void SetTile(int row, int col, Tile t)
+            public void SetTile(int x, int y, Tile t)
             {
-                if (row < Rows || col < Cols)
+                if (x < width || y < height)
                 {
                     throw new IndexOutOfRangeException("Attempted to set a tile outside the range of the map.");
                 }
-                map[row, col] = t;
+                map[x, y] = t;
                 if (TileEvent != null)
                 {
                     TileEvent(this, new Event<Tile>(t, EventType.REMOVE));

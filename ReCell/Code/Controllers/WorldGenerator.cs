@@ -17,8 +17,8 @@ namespace Recellection.Code.Controllers
     /// </summary>
     public class WorldGenerator
     {
-        public const int MINIMUM_MAP_SIZE = 15;
-        public const int MAXIMUM_MAP_SIZE = 15;
+        public const int MINIMUM_MAP_SIZE = 20;
+        public const int MAXIMUM_MAP_SIZE = 30;
 
         //IGONRE FOR NOW....
         private const int MINIMUM_SPREAD = 3;
@@ -43,7 +43,7 @@ namespace Recellection.Code.Controllers
         {
             myLogger = LoggerFactory.GetLogger();
 
-            Tile[,] tileMatrix = GenerateTileMatrixFromSeed(mapSeed);
+            Tile[,] tileMatrix = GenerateTileMatrixFromSeed2(mapSeed);
 
 
             //Constructs a new world using the dimensions.
@@ -91,7 +91,7 @@ namespace Recellection.Code.Controllers
             Tile[,] retur = InitTileMatrix2(randomer);
 
 
-            int numberOfRandomTiles = randomer.Next(50, 90);
+            int numberOfRandomTiles = randomer.Next((int)(MINIMUM_MAP_SIZE*MINIMUM_MAP_SIZE * 0.5F), (int)(MAXIMUM_MAP_SIZE*MAXIMUM_MAP_SIZE * 0.7F));
 
             int randomX;
             int randomY;
@@ -132,7 +132,7 @@ namespace Recellection.Code.Controllers
             map_cols = randomer.Next(MINIMUM_MAP_SIZE, MAXIMUM_MAP_SIZE);
 
             //Construct the matrix, the size is limited by MINIMUM and MAXIMUM
-            Tile[,] retur = new Tile[map_rows, map_cols];
+            Tile[,] retur = new Tile[map_cols, map_rows];
 
             myLogger.Info("Map consists of " + map_rows + " times "
                 + map_cols + " tiles.");
@@ -153,7 +153,7 @@ namespace Recellection.Code.Controllers
             map_cols = randomer.Next(MINIMUM_MAP_SIZE, MAXIMUM_MAP_SIZE);
 
             //Construct the matrix, the size is limited by MINIMUM and MAXIMUM
-            Tile[,] retur = new Tile[map_rows, map_cols];
+            Tile[,] retur = new Tile[map_cols, map_rows];
 
 
             myLogger.Info("Map consists of " + map_rows + " times "
@@ -161,9 +161,9 @@ namespace Recellection.Code.Controllers
 
             //Each row needs an array initiated each row needs to have 
             //an array of equal size.
-            for (int i = 0; i < map_rows; i++)
+            for (int i = 0; i < map_cols; i++)
             {
-                for (int j = 0; j < map_cols; j++)
+                for (int j = 0; j < map_rows ; j++)
                 {
                     retur[i, j] = new Tile(i, j);
                 }
@@ -218,14 +218,14 @@ namespace Recellection.Code.Controllers
             Random randomer)
         {
 
-            tileMatrix[yCoord, xCoord] = new Tile(yCoord, xCoord, type);
+            tileMatrix[xCoord, yCoord] = new Tile(xCoord, yCoord, type);
 
             //4 represents the adjecent tiles
             //      X = 1
             //2 = X O X = 3
             //  4 = X
             //
-            if (numberOfTiles<=0 || !(xCoord > 1 && xCoord < tileMatrix.GetLength(1)-1 && yCoord > 1 && yCoord < tileMatrix.GetLength(0)-1))
+            if (numberOfTiles<=0 || !(xCoord > 1 && xCoord < tileMatrix.GetLength(0)-1 && yCoord > 1 && yCoord < tileMatrix.GetLength(1)-1))
             {
                 return;
             }

@@ -32,6 +32,9 @@ namespace Recellection.Code.Main
                 myLogger.Info("Generating world.");
                 theWorld = WorldGenerator.GenerateWorld(seed);
                 myLogger.Info("Done.");
+                
+                // Let all units belong to the world!
+                Unit.SetWorld(theWorld);
 
                 Random randomer = new Random(seed);
 
@@ -44,7 +47,7 @@ namespace Recellection.Code.Main
                 theWorld.AddPlayer(new AIPlayer(temp2, new AIView(theWorld),Color.Red));
 
                 myLogger.Info("Creating spawnpoints.");
-                SpawnPoints(theWorld.players, theWorld.map.Rows, theWorld.map.Cols, randomer);
+                SpawnPoints(theWorld.players, theWorld.map.width, theWorld.map.height, randomer);
 
                 myLogger.Info("Spawning units.");
                 suitGuys = new Dictionary<Player, UnitAccountant>(2);
@@ -58,12 +61,16 @@ namespace Recellection.Code.Main
                 int yOffset = (Recellection.viewPort.Height/Globals.TILE_SIZE)/2;
 
                 theWorld.LookingAt = new Point(
-                    (int)(theWorld.players[0].GetGraphs()[0].baseBuilding.coordinates.X-xOffset),
-                    (int)(theWorld.players[0].GetGraphs()[0].baseBuilding.coordinates.Y-yOffset));
+                    (int)(theWorld.players[0].GetGraphs()[0].baseBuilding.position.X-xOffset),
+                    (int)(theWorld.players[0].GetGraphs()[0].baseBuilding.position.Y-yOffset));
 
                 myLogger.Info("Setting lookingAt to X: " + theWorld.LookingAt.X + "  y: " + theWorld.LookingAt.Y);
 
-                theWorld.map.GetTile(2, 2).AddUnit(theWorld.players[0], new Unit(theWorld.players[0]));
+				Building testBuilding = new BaseBuilding("Bajs", 7, 7, theWorld.players[0]);
+				theWorld.map.GetTile(7, 7).SetBuilding(testBuilding);
+				
+				Unit testUnit = new Unit(theWorld.players[0], new Vector2(2f, 2f), testBuilding);
+				theWorld.map.GetTile(2, 2).AddUnit(theWorld.players[0], testUnit);
 
                 return true;
             //}

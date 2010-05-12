@@ -42,27 +42,9 @@ namespace Recellection
 			}
 		}
 
-        public Menu(Globals.MenuLayout layout, List<MenuIcon> icons, String explanation, Color explanationColor, bool scrollZone, int n, int m, 
-            Globals.TextureTypes texture)
+        public Menu(List<MenuIcon> icons)
         {
-            this.explanation = explanation;
-            this.explanationColor = explanationColor;
-            this.explanationDrawPos = calculateDrawCoordinates(new Vector2(Recellection.viewPort.Width / 2, Recellection.viewPort.Height / 2), explanation);
-            switch (layout)
-            {
-                case Globals.MenuLayout.Prompt:
-                    CreatePrompt(icons);
-                    break;
-                case Globals.MenuLayout.NineMatrix:
-                    CreateJapaneseFlagLayout(icons);
-                    break;
-                case Globals.MenuLayout.FourMatrix:
-                    CreateSwitzerlandFlagLayout(icons);
-                    break;
-                case Globals.MenuLayout.FreeStyle:
-                    CreateNByMMatrix(n, m, icons, texture, scrollZone);
-                    break;
-            }
+            this.icons = icons;
         }
 		
 		public Menu(Texture2D menuPic, List<MenuIcon> icons)
