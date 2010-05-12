@@ -250,7 +250,9 @@ namespace Recellection
                 System.Threading.Thread.Sleep(50); // so I heard you like hogging cpu time
                 if (newActivatedRegion != null)
                 {
-                    return newActivatedRegion;
+                    GUIRegion temp = newActivatedRegion;
+                    newActivatedRegion = null;
+                    return temp;
                 }
             }
         }
