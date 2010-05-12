@@ -37,6 +37,8 @@ namespace Recellection.Code.Controllers
             //Debugging
             finished = false;
             myLogger = LoggerFactory.GetLogger();
+            myLogger.SetThreshold(LogLevel.INFO);
+
             this.theWorld = theWorld;
 
             createGUIRegionGridAndScrollZone();

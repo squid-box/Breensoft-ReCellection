@@ -47,7 +47,7 @@ namespace Recellection.Code.Main
                 theWorld.AddPlayer(new AIPlayer(temp2, new AIView(theWorld),Color.Red));
 
                 myLogger.Info("Creating spawnpoints.");
-                SpawnPoints(theWorld.players, theWorld.map.Rows, theWorld.map.Cols, randomer);
+                SpawnPoints(theWorld.players, theWorld.map.width, theWorld.map.height, randomer);
 
                 myLogger.Info("Spawning units.");
                 suitGuys = new Dictionary<Player, UnitAccountant>(2);
