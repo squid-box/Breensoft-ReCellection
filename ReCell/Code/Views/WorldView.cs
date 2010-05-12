@@ -140,7 +140,7 @@ namespace Recellection.Code.Views
 
                     Rectangle r = new Rectangle(x * Globals.TILE_SIZE, y * Globals.TILE_SIZE, Globals.TILE_SIZE, Globals.TILE_SIZE);
                     this.Layer = 0.9f;
-                    this.drawTexture(spriteBatch, Recellection.textureMap.GetTexture(t.GetTerrainType().GetEnum()), r);
+                    this.drawTexture(spriteBatch, t.GetSprite() , r);
 
                     // Building? On my Tile?! It's more likely than you think.
                     b = t.GetBuilding();

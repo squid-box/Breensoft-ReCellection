@@ -67,7 +67,7 @@ namespace Recellection.Code.Main
                 myLogger.Info("Setting lookingAt to X: " + theWorld.LookingAt.X + "  y: " + theWorld.LookingAt.Y);
 				
 				Unit testUnit = new Unit(theWorld.players[0], new Vector2(2f, 2f));
-				testUnit.SetTarget(new Vector2(10f, 10f));
+				testUnit.targetPosition = new Vector2(10f, 10f);
                 theWorld.map.GetTile(2, 2).AddUnit(theWorld.players[0], testUnit);
 
                 return true;
