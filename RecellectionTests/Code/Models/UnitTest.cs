@@ -29,32 +29,32 @@ namespace Recellection.Code.Models
         [Test]
         public void KillTest()
         {
-            Assert.IsFalse(u1.IsDead());
+            Assert.IsFalse(u1.isDead);
             u1.Kill();
-            Assert.IsTrue(u1.IsDead());
+            Assert.IsTrue(u1.isDead);
         }
 
         [Test]
         public void MovementTest()
         {
-            Assert.AreEqual(0, u2.GetPosition().X);
-            Assert.AreEqual(0, u2.GetPosition().Y);
+            Assert.AreEqual(0, u2.position.X);
+            Assert.AreEqual(0, u2.position.Y);
 
-            Assert.AreEqual(-1, u2.GetTarget().X);
-            Assert.AreEqual(-1, u2.GetTarget().Y);
+            Assert.AreEqual(-1, u2.targetPosition.X);
+			Assert.AreEqual(-1, u2.targetPosition.Y);
 
-            u2.SetTarget(new Vector2(5,5));
+			u2.targetPosition = new Vector2(5, 5);
 
             for (int i = 0; i < 2000; i++)
             {
                 u2.Update(1);
             }
 
-            Assert.AreNotEqual(0, u2.GetPosition().X);
-            Assert.AreNotEqual(0, u2.GetPosition().Y);
+			Assert.AreNotEqual(0, u2.targetPosition.X);
+			Assert.AreNotEqual(0, u2.targetPosition.Y);
 
-            Assert.AreEqual(-1, u2.GetTarget().X);
-            Assert.AreEqual(-1, u2.GetTarget().Y);
+			Assert.AreEqual(-1, u2.targetPosition.X);
+            Assert.AreEqual(-1, u2.targetPosition.Y);
         }
     }
 }
