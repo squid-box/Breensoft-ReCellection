@@ -24,6 +24,8 @@ namespace Recellection.Code.Controllers
 
         private GameInitializer gameInitializer;
 		private Logger logger = LoggerFactory.GetLogger();
+
+        private WorldController humanControl;
 		
         Boolean finished = false;
         /// <summary>
@@ -36,6 +38,7 @@ namespace Recellection.Code.Controllers
             this.gameInitializer = gameInitializer;
             this.players = gameInitializer.theWorld.players;
             this.world = gameInitializer.theWorld;
+            this.humanControl = new WorldController(players[0],world);
         }
 
         public void Run()
@@ -69,7 +72,7 @@ namespace Recellection.Code.Controllers
 					{
 						logger.Debug(player.colour+" is human!");
 						//This only makes the grid of GUIRegions and scroll zones, remove later.
-						new WorldController(player);
+                        humanControl.Run();
 					}
 					else
 					{
