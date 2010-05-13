@@ -25,6 +25,11 @@ namespace Recellection.Code.Controllers
         private Logger myLogger;
         private WCState state;
 
+        private Player playerInControll;
+
+        private Building selectedBuilding;
+        private Tile selectedTile;
+
         private World theWorld;
 
         private MenuIcon[,] menuMatrix;
@@ -37,8 +42,9 @@ namespace Recellection.Code.Controllers
             //Debugging
             finished = false;
             myLogger = LoggerFactory.GetLogger();
-            myLogger.SetThreshold(LogLevel.INFO);
+            myLogger.SetThreshold(LogLevel.TRACE);
 
+            this.playerInControll = p;
             this.theWorld = theWorld;
 
             createGUIRegionGridAndScrollZone();
@@ -54,6 +60,17 @@ namespace Recellection.Code.Controllers
                 // Get the active GUI Region and invoke the associated method.
                 MenuIcon inputIcon = MenuController.GetInput();
                 Point point = retriveCoordinateInformation(inputIcon);
+
+                //They are used if the state needs true coordinates, scroll only uses deltas.
+                Point trueTileCoordinates = new Point(point.X + theWorld.LookingAt.X, point.Y + theWorld.LookingAt.Y);
+
+                if (theWorld.GetMap().GetTile(trueTileCoordinates.X, trueTileCoordinates.Y).GetBuilding() != null)
+                {
+                    myLogger.Info("Selected a building owned by" +
+                        theWorld.GetMap().GetTile(trueTileCoordinates.X, trueTileCoordinates.Y).GetBuilding().owner.color);
+                    state = WCState.BUILDING;
+                }
+
                 switch (state)
                 {
                     case WCState.TILE:
@@ -61,8 +78,17 @@ namespace Recellection.Code.Controllers
                         finished = true;
 						Cue prego = Sounds.Instance.LoadSound("acid");
 						prego.Play();
+                        selectedTile = theWorld.GetMap().GetTile(trueTileCoordinates.X, trueTileCoordinates.Y);
+                        if (selectedBuilding != null && selectedTile.GetBuilding() == null && selectedBuilding.owner == playerInControll)
+                        {
+                            BuildingController.AddBuilding(Globals.BuildingTypes.Base, selectedBuilding,
+                                selectedTile.position, theWorld, playerInControll);
+
+                            selectedBuilding = null;
+                        }
                         break;
                     case WCState.BUILDING:
+                        selectedBuilding = theWorld.GetMap().GetTile(trueTileCoordinates.X, trueTileCoordinates.Y).GetBuilding();
                         // We are in a building menu, do the action mapped to the region on that building
                         break;
                     case WCState.MENU:
@@ -126,7 +152,7 @@ namespace Recellection.Code.Controllers
             {
                 for (int y = 0; y < numOfRows; y++)
                 {
-                    menuMatrix[x, y] = new MenuIcon("" + x + "_" + y, null,Color.NavajoWhite);
+                    menuMatrix[x, y] = new MenuIcon("" + (x+1) + "_" + (y+1), null,Color.NavajoWhite);
 
                     //Should not need a targetRectangle.
                     /*menuMatrix[x, y].targetRectangle = new Microsoft.Xna.Framework.Rectangle(
