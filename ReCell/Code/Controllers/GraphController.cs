@@ -88,13 +88,15 @@ namespace Recellection.Code.Controllers
 		/// <returns>The created graph.</returns>
 		public Graph AddBaseBuilding(BaseBuilding newBaseBuilding, Building sourceBuilding)
 		{
-            if (GetGraph(sourceBuilding).baseBuilding.IsAlive())
+            if (sourceBuilding == null || (sourceBuilding).baseBuilding.IsAlive())
             {
                 logger.Info("Added base building " + newBaseBuilding + " and created a new graph from it.");
+
                 Graph graph = new Graph(newBaseBuilding);
                 components.Add(graph);
                 return graph;
             }
+
             else
             {
                 logger.Info("Added base building " + newBaseBuilding + " to a graph missing an alive base building.");
