@@ -86,6 +86,9 @@ namespace Recellection
 
             windowHandle = this.Window.Handle;
             
+            IsFixedTimeStep = true;
+            TargetElapsedTime = new TimeSpan(10000000L / 30L);
+            
             //graphics.ApplyChanges();
             LogicThread.Start();
         }
