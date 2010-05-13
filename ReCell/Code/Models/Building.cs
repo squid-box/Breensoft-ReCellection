@@ -345,13 +345,13 @@ namespace Recellection.Code.Models
             switch (type)
             {
                 case Globals.BuildingTypes.Base:
-                    return BASE_BUILDING_HEALTH / 10;
+                    return BASE_BUILDING_HEALTH / 5;
                 case Globals.BuildingTypes.Aggressive:
-                    return AGGRESSIVE_BUILDING_HEALTH / 10;
+                    return AGGRESSIVE_BUILDING_HEALTH / 5;
                 case Globals.BuildingTypes.Barrier:
-                    return BARRIER_BUILDING_HEALTH / 10;
+                    return BARRIER_BUILDING_HEALTH / 5;
                 case Globals.BuildingTypes.Resource:
-                    return RESOURCE_BUILDING_HEALTH / 10;
+                    return RESOURCE_BUILDING_HEALTH / 5;
 
             }
             return 0;
