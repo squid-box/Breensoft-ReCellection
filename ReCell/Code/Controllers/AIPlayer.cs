@@ -273,7 +273,7 @@ namespace Recellection.Code.Controllers
         /// <param name="buildingType"></param>
         private void IssueBuildOrder(Vector2 point, Building baseBuilding, Globals.BuildingTypes buildingType)
         {
-            BuildingController.AddBuilding(buildingType, baseBuilding, point, m_view.world);
+            BuildingController.AddBuilding(buildingType, baseBuilding, point, m_view.world,this);
         }
 
     }

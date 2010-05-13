@@ -123,11 +123,12 @@ namespace Recellection.Code.Main
         /// graph.</param>
         private void SpawnGraph(int xCoord, int yCoord, Player owner)
         {
-            BaseBuilding baseBuilding = new BaseBuilding("base", xCoord, yCoord, owner);
+            /*BaseBuilding baseBuilding = new BaseBuilding("base", xCoord, yCoord, owner);
 
-            theWorld.map.GetTile(xCoord, yCoord).SetBuilding(baseBuilding);
+            theWorld.map.GetTile(xCoord, yCoord).SetBuilding(baseBuilding);*/
             myLogger.Info("Creating graph for player: "+ owner +" at: "+xCoord+","+yCoord);
-            owner.AddGraph(new Graph(baseBuilding));
+            //owner.AddGraph(new Graph(baseBuilding));
+            BuildingController.AddBuilding(Globals.BuildingTypes.Base, null, new Vector2(xCoord, yCoord), theWorld,owner);
         }
     }
 
