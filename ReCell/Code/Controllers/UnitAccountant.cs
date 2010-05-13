@@ -57,12 +57,14 @@ namespace Recellection.Code.Controllers
 
                 for (int i = 0; i < b.RateOfProduction; i++)
                 {
-                    //Places them randomly around the building. - John
-                    Vector2 coords = b.position;
+                    // Places them randomly around the building. - John
+                    // No, it does not. - Martin
+                    
+                    /*Vector2 coords = b.position;
                     coords.X += (float)randomer.NextDouble();
-                    coords.Y += (float)randomer.NextDouble();
+                    coords.Y += (float)randomer.NextDouble();*/
 
-                    temp = new Unit(b.owner, coords, b);
+                    temp = new Unit(b.owner, b.position, b);
                     temp.targetEntity = b;
 
                     res.Add(temp);

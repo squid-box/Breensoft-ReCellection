@@ -28,28 +28,28 @@ namespace Recellection.Code.Main
 		{
 			logger.Debug("Initializer is running.");
 
-            ShowSplashScreen();
-
-			Cue backgroundSound = Sounds.Instance.LoadSound("Menu");
-			
 			#region Show main menu. TODO: Make a real menu.
-			MenuIcon yes = new MenuIcon("Yes", null,Color.Black);
-			MenuIcon no = new MenuIcon("No", null,Color.Black);
-			
+			MenuIcon yes = new MenuIcon("Yes", null, Color.Black);
+			MenuIcon no = new MenuIcon("No", null, Color.Black);
+
 			List<MenuIcon> options = new List<MenuIcon>();
 			options.Add(yes);
 			options.Add(no);
-			
-			Menu mainMenu = new Menu(Globals.MenuLayout.Prompt, options, "Do you wanna play a\ngame?",Color.Black);
 
-			backgroundSound.Play();
+			Menu mainMenu = new Menu(Globals.MenuLayout.Prompt, options, "Do you wanna play a\ngame?", Color.Black);
+
 			MenuView view = MenuView.Instance;
-			
+
 			// Just to make sure everything is in there...
 			new MenuController(TobiiController.GetInstance(this.windowHandle), mainMenu);
-
-			Recellection.CurrentState = view;
 			#endregion
+
+            ShowSplashScreen();
+
+			Cue backgroundSound = Sounds.Instance.LoadSound("Menu");
+			backgroundSound.Play();
+			Recellection.CurrentState = view;
+			
             logger.Info("Waiting for Tobii input...");
 			MenuIcon response = MenuController.GetInput();
             MenuController.UnloadMenu();
