@@ -29,14 +29,18 @@ namespace Recellection.Code.Main
 			logger.Debug("Initializer is running.");
 
 			#region Show main menu. TODO: Make a real menu.
-			MenuIcon yes = new MenuIcon("Yes", null, Color.Black);
-			MenuIcon no = new MenuIcon("No", null, Color.Black);
+			MenuIcon newgame = new MenuIcon("New game", null, Color.Black);
+			MenuIcon options = new MenuIcon("Options", null, Color.Black);
+			MenuIcon help = new MenuIcon("Help", null, Color.Black);
+			MenuIcon quit = new MenuIcon("Quit", null, Color.Black);
 
-			List<MenuIcon> options = new List<MenuIcon>();
-			options.Add(yes);
-			options.Add(no);
+			List<MenuIcon> menuOptions = new List<MenuIcon>();
+			menuOptions.Add(newgame);
+			menuOptions.Add(options);
+			menuOptions.Add(help);
+			menuOptions.Add(quit);
 
-			Menu mainMenu = new Menu(Globals.MenuLayout.Prompt, options, "Do you wanna play a\ngame?", Color.Black);
+			Menu mainMenu = new Menu(Globals.MenuLayout.FourMatrix, menuOptions, "Do you wanna play a\ngame?", Color.Black);
 
 			MenuView view = MenuView.Instance;
 
@@ -56,7 +60,7 @@ namespace Recellection.Code.Main
             
             logger.Info("Got input!");
             backgroundSound.Pause();
-            if (response.label == yes.label)
+			if (response == newgame)
             {
 				// Det börjar bli jobbigt...
 				//Cue prego = Sounds.Instance.LoadSound("prego");
