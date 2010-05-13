@@ -27,63 +27,46 @@ namespace Recellection.Code.Main
 
         private bool CreateGameObjects(int seed)
         {
-            //try
-            //{
-                myLogger.Info("Generating world.");
-                theWorld = WorldGenerator.GenerateWorld(seed);
-                myLogger.Info("Done.");
-                
-                // Let all units belong to the world!
-                Unit.SetWorld(theWorld);
-
-                Random randomer = new Random(seed);
-
-                myLogger.Info("Adding players.");
-                Player temp = new Player(Color.Blue, "John");
-                theWorld.AddPlayer(temp);
-
-                List<Player> temp2 = new List<Player>();
-                temp2.Add(temp);
-                theWorld.AddPlayer(new AIPlayer(temp2, new AIView(theWorld),Color.Red));
-
-                myLogger.Info("Creating spawnpoints.");
-                SpawnPoints(theWorld.players, theWorld.map.width, theWorld.map.height, randomer);
-
-                myLogger.Info("Spawning units.");
-                suitGuys = new Dictionary<Player, UnitAccountant>(2);
-                foreach(Player p in theWorld.players)
-                {
-                    suitGuys[p] = new UnitAccountant(p);
-                    suitGuys[p].ProduceUnits();
-                }
-                
-                int xOffset = (Recellection.viewPort.Width/Globals.TILE_SIZE)/2;
-                int yOffset = (Recellection.viewPort.Height/Globals.TILE_SIZE)/2;
-
-                theWorld.LookingAt = new Point(
-                    (int)(theWorld.players[0].GetGraphs()[0].baseBuilding.position.X-xOffset),
-                    (int)(theWorld.players[0].GetGraphs()[0].baseBuilding.position.Y-yOffset));
-
-                myLogger.Info("Setting lookingAt to X: " + theWorld.LookingAt.X + "  y: " + theWorld.LookingAt.Y);
-
-				Building testBuilding = new BaseBuilding("Bajs", 7, 7, theWorld.players[0]);
-				theWorld.map.GetTile(7, 7).SetBuilding(testBuilding);
-				
-				Unit testUnit = new Unit(theWorld.players[0], new Vector2(2f, 2f), testBuilding);
-				theWorld.map.GetTile(2, 2).AddUnit(theWorld.players[0], testUnit);
-
-                return true;
-            //}
-            /*catch (Exception e)
-            {
-                myLogger.Info("Something went wrong.");
-                myLogger.Info(e.GetType() + " : " + e.Message);
-                Console.Beep(75, 1500);
-                Console.Error.WriteLine(e.GetType() + " : " + e.Message);
-                return false;
-            }*/
+            myLogger.Info("Generating world.");
+            theWorld = WorldGenerator.GenerateWorld(seed);
+            myLogger.Info("Done.");
             
+            // Let all units belong to the world!
+            Unit.SetWorld(theWorld);
+
+            Random randomer = new Random(seed);
+
+            myLogger.Info("Adding players.");
+            Player temp = new Player(Color.Blue, "John");
+            theWorld.AddPlayer(temp);
+
+            List<Player> temp2 = new List<Player>();
+            temp2.Add(temp);
+            theWorld.AddPlayer(new AIPlayer(temp2, new AIView(theWorld),Color.Red));
+
+            myLogger.Info("Creating spawnpoints.");
+            SpawnPoints(theWorld.players, theWorld.map.width, theWorld.map.height, randomer);
+
+            myLogger.Info("Spawning units.");
+            suitGuys = new Dictionary<Player, UnitAccountant>(2);
+            foreach(Player p in theWorld.players)
+            {
+                suitGuys[p] = new UnitAccountant(p);
+                suitGuys[p].ProduceUnits();
+            }
+            
+            int xOffset = (Recellection.viewPort.Width/Globals.TILE_SIZE)/2;
+            int yOffset = (Recellection.viewPort.Height/Globals.TILE_SIZE)/2;
+
+            theWorld.LookingAt = new Point(
+                (int)(theWorld.players[0].GetGraphs()[0].baseBuilding.position.X-xOffset),
+                (int)(theWorld.players[0].GetGraphs()[0].baseBuilding.position.Y-yOffset));
+
+            myLogger.Info("Setting lookingAt to X: " + theWorld.LookingAt.X + "  y: " + theWorld.LookingAt.Y);
+
+            return true;
         }
+        
         /// <summary>
         /// Random generates a spawn point for both players,
         /// it makes sure that the distance between them is 

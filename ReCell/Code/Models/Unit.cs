@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Recellection.Code.Utility.Logger;
 
 namespace Recellection.Code.Models
 {
@@ -14,21 +15,24 @@ namespace Recellection.Code.Models
     /// <date>2010-04-30</date>
     public class Unit : Entity, IModel
     {
+		private static Logger logger = LoggerFactory.GetLogger();
+		private static int id = 0; // Used for random
         // DATA
         public Vector2 targetPosition { get; set; }   // Target coordinate
         public Entity targetEntity { get; set; }      // Target entity
-        public Entity defaultTarget { get; set; }		// Target to fall back to if the primary target disappears. Also acts as center of dispersion
+        public Entity disperseAround { get; set; }		// Target to fall back to if the primary target disappears. Also acts as center of dispersion
         public bool isDispersed { get; set; }         // Whether or not this unit should recieve a new target from the dispersion procedure
-		public bool hasArrived { get; set; }
+		public bool hasArrived { get { return (targetPosition.X == NO_TARGET && targetPosition.Y == NO_TARGET); } }
         public bool isDead { get; set; }              // Status of unit
         public float powerLevel { get; set; }
         private static World world;
 
+		private Random rand;
 
+		// Did I mention that I hate floats? // Martin
         private const float MOVEMENT_SPEED = 0.01f;
         private const float NO_TARGET = -1;
-        private const float TARGET_THRESHOLD = 0.000005f;
-
+        
         // METHODS
 
         #region Constructors
@@ -36,28 +40,17 @@ namespace Recellection.Code.Models
         /// <summary>
         /// Creates a "default unit".
         /// </summary>
-        public Unit(Player owner) : base(new Vector2(NO_TARGET,NO_TARGET), owner)
+        public Unit(Player owner) : this(owner, new Vector2(0, 0))
         {
-            this.position = new Vector2(0, 0);
-            this.targetPosition = new Vector2(NO_TARGET,NO_TARGET);
-            this.angle = 0;
-            this.isDispersed = this.isDead = false;
-            this.owner = owner;
-            world.GetMap().GetTile((int)position.X, (int)position.Y).AddUnit(this);
         }
+        
         /// <summary>
         /// Creates a unit.
         /// </summary>
         /// <param name="posX">Unit x-coordinate.</param>
         /// <param name="posY">Unit y-coordinate.</param>
-        public Unit(Player owner, float posX, float posY) : base(new Vector2(posX, posY), owner)
+        public Unit(Player owner, float posX, float posY) : this(owner, new Vector2(posX, posY))
         {
-            this.position = new Vector2(posX, posY);
-            this.targetPosition = new Vector2(NO_TARGET, NO_TARGET);
-            this.angle = 0;
-            this.isDispersed = this.isDead = false;
-            this.owner = owner;
-            world.GetMap().GetTile((int)position.X, (int)position.Y).AddUnit(this);
         }
 
 		/// <summary>
@@ -65,16 +58,8 @@ namespace Recellection.Code.Models
 		/// </summary>
 		/// <param name="position">Position of unit.</param>
 		/// <param name="owner">Owner of this unit.</param>
-		public Unit(Player owner, Vector2 position)
-			: base(position, owner)
+		public Unit(Player owner, Vector2 position) : this(owner, position, null)
 		{
-			this.defaultTarget = null;
-			this.position = position;
-			this.targetPosition = new Vector2(NO_TARGET, NO_TARGET);
-			this.angle = 0;
-			this.isDispersed = this.isDead = false;
-			this.owner = owner;
-            world.GetMap().GetTile((int)position.X, (int)position.Y).AddUnit(this);
 		}
 
         /// <summary>
@@ -84,12 +69,13 @@ namespace Recellection.Code.Models
         /// <param name="owner">Owner of this unit.</param>
         public Unit(Player owner, Vector2 position, Entity target) : base(position, owner)
         {
-			this.defaultTarget = target;
+			this.disperseAround = target;
             this.position = position;
             this.targetPosition = new Vector2(NO_TARGET, NO_TARGET);
             this.angle = 0;
             this.isDispersed = this.isDead = false;
             this.owner = owner;
+            this.rand = new Random(id++);
             world.GetMap().GetTile((int)position.X, (int)position.Y).AddUnit(this);
         }
 
@@ -130,28 +116,124 @@ namespace Recellection.Code.Models
         {
             if (!this.isDead)
             {
-				updateTarget();
-                this.Move(systemTime);
+				targetPosition = calculateTargetPosition();
+				this.Move(systemTime);
+				stopMovingIfGoalIsReached();
             }
 		}
-		
-		private void updateTarget()
+
+		private Vector2 calculateTargetPosition()
 		{
 			if (targetEntity != null)
 			{
-				targetPosition = targetEntity.position;
+				return targetEntity.position;
 			}
-			else if (defaultTarget != null && !this.isDispersed)
+			else if (this.isDispersed && disperseAround != null)
 			{
-				targetEntity = defaultTarget;
-				updateTarget();
+				// We will wander around our disperseAround
+				isDispersed = false;
+				return new Vector2(disperseAround.position.X + ((float)rand.NextDouble() * 2f - 1f),
+										disperseAround.position.Y + ((float)rand.NextDouble() * 2f - 1f));
 			}
 			else
 			{
-				targetPosition = new Vector2(NO_TARGET, NO_TARGET);
+				return targetPosition;
 			}
 		}
 
+		/// <summary>
+		/// Internal move logic.
+		/// </summary>
+		private void Move(float deltaTime)
+		{
+			int x = (int)this.position.X;
+			int y = (int)this.position.Y;
+			Unit.world.map.GetTile(x, y).RemoveUnit(this);
+
+			// Move unit towards target.
+			if (this.targetPosition.X != NO_TARGET)
+			{
+				float distance = this.targetPosition.X - this.position.X;
+
+				if (Math.Abs(distance) < MOVEMENT_SPEED)
+				{
+					position = new Vector2(targetPosition.X, position.Y);
+				}
+				else if (this.targetPosition.X > this.position.X)
+				{
+					float newX = position.X + MOVEMENT_SPEED * deltaTime;
+					position = new Vector2(newX, position.Y);
+				}
+				else if (this.targetPosition.X < this.position.X)
+				{
+					float newX = position.X - MOVEMENT_SPEED * deltaTime;
+					position = new Vector2(newX, position.Y);
+				}
+			}
+			if (this.targetPosition.Y != NO_TARGET)
+			{
+				float distance = this.targetPosition.Y - this.position.Y;
+
+				if (Math.Abs(distance) < MOVEMENT_SPEED)
+				{
+					position = new Vector2(position.X, targetPosition.Y);
+				}
+				else if (distance > 0)
+				{
+					float newY = position.Y + MOVEMENT_SPEED * deltaTime;
+					position = new Vector2(position.X, newY);
+				}
+				else if (distance < 0)
+				{
+					float newY = position.Y - MOVEMENT_SPEED * deltaTime;
+					position = new Vector2(position.X, newY);
+				}
+			}
+
+			// Tile management!
+
+			x = (int)this.position.X;
+			y = (int)this.position.Y;
+			Unit.world.map.GetTile(x, y).AddUnit(this);
+		}
+
+		private bool stopMovingIfGoalIsReached()
+		{
+			// If we are reasonably close to target.
+			float dx = this.position.X - this.targetPosition.X;
+			float dy = this.position.Y - this.targetPosition.Y;
+			double distance = Math.Sqrt(dx*dx + dy*dy);
+			
+			if (distance == 0)
+			{
+				if (targetEntity != null)
+				{
+					// If it's a home-building, we disperse around it :)
+					if (targetEntity is Building && targetEntity.owner == this.owner)
+					{
+						// We will now recieve new positions within a radius of our secondary target.
+						this.disperseAround = targetEntity;
+						isDispersed = true;
+					}
+					this.targetEntity = null;
+				}
+				
+				if (disperseAround != null)
+				{
+					isDispersed = true;
+				}
+				
+				// Set no target, we are here.
+				this.targetPosition = new Vector2(NO_TARGET, NO_TARGET);
+				
+				return true;
+			}
+			else
+			{
+				return false;
+			}
+		}
+		
         /// <summary>
         /// Modify or set a new powerlevel for this unit.
         /// </summary>
@@ -167,68 +249,6 @@ namespace Recellection.Code.Models
         public float GetPowerLevel()
         {
             return powerLevel;
-        }
-
-        /// <summary>
-        /// Internal move logic.
-        /// </summary>
-        private void Move(float deltaTime)
-        {
-            int x = (int)this.position.X;
-            int y = (int)this.position.Y;
-
-            Unit.world.map.GetTile(x, y).RemoveUnit(this);
-
-            // Move unit towards target.
-            if (this.targetPosition.X != NO_TARGET)
-            {
-                if (this.targetPosition.X > this.position.X)
-                {
-                    float newX = position.X + MOVEMENT_SPEED * deltaTime;
-                    position = new Vector2(newX, position.Y);
-                }
-                else if (this.targetPosition.X < this.position.X)
-                {
-                    float newX = position.X - MOVEMENT_SPEED * deltaTime;
-                    position = new Vector2(newX, position.Y);
-                }
-            }
-            if (this.targetPosition.Y != NO_TARGET)
-            {
-                if (this.targetPosition.Y > this.position.Y)
-                {
-                    float newY = position.Y + MOVEMENT_SPEED * deltaTime;
-                    position = new Vector2(position.X, newY);
-                }
-                else if (this.targetPosition.Y < this.position.Y)
-                {
-                    float newY = position.Y - MOVEMENT_SPEED * deltaTime;
-                    position = new Vector2(position.X, newY);
-                }
-            }
-            // If we are reasonably close to target.
-			if ((Math.Abs(this.position.X - this.targetPosition.X) < TARGET_THRESHOLD) && (Math.Abs(this.position.Y - this.targetPosition.Y) < TARGET_THRESHOLD))
-			{
-				hasArrived = true;
-				// If we have no primary target we will be dispersed.
-				if (targetEntity == null)
-				{
-					// We will now recieve new positions within a radius of our secondary target.
-					isDispersed = true;
-				}
-				this.targetPosition = new Vector2(NO_TARGET, NO_TARGET);
-			}
-			else
-			{
-				isDispersed = false;
-			}
-
-            // Tile management!
-
-            x = (int)this.position.X;
-            y = (int)this.position.Y;
-
-            Unit.world.map.GetTile(x, y).AddUnit(this);
         }
     }
 }

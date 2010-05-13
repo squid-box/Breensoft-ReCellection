@@ -148,8 +148,10 @@ namespace Recellection.Code.Views
                     {
                         myLogger.Info("Found a building on the tile.");
 						this.Layer = 0.0f;
+						int bx = (int)Math.Round((b.position.X - World.LookingAt.X) * Globals.TILE_SIZE);
+						int by = (int)Math.Round((b.position.Y - World.LookingAt.Y) * Globals.TILE_SIZE);
                         this.drawTexture(spriteBatch, b.GetSprite(),
-                            new Rectangle(x * Globals.TILE_SIZE + 32, y * Globals.TILE_SIZE + 32, b.GetSprite().Width, b.GetSprite().Height),
+                            new Rectangle(bx, by, b.GetSprite().Width, b.GetSprite().Height),
                             b.owner.color);
                     }
 

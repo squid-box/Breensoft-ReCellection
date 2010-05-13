@@ -66,7 +66,7 @@ namespace Recellection.Code.Models
         /// <param name="baseBuilding">The Base Building this building belongs
         /// to</param>
         public Building(String name, int posX, int posY, int maxHealth,
-            Player owner, Globals.BuildingTypes type, BaseBuilding baseBuilding) : base(new Vector2(posX, posY), owner)
+            Player owner, Globals.BuildingTypes type, BaseBuilding baseBuilding) : base(new Vector2(((float)posX)+0.25f, ((float)posY)+0.25f), owner)
         {
             if (maxHealth <= 0)
             {
@@ -109,7 +109,7 @@ namespace Recellection.Code.Models
         /// to</param>
         public Building(String name, int posX, int posY, int maxHealth,
             Player owner, Globals.BuildingTypes type, BaseBuilding baseBuilding,
-            LinkedList<Tile> controlZone) : base(new Vector2(posX, posY), owner)
+            LinkedList<Tile> controlZone) : base(new Vector2(((float)posX) + 0.25f, ((float)posY) + 0.25f), owner)
         {
             if (maxHealth <= 0)
             {
