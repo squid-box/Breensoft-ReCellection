@@ -117,7 +117,7 @@ namespace Recellection.Code.Controllers
 						 && selectedTile.GetBuilding() == null
 						 && selectedBuilding.owner == playerInControll)
 						{
-							if (! BuildingController.AddBuilding(Globals.BuildingTypes.Base, selectedBuilding,
+							if (! BuildingController.AddBuilding(Globals.BuildingTypes.Resource, selectedBuilding,
 									selectedTile.position, theWorld, playerInControll))
 							{
 								Sounds.Instance.LoadSound("Denied").Play();
