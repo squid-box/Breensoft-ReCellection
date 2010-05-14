@@ -155,6 +155,25 @@ namespace Recellection.Code.Views
                             b.owner.color);
                     }
 
+                    // Go through each players graphs and draw lines between buildings.
+                    foreach (Player p in World.players)
+                    {
+                        foreach (Graph g in p.GetGraphs())
+                        {
+                            Building[] bob = g.GetBuildings().ToArray();
+                            if (bob.Length < 1)
+                            {
+                                for (int i = 1; i < bob.Length; i++)
+                                {
+                                    /* Här tänkte jag ta och dra linjer
+                                     * mellan varje byggnad i grafen.
+                                     * But man, those lines.
+                                     */
+                                }
+                            }
+                        }
+                    }
+
                     // Find those units!
                     HashSet<Unit> units = t.GetUnits();
                     if (units.Count != 0)
