@@ -82,10 +82,11 @@ namespace Recellection.Code.Controllers
 					}
 					
                 }
-                
-                logger.Info("Weighting graphs!");
+
+				//logger.Info("Weighting graphs!");
+				//graphControl.CalculateWeights();
+				
                 // This is where we start "animating" all movement
-                graphControl.CalculateWeights();
                 // FIXME: This ain't okay, hombrey
                 // Let the units move!
                 logger.Info("Moving units!");
