@@ -106,7 +106,7 @@ namespace Recellection.Code.Controllers
 						
 						if (sel.state != State.TILE)
 						{
-							Sounds.Instance.LoadSound("Denied").Play();
+							//Sounds.Instance.LoadSound("Denied").Play();
 							continue;
 						}
 						
@@ -120,7 +120,7 @@ namespace Recellection.Code.Controllers
 							if (! BuildingController.AddBuilding(Globals.BuildingTypes.Resource, selectedBuilding,
 									selectedTile.position, theWorld, playerInControll))
 							{
-								Sounds.Instance.LoadSound("Denied").Play();
+								//Sounds.Instance.LoadSound("Denied").Play();
 							}
 
 							selectedBuilding = null;

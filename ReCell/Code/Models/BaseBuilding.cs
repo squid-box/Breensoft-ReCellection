@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using Recellection.Code.Utility.Events;
 using Microsoft.Xna.Framework.Graphics;
+using Recellection.Code.Utility.Logger;
 
 namespace Recellection.Code.Models
 {
@@ -16,7 +17,7 @@ namespace Recellection.Code.Models
     /// Author: Viktor Eklund
     /// </summary>
     public class BaseBuilding : Building{
-
+		private Logger logger = LoggerFactory.GetLogger();
         private const int BASE_PRODUCTION = 5;
 
         private int rateOfProduction;
@@ -76,11 +77,6 @@ namespace Recellection.Code.Models
             if (buildingsChanged != null)
             {
                 buildingsChanged(this, new BuildingAddedEvent(building, EventType.ADD));
-            }
-            if (building.type == Globals.BuildingTypes.Resource)
-            {
-                ResourceBuilding rb = (ResourceBuilding)building;
-                this.rateOfProduction += rb.RateOfProduction;
             }
         }
 
