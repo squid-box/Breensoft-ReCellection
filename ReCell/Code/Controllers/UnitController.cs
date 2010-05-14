@@ -87,6 +87,7 @@ namespace Recellection.Code.Controllers
                 if (amount >= 0)
                 {
 					toBeKilled.Add(u);
+					amount--;
                 }
             }
             

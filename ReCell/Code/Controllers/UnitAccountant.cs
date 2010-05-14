@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using Recellection.Code.Models;
 using Microsoft.Xna.Framework;
+using Recellection.Code.Utility.Logger;
 
 namespace Recellection.Code.Controllers
 {
@@ -18,7 +19,8 @@ namespace Recellection.Code.Controllers
     /// Signature: John Doe (yyyy-mm-dd)
     /// Signature: Jane Doe (yyyy-mm-dd)
     public sealed class UnitAccountant
-    {
+	{
+		private Logger logger = LoggerFactory.GetLogger();
         private Player owner;
 
         /// <summary>
@@ -54,7 +56,7 @@ namespace Recellection.Code.Controllers
                 res = new List<Unit>();
                 
                 BaseBuilding b = g.baseBuilding;
-
+				logger.Debug("Producing "+b.RateOfProduction+" units!");
                 for (int i = 0; i < b.RateOfProduction; i++)
                 {
                     // Places them randomly around the building. - John

@@ -179,10 +179,10 @@ namespace Recellection.Code.Controllers
 				foreach(Building b in g.GetBuildings())
 				{
 					float factor = g.GetWeight(b) / g.TotalWeight;
-					int unitGoal = (int)(totalUnits * factor);
+					int unitGoal = (int)(((float)totalUnits) * factor);
 					int unitBalance = b.CountUnits() - unitGoal;
 
-					logger.Trace("Unit goal for " + b + " is " + unitGoal + " which has "+b.CountUnits()+" units. Balance = "+unitBalance+".");
+					logger.Trace("Unit goal for " + b + " ("+g.GetWeight(b)+") is " + unitGoal + " which has "+b.CountUnits()+" units. Balance = "+unitBalance+".");
 					if (unitBalance > 0)
 					{
 						logger.Trace("Building has extra units to give.");
