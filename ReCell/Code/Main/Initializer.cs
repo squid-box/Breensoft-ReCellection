@@ -40,7 +40,7 @@ namespace Recellection.Code.Main
 			menuOptions.Add(help);
 			menuOptions.Add(quit);
 
-			Menu mainMenu = new Menu(Globals.MenuLayout.FourMatrix, menuOptions, "Do you wanna play a\ngame?", Color.Black);
+            Menu mainMenu = new Menu(Globals.MenuLayout.FourMatrix, menuOptions, "Would you like to\nplay a game?", Color.Black);
 
 			MenuView view = MenuView.Instance;
 
@@ -54,12 +54,14 @@ namespace Recellection.Code.Main
 			backgroundSound.Play();
 			Recellection.CurrentState = view;
 			
+            Input:
             logger.Info("Waiting for Tobii input...");
 			MenuIcon response = MenuController.GetInput();
             MenuController.UnloadMenu();
             
             logger.Info("Got input!");
             backgroundSound.Pause();
+
 			if (response == newgame)
             {
 				// Det börjar bli jobbigt...
@@ -83,10 +85,15 @@ namespace Recellection.Code.Main
                     Console.Beep(66, 150);
                 }
             }
+            else if (response == quit)
+            {
+                Recellection.playBeethoven();
+                Environment.Exit(0);
+            }
             else
-			{
-				Recellection.playBeethoven();
-				Environment.Exit(0);
+            {
+                Recellection.playBeethoven();
+                goto Input; // FUCK YES GOTO!
             }
 
            // Environment.Exit(0);
