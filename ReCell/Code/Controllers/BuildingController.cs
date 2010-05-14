@@ -136,6 +136,9 @@ namespace Recellection.Code.Controllers
             {
                 UnitController.KillUnits(sourceBuilding.units, Building.GetBuyPrice(buildingType));
             }
+            
+            Sounds.Instance.LoadSound("buildingPlacement").Play();
+            
             return true;
         }
 
