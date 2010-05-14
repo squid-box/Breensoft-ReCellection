@@ -106,6 +106,11 @@ namespace Recellection.Code.Models
         public void Kill()
         {
             this.isDead = true;
+            world.GetMap().GetTile((int)position.X, (int)position.Y).RemoveUnit(owner, this);
+            if (disperseAround != null && disperseAround is Building)
+            {
+				((Building)disperseAround).RemoveUnit(this);
+            }
         }
 
         /// <summary>

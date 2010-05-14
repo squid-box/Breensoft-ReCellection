@@ -106,7 +106,7 @@ namespace Recellection.Code.Controllers
 						
 						if (sel.state != State.TILE)
 						{
-							Sounds.Instance.LoadSound("boom").Play();
+							Sounds.Instance.LoadSound("Denied").Play();
 							continue;
 						}
 						
@@ -117,8 +117,11 @@ namespace Recellection.Code.Controllers
 						 && selectedTile.GetBuilding() == null
 						 && selectedBuilding.owner == playerInControll)
 						{
-							BuildingController.AddBuilding(Globals.BuildingTypes.Base, selectedBuilding,
-								selectedTile.position, theWorld, playerInControll);
+							if (! BuildingController.AddBuilding(Globals.BuildingTypes.Base, selectedBuilding,
+									selectedTile.position, theWorld, playerInControll))
+							{
+								Sounds.Instance.LoadSound("Denied").Play();
+							}
 
 							selectedBuilding = null;
 							
@@ -131,7 +134,7 @@ namespace Recellection.Code.Controllers
                         break;
                 }
 			}
-			Sounds.Instance.LoadSound("acid").Play();
+			//Sounds.Instance.LoadSound("acid").Play();
         }
 
 		public Selection retrieveSelection()
