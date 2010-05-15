@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Recellection.Code.Models;
 using Microsoft.Xna.Framework;
 using Recellection.Code.Utility.Logger;
+using Recellection.Code.Views;
 
 namespace Recellection.Code.Controllers
 {
@@ -158,7 +159,7 @@ namespace Recellection.Code.Controllers
             Recellection.CurrentState = MenuView.Instance;
 
 			SetWeight(b, doptions[MenuController.GetInput()]);
-			
+			Recellection.CurrentState = WorldView.Instance;
 			MenuController.UnloadMenu();
 		}
 		

@@ -13,7 +13,7 @@ using Microsoft.Xna.Framework.Content;
 namespace Recellection
 {
 
-	public sealed class MenuView : IView
+	public class MenuView : IView
 	{
 		/// <summary>
 		/// author: co
