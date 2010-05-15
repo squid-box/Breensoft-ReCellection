@@ -158,17 +158,20 @@ namespace Recellection.Code.Views
                     // Go through each players graphs and draw lines between buildings.
                     foreach (Player p in World.players)
                     {
-                        foreach (Graph g in p.GetGraphs())
+                        lock (p.GetGraphs())
                         {
-                            Building[] bob = g.GetBuildings().ToArray();
-                            if (bob.Length < 1)
+                            foreach (Graph g in p.GetGraphs())
                             {
-                                for (int i = 1; i < bob.Length; i++)
+                                Building[] bob = g.GetBuildings().ToArray();
+                                if (bob.Length < 1)
                                 {
-                                    /* Här tänkte jag ta och dra linjer
-                                     * mellan varje byggnad i grafen.
-                                     * But man, those lines.
-                                     */
+                                    for (int i = 1; i < bob.Length; i++)
+                                    {
+                                        /* Här tänkte jag ta och dra linjer
+                                         * mellan varje byggnad i grafen.
+                                         * But man, those lines.
+                                         */
+                                    }
                                 }
                             }
                         }

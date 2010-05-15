@@ -340,7 +340,7 @@ namespace Recellection.Code.Models
 
         /// <returns>Returns the buy price for a building, it is set
         /// at its health divided by 10. Upkeep should be added elsewhere.</returns>
-        public static int GetBuyPrice(Globals.BuildingTypes type)
+        public static uint GetBuyPrice(Globals.BuildingTypes type)
         {
             switch (type)
             {
