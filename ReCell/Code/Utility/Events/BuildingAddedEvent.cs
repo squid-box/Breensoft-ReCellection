@@ -17,9 +17,9 @@ namespace Recellection.Code.Utility.Events
         }
 
         /// <summary>
-        /// A building added event
+        /// A fromBuilding added event
         /// </summary>
-        /// <param name="building"></param>
+        /// <param name="fromBuilding"></param>
         /// <param name="type"></param>
         public BuildingAddedEvent(Building building, EventType type):base(building, type)
         {

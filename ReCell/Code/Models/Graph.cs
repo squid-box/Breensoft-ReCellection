@@ -44,11 +44,11 @@ namespace Recellection.Code.Models
 		}
 
 		/// <summary>
-		/// Adds a building to the graph.
-		/// A building that has already been added will be ignored.
+		/// Adds a fromBuilding to the graph.
+		/// A fromBuilding that has already been added will be ignored.
 		/// </summary>
-		/// <param name="building">The building to add.</param>
-		/// <exception cref="ArgumentException">If the building is a base building.</exception>
+		/// <param name="fromBuilding">The fromBuilding to add.</param>
+		/// <exception cref="ArgumentException">If the fromBuilding is a base fromBuilding.</exception>
 		public void Add(Building building)
 		{
 			if (building is BaseBuilding)
@@ -69,9 +69,9 @@ namespace Recellection.Code.Models
 		}
 
 		/// <summary>
-		/// Removes a building from the graph.
+		/// Removes a fromBuilding from the graph.
 		/// </summary>
-		/// <param name="building">The building to remove.</param>
+		/// <param name="fromBuilding">The fromBuilding to remove.</param>
 		public void Remove(Building building)
 		{
 			buildings.Remove(building);
@@ -80,11 +80,11 @@ namespace Recellection.Code.Models
 		}
 
 		/// <summary>
-		/// Sets the weight of a building node in the graph.
+		/// Sets the weight of a fromBuilding node in the graph.
 		/// </summary>
-		/// <param name="building">The building to set weight for.</param>
+		/// <param name="fromBuilding">The fromBuilding to set weight for.</param>
 		/// <param name="weight">The new weight.</param>
-		/// <exception cref="GraphLessBuildingException">If the building does not exist in the graph.</exception>
+		/// <exception cref="GraphLessBuildingException">If the fromBuilding does not exist in the graph.</exception>
 		public void SetWeight(Building building, int weight)
 		{
 			if (! buildings.ContainsKey(building))
@@ -99,9 +99,9 @@ namespace Recellection.Code.Models
 			Publish(building, weight, EventType.ALTER);
 		}
 
-		/// <param name="building">The building to get weight for.</param>
-		/// <returns>the weight of the building.</returns>
-		/// <exception cref="ArgumentException">if the building is not a part of the graph.</exception>
+		/// <param name="fromBuilding">The fromBuilding to get weight for.</param>
+		/// <returns>the weight of the fromBuilding.</returns>
+		/// <exception cref="ArgumentException">if the fromBuilding is not a part of the graph.</exception>
 		public int GetWeight(Building building)
 		{
 			int weight;
@@ -115,10 +115,10 @@ namespace Recellection.Code.Models
 		}
 		
 		/// <summary>
-		/// Returns the weight factor for a building. 
+		/// Returns the weight factor for a fromBuilding. 
 		/// It' pretty much weight / total weight.
 		/// </summary>
-		/// <param name="building"></param>
+		/// <param name="fromBuilding"></param>
 		/// <returns></returns>
 		public double GetWeightFactor(Building building)
 		{
@@ -127,10 +127,10 @@ namespace Recellection.Code.Models
 		}
 		
 		/// <summary>
-		/// Checks if a building exists in this graph.
+		/// Checks if a fromBuilding exists in this graph.
 		/// </summary>
-		/// <param name="b">The building to check existance for.</param>
-		/// <returns>True if the building exists, false if not.</returns>
+		/// <param name="b">The fromBuilding to check existance for.</param>
+		/// <returns>True if the fromBuilding exists, false if not.</returns>
 		public bool HasBuilding(Building b)
 		{
 			return buildings.ContainsKey(b);
@@ -154,8 +154,8 @@ namespace Recellection.Code.Models
 		/// <summary>
 		/// Publishes an event of change to all subscribers.
 		/// </summary>
-		/// <param name="building">The building that has changed.</param>
-		/// <param name="weight">The weight of that building.</param>
+		/// <param name="fromBuilding">The fromBuilding that has changed.</param>
+		/// <param name="weight">The weight of that fromBuilding.</param>
 		/// <param name="t">Type of event.</param>
 		private void Publish(Building building, int weight, EventType t)
 		{

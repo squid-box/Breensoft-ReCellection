@@ -112,7 +112,7 @@ namespace Recellection.Code.Main
 
         /// <summary>
         /// Creates a new BaseBuilding at the specified location and
-        /// add that building to a new Graph and then add that graph
+        /// add that fromBuilding to a new Graph and then add that graph
         /// to the player.
         /// </summary>
         /// <param name="xCoord">The x-coordinate to spawn the BaseBuilding on
