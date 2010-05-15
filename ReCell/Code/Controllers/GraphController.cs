@@ -154,7 +154,9 @@ namespace Recellection.Code.Controllers
 							Language.Instance.GetString("SetImportance"));
 			
 			MenuController.LoadMenu(menu);
-			
+
+            Recellection.CurrentState = MenuView.Instance;
+
 			SetWeight(b, doptions[MenuController.GetInput()]);
 			
 			MenuController.UnloadMenu();
