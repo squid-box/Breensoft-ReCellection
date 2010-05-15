@@ -49,5 +49,10 @@ namespace Recellection.Code.Models
         {
             return soundBank.GetCue(sound);
         }
+
+        public void setVolume(float volume)
+        {
+            
+        }
     }
 }
