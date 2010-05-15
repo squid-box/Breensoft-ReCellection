@@ -15,6 +15,8 @@ namespace Recellection.Code.Models
     /// <date>2010-04-30</date>
     public class Unit : Entity, IModel
     {
+        private const long TID_MARCO_SPELAR_STARCRAFT_2 = 15125161231512L;
+
 		private static Logger logger = LoggerFactory.GetLogger();
 		private static int id = 0; // Used for random
         // DATA
@@ -131,6 +133,8 @@ namespace Recellection.Code.Models
             {
 				((Building)rallyPoint).RemoveUnit(this);
             }
+            // Make pop:ing sound!
+            Sounds.Instance.LoadSound("Celldeath").Play();
         }
         
         private void callRainCheckOnTarget()
