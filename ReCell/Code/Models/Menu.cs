@@ -305,13 +305,8 @@ namespace Recellection
 				MenuIcon mi = icons[i];
 				int position = (i >= 4 ? i+1 : i);
 
-				if (mi.label != null && mi.texture != null)
-                {
-                    mi.targetLabelRectangle = new Rectangle(
-                        mi.targetLabelRectangle.Location.X, mi.targetLabelRectangle.Location.Y + mi.texture.Height + 5,
-                        mi.texture.Width, mi.texture.Height);
-                }
-				else if (mi.texture != null)
+				
+				if (mi.texture != null)
                 {
 					mi.targetTextureRectangle =
                         new Microsoft.Xna.Framework.Rectangle(
@@ -321,7 +316,7 @@ namespace Recellection
 							(mi.texture.Height));
 
                 }
-				else if (mi.label != null)
+				if (mi.label != null)
                 {
 					int textWidth = mi.label.Length * FONT_WIDTH;
 
@@ -332,6 +327,18 @@ namespace Recellection
 
 					mi.targetLabelRectangle = new Rectangle((int)temp.X, (int)temp.Y, textWidth, FONT_SIZE);
                 }
+                if (mi.label != null && mi.texture != null)
+                {
+                    mi.targetLabelRectangle = new Rectangle(
+                        mi.targetLabelRectangle.Location.X, mi.targetLabelRectangle.Location.Y + mi.texture.Height + 5,
+                        mi.texture.Width, mi.texture.Height);
+                }
+
+                icons[i].region = new GUIRegion(Recellection.windowHandle,
+                    new System.Windows.Rect(
+                        (position % 3) * iconWidth,
+                        (position / 3) * iconHeight,
+                        iconWidth, iconHeight));
             }
             
             this.icons = icons;
