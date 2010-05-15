@@ -14,7 +14,7 @@ namespace Recellection
 	{
 
         public GUIRegion region { get; set; }
-        public String label { get; private set; }
+        public String label { get; set; }
         public Texture2D texture { get; private set; }
         public Rectangle targetTextureRectangle { get; set; }
         public Rectangle targetLabelRectangle { get; set; }
