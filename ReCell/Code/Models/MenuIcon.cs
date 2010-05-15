@@ -19,6 +19,16 @@ namespace Recellection
         public Rectangle targetRectangle { get; set; }
         public Color labelColor { get; set; }
 
+        public MenuIcon(String label)
+         : this(label, null, Color.Black)
+        {
+        }
+        
+        public MenuIcon(String label, Texture2D texture)
+         : this(label, texture, Color.Black)
+        {
+        }
+        
         public MenuIcon(String label, Texture2D texture, Color color)
 		{
 			region = null;

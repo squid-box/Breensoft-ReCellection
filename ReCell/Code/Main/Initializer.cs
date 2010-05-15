@@ -54,53 +54,49 @@ namespace Recellection.Code.Main
 			backgroundSound.Play();
 			Recellection.CurrentState = view;
 			
-            Input:
-            logger.Info("Waiting for Tobii input...");
-			MenuIcon response = MenuController.GetInput();
-            MenuController.UnloadMenu();
-            
-            logger.Info("Got input!");
-            backgroundSound.Pause();
+            while(true)
+            {
+				logger.Info("Waiting for Tobii input...");
+				MenuIcon response = MenuController.GetInput();
+	            
+				logger.Info("Got input!");
+				backgroundSound.Pause();
 
-			if (response == newgame)
-            {
-				// Det börjar bli jobbigt...
-				//Cue prego = Sounds.Instance.LoadSound("prego");
-				// prego.Play();
-				//while(prego.IsPlaying)
-				//{
-				//	Thread.Sleep(10);
-				//}
-				
-				// START THE GAME ALREADY!
-				GameInitializer gameInit = new GameInitializer();
-				Recellection.CurrentState = new WorldView(gameInit.theWorld);
-				VictorTurner vt = new VictorTurner(gameInit);
-				vt.Run();
-                
-                // Heartbeat
-                while (true)
-                {
-                    Thread.Sleep(100);
-                    Console.Beep(66, 150);
-                }
-            }
-            else if (response == quit)
-            {
-                Recellection.playBeethoven();
-                Environment.Exit(0);
-            }
-            else if (response == options)
-            {
-                Configurator.Instance.ChangeOptions();
-            }
-            else
-            {
-                Recellection.playBeethoven();
-                goto Input; // FUCK YES GOTO!
-            }
-
-           // Environment.Exit(0);
+				if (response == newgame)
+				{	
+					// START THE GAME ALREADY!
+					GameInitializer gameInit = new GameInitializer();
+					Recellection.CurrentState = new WorldView(gameInit.theWorld);
+					VictorTurner vt = new VictorTurner(gameInit);
+					vt.Run();
+				}
+				else if (response == quit)
+				{
+					List<MenuIcon> promptOptions = new List<MenuIcon>();
+					MenuIcon yes = new MenuIcon(Language.Instance.GetString("Yes"));
+					MenuIcon no = new MenuIcon(Language.Instance.GetString("No"));
+					promptOptions.Add(yes);
+					promptOptions.Add(no);
+					MenuController.LoadMenu(new Menu(Globals.MenuLayout.Prompt, promptOptions, Language.Instance.GetString("AreYouSureYouWantToQuit")));
+					Recellection.CurrentState = MenuView.Instance;
+					
+					if (MenuController.GetInput() == yes)
+					{
+						Recellection.playBeethoven();
+						Environment.Exit(0);
+					}
+					
+					MenuController.UnloadMenu();
+				}
+				else if (response == options)
+				{
+					Configurator.Instance.ChangeOptions();
+				}
+				else
+				{
+					Recellection.playBeethoven();
+				}
+			}
 		}
 
 

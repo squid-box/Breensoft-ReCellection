@@ -43,6 +43,10 @@ SpecialCommandMenu6=CTest6
 SpecialCommandMenu7=CTest7
 SpecialCommandMenu8=CTest8
 
+Yes=Ja
+No=Nej
+AreYouSureYouWantToQuit=Är du säker att du vill avsluta?
+
 [Game entities]
 BaseCell=Bas Cell
 DefensiveCell=Försvars Cell

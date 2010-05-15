@@ -23,6 +23,11 @@ namespace Recellection
         public Vector2 explanationDrawPos { get; private set; }
         public Color explanationColor { get; private set; }
 
+		public Menu(Globals.MenuLayout layout, List<MenuIcon> icons, String explanation)
+			 : this(layout, icons, explanation, Color.Black)
+		{
+		}
+		
 		public Menu(Globals.MenuLayout layout, List<MenuIcon> icons, String explanation, Color explanationColor)
 		{
             this.explanation = explanation;
