@@ -14,7 +14,7 @@ namespace Recellection.Code.Models
 {
     /// <summary>
     /// This is the abstract class Building, every
-    /// type of building will inherit this class.
+    /// type of fromBuilding will inherit this class.
     /// 
     /// Author: John Forsberg
     /// </summary>
@@ -33,6 +33,8 @@ namespace Recellection.Code.Models
 
         // References
         public List<Unit> units { get; protected set; }
+        public List<Unit> incomingUnits { get; internal set; }
+        
         public Globals.BuildingTypes type { get; protected set; }
         public BaseBuilding baseBuilding { get; protected set; }
         public LinkedList<Tile> controlZone { get; protected set; }
@@ -44,7 +46,7 @@ namespace Recellection.Code.Models
 		public event Publish<Building> unitsChanged;
 
         /// <summary>
-        /// Creates an unusable building with everything set at default values.
+        /// Creates an unusable fromBuilding with everything set at default values.
         /// </summary>
         public Building():this("noName",-1,-1,1,null, 
             Globals.BuildingTypes.NoType, null)
@@ -53,17 +55,17 @@ namespace Recellection.Code.Models
         }
 
         /// <summary>
-        /// Creates a building with specified parameters, the unit list will
+        /// Creates a fromBuilding with specified parameters, the unit list will
         /// be initiated but empty and the current health will be set at maxHealth.
         /// </summary>
-        /// <param name="name">The name for the building TODO Decide if this is
+        /// <param name="name">The name for the fromBuilding TODO Decide if this is
         /// needded</param>
         /// <param name="posX">The x tile coordinate</param>
         /// <param name="posY">The y tile coordinate</param>
-        /// <param name="maxHealth">The max health of this building</param>
-        /// <param name="owner">The player that owns the building</param>
-        /// <param name="type">The type of the building</param>
-        /// <param name="baseBuilding">The Base Building this building belongs
+        /// <param name="maxHealth">The max health of this fromBuilding</param>
+        /// <param name="owner">The player that owns the fromBuilding</param>
+        /// <param name="type">The type of the fromBuilding</param>
+        /// <param name="baseBuilding">The Base Building this fromBuilding belongs
         /// to</param>
         public Building(String name, int posX, int posY, int maxHealth,
             Player owner, Globals.BuildingTypes type, BaseBuilding baseBuilding) : base(new Vector2(((float)posX)+0.25f, ((float)posY)+0.25f), owner)
@@ -81,6 +83,7 @@ namespace Recellection.Code.Models
             this.currentHealth = maxHealth;
 
             this.units = new List<Unit>();
+            this.incomingUnits = new List<Unit>();
             this.type = type;
 
             this.baseBuilding = baseBuilding;
@@ -91,21 +94,21 @@ namespace Recellection.Code.Models
         }
 
         /// <summary>
-        /// Creates a building with specified parameters, the unit list will
+        /// Creates a fromBuilding with specified parameters, the unit list will
         /// be initiated but empty and the current health will be set at maxHealth.
         /// Regarding the controlZone the first tile should be the 
-        /// tile the building is standing on.
+        /// tile the fromBuilding is standing on.
         /// </summary>
-        /// <param name="name">The name for the building TODO Decide if this is
+        /// <param name="name">The name for the fromBuilding TODO Decide if this is
         /// needded</param>
         /// <param name="posX">The x tile coordinate</param>
         /// <param name="posY">The y tile coordinate</param>
-        /// <param name="maxHealth">The max health of this building</param>
-        /// <param name="owner">The player that owns the building</param>
+        /// <param name="maxHealth">The max health of this fromBuilding</param>
+        /// <param name="owner">The player that owns the fromBuilding</param>
         /// <param name="type">The </param>
-        /// <param name="baseBuilding">The Base Building this building belongs
-        /// <param name="controlZone">The nine tiles around the building
-        /// and the tile the building is on.</param>
+        /// <param name="baseBuilding">The Base Building this fromBuilding belongs
+        /// <param name="controlZone">The nine tiles around the fromBuilding
+        /// and the tile the fromBuilding is on.</param>
         /// to</param>
         public Building(String name, int posX, int posY, int maxHealth,
             Player owner, Globals.BuildingTypes type, BaseBuilding baseBuilding,
@@ -123,7 +126,8 @@ namespace Recellection.Code.Models
             this.maxHealth = maxHealth;
             this.currentHealth = maxHealth;
 
-            this.units = new List<Unit>();
+			this.units = new List<Unit>();
+			this.incomingUnits = new List<Unit>();
             this.type = type;
 
             this.baseBuilding = baseBuilding;
@@ -139,7 +143,7 @@ namespace Recellection.Code.Models
        /// <summary>
         /// Part of visitor pattern
        /// </summary>
-       /// <param name="visitor">The Base Building this building belongs to
+       /// <param name="visitor">The Base Building this fromBuilding belongs to
        /// </param>
 
         public void Accept(BaseBuilding visitor)
@@ -159,34 +163,49 @@ namespace Recellection.Code.Models
 
         /// <returns>Returns an IEnumerable which can iterate over the list 
         /// of units</returns>
-        public IEnumerable<Unit> GetUnits()
-        {
-            foreach (Unit u in this.units)
-            {
-                yield return u;
-            }
+		public HashSet<Unit> GetUnits()
+		{
+			HashSet<Unit> ret = new HashSet<Unit>();
+			lock (units)
+			{
+				foreach (Unit u in units)
+				{
+					ret.Add(u);
+				}
+			}
+			return ret;
         }
 
         /// <summary>
-        /// Returns the number of units the building has appointed to itself.
+        /// Returns the number of units the fromBuilding has appointed to itself.
         /// </summary>
         /// <returns>A positive integer representing the number of units
         /// in the list.</returns>
         public virtual int CountUnits()
 		{
             return units.Count;
-        }
+		}
+		
+		/// <summary>
+		/// Returns the number of units the fromBuilding has appointed to itself including units who are on their way.
+		/// </summary>
+		/// <returns>A positive integer representing the number of units
+		/// in the list.</returns>
+		public virtual int CountTotalUnits()
+		{
+			return units.Count + incomingUnits.Count;
+		}
 
         //public abstract Texture2D GetSprite();
 
         /// <summary>
-        /// Add one unit to the unit list if the building is alive
+        /// Add one unit to the unit list if the fromBuilding is alive
         /// </summary>
         /// <param name="unit">The Unit to add to the list</param>
         /// <exception cref="ArgumentNullException">The Unit to add was null
         /// </exception>
         /// <exception cref="BuildingNotAliveException">
-        /// The building is dead</exception>
+        /// The fromBuilding is dead</exception>
         public void AddUnit(Unit unit)
         {
             if(unit == null)
@@ -281,11 +300,11 @@ namespace Recellection.Code.Models
         // Modifiers
 
         /// <summary>
-        /// Reduces health for a building by the amount specified in the
+        /// Reduces health for a fromBuilding by the amount specified in the
         /// parameter. It can change the current health to a negative value.
         /// </summary>
         /// <param name="dmgHealth">The amount of damage to cause to the
-        /// building</param>
+        /// fromBuilding</param>
         public void Damage(int dmgHealth)
         {
             //TODO Verify if there should be logic here to detirmine if it dies
@@ -300,10 +319,10 @@ namespace Recellection.Code.Models
         }
 
         /// <summary>
-        /// Increases health for a building by the amount specified in the
+        /// Increases health for a fromBuilding by the amount specified in the
         /// parameter. It can not heal it above max health.
         /// </summary>
-        /// <param name="health">The ammount to repair the building</param>
+        /// <param name="health">The ammount to repair the fromBuilding</param>
         public void Repair(int health)
         {
             if (IsAlive())
@@ -324,7 +343,7 @@ namespace Recellection.Code.Models
         }
 
         /// <summary>
-        /// Exception for when a building is not alive.
+        /// Exception for when a fromBuilding is not alive.
         /// This is serious enough to have its own exception.
         /// </summary>
         public class BuildingNotAliveException : Exception
@@ -338,9 +357,9 @@ namespace Recellection.Code.Models
             }
         }
 
-        /// <returns>Returns the buy price for a building, it is set
+        /// <returns>Returns the buy price for a fromBuilding, it is set
         /// at its health divided by 10. Upkeep should be added elsewhere.</returns>
-        public static int GetBuyPrice(Globals.BuildingTypes type)
+        public static uint GetBuyPrice(Globals.BuildingTypes type)
         {
             switch (type)
             {

@@ -34,10 +34,10 @@ namespace Recellection
 					CreatePrompt(icons);
 					break;
 				case Globals.MenuLayout.NineMatrix:
-                    CreateJapaneseFlagLayout(icons);
+                    CreateNineMatrix(icons);
 					break;
 				case Globals.MenuLayout.FourMatrix:
-                    CreateSwitzerlandFlagLayout(icons);
+                    CreateFourMatrix(icons);
 					break;
 			}
 		}
@@ -142,7 +142,7 @@ namespace Recellection
         /// <param name="cols">The number of cols of the matrix menu</param>
         /// <param name="rows">The number of rows of the matrix menu</param>
         /// <param name="icons">The list of icons</param>
-        private void CreateNByMMatrix(int cols, int rows, List<MenuIcon> icons,Globals.TextureTypes menuTexture, bool scrollZone)
+        private void FreeStyle(int cols, int rows, List<MenuIcon> icons,Globals.TextureTypes menuTexture, bool scrollZone)
         {
             if (icons.Count != cols*rows)
             {
@@ -185,7 +185,7 @@ namespace Recellection
             this.icons = icons;
         }
 
-        private void CreateSwitzerlandFlagLayout(List<MenuIcon> icons)
+        private void CreateFourMatrix(List<MenuIcon> icons)
         {
             if (icons.Count != 4)
             {
@@ -226,7 +226,7 @@ namespace Recellection
             this.icons = icons;
         }
 
-        private void CreateJapaneseFlagLayout(List<MenuIcon> icons)
+        private void CreateNineMatrix(List<MenuIcon> icons)
         {
             if (icons.Count != 8)
             {

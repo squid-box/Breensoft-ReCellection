@@ -90,6 +90,10 @@ namespace Recellection.Code.Main
                 Recellection.playBeethoven();
                 Environment.Exit(0);
             }
+            else if (response == options)
+            {
+                Configurator.Instance.ChangeOptions();
+            }
             else
             {
                 Recellection.playBeethoven();
