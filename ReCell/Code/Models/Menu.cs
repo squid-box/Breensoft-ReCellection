@@ -259,42 +259,41 @@ namespace Recellection
             int iconHeight = (int)(Recellection.viewPort.Height / 3);
 
             menuPic = Recellection.textureMap.GetTexture(Globals.TextureTypes.ThreeByThree);
-            for (int i = 0; i < 9; i++)
+            for (int i = 0; i < 8; i++)
             {
-                if (i == 5)
-                {
-                    continue;
-                }
+				MenuIcon mi = icons[i];
+				int position = (i >= 4 ? i+1 : i);
 
-                if (icons[i].texture != null)
+				if (mi.label != null && mi.texture != null)
                 {
-                    icons[i].targetTextureRectangle =
+                    mi.targetLabelRectangle = new Rectangle(
+                        mi.targetLabelRectangle.Location.X, mi.targetLabelRectangle.Location.Y + mi.texture.Height + 5,
+                        mi.texture.Width, mi.texture.Height);
+                }
+				else if (mi.texture != null)
+                {
+					mi.targetTextureRectangle =
                         new Microsoft.Xna.Framework.Rectangle(
-                            (i % 3) * iconWidth / 2 - icons[i].texture.Width / 2,
-                            (i / 3) * iconHeight / 2 - icons[i].texture.Height / 2,
-                            (icons[i].texture.Width),
-                            (icons[i].texture.Height));
+							(position % 3) * iconWidth / 2 - mi.texture.Width / 2,
+							(position / 3) * iconHeight / 2 - mi.texture.Height / 2,
+							(mi.texture.Width),
+							(mi.texture.Height));
 
                 }
-                if (icons[i].label != null)
+				else if (mi.label != null)
                 {
-                    int textWidth = icons[i].label.Length * FONT_WIDTH;
+					int textWidth = mi.label.Length * FONT_WIDTH;
 
                     Vector2 temp = calculateDrawCoordinates(new Vector2(
-                       (i % 3) * (iconWidth) + (iconWidth / 2), (i / 3) * (iconHeight) + (iconHeight / 2)), icons[i].label);
+					   (position % 3) * (iconWidth) + (iconWidth / 2), 
+					   (position / 3) * (iconHeight) + (iconHeight / 2)), 
+					   mi.label);
 
-                    icons[i].targetLabelRectangle = new Rectangle((int)temp.X, (int)temp.Y, textWidth, FONT_SIZE);
-                }
-
-                if (icons[i].label != null && icons[i].texture != null)
-                {
-
-                    icons[i].targetLabelRectangle = new Rectangle(
-                        icons[i].targetLabelRectangle.Location.X, icons[i].targetLabelRectangle.Location.Y + icons[i].texture.Height + 5,
-                        icons[i].texture.Width, icons[i].texture.Height);
-
+					mi.targetLabelRectangle = new Rectangle((int)temp.X, (int)temp.Y, textWidth, FONT_SIZE);
                 }
             }
+            
+            this.icons = icons;
         }
     }
 }

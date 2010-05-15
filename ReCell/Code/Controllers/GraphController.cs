@@ -137,16 +137,27 @@ namespace Recellection.Code.Controllers
 		/// <param name="b">The fromBuilding to set a weight for.</param>
 		public void SetWeight(Building b)
 		{
-			//Menu menu = new Menu();
-			// TODO: Construct the Menu options
+			Dictionary<MenuIcon, int> doptions = new Dictionary<MenuIcon,int>(8);
 			
-			//MenuController.LoadMenu(menu);
+			doptions.Add(new MenuIcon("1"), 1);
+			doptions.Add(new MenuIcon("2"), 2);
+			doptions.Add(new MenuIcon("4"), 4);
+			doptions.Add(new MenuIcon("8"), 8);
 			
-			MenuIcon input = MenuController.GetInput();
+			doptions.Add(new MenuIcon("16"), 16);
+			doptions.Add(new MenuIcon("32"), 32);
+			doptions.Add(new MenuIcon("64"), 64);
+			doptions.Add(new MenuIcon("128"), 128);
 
-			// TODO: Decide what option was opted for.
+			Menu menu = new Menu(Globals.MenuLayout.NineMatrix, 
+							new List<MenuIcon>(doptions.Keys),
+							Language.Instance.GetString("SetImportance"));
 			
-			SetWeight(b, 0);
+			MenuController.LoadMenu(menu);
+			
+			SetWeight(b, doptions[MenuController.GetInput()]);
+			
+			MenuController.UnloadMenu();
 		}
 		
 		/// <summary>

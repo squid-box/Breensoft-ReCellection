@@ -47,6 +47,8 @@ Yes=Ja
 No=Nej
 AreYouSureYouWantToQuit=Är du säker att du vill avsluta?
 
+SetImportance=Vilken vikt vill du ha?
+
 [Game entities]
 BaseCell=Bas Cell
 DefensiveCell=Försvars Cell
