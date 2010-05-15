@@ -115,10 +115,17 @@ namespace Recellection.Code.Controllers
 
 
 						//do stuff here TODO co
-                        MenuIcon baseCell = new MenuIcon(Language.Instance.GetString("BaseCell"), Recellection.textureMap.GetTexture(Globals.TextureTypes.BaseBuilding), Color.Black);
+                        /*
+						MenuIcon baseCell = new MenuIcon(Language.Instance.GetString("BaseCell"), Recellection.textureMap.GetTexture(Globals.TextureTypes.BaseBuilding), Color.Black);
                         MenuIcon resourceCell = new MenuIcon(Language.Instance.GetString("ResourceCell"), Recellection.textureMap.GetTexture(Globals.TextureTypes.ResourceBuilding), Color.Black);
                         MenuIcon defensiveCell = new MenuIcon(Language.Instance.GetString("DefensiveCell"), Recellection.textureMap.GetTexture(Globals.TextureTypes.BarrierBuilding), Color.Black);
                         MenuIcon aggressiveCell = new MenuIcon(Language.Instance.GetString("AggressiveCell"), Recellection.textureMap.GetTexture(Globals.TextureTypes.AggressiveBuilding), Color.Black);
+						 */
+						MenuIcon baseCell = new MenuIcon(Language.Instance.GetString("BaseCell"), null, Color.Black);
+						MenuIcon resourceCell = new MenuIcon(Language.Instance.GetString("ResourceCell"), null, Color.Black);
+						MenuIcon defensiveCell = new MenuIcon(Language.Instance.GetString("DefensiveCell"), null, Color.Black);
+						MenuIcon aggressiveCell = new MenuIcon(Language.Instance.GetString("AggressiveCell"), null, Color.Black);
+						
                         List<MenuIcon> menuIcons =new List<MenuIcon>();
                         menuIcons.Add(baseCell);
                         menuIcons.Add(resourceCell);

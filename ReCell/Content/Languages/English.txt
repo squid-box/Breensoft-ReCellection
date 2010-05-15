@@ -43,6 +43,10 @@ SpecialCommandMenu6=CTest6
 SpecialCommandMenu7=CTest7
 SpecialCommandMenu8=CTest8
 
+Yes=Yes
+No=No
+AreYouSureYouWantToQuit=Are you sure you want to quit?
+
 [Game entities]
 BaseCell=Base Cell
 DefensiveCell=Defensive Cell
