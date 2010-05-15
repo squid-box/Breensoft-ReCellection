@@ -39,6 +39,11 @@ namespace Recellection.Code.Models
             }
         }
 
+        public GameOptions()
+        {
+            this.choosenLanguage = new Localizer();
+        }
+
         #endregion
 
         public float musicVolume { get; set; }
