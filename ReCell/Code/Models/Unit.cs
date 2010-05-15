@@ -19,8 +19,9 @@ namespace Recellection.Code.Models
 		private static int id = 0; // Used for random
         // DATA
         public Vector2 targetPosition { get; set; }   // Target coordinate
-        public Entity targetEntity { get; set; }      // Target entity
-        public Entity disperseAround { get; set; }		// Target to fall back to if the primary target disappears. Also acts as center of dispersion
+		private Entity targetEntity;     // Target entity
+        public Entity rallyPoint { get; set; }		// Target to fall back to if the primary target disappears. Also acts as center of dispersion
+        
         public bool isDispersed { get; set; }         // Whether or not this unit should recieve a new target from the dispersion procedure
 		public bool hasArrived { get { return (targetPosition.X == NO_TARGET && targetPosition.Y == NO_TARGET); } }
         public bool isDead { get; set; }              // Status of unit
@@ -69,11 +70,12 @@ namespace Recellection.Code.Models
         /// <param name="owner">Owner of this unit.</param>
         public Unit(Player owner, Vector2 position, Entity target) : base(position, owner)
         {
-			this.disperseAround = target;
+			this.rallyPoint = target;
             this.position = position;
             this.targetPosition = new Vector2(NO_TARGET, NO_TARGET);
             this.angle = 0;
-            this.isDispersed = this.isDead = false;
+            this.isDispersed = (target != null);
+            this.isDead = false;
             this.owner = owner;
             this.rand = new Random(id++);
             world.GetMap().GetTile((int)position.X, (int)position.Y).AddUnit(this);
@@ -89,8 +91,25 @@ namespace Recellection.Code.Models
 
         // Properites
 
-		
+		public Entity TargetEntity
+		{
+			get
+			{
+				return targetEntity;
+			}
+			
+			set
+			{
+				callRainCheckOnTarget();
+				
+				targetEntity = value;
 
+				if (targetEntity is Building)
+				{
+					((Building)targetEntity).incomingUnits.Add(this);
+				}
+			}
+		}
 
         // Graphical representation
 
@@ -107,10 +126,19 @@ namespace Recellection.Code.Models
         {
             this.isDead = true;
             world.GetMap().GetTile((int)position.X, (int)position.Y).RemoveUnit(owner, this);
-            if (disperseAround != null && disperseAround is Building)
+            if (rallyPoint != null && rallyPoint is Building)
             {
-				((Building)disperseAround).RemoveUnit(this);
+				((Building)rallyPoint).RemoveUnit(this);
+				callRainCheckOnTarget();
             }
+        }
+        
+        private void callRainCheckOnTarget()
+        {
+			if (targetEntity is Building)
+			{
+				((Building)targetEntity).incomingUnits.Remove(this);
+			}
         }
 
         /// <summary>
@@ -129,16 +157,18 @@ namespace Recellection.Code.Models
 
 		private Vector2 calculateTargetPosition()
 		{
-			if (targetEntity != null)
+			if (TargetEntity != null)
 			{
-				return targetEntity.position;
+				return TargetEntity.position;
 			}
-			else if (this.isDispersed && disperseAround != null)
+			else if (this.isDispersed && rallyPoint != null)
 			{
-				// We will wander around our disperseAround
+				// We will wander around our rallyPoint
 				isDispersed = false;
-				return new Vector2(disperseAround.position.X + ((float)rand.NextDouble() * 2f - 1f),
-										disperseAround.position.Y + ((float)rand.NextDouble() * 2f - 1f));
+                //The Floor is to makes sure that the entity does not have an offset for its position (like buildings who have 0.25)
+                //Then add 0.5 to end up in the middle of the tile and last the random should random a number between -1.3 to 1.3
+				return new Vector2(((float)Math.Floor(rallyPoint.position.X))+ 0.5f + ((float)rand.NextDouble() * 2.6f - 1.3f ),
+                                   ((float)Math.Floor(rallyPoint.position.Y))+ 0.5f + ((float)rand.NextDouble() * 2.6f - 1.3f));
 			}
 			else
 			{
@@ -211,19 +241,21 @@ namespace Recellection.Code.Models
 			
 			if (distance == 0)
 			{
-				if (targetEntity != null)
+				if (TargetEntity != null)
 				{
 					// If it's a home-fromBuilding, we disperse around it :)
-					if (targetEntity is Building && targetEntity.owner == this.owner)
+					if (TargetEntity is Building && TargetEntity.owner == this.owner)
 					{
 						// We will now recieve new positions within a radius of our secondary target.
-						this.disperseAround = targetEntity;
+						this.rallyPoint = TargetEntity;
+						((Building)targetEntity).AddUnit(this);
 						isDispersed = true;
 					}
-					this.targetEntity = null;
+					
+					TargetEntity = null;
 				}
 				
-				if (disperseAround != null)
+				if (rallyPoint != null)
 				{
 					isDispersed = true;
 				}
@@ -258,7 +290,7 @@ namespace Recellection.Code.Models
         
         public bool isPatrolling()
         {
-			return this.disperseAround == null;
+			return this.rallyPoint == null;
         }
     }
 }

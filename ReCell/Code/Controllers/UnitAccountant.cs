@@ -48,12 +48,10 @@ namespace Recellection.Code.Controllers
         public void ProduceUnits()
         {
             Random randomer = new Random();
-            List<Unit> res;
-            Unit temp;
 
             foreach (Graph g in owner.GetGraphs())
             {
-                res = new List<Unit>();
+				List<Unit> res = new List<Unit>();
                 
                 BaseBuilding b = g.baseBuilding;
 				logger.Debug("Producing "+b.RateOfProduction+" units!");
@@ -62,12 +60,7 @@ namespace Recellection.Code.Controllers
                     // Places them randomly around the fromBuilding. - John
                     // No, it does not. - Martin
 
-                    temp = new Unit(b.owner, b.position, b);
-                    temp.targetEntity = b;
-
-                    res.Add(temp);
-                    
-                    
+                    res.Add(new Unit(b.owner, b.position, b));
                 }
                 b.AddUnits(res);
             }

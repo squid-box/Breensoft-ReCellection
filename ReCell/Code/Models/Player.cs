@@ -106,6 +106,24 @@ namespace Recellection.Code.Models
             }
         }
 
-
+        /// <summary>
+        /// This method calculates how many buildings of the specified type the player have.
+        /// </summary>
+        /// <param name="type">The type of building to count</param>
+        public uint CountBuildingsOfType(Globals.BuildingTypes type)
+        {
+            uint retur = 0;
+            foreach (Graph g in graphs)
+            {
+                foreach (Building b in g.GetBuildings())
+                {
+                    if (b.type == type)
+                    {
+                        retur += 1;
+                    }
+                }
+            }
+            return retur;
+        }
     }
 }

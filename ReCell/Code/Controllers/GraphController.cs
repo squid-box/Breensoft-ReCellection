@@ -181,9 +181,9 @@ namespace Recellection.Code.Controllers
 				{
 					float factor = (float)g.GetWeight(b) / (float)g.TotalWeight;
 					int unitGoal = (int)(((float)totalUnits) * factor);
-					int unitBalance = b.CountUnits() - unitGoal;
+					int unitBalance = b.CountTotalUnits() - unitGoal;
 
-					logger.Trace("Unit goal for " + b + " ((" + g.GetWeight(b) + " / " + g.TotalWeight + ") * " + totalUnits + ") is " + unitGoal + " which has " + b.CountUnits() + " units. Balance = " + unitBalance + ".");
+					logger.Trace("Unit goal for " + b + " ((" + g.GetWeight(b) + " / " + g.TotalWeight + ") * " + totalUnits + ") is " + unitGoal + " which has " + b.CountTotalUnits() + " ("+b.CountUnits()+" here) units. Balance = " + unitBalance + ".");
 					if (unitBalance > 0)
 					{
 						logger.Trace("Building has extra units to give.");
@@ -191,8 +191,13 @@ namespace Recellection.Code.Controllers
 					}
 					else if (unitBalance < 0)
 					{
-						logger.Trace("Building is in need of units.");
-						inNeed.AddLast(new BuildingBalance(b, unitBalance));
+						logger.Trace("Building is in need of units. But there are "+b.incomingUnits.Count+" units on their way.");
+						unitBalance += b.incomingUnits.Count;
+						if (unitBalance < 0)
+						{
+							logger.Trace("Building is still in need of units.");
+							inNeed.AddLast(new BuildingBalance(b, unitBalance));
+						}
 					}
 					else
 					{
@@ -223,12 +228,12 @@ namespace Recellection.Code.Controllers
 					BuildingBalance has = withExcess.First.Value;
 					int transferableUnits = Math.Min(has.balance, Math.Abs(want.balance));
 
-					logger.Trace("Transferring units "+transferableUnits+" from " + want.building + " to " + has.building + ".");
+					logger.Trace("Transferring units "+transferableUnits+" from " + has.building + " to " + want.building + ".");
 					
 					has.balance -= transferableUnits;
 					want.balance += transferableUnits;
 					
-					MoveUnits(transferableUnits, want.building, has.building);
+					MoveUnits(transferableUnits, has.building, want.building);
 					
 					if (has.balance == 0)
 					{
@@ -256,7 +261,7 @@ namespace Recellection.Code.Controllers
 			int totalUnits = 0;
 			foreach (Building b in g.GetBuildings())
 			{
-				totalUnits += b.CountUnits();
+				totalUnits += b.CountTotalUnits();
 			}
 			return totalUnits;
 		}
