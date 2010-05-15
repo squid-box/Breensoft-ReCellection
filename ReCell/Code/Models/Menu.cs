@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using Microsoft.Xna.Framework.Graphics;
 using Recellection.Code.Models;
 using Microsoft.Xna.Framework;
+using System.Text;
 
 
 namespace Recellection
@@ -14,8 +15,9 @@ namespace Recellection
 
 	public class Menu
 	{
-        private const int FONT_SIZE = 60;
-        private const int FONT_WIDTH = 23;
+        private const int FONT_SIZE = 40;
+        private const int FONT_WIDTH = 20;
+        private const int CHARS_PER_ROW = 15;
         
 	    private List<MenuIcon> icons;
         private Texture2D menuPic;
@@ -30,9 +32,9 @@ namespace Recellection
 		
 		public Menu(Globals.MenuLayout layout, List<MenuIcon> icons, String explanation, Color explanationColor)
 		{
-            this.explanation = explanation;
+            this.explanation = insertLineBreaksForString(explanation);
             this.explanationColor = explanationColor;
-            this.explanationDrawPos = calculateDrawCoordinates(new Vector2(Recellection.viewPort.Width / 2, Recellection.viewPort.Height / 2),explanation);
+            this.explanationDrawPos = calculateDrawCoordinates(new Vector2(Recellection.viewPort.Width / 2, Recellection.viewPort.Height / 2),this.explanation);
 			switch (layout)
 			{
 				case Globals.MenuLayout.Prompt:
@@ -80,9 +82,44 @@ namespace Recellection
 			return regions;
 		}
 
+        private String insertLineBreaksForString(String text)
+        {
+            int lineBreaksToAdd = text.Length / CHARS_PER_ROW;
+
+            StringBuilder buffer = new StringBuilder(text.Length);
+
+            if (lineBreaksToAdd == 0)
+            {
+                return text;
+
+            }
+            String[] words = text.Split(' ');
+
+            //Some line breaks are needed in this string.
+            int i = 0;
+            while (lineBreaksToAdd > 0)
+            {
+                int charsLeftToAdd = CHARS_PER_ROW;
+                while ( i < words.Length && charsLeftToAdd > words[i].Length )
+                {
+                    buffer.Append(words[i]);
+                    buffer.Append(' ');
+
+                    charsLeftToAdd -= words[i].Length;
+
+                    i++;
+                }
+                
+                buffer.Append('\n');
+                lineBreaksToAdd--;
+            }
+            return buffer.ToString();
+        }
+
         private Vector2 calculateDrawCoordinates(Vector2 middlePointOfString, String text)
         {
-            int textWidth;
+            int textWidth = 0;
+
             if (text.IndexOf('\n') != -1)
             {
                 textWidth = text.IndexOf('\n') * FONT_WIDTH;
@@ -93,7 +130,7 @@ namespace Recellection
             }
 
             float x = middlePointOfString.X - textWidth / 2;
-            float y = middlePointOfString.Y - FONT_SIZE / 2;
+            float y = middlePointOfString.Y - (FONT_SIZE / 2 * (text.Split('\n').Length+1));
 
             return new Vector2(x, y);
         }
@@ -121,6 +158,8 @@ namespace Recellection
                 }
                 if( icons[i].label != null)
                 {
+                    icons[i].label = insertLineBreaksForString(icons[i].label);
+
                     int textWidth = icons[i].label.Length * FONT_WIDTH;
                     Vector2 temp = calculateDrawCoordinates(new Vector2(
                         i * Recellection.viewPort.Width * 3 / 5 + Recellection.viewPort.Width * 1 / 5, Recellection.viewPort.Height / 2), icons[i].label);
@@ -225,6 +264,8 @@ namespace Recellection
                 }
                 if (icons[i].label != null)
                 {
+                    icons[i].label = insertLineBreaksForString(icons[i].label);
+
                     int textWidth = icons[i].label.Length * FONT_WIDTH;
 
                     Vector2 temp = calculateDrawCoordinates(new Vector2(

@@ -40,7 +40,7 @@ namespace Recellection.Code.Main
 			menuOptions.Add(help);
 			menuOptions.Add(quit);
 
-            Menu mainMenu = new Menu(Globals.MenuLayout.FourMatrix, menuOptions, "Would you like to\nplay a game?", Color.Black);
+            Menu mainMenu = new Menu(Globals.MenuLayout.FourMatrix, menuOptions, "Would you like to play a game?", Color.Black);
 
 			MenuView view = MenuView.Instance;
 
