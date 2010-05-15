@@ -18,6 +18,7 @@ namespace Recellection.Code.Controllers
     public class UnitController
     {
 		private static Logger logger = LoggerFactory.GetLogger();
+		
         /// <summary>
         /// Move a set of units from one tile to another
         /// </summary>
@@ -26,6 +27,8 @@ namespace Recellection.Code.Controllers
         /// <param name="to">Tile tile to move units to</param>
         public static void MoveUnits(int amount, Tile from, Tile to)
         {
+			logger.SetThreshold(LogLevel.INFO);
+			
             bool fromBuilding = (from.GetBuilding() != null);
             bool toBuilding = (to.GetBuilding() != null);
             logger.Debug("Moving "+amount+" units from "+from+" to "+to);
@@ -36,7 +39,7 @@ namespace Recellection.Code.Controllers
             if (fromBuilding)
 			{
 				units = from.GetBuilding().GetUnits();
-				logger.Debug("Moving "+units.Count()+" units from a building!");
+				logger.Debug("Moving "+units.Count()+" ("+from.GetBuilding().CountUnits()+") units from a building.");
             }
             else
 			{
@@ -63,19 +66,19 @@ namespace Recellection.Code.Controllers
                     toBeRemovedFromBuilding.Add(u);
                 }
                 
-                if (toBuilding && to.GetBuilding().owner == u.owner)
+                if (toBuilding)
                 {
 					logger.Trace("Adding unit to patrol the 'to' building!");
-					to.GetBuilding().AddUnit(u);
+					u.TargetEntity = to.GetBuilding();
                 }
             }
             
             // We don't want to remove units from a tile, as they do it themselves
             if (fromBuilding)
             {
+				logger.Info("Removing unit from building!");
                 from.GetBuilding().RemoveUnits(toBeRemovedFromBuilding);
             }
-			logger.Debug("");
         }
 
         /// <summary>
@@ -86,16 +89,17 @@ namespace Recellection.Code.Controllers
         /// <param name="amount"></param>
         public static void KillUnits(IEnumerable<Unit> units, int amount)
         {
+            logger.Info("Unit Controller has be orderd to assasinate "+amount + " units.");
 			List<Unit> toBeKilled = new List<Unit>();
             foreach (Unit u in units)
             {
-                if (amount >= 0)
+                if (amount > 0)
                 {
 					toBeKilled.Add(u);
 					amount--;
                 }
             }
-            
+            logger.Info("The unit Controller has " + toBeKilled.Count + " units in its list.");
             foreach(Unit u in toBeKilled)
             {
 				u.GetPosition();

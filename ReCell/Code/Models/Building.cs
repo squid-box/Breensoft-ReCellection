@@ -33,6 +33,8 @@ namespace Recellection.Code.Models
 
         // References
         public List<Unit> units { get; protected set; }
+        public List<Unit> incomingUnits { get; internal set; }
+        
         public Globals.BuildingTypes type { get; protected set; }
         public BaseBuilding baseBuilding { get; protected set; }
         public LinkedList<Tile> controlZone { get; protected set; }
@@ -81,6 +83,7 @@ namespace Recellection.Code.Models
             this.currentHealth = maxHealth;
 
             this.units = new List<Unit>();
+            this.incomingUnits = new List<Unit>();
             this.type = type;
 
             this.baseBuilding = baseBuilding;
@@ -123,7 +126,8 @@ namespace Recellection.Code.Models
             this.maxHealth = maxHealth;
             this.currentHealth = maxHealth;
 
-            this.units = new List<Unit>();
+			this.units = new List<Unit>();
+			this.incomingUnits = new List<Unit>();
             this.type = type;
 
             this.baseBuilding = baseBuilding;
@@ -180,7 +184,17 @@ namespace Recellection.Code.Models
         public virtual int CountUnits()
 		{
             return units.Count;
-        }
+		}
+		
+		/// <summary>
+		/// Returns the number of units the fromBuilding has appointed to itself including units who are on their way.
+		/// </summary>
+		/// <returns>A positive integer representing the number of units
+		/// in the list.</returns>
+		public virtual int CountTotalUnits()
+		{
+			return units.Count + incomingUnits.Count;
+		}
 
         //public abstract Texture2D GetSprite();
 
@@ -345,7 +359,7 @@ namespace Recellection.Code.Models
 
         /// <returns>Returns the buy price for a fromBuilding, it is set
         /// at its health divided by 10. Upkeep should be added elsewhere.</returns>
-        public static int GetBuyPrice(Globals.BuildingTypes type)
+        public static uint GetBuyPrice(Globals.BuildingTypes type)
         {
             switch (type)
             {
