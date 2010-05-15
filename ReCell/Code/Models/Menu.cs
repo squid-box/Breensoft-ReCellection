@@ -43,6 +43,8 @@ namespace Recellection
 		}
 
         public Menu(List<MenuIcon> icons)
+
+
         {
             this.icons = icons;
         }
@@ -256,14 +258,8 @@ namespace Recellection
                     int textWidth = icons[i].label.Length * FONT_WIDTH;
 
                     Vector2 temp = calculateDrawCoordinates(new Vector2(
-                       (i % 3) * (iconWidth) + (iconWidth / 2), (i / 3) * (iconHeight)+ ( iconHeight / 2)), icons[i].label);
-
-                    icons[i].targetRectangle =
-                        new Microsoft.Xna.Framework.Rectangle((int) temp.X,(int)temp.Y,(textWidth),(FONT_SIZE));
+                       (i % 3) * (iconWidth) + (iconWidth / 2), (i / 3) * (iconHeight) + (iconHeight / 2)), icons[i].label);
                 }
-
-                icons[i].region = new GUIRegion(Recellection.windowHandle,
-                    new System.Windows.Rect((i % 3) * iconWidth, (i / 3) * iconHeight, iconWidth, iconHeight));
             }
         }
     }
