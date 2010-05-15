@@ -137,8 +137,10 @@ namespace Recellection.Code.Models
 			{
 				// We will wander around our disperseAround
 				isDispersed = false;
-				return new Vector2(disperseAround.position.X + ((float)rand.NextDouble() * 2f - 1f),
-										disperseAround.position.Y + ((float)rand.NextDouble() * 2f - 1f));
+                //The Floor is to makes sure that the entity does not have an offset for its position (like buildings who have 0.25)
+                //Then add 0.5 to end up in the middle of the tile and last the random should random a number between -1.3 to 1.3
+				return new Vector2(((float)Math.Floor(disperseAround.position.X))+ 0.5f + ((float)rand.NextDouble() * 2.6f - 1.3f ),
+                                        ((float)Math.Floor(disperseAround.position.Y))+ 0.5f + ((float)rand.NextDouble() * 2.6f - 1.3f));
 			}
 			else
 			{

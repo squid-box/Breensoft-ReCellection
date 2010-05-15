@@ -5,6 +5,7 @@ using System.Text;
 using Recellection.Code.Models;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Recellection.Code.Utility.Logger;
 
 namespace Recellection.Code.Controllers
 {
@@ -17,6 +18,8 @@ namespace Recellection.Code.Controllers
     
     public class UnitController
     {
+
+        private static Logger logger = LoggerFactory.GetLogger();
 
         /// <summary>
         /// Move a set of units from one tile to another
@@ -81,16 +84,17 @@ namespace Recellection.Code.Controllers
         /// <param name="amount"></param>
         public static void KillUnits(IEnumerable<Unit> units, int amount)
         {
+            logger.Info("Unit Controller has be orderd to assasinate "+amount + " units.");
 			List<Unit> toBeKilled = new List<Unit>();
             foreach (Unit u in units)
             {
-                if (amount >= 0)
+                if (amount > 0)
                 {
 					toBeKilled.Add(u);
 					amount--;
                 }
             }
-            
+            logger.Info("The unit Controller has " + toBeKilled.Count + " units in its list.");
             foreach(Unit u in toBeKilled)
             {
 				u.GetPosition();
