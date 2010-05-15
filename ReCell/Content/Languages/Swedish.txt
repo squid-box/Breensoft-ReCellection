@@ -1,4 +1,4 @@
-[General]
+﻿[General]
 title=Åter:Urval
 
 [Menu]
@@ -10,6 +10,8 @@ MainMenu5=Test5
 MainMenu6=Test6
 MainMenu7=Test7
 MainMenu8=Test8
+
+ChooseBuilding=Välj den typ av cell du vill bygga.
 
 OptionsMenu1=OTest1
 OptionsMenu2=OTest2
@@ -42,3 +44,7 @@ SpecialCommandMenu7=CTest7
 SpecialCommandMenu8=CTest8
 
 [Game entities]
+BaseCell=Bas Cell
+DefensiveCell=Försvars Cell
+AggressiveCell=Arg Cell
+ResourceCell=Arbets Cell
