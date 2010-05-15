@@ -35,7 +35,7 @@ namespace Recellection.Code
             mapWidth = world.GetMap().map.GetLength(1);
             myBuildings = new List<Building>();
 
-            roamingUnits = new List<Vector2>(); //A list of all units not located at a building.
+            roamingUnits = new List<Vector2>(); //A list of all units not located at a fromBuilding.
         }
 
         /// <summary>
@@ -84,7 +84,7 @@ namespace Recellection.Code
         }
 
         /// <summary>
-        /// Returns the building at the given coordinates provided that it is visible.
+        /// Returns the fromBuilding at the given coordinates provided that it is visible.
         /// </summary>
         /// <param name="point"></param>
         /// <returns></returns>

@@ -42,7 +42,7 @@ namespace Recellection.Code.Models
 			g.Add(b3);
 			Assert.AreEqual(++size, g.CountBuildings());
 			
-			// Adding same building twice should be ignored
+			// Adding same fromBuilding twice should be ignored
 
 			Assert.Throws<ArgumentException>(delegate { g.Add(b1); });
 			Assert.AreEqual(size, g.CountBuildings());

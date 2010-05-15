@@ -19,8 +19,9 @@ namespace Recellection.Code.Models
 		private static int id = 0; // Used for random
         // DATA
         public Vector2 targetPosition { get; set; }   // Target coordinate
-        public Entity targetEntity { get; set; }      // Target entity
-        public Entity disperseAround { get; set; }		// Target to fall back to if the primary target disappears. Also acts as center of dispersion
+		private Entity targetEntity;     // Target entity
+        public Entity rallyPoint { get; set; }		// Target to fall back to if the primary target disappears. Also acts as center of dispersion
+        
         public bool isDispersed { get; set; }         // Whether or not this unit should recieve a new target from the dispersion procedure
 		public bool hasArrived { get { return (targetPosition.X == NO_TARGET && targetPosition.Y == NO_TARGET); } }
         public bool isDead { get; set; }              // Status of unit
@@ -69,11 +70,12 @@ namespace Recellection.Code.Models
         /// <param name="owner">Owner of this unit.</param>
         public Unit(Player owner, Vector2 position, Entity target) : base(position, owner)
         {
-			this.disperseAround = target;
+			this.rallyPoint = target;
             this.position = position;
             this.targetPosition = new Vector2(NO_TARGET, NO_TARGET);
             this.angle = 0;
-            this.isDispersed = this.isDead = false;
+            this.isDispersed = (target != null);
+            this.isDead = false;
             this.owner = owner;
             this.rand = new Random(id++);
             world.GetMap().GetTile((int)position.X, (int)position.Y).AddUnit(this);
@@ -89,8 +91,25 @@ namespace Recellection.Code.Models
 
         // Properites
 
-		
+		public Entity TargetEntity
+		{
+			get
+			{
+				return targetEntity;
+			}
+			
+			set
+			{
+				callRainCheckOnTarget();
+				
+				targetEntity = value;
 
+				if (targetEntity is Building)
+				{
+					((Building)targetEntity).incomingUnits.Add(this);
+				}
+			}
+		}
 
         // Graphical representation
 
@@ -106,11 +125,20 @@ namespace Recellection.Code.Models
         public void Kill()
         {
             this.isDead = true;
-            world.GetMap().GetTile((int)position.X, (int)position.Y).RemoveUnit(owner, this);
-            if (disperseAround != null && disperseAround is Building)
+			world.GetMap().GetTile((int)position.X, (int)position.Y).RemoveUnit(owner, this);
+			callRainCheckOnTarget();
+            if (rallyPoint != null && rallyPoint is Building)
             {
-				((Building)disperseAround).RemoveUnit(this);
+				((Building)rallyPoint).RemoveUnit(this);
             }
+        }
+        
+        private void callRainCheckOnTarget()
+        {
+			if (targetEntity is Building)
+			{
+				((Building)targetEntity).incomingUnits.Remove(this);
+			}
         }
 
         /// <summary>
@@ -129,16 +157,18 @@ namespace Recellection.Code.Models
 
 		private Vector2 calculateTargetPosition()
 		{
-			if (targetEntity != null)
+			if (TargetEntity != null)
 			{
-				return targetEntity.position;
+				return TargetEntity.position;
 			}
-			else if (this.isDispersed && disperseAround != null)
+			else if (this.isDispersed && rallyPoint != null)
 			{
-				// We will wander around our disperseAround
+				// We will wander around our rallyPoint
 				isDispersed = false;
-				return new Vector2(disperseAround.position.X + ((float)rand.NextDouble() * 2f - 1f),
-										disperseAround.position.Y + ((float)rand.NextDouble() * 2f - 1f));
+                //The Floor is to makes sure that the entity does not have an offset for its position (like buildings who have 0.25)
+                //Then add 0.5 to end up in the middle of the tile and last the random should random a number between -1.3 to 1.3
+				return new Vector2(((float)Math.Floor(rallyPoint.position.X))+ 0.5f + ((float)rand.NextDouble() * 2.6f - 1.3f ),
+                                   ((float)Math.Floor(rallyPoint.position.Y))+ 0.5f + ((float)rand.NextDouble() * 2.6f - 1.3f));
 			}
 			else
 			{
@@ -155,6 +185,9 @@ namespace Recellection.Code.Models
 			int y = (int)this.position.Y;
 			Unit.world.map.GetTile(x, y).RemoveUnit(this);
 
+            Vector2 direction = new Vector2(this.targetPosition.X - this.position.X, this.targetPosition.Y - this.position.Y);
+            direction.Normalize();
+
 			// Move unit towards target.
 			if (this.targetPosition.X != NO_TARGET)
 			{
@@ -164,35 +197,45 @@ namespace Recellection.Code.Models
 				{
 					position = new Vector2(targetPosition.X, position.Y);
 				}
+                else
+                {
+                    float newX = position.X + MOVEMENT_SPEED * deltaTime * direction.X * direction.Length();
+                    position = new Vector2(newX, position.Y);
+                }/*
 				else if (this.targetPosition.X > this.position.X)
 				{
-					float newX = position.X + MOVEMENT_SPEED * deltaTime;
+					float newX = position.X + MOVEMENT_SPEED * deltaTime * direction.X * direction.Length();
 					position = new Vector2(newX, position.Y);
 				}
 				else if (this.targetPosition.X < this.position.X)
 				{
-					float newX = position.X - MOVEMENT_SPEED * deltaTime;
+                    float newX = position.X - MOVEMENT_SPEED * deltaTime * direction.X * direction.Length();
 					position = new Vector2(newX, position.Y);
-				}
+				}*/
 			}
 			if (this.targetPosition.Y != NO_TARGET)
 			{
 				float distance = this.targetPosition.Y - this.position.Y;
 
-				if (Math.Abs(distance) < MOVEMENT_SPEED)
-				{
-					position = new Vector2(position.X, targetPosition.Y);
-				}
+                if (Math.Abs(distance) < MOVEMENT_SPEED)
+                {
+                    position = new Vector2(position.X, targetPosition.Y);
+                }
+                else
+                {
+                    float newY = position.Y + MOVEMENT_SPEED * deltaTime * direction.Y * direction.Length();
+                    position = new Vector2(position.X, newY);
+                }/*
 				else if (distance > 0)
 				{
-					float newY = position.Y + MOVEMENT_SPEED * deltaTime;
+                    float newY = position.Y + MOVEMENT_SPEED * deltaTime * direction.Y * direction.Length();
 					position = new Vector2(position.X, newY);
 				}
 				else if (distance < 0)
 				{
-					float newY = position.Y - MOVEMENT_SPEED * deltaTime;
+                    float newY = position.Y - MOVEMENT_SPEED * deltaTime * direction.Y * direction.Length();
 					position = new Vector2(position.X, newY);
-				}
+				}*/
 			}
 
 			// Tile management!
@@ -211,19 +254,21 @@ namespace Recellection.Code.Models
 			
 			if (distance == 0)
 			{
-				if (targetEntity != null)
+				if (TargetEntity != null)
 				{
-					// If it's a home-building, we disperse around it :)
-					if (targetEntity is Building && targetEntity.owner == this.owner)
+					// If it's a home-fromBuilding, we disperse around it :)
+					if (TargetEntity is Building && TargetEntity.owner == this.owner)
 					{
 						// We will now recieve new positions within a radius of our secondary target.
-						this.disperseAround = targetEntity;
+						this.rallyPoint = TargetEntity;
+						((Building)targetEntity).AddUnit(this);
 						isDispersed = true;
 					}
-					this.targetEntity = null;
+					
+					TargetEntity = null;
 				}
 				
-				if (disperseAround != null)
+				if (rallyPoint != null)
 				{
 					isDispersed = true;
 				}
@@ -254,6 +299,11 @@ namespace Recellection.Code.Models
         public float GetPowerLevel()
         {
             return powerLevel;
+        }
+        
+        public bool isPatrolling()
+        {
+			return this.rallyPoint != null;
         }
     }
 }

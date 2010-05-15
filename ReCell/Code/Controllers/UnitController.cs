@@ -5,6 +5,7 @@ using System.Text;
 using Recellection.Code.Models;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Recellection.Code.Utility.Logger;
 
 namespace Recellection.Code.Controllers
 {
@@ -14,10 +15,10 @@ namespace Recellection.Code.Controllers
     /// 
     /// Author: Marco
     /// </summary>
-    
     public class UnitController
     {
-
+		private static Logger logger = LoggerFactory.GetLogger();
+		
         /// <summary>
         /// Move a set of units from one tile to another
         /// </summary>
@@ -26,50 +27,58 @@ namespace Recellection.Code.Controllers
         /// <param name="to">Tile tile to move units to</param>
         public static void MoveUnits(int amount, Tile from, Tile to)
         {
-            List<Unit> tempUnit = new List<Unit>();
+			logger.SetThreshold(LogLevel.DEBUG);
+			
+            bool fromBuilding = (from.GetBuilding() != null);
+            bool toBuilding = (to.GetBuilding() != null);
+            logger.Debug("Moving "+amount+" units from "+from+" to "+to);
 
-            IEnumerable<Unit> units;
-            bool building = false;
-            // If we are moving units from a building, they might not
+			HashSet<Unit> units;
+            // If we are moving units from a fromBuilding, they might not
             // all be on the same tile
-            if (from.GetBuilding() != null)
-			    {
-                units = from.GetBuilding().GetUnits();
-                building = true;
+            if (fromBuilding)
+			{
+				units = from.GetBuilding().GetUnits();
+				logger.Debug("Moving "+units.Count()+" ("+from.GetBuilding().CountUnits()+") units from a building.");
             }
             else
-            {
+			{
                 units = from.GetUnits();
-            }
-           
-            // Move some units from the target tile
+				logger.Debug("Moving "+units.Count()+" from a tile!");
+			}
+
+			List<Unit> toBeRemovedFromBuilding = new List<Unit>();
+
+			// Move some units from the targetted tile
             foreach (Unit u in units)
             {
                 if (amount <= 0)
-                    break;
-                u.targetPosition = to.position;
-                if (u.isDispersed)
                 {
-                    tempUnit.Add(u);
-                    u.isDispersed = true;
-                    amount--;
+                    break;
+                }
+
+				u.targetPosition = to.position;
+				amount--;
+                
+                if (u.isPatrolling())
+                {
+					logger.Trace("Unit is patrolling! Removing from rotation.");
+                    toBeRemovedFromBuilding.Add(u);
+                }
+                
+                if (toBuilding)
+                {
+					logger.Trace("Adding unit to patrol the 'to' building!");
+					u.TargetEntity = to.GetBuilding();
                 }
             }
+            
             // We don't want to remove units from a tile, as they do it themselves
-            if (building)
+            if (fromBuilding)
             {
-                from.GetBuilding().RemoveUnits(tempUnit);
-
-            }
-
-            // If we are moving them to a building, add the units to that building
-            if (to.GetBuilding() != null)
-            {
-                units = to.GetBuilding().GetUnits();
-            }
-            else
-            {
-                units = to.GetUnits();
+				logger.Info("Removing " + toBeRemovedFromBuilding.Count + " units from building with "+from.GetBuilding().CountUnits()+" units.");
+				from.GetBuilding().RemoveUnits(toBeRemovedFromBuilding);
+				logger.Info("There is now "+from.GetBuilding().CountUnits()+" units in the building.");
             }
         }
 
@@ -81,16 +90,17 @@ namespace Recellection.Code.Controllers
         /// <param name="amount"></param>
         public static void KillUnits(IEnumerable<Unit> units, int amount)
         {
+            logger.Info("Unit Controller has be orderd to assasinate "+amount + " units.");
 			List<Unit> toBeKilled = new List<Unit>();
             foreach (Unit u in units)
             {
-                if (amount >= 0)
+                if (amount > 0)
                 {
 					toBeKilled.Add(u);
 					amount--;
                 }
             }
-            
+            logger.Info("The unit Controller has " + toBeKilled.Count + " units in its list.");
             foreach(Unit u in toBeKilled)
             {
 				u.GetPosition();
@@ -101,7 +111,7 @@ namespace Recellection.Code.Controllers
         /// <summary>
         /// Call the update method on each unit causing them to move towards their target.
         /// If the unit has arrived to its target, it will recieve new orders. If it was previously
-        /// travelling to a building, it will be joined with that building upon arrival.
+        /// travelling to a fromBuilding, it will be joined with that fromBuilding upon arrival.
         /// </summary>
         /// <param name="units">The set of units to be updated</param>
         /// <param name="systemTime">The time passed since something</param>

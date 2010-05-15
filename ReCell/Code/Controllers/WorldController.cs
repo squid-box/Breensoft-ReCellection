@@ -92,10 +92,10 @@ namespace Recellection.Code.Controllers
 						}
                         break;
 					case State.BUILDING:
-						// A building has been selected!
+						// A fromBuilding has been selected!
 
 						// TODO: Let BuildingController do shit! (use retrieveSelection)
-						// TODO:  - Activate menu (what u wanna do /w building?)
+						// TODO:  - Activate menu (what u wanna do /w fromBuilding?)
 						// TODO:  - DO SHIT!
 
 						selectedBuilding = map.GetTile(absoluteCoordinate).GetBuilding();
@@ -111,16 +111,46 @@ namespace Recellection.Code.Controllers
 						}
 						
 						selectedTile = map.GetTile(absoluteCoordinate);
-						
-						// If we have selected a tile, and we can place a building at the selected tile...
+
+
+
+						//do stuff here TODO co
+                        MenuIcon baseCell = new MenuIcon(Language.Instance.GetString("BaseCell"), Recellection.textureMap.GetTexture(Globals.TextureTypes.BaseBuilding), Color.Black);
+                        MenuIcon resourceCell = new MenuIcon(Language.Instance.GetString("ResourceCell"), Recellection.textureMap.GetTexture(Globals.TextureTypes.ResourceBuilding), Color.Black);
+                        MenuIcon defensiveCell = new MenuIcon(Language.Instance.GetString("DefensiveCell"), Recellection.textureMap.GetTexture(Globals.TextureTypes.BarrierBuilding), Color.Black);
+                        MenuIcon aggressiveCell = new MenuIcon(Language.Instance.GetString("AggressiveCell"), Recellection.textureMap.GetTexture(Globals.TextureTypes.AggressiveBuilding), Color.Black);
+                        List<MenuIcon> menuIcons =new List<MenuIcon>();
+                        menuIcons.Add(baseCell);
+                        menuIcons.Add(resourceCell);
+                        menuIcons.Add(defensiveCell);
+                        menuIcons.Add(aggressiveCell);
+                        Menu BuildingMenu = new Menu(Globals.MenuLayout.FourMatrix, menuIcons, Language.Instance.GetString("ChooseBuilding"), Color.Black);
+                        MenuController.LoadMenu(BuildingMenu);
+                        Recellection.CurrentState = MenuView.Instance;
+                        Globals.BuildingTypes Building;
+
+                        MenuIcon choosenMenu = MenuController.GetInput();
+                        if(choosenMenu.Equals(baseCell)){
+                            Building = Globals.BuildingTypes.Base;
+                        }else if(choosenMenu.Equals(resourceCell)){
+                            Building = Globals.BuildingTypes.Resource;
+                        }else if(choosenMenu.Equals(defensiveCell)){
+                            Building = Globals.BuildingTypes.Barrier;
+                        }else{
+                            Building = Globals.BuildingTypes.Aggressive;
+                        }
+
+
+						// If we have selected a tile, and we can place a building at the selected tile...					
+
 						if (selectedBuilding != null
 						 && selectedTile.GetBuilding() == null
 						 && selectedBuilding.owner == playerInControll)
 						{
-							if (! BuildingController.AddBuilding(Globals.BuildingTypes.Resource, selectedBuilding,
+							if (! BuildingController.AddBuilding(Building, selectedBuilding,
 									selectedTile.position, theWorld, playerInControll))
 							{
-								//Sounds.Instance.LoadSound("Denied").Play();
+								Sounds.Instance.LoadSound("Denied").Play();
 							}
 
 							selectedBuilding = null;

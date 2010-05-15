@@ -7,7 +7,7 @@ using Microsoft.Xna.Framework.Graphics;
 namespace Recellection.Code.Models
 {
     /// <summary>
-    /// A resource building improves upon an ordinary building by also having a certain
+    /// A resource fromBuilding improves upon an ordinary fromBuilding by also having a certain
     /// rate of unit production
     /// 
     /// Author: Viktor Eklund

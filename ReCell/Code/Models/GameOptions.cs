@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Recellection.Code.Controllers;
 
 /**
  * 
@@ -11,23 +12,51 @@ using System.Text;
 
 namespace Recellection.Code.Models
 {
+    /// <summary>
+    /// This model is used to save all the options choices.
+    /// </summary>
     public sealed class GameOptions : IModel
     {
-        /**
-         * 
-         * varje GameOptions objekt har lagrar alla options x spelet som variabler och varje variabel ska ha en get och set metod.
-         * Det är upp till andra modular att kolla vílka options som är aktuella och rätta sig efter det.
-         * 
-         * TODO: alla options :P
-         **/
 
-           
-        public static GameOptions Instance { get; private set; }
-        
-        /// <summary>
-        /// Static Constructors are automatically initialized on reference.
-        /// </summary>
-        static GameOptions() { Instance = new GameOptions(); }
+        #region Singleton-stuff
 
+        // from http://www.yoda.arachsys.com/csharp/singleton.html
+        static GameOptions instance = null;
+        static readonly object padlock = new object();
+
+        public static GameOptions Instance
+        {
+            get
+            {
+                lock (padlock)
+                {
+                    if (instance == null)
+                    {
+                        instance = new GameOptions();
+                    }
+                    return instance;
+                }
+            }
+        }
+
+        public GameOptions()
+        {
+            this.choosenLanguage = new Localizer();
+        }
+
+        #endregion
+
+        public float musicVolume { get; set; }
+        public bool musicMuted { get; set; }
+
+        public float sfxVolume { get; set; }
+        public bool sfxMuted { get; set; }
+
+        private Localizer choosenLanguage;
+
+        public void SetLanguage(String language)
+        {
+            choosenLanguage.SetLanguage(language);
+        }
     }
 }
