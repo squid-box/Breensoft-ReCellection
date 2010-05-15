@@ -240,17 +240,12 @@ namespace Recellection
 
         private void CreateFourMatrix(List<MenuIcon> icons)
         {
-            if (icons.Count != 4)
-            {
-                throw new ArgumentException("Wrong amount of icons in menu");
-            }
-
             int windowWidth = Recellection.viewPort.Width;
             int windowHeight = Recellection.viewPort.Height;
 
             menuPic = Recellection.textureMap.GetTexture(Globals.TextureTypes.TwoByTwo);
 
-            for (int i = 0; i < 4; i++)
+            for (int i = 0; i < icons.Count; i++)
             {
                 if (icons[i].texture != null)
                 {
@@ -292,15 +287,12 @@ namespace Recellection
 
         private void CreateNineMatrix(List<MenuIcon> icons)
         {
-            if (icons.Count != 8)
-            {
-                throw new ArgumentException("Wrong amount of icons in menu");
-            }
+            
             int iconWidth = (int)(Recellection.viewPort.Width / 3);
             int iconHeight = (int)(Recellection.viewPort.Height / 3);
 
             menuPic = Recellection.textureMap.GetTexture(Globals.TextureTypes.ThreeByThree);
-            for (int i = 0; i < 8; i++)
+            for (int i = 0; i < icons.Count; i++)
             {
 				MenuIcon mi = icons[i];
 				int position = (i >= 4 ? i+1 : i);
