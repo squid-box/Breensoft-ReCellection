@@ -42,13 +42,14 @@ namespace Recellection.Code.Controllers
         private static void AttackTargets(AggressiveBuilding b)
         {
             logger.Trace("Attacking targets around a aggressive building at x: "+b.position.X+" y: "+b.position.Y );
-            foreach (Unit u in b.currentTargets)
+            /*foreach (Unit u in b.currentTargets)
             {
                 //Show kill graphix and make sound.
 
                 //Kill units here.....
 
-            }
+            }*/
+            UnitController.KillUnits(b.currentTargets, b.currentTargets.Count);
             b.currentTargets.Clear();
         }
 
@@ -209,25 +210,26 @@ namespace Recellection.Code.Controllers
 
            
             //Iterate over the tiles that shall be added to the list
-            for (int x = (int)middleTile.X-1; x < 1+(int)middleTile.X; x++)
+            for (int dx = -1; dx <= 1; dx++)
             {
-                for (int y = (int)middleTile.Y-1; y < 1+(int)middleTile.Y; y++)
+                for (int dy = -1; dy <= 1; dy++)
                 {
                     //The tile the fromBuilding is standing on shall be first in the
                     //linked list.
-                    if (x == (int)middleTile.X && y == (int)middleTile.Y)
+                    if (dx == 0 && dy == 0)
                     {
-                        retur.AddFirst(world.GetMap().GetTile(x,y));
+                        retur.AddFirst(world.GetMap().GetTile(dx + (int)middleTile.X, dy + (int)middleTile.Y));
                     }
                     //The other tiles shall be appended to the list
                     else
                     {
                         try
                         {
-                            retur.AddLast(world.GetMap().GetTile(x, y));
+                            retur.AddLast(world.GetMap().GetTile(dx + (int)middleTile.X, dy + (int)middleTile.Y));
                         }
-                        catch (IndexOutOfRangeException)
+                        catch (IndexOutOfRangeException e)
                         {
+                            logger.Error(e.Message);
                             //The fromBuilding is being built close to an edge
                             //the exception is not handled.
                         }
