@@ -5,6 +5,7 @@ using System.Text;
 using Recellection.Code.Models;
 using Recellection.Code.Utility.Logger;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 
 namespace Recellection.Code.Controllers
 {
@@ -54,11 +55,56 @@ namespace Recellection.Code.Controllers
         /// 
         /// </summary>
         /// <param name="player"></param>
-        public static void ConstructBuilding(Player player, Tile constructTile, Building sourceBuilding)
+        public static void ConstructBuilding(Player player, Tile constructTile, Building sourceBuilding, World theWorld)
         {
             logger.Trace("Constructing a building for a player");
             //TODO Somehow present a menu to the player, and then 
             //use the information to ADD (not the document) the fromBuilding.
+
+
+            MenuIcon baseCell = new MenuIcon(Language.Instance.GetString("BaseCell"), Recellection.textureMap.GetTexture(Globals.TextureTypes.BaseBuilding), Color.Black);
+            MenuIcon resourceCell = new MenuIcon(Language.Instance.GetString("ResourceCell"), Recellection.textureMap.GetTexture(Globals.TextureTypes.ResourceBuilding), Color.Black);
+            MenuIcon defensiveCell = new MenuIcon(Language.Instance.GetString("DefensiveCell"), Recellection.textureMap.GetTexture(Globals.TextureTypes.BarrierBuilding), Color.Black);
+            MenuIcon aggressiveCell = new MenuIcon(Language.Instance.GetString("AggressiveCell"), Recellection.textureMap.GetTexture(Globals.TextureTypes.AggressiveBuilding), Color.Black);
+            List<MenuIcon> menuIcons = new List<MenuIcon>();
+            menuIcons.Add(baseCell);
+            menuIcons.Add(resourceCell);
+            menuIcons.Add(defensiveCell);
+            menuIcons.Add(aggressiveCell);
+            Menu BuildingMenu = new Menu(Globals.MenuLayout.FourMatrix, menuIcons, Language.Instance.GetString("ChooseBuilding"), Color.Black);
+            MenuController.LoadMenu(BuildingMenu);
+            Recellection.CurrentState = MenuView.Instance;
+            Globals.BuildingTypes Building;
+
+            MenuIcon choosenMenu = MenuController.GetInput();
+            MenuController.UnloadMenu();
+            if (choosenMenu.Equals(baseCell))
+            {
+                Building = Globals.BuildingTypes.Base;
+            }
+            else if (choosenMenu.Equals(resourceCell))
+            {
+                Building = Globals.BuildingTypes.Resource;
+            }
+            else if (choosenMenu.Equals(defensiveCell))
+            {
+                Building = Globals.BuildingTypes.Barrier;
+            }
+            else
+            {
+                Building = Globals.BuildingTypes.Aggressive;
+            }
+
+
+            // If we have selected a tile, and we can place a building at the selected tile...					
+
+                if (!BuildingController.AddBuilding(Building, sourceBuilding,
+                        constructTile.position, theWorld, player))
+                {
+                    Sounds.Instance.LoadSound("Denied").Play();
+                }         
+
+
         }
 
         /// <summary>
