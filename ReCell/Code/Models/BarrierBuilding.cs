@@ -8,7 +8,7 @@ namespace Recellection.Code.Models
 {
     /// <summary>
     /// A BarrierBuilding improves upon an 
-    /// ordinary building by providing a defensive bonus
+    /// ordinary fromBuilding by providing a defensive bonus
     /// 
     /// Author: Viktor Eklund
     /// </summary>
