@@ -17,7 +17,7 @@ namespace Recellection
 	{
         private const int FONT_SIZE = 40;
         private const int FONT_WIDTH = 20;
-        private const int CHARS_PER_ROW = 12;
+        private const int CHARS_PER_ROW = 15;
         
 	    private List<MenuIcon> icons;
         private Texture2D menuPic;
@@ -97,7 +97,7 @@ namespace Recellection
 
             //Some line breaks are needed in this string.
             int i = 0;
-            while (lineBreaksToAdd > 0)
+            while (lineBreaksToAdd >= 0)
             {
                 int charsLeftToAdd = CHARS_PER_ROW;
                 while ( i < words.Length && charsLeftToAdd > words[i].Length )
@@ -318,7 +318,8 @@ namespace Recellection
                 }
 				if (mi.label != null)
 				{
-					icons[i].label = insertLineBreaksForString(icons[i].label);
+                    mi.label = insertLineBreaksForString(mi.label);
+
 					int textWidth = mi.label.Length * FONT_WIDTH;
 
                     Vector2 temp = calculateDrawCoordinates(new Vector2(
