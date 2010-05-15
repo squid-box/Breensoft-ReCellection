@@ -25,14 +25,12 @@ namespace Recellection.Code.Controllers
         {
             Instance = new Configurator();
             
-            mute = new MenuIcon("Mute", null, Color.Black);
-            volume = new MenuIcon("Volume", null, Color.Black);
-            difficulty = new MenuIcon("Difficulty", null, Color.Black);
-            language = new MenuIcon("Language", null, Color.Black);
+            mute = new MenuIcon("Mute");
+            volume = new MenuIcon("Volume");
+            difficulty = new MenuIcon("Difficulty");
+            language = new MenuIcon("Language");
             
             iconList = new List<MenuIcon>();
-            
-            
         }
 
         private Menu BuildMenu()
@@ -56,21 +54,47 @@ namespace Recellection.Code.Controllers
 
             MenuIcon response = MenuController.GetInput();
 
-            if (response == mute)
-            {
-            }
-            //else if (response == ??)
+            //if (response == ??)
             //{
             // Off-screen quit option? 
             //    MenuController.UnloadMenu();
-            //}
+            //}(response == mute)
+
+            if (response == mute)
+            {
+                if (GameOptions.Instance.musicMuted)
+                {
+                    GameOptions.Instance.musicMuted = false;
+                }
+                else
+                {
+                    GameOptions.Instance.musicMuted = true;
+                }
+                MenuController.UnloadMenu();
+            }
             else if (response == volume)
             {
-                // ChangeVolumeMenu()
+                // Dat volume
             }
             else if (response == language)
             {
-                // ChangeLanguageMenu()
+                String[] availableLanguages = Language.Instance.GetAvailableLanguages();
+                Dictionary<MenuIcon, String> languageDic = new Dictionary<MenuIcon,string>();
+
+                foreach (String lang in availableLanguages)
+                {
+                    MenuIcon aLanguage = new MenuIcon(lang);
+                    languageDic.Add(aLanguage, lang);
+                }
+                List<MenuIcon> iconList = new List<MenuIcon>(languageDic.Keys);
+                Menu langMenu = new Menu(Globals.MenuLayout.NineMatrix, iconList, "Choose Language");
+                MenuController.LoadMenu(langMenu);
+                Recellection.CurrentState = MenuView.Instance;
+
+                MenuIcon choosenLang = MenuController.GetInput();
+
+                Language.Instance.SetLanguage(languageDic[response]);
+                MenuController.UnloadMenu();
             }
             else if (response == difficulty)
             {
@@ -82,6 +106,12 @@ namespace Recellection.Code.Controllers
             }
         }
 
+        #region volume
+        #endregion
+
+        #region language
+            
+        #endregion
     }
 
 }

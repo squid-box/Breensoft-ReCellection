@@ -5,6 +5,8 @@ using System.Text;
 using Recellection.Code.Models;
 using Recellection.Code.Utility.Logger;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+using Recellection.Code.Views;
 
 namespace Recellection.Code.Controllers
 {
@@ -40,13 +42,15 @@ namespace Recellection.Code.Controllers
         private static void AttackTargets(AggressiveBuilding b)
         {
             logger.Trace("Attacking targets around a aggressive building at x: "+b.position.X+" y: "+b.position.Y );
-            foreach (Unit u in b.currentTargets)
+            /*foreach (Unit u in b.currentTargets)
             {
                 //Show kill graphix and make sound.
 
                 //Kill units here.....
 
-            }
+            }*/
+            logger.Trace("Killing " + b.currentTargets.Count + " units.");
+            UnitController.KillUnits(b.currentTargets, b.currentTargets.Count);
             b.currentTargets.Clear();
         }
 
@@ -54,11 +58,57 @@ namespace Recellection.Code.Controllers
         /// 
         /// </summary>
         /// <param name="player"></param>
-        public static void ConstructBuilding(Player player, Tile constructTile, Building sourceBuilding)
+        public static void ConstructBuilding(Player player, Tile constructTile, Building sourceBuilding, World theWorld)
         {
             logger.Trace("Constructing a building for a player");
             //TODO Somehow present a menu to the player, and then 
             //use the information to ADD (not the document) the fromBuilding.
+
+
+            MenuIcon baseCell = new MenuIcon(Language.Instance.GetString("BaseCell"), Recellection.textureMap.GetTexture(Globals.TextureTypes.BaseBuilding), Color.Black);
+            MenuIcon resourceCell = new MenuIcon(Language.Instance.GetString("ResourceCell"), Recellection.textureMap.GetTexture(Globals.TextureTypes.ResourceBuilding), Color.Black);
+            MenuIcon defensiveCell = new MenuIcon(Language.Instance.GetString("DefensiveCell"), Recellection.textureMap.GetTexture(Globals.TextureTypes.BarrierBuilding), Color.Black);
+            MenuIcon aggressiveCell = new MenuIcon(Language.Instance.GetString("AggressiveCell"), Recellection.textureMap.GetTexture(Globals.TextureTypes.AggressiveBuilding), Color.Black);
+            List<MenuIcon> menuIcons = new List<MenuIcon>();
+            menuIcons.Add(baseCell);
+            menuIcons.Add(resourceCell);
+            menuIcons.Add(defensiveCell);
+            menuIcons.Add(aggressiveCell);
+            Menu BuildingMenu = new Menu(Globals.MenuLayout.FourMatrix, menuIcons, Language.Instance.GetString("ChooseBuilding"), Color.Black);
+            MenuController.LoadMenu(BuildingMenu);
+            Recellection.CurrentState = MenuView.Instance;
+            Globals.BuildingTypes Building;
+
+            MenuIcon choosenMenu = MenuController.GetInput();
+            Recellection.CurrentState = WorldView.Instance;
+            MenuController.UnloadMenu();
+            if (choosenMenu.Equals(baseCell))
+            {
+                Building = Globals.BuildingTypes.Base;
+            }
+            else if (choosenMenu.Equals(resourceCell))
+            {
+                Building = Globals.BuildingTypes.Resource;
+            }
+            else if (choosenMenu.Equals(defensiveCell))
+            {
+                Building = Globals.BuildingTypes.Barrier;
+            }
+            else
+            {
+                Building = Globals.BuildingTypes.Aggressive;
+            }
+
+
+            // If we have selected a tile, and we can place a building at the selected tile...					
+
+                if (!BuildingController.AddBuilding(Building, sourceBuilding,
+                        constructTile.position, theWorld, player))
+                {
+                    Sounds.Instance.LoadSound("Denied").Play();
+                }         
+
+
         }
 
         /// <summary>
@@ -161,25 +211,26 @@ namespace Recellection.Code.Controllers
 
            
             //Iterate over the tiles that shall be added to the list
-            for (int x = (int)middleTile.X-1; x < 1+(int)middleTile.X; x++)
+            for (int dx = -1; dx <= 1; dx++)
             {
-                for (int y = (int)middleTile.Y-1; y < 1+(int)middleTile.Y; y++)
+                for (int dy = -1; dy <= 1; dy++)
                 {
                     //The tile the fromBuilding is standing on shall be first in the
                     //linked list.
-                    if (x == (int)middleTile.X && y == (int)middleTile.Y)
+                    if (dx == 0 && dy == 0)
                     {
-                        retur.AddFirst(world.GetMap().GetTile(x,y));
+                        retur.AddFirst(world.GetMap().GetTile(dx + (int)middleTile.X, dy + (int)middleTile.Y));
                     }
                     //The other tiles shall be appended to the list
                     else
                     {
                         try
                         {
-                            retur.AddLast(world.GetMap().GetTile(x, y));
+                            retur.AddLast(world.GetMap().GetTile(dx + (int)middleTile.X, dy + (int)middleTile.Y));
                         }
-                        catch (IndexOutOfRangeException)
+                        catch (IndexOutOfRangeException e)
                         {
+                            logger.Error(e.Message);
                             //The fromBuilding is being built close to an edge
                             //the exception is not handled.
                         }

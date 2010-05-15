@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Recellection.Code.Models;
 using Microsoft.Xna.Framework;
 using Recellection.Code.Utility.Logger;
+using Recellection.Code.Views;
 
 namespace Recellection.Code.Controllers
 {
@@ -137,16 +138,29 @@ namespace Recellection.Code.Controllers
 		/// <param name="b">The fromBuilding to set a weight for.</param>
 		public void SetWeight(Building b)
 		{
-			//Menu menu = new Menu();
-			// TODO: Construct the Menu options
+			Dictionary<MenuIcon, int> doptions = new Dictionary<MenuIcon,int>(8);
 			
-			//MenuController.LoadMenu(menu);
+			doptions.Add(new MenuIcon("Non-vital priority"), 1);
+			doptions.Add(new MenuIcon("Low priority"), 2);
+			doptions.Add(new MenuIcon("Medium low priority"), 4);
+			doptions.Add(new MenuIcon("Medium priority"), 8);
 			
-			MenuIcon input = MenuController.GetInput();
+			doptions.Add(new MenuIcon("Medium high priority"), 16);
+			doptions.Add(new MenuIcon("High priority"), 32);
+			doptions.Add(new MenuIcon("Very high priority"), 64);
+			doptions.Add(new MenuIcon("GET TO THA CHOPPAH!"), 128);
 
-			// TODO: Decide what option was opted for.
+			Menu menu = new Menu(Globals.MenuLayout.NineMatrix, 
+							new List<MenuIcon>(doptions.Keys),
+							Language.Instance.GetString("SetImportance"));
 			
-			SetWeight(b, 0);
+			MenuController.LoadMenu(menu);
+
+            Recellection.CurrentState = MenuView.Instance;
+
+			SetWeight(b, doptions[MenuController.GetInput()]);
+			Recellection.CurrentState = WorldView.Instance;
+			MenuController.UnloadMenu();
 		}
 		
 		/// <summary>

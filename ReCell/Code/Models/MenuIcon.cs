@@ -14,11 +14,22 @@ namespace Recellection
 	{
 
         public GUIRegion region { get; set; }
-        public String label { get; private set; }
+        public String label { get; set; }
         public Texture2D texture { get; private set; }
-        public Rectangle targetRectangle { get; set; }
+        public Rectangle targetTextureRectangle { get; set; }
+        public Rectangle targetLabelRectangle { get; set; }
         public Color labelColor { get; set; }
 
+        public MenuIcon(String label)
+         : this(label, null, Color.Black)
+        {
+        }
+        
+        public MenuIcon(String label, Texture2D texture)
+         : this(label, texture, Color.Black)
+        {
+        }
+        
         public MenuIcon(String label, Texture2D texture, Color color)
 		{
 			region = null;
