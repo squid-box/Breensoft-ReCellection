@@ -6,6 +6,7 @@ using Recellection.Code.Models;
 using Recellection.Code.Utility.Logger;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Recellection.Code.Views;
 
 namespace Recellection.Code.Controllers
 {
@@ -77,6 +78,7 @@ namespace Recellection.Code.Controllers
             Globals.BuildingTypes Building;
 
             MenuIcon choosenMenu = MenuController.GetInput();
+            Recellection.CurrentState = WorldView.Instance;
             MenuController.UnloadMenu();
             if (choosenMenu.Equals(baseCell))
             {
