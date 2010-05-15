@@ -80,7 +80,6 @@ namespace Recellection.Code.Controllers
 					{
 						logger.Fatal("Could not identify "+player.color+" player!");
 					}
-					
                 }
 
 				logger.Info("Weighting graphs!");
@@ -104,6 +103,10 @@ namespace Recellection.Code.Controllers
 					System.Threading.Thread.Sleep(10);
 				}
 
+                foreach( Player p in players)
+                {
+                    BuildingController.AggressiveBuildingAct(p);
+                }
             }
 
         }
