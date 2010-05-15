@@ -33,7 +33,7 @@ namespace Recellection.Code.Controllers
             // If we are moving units from a building, they might not
             // all be on the same tile
             if (from.GetBuilding() != null)
-            {
+			    {
                 units = from.GetBuilding().GetUnits();
                 building = true;
             }
@@ -81,14 +81,21 @@ namespace Recellection.Code.Controllers
         /// <param name="amount"></param>
         public static void KillUnits(IEnumerable<Unit> units, int amount)
         {
+			List<Unit> toBeKilled = new List<Unit>();
             foreach (Unit u in units)
             {
                 if (amount >= 0)
                 {
-                    u.Kill();
-                    amount--;
+					toBeKilled.Add(u);
+					amount--;
                 }
             }
+            
+            foreach(Unit u in toBeKilled)
+            {
+				u.GetPosition();
+                u.Kill();
+			}
         }
 
         /// <summary>
@@ -102,21 +109,7 @@ namespace Recellection.Code.Controllers
         {
             foreach (Unit u in units)
             {
-                
                 u.Update(systemTime);
-                // We we arrive to our target
-                if (u.hasArrived)
-                {
-                    Vector2 tilePos = u.targetPosition;
-                    Vector2 min = new Vector2((float)Math.Floor(tilePos.X), (float)Math.Floor(tilePos.Y));
-                    
-                    Random r = new Random();
-                    float rX = (float)r.NextDouble() + min.X;
-                    float rY = (float)r.NextDouble() + min.Y;
-
-                    u.targetPosition = new Vector2(rX, rY);
-					u.hasArrived = false;
-                }
             }
         }
     }

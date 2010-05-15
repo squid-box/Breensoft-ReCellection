@@ -7,6 +7,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework;
 using Recellection.Code.Utility.Logger;
 using Microsoft.Xna.Framework.Audio;
+using Microsoft.Xna.Framework.Input;
 
 namespace Recellection.Code.Controllers
 {
@@ -18,12 +19,26 @@ namespace Recellection.Code.Controllers
         /// <summary>
         /// The different states this controller will assume
         /// </summary>
-        private enum WCState { NONE, BUILDING, TILE, MENU, ZOOMED, SCROLL };
-        private const long SCROLL_ZONE_DWELL_TIME = 2500000;
+        public enum State { NONE, BUILDING, TILE, MENU, ZOOMED, SCROLL };
+        
+        public struct Selection
+        {
+			public State state;
+			public Point point;
+        }
+        
+        private const long SCROLL_ZONE_DWELL_TIME = 0;//250000;
         private char[] REG_EXP = { '_' };
         public bool finished { get; set; }
         private Logger myLogger;
-        private WCState state;
+        
+        private State state;
+        private Selection selection;
+
+		private Building selectedBuilding;
+		private Tile selectedTile;
+		
+		private Player playerInControll;
 
         private World theWorld;
 
@@ -33,12 +48,13 @@ namespace Recellection.Code.Controllers
         // Create 
         public WorldController(Player p, World theWorld)
         {
-            state = WCState.NONE;
+            state = State.NONE;
             //Debugging
             finished = false;
             myLogger = LoggerFactory.GetLogger();
-            myLogger.SetThreshold(LogLevel.INFO);
+            myLogger.SetThreshold(LogLevel.TRACE);
 
+            this.playerInControll = p;
             this.theWorld = theWorld;
 
             createGUIRegionGridAndScrollZone();
@@ -50,37 +66,83 @@ namespace Recellection.Code.Controllers
 			finished = false;
             while (!finished)
             {
+				
                 // Generate the appropriate menu for this state.
                 // Get the active GUI Region and invoke the associated method.
-                MenuIcon inputIcon = MenuController.GetInput();
-                Point point = retriveCoordinateInformation(inputIcon);
-                switch (state)
+				Selection sel = retrieveSelection();
+
+				
+                // They are used if the state needs true coordinates, scroll only uses deltas.
+                Point absoluteCoordinate = new Point(sel.point.X + theWorld.LookingAt.X, 
+													 sel.point.Y + theWorld.LookingAt.Y);
+				
+				World.Map map = theWorld.GetMap();
+
+                switch (sel.state)
                 {
-                    case WCState.TILE:
+                    case State.TILE:
                         // A tile has been selected, store it.
-                        finished = true;
-						Cue prego = Sounds.Instance.LoadSound("acid");
-						prego.Play();
+						// Save the selected tile, for later!
+                        selectedTile = map.GetTile(absoluteCoordinate);
+
+						// Debug finish
+						if (sel.point.X == 1 && sel.point.Y == 1)
+						{
+							finished = true;
+						}
                         break;
-                    case WCState.BUILDING:
-                        // We are in a building menu, do the action mapped to the region on that building
+					case State.BUILDING:
+						// A building has been selected!
+
+						// TODO: Let BuildingController do shit! (use retrieveSelection)
+						// TODO:  - Activate menu (what u wanna do /w building?)
+						// TODO:  - DO SHIT!
+
+						selectedBuilding = map.GetTile(absoluteCoordinate).GetBuilding();
+
+						sel = retrieveSelection();
+						absoluteCoordinate = new Point(sel.point.X + theWorld.LookingAt.X,
+													 sel.point.Y + theWorld.LookingAt.Y);
+						
+						if (sel.state != State.TILE)
+						{
+							//Sounds.Instance.LoadSound("Denied").Play();
+							continue;
+						}
+						
+						selectedTile = map.GetTile(absoluteCoordinate);
+						
+						// If we have selected a tile, and we can place a building at the selected tile...
+						if (selectedBuilding != null
+						 && selectedTile.GetBuilding() == null
+						 && selectedBuilding.owner == playerInControll)
+						{
+							if (! BuildingController.AddBuilding(Globals.BuildingTypes.Resource, selectedBuilding,
+									selectedTile.position, theWorld, playerInControll))
+							{
+								//Sounds.Instance.LoadSound("Denied").Play();
+							}
+
+							selectedBuilding = null;
+							
+							// We're done here
+							finished = true;
+						}
                         break;
-                    case WCState.MENU:
-                        // We are in the main menu, perform the action mapped to the region on the application
-                        break;
-                    case WCState.ZOOMED:
-                        // We have selected a tile in zoomed-out mode.
-                        break;
-                    case WCState.SCROLL:
-						theWorld.LookingAt = new Point(point.X + theWorld.LookingAt.X, point.Y + theWorld.LookingAt.Y); 
+                    case State.SCROLL:
+						theWorld.LookingAt = absoluteCoordinate; 
                         break;
                 }
-            }
+			}
+			//Sounds.Instance.LoadSound("acid").Play();
         }
 
-        private Point retriveCoordinateInformation(MenuIcon activatedMenuIcon)
-        {
-            int x = 0;
+		public Selection retrieveSelection()
+		{
+			myLogger.Debug("Waiting for input...");
+			MenuIcon activatedMenuIcon = MenuController.GetInput();
+			        
+		    int x = 0;
             int y = 0;
             String[] splitted = activatedMenuIcon.label.Split(REG_EXP);
             try
@@ -91,24 +153,35 @@ namespace Recellection.Code.Controllers
             {
                 throw new ArgumentException("Your argument is invalid, my beard is a windmill.");
             }
+
+			x = Int32.Parse(splitted[0]);
+			y = Int32.Parse(splitted[1]);
+			
+            Selection s = new Selection();
             if(activatedMenuIcon.labelColor.Equals(Color.NavajoWhite))
             {
-                state = WCState.TILE;
-                x = Int32.Parse(splitted[0]);
-                y = Int32.Parse(splitted[1]);
+				if (theWorld.GetMap().GetTile(new Point(x + theWorld.LookingAt.X, y + theWorld.LookingAt.Y))
+						.GetBuilding() != null)
+				{
+					s.state = State.BUILDING;
+					s.point = new Point(x, y);
+				}
+				else
+				{
+					s.state = State.TILE;
+					s.point = new Point(x, y);
+				}
             }
             else if (activatedMenuIcon.labelColor.Equals(Color.Chocolate))
             {
-                state = WCState.SCROLL;
-                x = Int32.Parse(splitted[0]);
-                y = Int32.Parse(splitted[1]);
+                s.state = State.SCROLL;
+                s.point = new Point(x, y);
             }
             else
             {
                 throw new ArgumentException("Your argument is invalid, my beard is a windmill.");
-
             }
-            return new Point(x,y);
+            return s;
         }
 
         private void createGUIRegionGridAndScrollZone()
@@ -126,7 +199,7 @@ namespace Recellection.Code.Controllers
             {
                 for (int y = 0; y < numOfRows; y++)
                 {
-                    menuMatrix[x, y] = new MenuIcon("" + x + "_" + y, null,Color.NavajoWhite);
+                    menuMatrix[x, y] = new MenuIcon("" + (x+1) + "_" + (y+1), null,Color.NavajoWhite);
 
                     //Should not need a targetRectangle.
                     /*menuMatrix[x, y].targetRectangle = new Microsoft.Xna.Framework.Rectangle(

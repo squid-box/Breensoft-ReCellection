@@ -26,6 +26,7 @@ namespace Recellection.Code.Controllers
 		private Logger logger = LoggerFactory.GetLogger();
 
         private WorldController humanControl;
+        private GraphController graphControl;
 		
         Boolean finished = false;
         /// <summary>
@@ -39,6 +40,7 @@ namespace Recellection.Code.Controllers
             this.players = gameInitializer.theWorld.players;
             this.world = gameInitializer.theWorld;
             this.humanControl = new WorldController(players[0],world);
+            this.graphControl = GraphController.Instance;
         }
 
         public void Run()
@@ -80,9 +82,11 @@ namespace Recellection.Code.Controllers
 					}
 					
                 }
-                
+
+				//logger.Info("Weighting graphs!");
+				//graphControl.CalculateWeights();
+				
                 // This is where we start "animating" all movement
-                
                 // FIXME: This ain't okay, hombrey
                 // Let the units move!
                 logger.Info("Moving units!");

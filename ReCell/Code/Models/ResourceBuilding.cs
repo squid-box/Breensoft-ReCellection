@@ -52,6 +52,7 @@ namespace Recellection.Code.Models
             : base(name, posX, posY, RESOURCE_BUILDING_HEALTH, owner, Globals.BuildingTypes.Resource, baseBuilding,controlZone)
         {
             this.rateOfProduction = controlZone.First().GetTerrainType().getResourceModifier();
+            baseBuilding.RateOfProduction += this.rateOfProduction;
         }
 
         /// <summary>
