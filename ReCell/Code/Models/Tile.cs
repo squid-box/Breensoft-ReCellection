@@ -149,6 +149,14 @@ namespace Recellection.Code.Models
                 nits.Add(u);
 
                 this.units[u.GetOwner()] = nits;
+
+                if (unitsChanged != null)
+                {
+                    //I'm sorry for this ugly hax - John
+                    List<Unit> temp = new List<Unit>();
+                    temp.Add(u);
+                    unitsChanged(this, new Event<IEnumerable<Unit>>(temp, EventType.ADD));
+                }
             }
         }
 
@@ -196,6 +204,14 @@ namespace Recellection.Code.Models
             lock (units)
             {
                 this.units[u.GetOwner()].Remove(u);
+
+                if (unitsChanged != null)
+                {
+                    //I'm sorry for this ugly hax - John
+                    List<Unit> temp = new List<Unit>();
+                    temp.Add(u);
+                    unitsChanged(this, new Event<IEnumerable<Unit>>(temp, EventType.REMOVE));
+                }
             }
         }
 

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Microsoft.Xna.Framework.Graphics;
+using Recellection.Code.Utility.Events;
 
 namespace Recellection.Code.Models
 {
@@ -50,6 +51,36 @@ namespace Recellection.Code.Models
             controlZone)
         {
 
+            for (int i = 0; i < controlZone.Count; i++)
+            {
+                controlZone.ElementAt(i).unitsChanged += BarrierBuilding_unitsChanged;
+            }
+
+        }
+
+        void BarrierBuilding_unitsChanged(object publisher, Event<IEnumerable<Unit>> ev)
+        {
+            if (ev.type == EventType.ADD)
+            {
+                foreach (Unit u in ev.subject)
+                {
+                    if (u.GetOwner() == this.owner)
+                    {
+                        u.powerLevel += powerBonus;
+                    }
+                }
+
+            }
+            else if (ev.type == EventType.REMOVE)
+            {
+                foreach (Unit u in ev.subject)
+                {
+                    if (u.GetOwner() == this.owner)
+                    {
+                        u.powerLevel -= powerBonus;
+                    }
+                }
+            }
         }
 
         /// <summary>
