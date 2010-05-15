@@ -25,9 +25,9 @@ namespace Recellection.Code.Controllers
         {
             Instance = new Configurator();
             mute = new MenuIcon("Mute", null, Color.Black);
-            volume = new MenuIcon("Option 2", null, Color.Black);
-            difficulty = new MenuIcon("Option 3", null, Color.Black);
-            language = new MenuIcon("Quit", null, Color.Black);
+            volume = new MenuIcon("Volume", null, Color.Black);
+            difficulty = new MenuIcon("Difficulty", null, Color.Black);
+            language = new MenuIcon("Language", null, Color.Black);
             iconList = new List<MenuIcon>();
             
             
@@ -52,11 +52,32 @@ namespace Recellection.Code.Controllers
 
             Recellection.CurrentState = MenuView.Instance;
 
-            
-            //MenuIcon activatedRegion = MenuController.GetInput();
-            
-            /// There needs to be some way of distinguishing which menu item that triggered this region.
-            /// Upon which the corresponding option in GameOptions will be changed using GameOptions.setOption().
+            MenuIcon response = MenuController.GetInput();
+
+            if (response == mute)
+            {
+            }
+            //else if (response == ??)
+            //{
+            // Off-screen quit option? 
+            //    MenuController.UnloadMenu();
+            //}
+            else if (response == volume)
+            {
+                // ChangeVolumeMenu()
+            }
+            else if (response == language)
+            {
+                // ChangeLanguageMenu()
+            }
+            else if (response == difficulty)
+            {
+                // ChangeDifficultyMenu()
+            }
+            else
+            {
+                // What?
+            }
         }
 
     }
