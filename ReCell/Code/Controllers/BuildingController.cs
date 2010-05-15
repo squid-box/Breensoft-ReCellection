@@ -80,9 +80,9 @@ namespace Recellection.Code.Controllers
         /// <param name="targetCoordinate">The tile coordinates where the building will be built.</param>
         /// <param name="world">The world to build the building in.</param>
         public static bool AddBuilding(Globals.BuildingTypes buildingType,
-            Building sourceBuilding, Vector2 targetCoordinate, World world)
+            Building sourceBuilding, Vector2 targetCoordinate, World world, Player owner)
         {
-            if (sourceBuilding.CountUnits() < Building.GetBuyPrice(buildingType))
+            if (sourceBuilding != null && sourceBuilding.CountUnits() < Building.GetBuyPrice(buildingType))
             {
                 return false;
             }
@@ -94,11 +94,11 @@ namespace Recellection.Code.Controllers
             {
                 logger.Trace("Adding a Base Building and also constructing a new graph");
                 BaseBuilding baseBuilding = new BaseBuilding("Base Buidling",
-                (int)targetCoordinate.X, (int)targetCoordinate.Y, sourceBuilding.owner,controlZone);
+                (int)targetCoordinate.X, (int)targetCoordinate.Y, owner,controlZone);
 
                 world.map.GetTile((int)targetCoordinate.X, (int)targetCoordinate.Y).SetBuilding(baseBuilding);
 
-                GraphController.Instance.AddBaseBuilding(baseBuilding, sourceBuilding);
+                owner.AddGraph(GraphController.Instance.AddBaseBuilding(baseBuilding, sourceBuilding));
             }
             else
             {
@@ -132,7 +132,13 @@ namespace Recellection.Code.Controllers
                 GraphController.Instance.AddBuilding(sourceBuilding,newBuilding);
 
             }
-            UnitController.KillUnits(sourceBuilding.units, Building.GetBuyPrice(buildingType));
+            if (sourceBuilding != null)
+            {
+                UnitController.KillUnits(sourceBuilding.units, Building.GetBuyPrice(buildingType));
+            }
+            
+            Sounds.Instance.LoadSound("buildingPlacement").Play();
+            
             return true;
         }
 

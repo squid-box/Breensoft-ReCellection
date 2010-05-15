@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using Recellection.Code.Models;
 using Microsoft.Xna.Framework;
+using Recellection.Code.Utility.Logger;
 
 namespace Recellection.Code.Controllers
 {
@@ -18,7 +19,8 @@ namespace Recellection.Code.Controllers
     /// Signature: John Doe (yyyy-mm-dd)
     /// Signature: Jane Doe (yyyy-mm-dd)
     public sealed class UnitAccountant
-    {
+	{
+		private Logger logger = LoggerFactory.GetLogger();
         private Player owner;
 
         /// <summary>
@@ -45,23 +47,27 @@ namespace Recellection.Code.Controllers
         /// </summary>
         public void ProduceUnits()
         {
-            Random randomer = new Random(owner.GetHashCode());
+            Random randomer = new Random();
             List<Unit> res;
-            
+            Unit temp;
+
             foreach (Graph g in owner.GetGraphs())
             {
                 res = new List<Unit>();
                 
                 BaseBuilding b = g.baseBuilding;
-
+				logger.Debug("Producing "+b.RateOfProduction+" units!");
                 for (int i = 0; i < b.RateOfProduction; i++)
                 {
-                    //Places them randomly around the building. - John
-                    Vector2 coords = b.position;
-                    coords.X += (float)randomer.NextDouble() * Globals.TILE_SIZE;
-                    coords.Y += (float)randomer.NextDouble() * Globals.TILE_SIZE;
+                    // Places them randomly around the building. - John
+                    // No, it does not. - Martin
 
-                    b.AddUnit(new Unit(b.owner, coords, b));
+                    temp = new Unit(b.owner, b.position, b);
+                    temp.targetEntity = b;
+
+                    res.Add(temp);
+                    
+                    
                 }
                 b.AddUnits(res);
             }

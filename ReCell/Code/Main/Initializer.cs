@@ -28,35 +28,41 @@ namespace Recellection.Code.Main
 		{
 			logger.Debug("Initializer is running.");
 
+			#region Show main menu. TODO: Make a real menu.
+			MenuIcon newgame = new MenuIcon("New game", null, Color.Black);
+			MenuIcon options = new MenuIcon("Options", null, Color.Black);
+			MenuIcon help = new MenuIcon("Help", null, Color.Black);
+			MenuIcon quit = new MenuIcon("Quit", null, Color.Black);
+
+			List<MenuIcon> menuOptions = new List<MenuIcon>();
+			menuOptions.Add(newgame);
+			menuOptions.Add(options);
+			menuOptions.Add(help);
+			menuOptions.Add(quit);
+
+            Menu mainMenu = new Menu(Globals.MenuLayout.FourMatrix, menuOptions, "Would you like to\nplay a game?", Color.Black);
+
+			MenuView view = MenuView.Instance;
+
+			// Just to make sure everything is in there...
+			new MenuController(TobiiController.GetInstance(this.windowHandle), mainMenu);
+			#endregion
+
             ShowSplashScreen();
 
 			Cue backgroundSound = Sounds.Instance.LoadSound("Menu");
-			
-			#region Show main menu. TODO: Make a real menu.
-			MenuIcon yes = new MenuIcon("Yes", null,Color.Black);
-			MenuIcon no = new MenuIcon("No", null,Color.Black);
-			
-			List<MenuIcon> options = new List<MenuIcon>();
-			options.Add(yes);
-			options.Add(no);
-			
-			Menu mainMenu = new Menu(Globals.MenuLayout.Prompt, options, "Do you wanna play a\ngame?",Color.Black);
-
 			backgroundSound.Play();
-			MenuView view = MenuView.Instance;
-			
-			// Just to make sure everything is in there...
-			new MenuController(TobiiController.GetInstance(this.windowHandle), mainMenu);
-
 			Recellection.CurrentState = view;
-			#endregion
+			
+            Input:
             logger.Info("Waiting for Tobii input...");
 			MenuIcon response = MenuController.GetInput();
             MenuController.UnloadMenu();
             
             logger.Info("Got input!");
             backgroundSound.Pause();
-            if (response.label == yes.label)
+
+			if (response == newgame)
             {
 				// Det börjar bli jobbigt...
 				//Cue prego = Sounds.Instance.LoadSound("prego");
@@ -79,10 +85,15 @@ namespace Recellection.Code.Main
                     Console.Beep(66, 150);
                 }
             }
+            else if (response == quit)
+            {
+                Recellection.playBeethoven();
+                Environment.Exit(0);
+            }
             else
-			{
-				Recellection.playBeethoven();
-				Environment.Exit(0);
+            {
+                Recellection.playBeethoven();
+                goto Input; // FUCK YES GOTO!
             }
 
            // Environment.Exit(0);

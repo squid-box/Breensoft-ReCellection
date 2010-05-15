@@ -88,13 +88,15 @@ namespace Recellection.Code.Controllers
 		/// <returns>The created graph.</returns>
 		public Graph AddBaseBuilding(BaseBuilding newBaseBuilding, Building sourceBuilding)
 		{
-            if (GetGraph(sourceBuilding).baseBuilding.IsAlive())
+            if (sourceBuilding == null || (sourceBuilding).baseBuilding.IsAlive())
             {
                 logger.Info("Added base building " + newBaseBuilding + " and created a new graph from it.");
+
                 Graph graph = new Graph(newBaseBuilding);
                 components.Add(graph);
                 return graph;
             }
+
             else
             {
                 logger.Info("Added base building " + newBaseBuilding + " to a graph missing an alive base building.");
@@ -176,11 +178,11 @@ namespace Recellection.Code.Controllers
 				logger.Debug("Figuring out the unit balancing for each building");
 				foreach(Building b in g.GetBuildings())
 				{
-					float factor = g.GetWeight(b) / g.TotalWeight;
-					int unitGoal = (int)(totalUnits * factor);
+					float factor = (float)g.GetWeight(b) / (float)g.TotalWeight;
+					int unitGoal = (int)(((float)totalUnits) * factor);
 					int unitBalance = b.CountUnits() - unitGoal;
 
-					logger.Trace("Unit goal for " + b + " is " + unitGoal + " which has "+b.CountUnits()+" units. Balance = "+unitBalance+".");
+					logger.Trace("Unit goal for " + b + " ((" + g.GetWeight(b) + " / " + g.TotalWeight + ") * " + totalUnits + ") is " + unitGoal + " which has " + b.CountUnits() + " units. Balance = " + unitBalance + ".");
 					if (unitBalance > 0)
 					{
 						logger.Trace("Building has extra units to give.");
@@ -230,6 +232,7 @@ namespace Recellection.Code.Controllers
 					if (has.balance == 0)
 					{
 						logger.Trace("Having building "+has+" is now satisfied. Removing from balancing.");
+						
 						withExcess.Remove(has);
 					}
 					

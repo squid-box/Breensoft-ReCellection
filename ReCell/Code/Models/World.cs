@@ -81,6 +81,11 @@ namespace Recellection.Code.Models
                 }
                 return map[x, y];
             }
+            
+            public Tile GetTile(Point p)
+            {
+				return GetTile(p.X, p.Y);
+            }
 
             /// <summary>
             /// Set a tile in the world. Invokes the MapEvent event. Will throw 

@@ -47,8 +47,9 @@ namespace Recellection.Code.Views
 		{
 			if (opacity < 255)
 			{
-				opacity = (byte)((float)passedTime.TotalGameTime.TotalSeconds * (255f / fadeInTime));
-				logger.Trace("Passed time: " + passedTime.TotalGameTime.TotalSeconds + ", Opacity = " + opacity);
+				opacity += (byte)((float)passedTime.ElapsedGameTime.TotalSeconds * (255f / fadeInTime));
+				//opacity = (byte)((float)passedTime.TotalGameTime.TotalSeconds * (255f / fadeInTime));
+				//logger.Trace("Passed time: " + passedTime.TotalGameTime.TotalSeconds + ", Opacity = " + opacity);
 			}
 		}
 		

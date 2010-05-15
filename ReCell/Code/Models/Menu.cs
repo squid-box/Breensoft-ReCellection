@@ -14,7 +14,7 @@ namespace Recellection
 
 	public class Menu
 	{
-        private const int FONT_SIZE = 38;
+        private const int FONT_SIZE = 60;
         private const int FONT_WIDTH = 23;
         
 	    private List<MenuIcon> icons;
@@ -75,7 +75,15 @@ namespace Recellection
 
         private Vector2 calculateDrawCoordinates(Vector2 middlePointOfString, String text)
         {
-            int textWidth = text.IndexOf('\n') * FONT_WIDTH;
+            int textWidth;
+            if (text.IndexOf('\n') != -1)
+            {
+                textWidth = text.IndexOf('\n') * FONT_WIDTH;
+            }
+            else
+            {
+                textWidth = text.Length * FONT_WIDTH;
+            }
 
             float x = middlePointOfString.X - textWidth / 2;
             float y = middlePointOfString.Y - FONT_SIZE / 2;
@@ -204,7 +212,7 @@ namespace Recellection
                     int textWidth = icons[i].label.Length * FONT_WIDTH;
 
                     Vector2 temp = calculateDrawCoordinates(new Vector2(
-                       (i % 2) * (windowWidth * 3 / 5) / 2, (i / 2) * (windowHeight * 3 / 5) / 2), icons[i].label);
+                       (i % 2) * (windowWidth * 3 / 5) + (windowWidth * 1 / 5), (i / 2) * (windowHeight * 3 / 5) + (windowHeight * 1 / 5)), icons[i].label);
 
                     icons[i].targetRectangle =
                         new Microsoft.Xna.Framework.Rectangle((int) temp.X, (int) temp.Y, (textWidth), (FONT_SIZE));
@@ -248,7 +256,7 @@ namespace Recellection
                     int textWidth = icons[i].label.Length * FONT_WIDTH;
 
                     Vector2 temp = calculateDrawCoordinates(new Vector2(
-                       (i % 3) * (iconWidth) / 2, (i / 3) * (iconHeight) / 2), icons[i].label);
+                       (i % 3) * (iconWidth) + (iconWidth / 2), (i / 3) * (iconHeight)+ ( iconHeight / 2)), icons[i].label);
 
                     icons[i].targetRectangle =
                         new Microsoft.Xna.Framework.Rectangle((int) temp.X,(int)temp.Y,(textWidth),(FONT_SIZE));
