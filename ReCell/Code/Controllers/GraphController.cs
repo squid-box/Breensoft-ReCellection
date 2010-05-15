@@ -140,15 +140,15 @@ namespace Recellection.Code.Controllers
 		{
 			Dictionary<MenuIcon, int> doptions = new Dictionary<MenuIcon,int>(8);
 			
-			doptions.Add(new MenuIcon("1"), 1);
-			doptions.Add(new MenuIcon("2"), 2);
-			doptions.Add(new MenuIcon("4"), 4);
-			doptions.Add(new MenuIcon("8"), 8);
+			doptions.Add(new MenuIcon("Non-vital priority"), 1);
+			doptions.Add(new MenuIcon("Low priority"), 2);
+			doptions.Add(new MenuIcon("Medium low priority"), 4);
+			doptions.Add(new MenuIcon("Medium priority"), 8);
 			
-			doptions.Add(new MenuIcon("16"), 16);
-			doptions.Add(new MenuIcon("32"), 32);
-			doptions.Add(new MenuIcon("64"), 64);
-			doptions.Add(new MenuIcon("128"), 128);
+			doptions.Add(new MenuIcon("Medium high priority"), 16);
+			doptions.Add(new MenuIcon("High priority"), 32);
+			doptions.Add(new MenuIcon("Very high priority"), 64);
+			doptions.Add(new MenuIcon("GET TO THA CH OPPAH!"), 128);
 
 			Menu menu = new Menu(Globals.MenuLayout.NineMatrix, 
 							new List<MenuIcon>(doptions.Keys),
