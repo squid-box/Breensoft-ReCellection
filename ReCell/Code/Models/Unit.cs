@@ -125,11 +125,11 @@ namespace Recellection.Code.Models
         public void Kill()
         {
             this.isDead = true;
-            world.GetMap().GetTile((int)position.X, (int)position.Y).RemoveUnit(owner, this);
+			world.GetMap().GetTile((int)position.X, (int)position.Y).RemoveUnit(owner, this);
+			callRainCheckOnTarget();
             if (rallyPoint != null && rallyPoint is Building)
             {
 				((Building)rallyPoint).RemoveUnit(this);
-				callRainCheckOnTarget();
             }
         }
         
@@ -290,7 +290,7 @@ namespace Recellection.Code.Models
         
         public bool isPatrolling()
         {
-			return this.rallyPoint == null;
+			return this.rallyPoint != null;
         }
     }
 }
