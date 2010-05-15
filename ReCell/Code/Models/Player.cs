@@ -31,7 +31,7 @@ namespace Recellection.Code.Models
         public Color color { get; private set; }
 
         /// <summary>
-        /// The building networks owned by a player
+        /// The fromBuilding networks owned by a player
         /// </summary>
         private List<Graph> graphs;
 

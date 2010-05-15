@@ -58,7 +58,7 @@ namespace Recellection.Code.Controllers
         {
             logger.Trace("Constructing a building for a player");
             //TODO Somehow present a menu to the player, and then 
-            //use the information to ADD (not the document) the building.
+            //use the information to ADD (not the document) the fromBuilding.
         }
 
         /// <summary>
@@ -72,13 +72,13 @@ namespace Recellection.Code.Controllers
         }
 
         /// <summary>
-        /// Add a building to the source buildings owners graph, 
-        /// the source building will be used to find the correct graph.
+        /// Add a fromBuilding to the source buildings owners graph, 
+        /// the source fromBuilding will be used to find the correct graph.
         /// </summary>
-        /// <param name="buildingType">The type of building to build.</param>
-        /// <param name="sourceBuilding">The building used to build this building.</param>
-        /// <param name="targetCoordinate">The tile coordinates where the building will be built.</param>
-        /// <param name="world">The world to build the building in.</param>
+        /// <param name="buildingType">The type of fromBuilding to build.</param>
+        /// <param name="sourceBuilding">The fromBuilding used to build this fromBuilding.</param>
+        /// <param name="targetCoordinate">The tile coordinates where the fromBuilding will be built.</param>
+        /// <param name="world">The world to build the fromBuilding in.</param>
         public static bool AddBuilding(Globals.BuildingTypes buildingType,
             Building sourceBuilding, Vector2 targetCoordinate, World world, Player owner)
         {
@@ -89,7 +89,7 @@ namespace Recellection.Code.Controllers
 
             LinkedList<Tile> controlZone = CreateControlZone(targetCoordinate,world);
 
-            //The Base building is handled in another way due to it's nature.
+            //The Base fromBuilding is handled in another way due to it's nature.
             if (buildingType == Globals.BuildingTypes.Base)
             {
                 logger.Trace("Adding a Base Building and also constructing a new graph");
@@ -143,11 +143,11 @@ namespace Recellection.Code.Controllers
         }
 
         /// <summary>
-        /// Create the list of tiles that the building is surrounded with and the
+        /// Create the list of tiles that the fromBuilding is surrounded with and the
         /// tile it is placed on.
         /// </summary>
-        /// <param name="middleTile">The coordinates for the tile the building is built on.</param>
-        /// <param name="world">The world the building is being built in.</param>
+        /// <param name="middleTile">The coordinates for the tile the fromBuilding is built on.</param>
+        /// <param name="world">The world the fromBuilding is being built in.</param>
         /// <returns></returns>
         public static LinkedList<Tile> CreateControlZone(Vector2 middleTile, World world)
         {
@@ -160,7 +160,7 @@ namespace Recellection.Code.Controllers
             {
                 for (int y = (int)middleTile.Y-1; y < 1+(int)middleTile.Y; y++)
                 {
-                    //The tile the building is standing on shall be first in the
+                    //The tile the fromBuilding is standing on shall be first in the
                     //linked list.
                     if (x == (int)middleTile.X && y == (int)middleTile.Y)
                     {
@@ -175,7 +175,7 @@ namespace Recellection.Code.Controllers
                         }
                         catch (IndexOutOfRangeException)
                         {
-                            //The building is being built close to an edge
+                            //The fromBuilding is being built close to an edge
                             //the exception is not handled.
                         }
                     }
@@ -185,7 +185,7 @@ namespace Recellection.Code.Controllers
         }
 
         /// <summary>
-        /// Removes a building from the graph containing it.
+        /// Removes a fromBuilding from the graph containing it.
         /// </summary>
         /// <param name="b">The buiding to remove.</param>
         public static void RemoveBuilding(Building b)

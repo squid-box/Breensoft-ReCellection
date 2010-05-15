@@ -92,10 +92,10 @@ namespace Recellection.Code.Controllers
 						}
                         break;
 					case State.BUILDING:
-						// A building has been selected!
+						// A fromBuilding has been selected!
 
 						// TODO: Let BuildingController do shit! (use retrieveSelection)
-						// TODO:  - Activate menu (what u wanna do /w building?)
+						// TODO:  - Activate menu (what u wanna do /w fromBuilding?)
 						// TODO:  - DO SHIT!
 
 						selectedBuilding = map.GetTile(absoluteCoordinate).GetBuilding();
@@ -112,7 +112,7 @@ namespace Recellection.Code.Controllers
 						
 						selectedTile = map.GetTile(absoluteCoordinate);
 						
-						// If we have selected a tile, and we can place a building at the selected tile...
+						// If we have selected a tile, and we can place a fromBuilding at the selected tile...
 						if (selectedBuilding != null
 						 && selectedTile.GetBuilding() == null
 						 && selectedBuilding.owner == playerInControll)
