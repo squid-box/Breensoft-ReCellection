@@ -47,6 +47,8 @@ Yes=Yes
 No=No
 AreYouSureYouWantToQuit=Are you sure you want to quit?
 
+SetImportance=What weight do want to set?
+
 [Game entities]
 BaseCell=Base Cell
 DefensiveCell=Defensive Cell
