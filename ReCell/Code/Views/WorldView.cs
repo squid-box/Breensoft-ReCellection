@@ -18,7 +18,7 @@ namespace Recellection.Code.Views
     /// to the player. The World View contains the information that is relevant to a single player, and
     /// therefore has a reference to a Player-object.
     /// </summary>
-    class WorldView : IView
+    public class WorldView : IView
     {
         public Logger myLogger;
         private List<Tile> tileCollection;
@@ -30,6 +30,8 @@ namespace Recellection.Code.Views
 		
         public World World { get; private set; }
 
+		public static WorldView Instance { get; set; }
+        
         public WorldView(World world)
         {
             this.World = world;
@@ -47,8 +49,7 @@ namespace Recellection.Code.Views
             //this.World.LookingAt = new Vector2(0, 0);
             CreateCurrentView(this, new Event<Point>(this.World.LookingAt,EventType.ALTER));
 
-            
-
+			Instance = this;
         }
 
         private void CreateCurrentView(Object o, Event<Point> ev)
