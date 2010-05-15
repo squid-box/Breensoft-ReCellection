@@ -210,9 +210,9 @@ namespace Recellection.Code.Controllers
 
            
             //Iterate over the tiles that shall be added to the list
-            for (int dx = -1; dx < 1; dx++)
+            for (int dx = -1; dx <= 1; dx++)
             {
-                for (int dy = -1; dy < 1; dy++)
+                for (int dy = -1; dy <= 1; dy++)
                 {
                     //The tile the fromBuilding is standing on shall be first in the
                     //linked list.
