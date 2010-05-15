@@ -40,13 +40,14 @@ namespace Recellection.Code.Controllers
         private static void AttackTargets(AggressiveBuilding b)
         {
             logger.Trace("Attacking targets around a aggressive building at x: "+b.position.X+" y: "+b.position.Y );
-            foreach (Unit u in b.currentTargets)
+            /*foreach (Unit u in b.currentTargets)
             {
                 //Show kill graphix and make sound.
 
                 //Kill units here.....
 
-            }
+            }*/
+            UnitController.KillUnits(b.currentTargets, b.currentTargets.Count);
             b.currentTargets.Clear();
         }
 
