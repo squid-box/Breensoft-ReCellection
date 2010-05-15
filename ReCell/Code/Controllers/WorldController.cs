@@ -44,7 +44,9 @@ namespace Recellection.Code.Controllers
 
         private MenuIcon[,] menuMatrix;
         private List<MenuIcon> scrollZone;
-
+		
+		private static Logger logger = LoggerFactory.GetLogger();
+		
         // Create 
         public WorldController(Player p, World theWorld)
         {
@@ -104,6 +106,18 @@ namespace Recellection.Code.Controllers
 						absoluteCoordinate = new Point(sel.point.X + theWorld.LookingAt.X,
 													 sel.point.Y + theWorld.LookingAt.Y);
 						
+						logger.Info("OMG SELECTION");
+						if (sel.state == State.BUILDING)
+						{
+							logger.Info("OMG BUILDING");
+							// If we selected the same building again, SET WEIGHT OMGOMG
+							if (selectedBuilding == map.GetTile(absoluteCoordinate).GetBuilding())
+							{
+								logger.Info("OMG SAME BUILDING");
+								GraphController.Instance.SetWeight(map.GetTile(absoluteCoordinate).GetBuilding());
+							}
+						}
+						
 						if (sel.state != State.TILE)
 						{
 							//Sounds.Instance.LoadSound("Denied").Play();
@@ -111,8 +125,7 @@ namespace Recellection.Code.Controllers
 						}
 						
 						selectedTile = map.GetTile(absoluteCoordinate);
-
-
+						
 
 						//do stuff here TODO co
                         /*
