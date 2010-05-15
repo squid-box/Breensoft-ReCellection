@@ -49,6 +49,7 @@ namespace Recellection.Code.Controllers
                 //Kill units here.....
 
             }*/
+            logger.Trace("Killing " + b.currentTargets.Count + " units.");
             UnitController.KillUnits(b.currentTargets, b.currentTargets.Count);
             b.currentTargets.Clear();
         }
