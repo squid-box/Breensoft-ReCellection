@@ -33,9 +33,9 @@ namespace Recellection.Code.Controllers
         }
 
         /// <summary>
-        /// Called by building, adds units to a building.
+        /// Called by fromBuilding, adds units to a fromBuilding.
         /// </summary>
-        /// <param name="b">The building to add units to.</param>
+        /// <param name="b">The fromBuilding to add units to.</param>
         /// <param name="units">A list of units.</param>
         public void addUnits(Building b, List<Unit> units)
         {
@@ -59,7 +59,7 @@ namespace Recellection.Code.Controllers
 				logger.Debug("Producing "+b.RateOfProduction+" units!");
                 for (int i = 0; i < b.RateOfProduction; i++)
                 {
-                    // Places them randomly around the building. - John
+                    // Places them randomly around the fromBuilding. - John
                     // No, it does not. - Martin
 
                     temp = new Unit(b.owner, b.position, b);

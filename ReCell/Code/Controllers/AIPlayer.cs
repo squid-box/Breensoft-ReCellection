@@ -100,9 +100,9 @@ namespace Recellection.Code.Controllers
 
 
         /// <summary>
-        /// Decides what the weight should be at the given building
+        /// Decides what the weight should be at the given fromBuilding
         /// </summary>
-        /// <param name="building"></param>
+        /// <param name="fromBuilding"></param>
         private void CalculateWeight(Building building)
         {
             int friendly = unitCountAt(building.position, this);
@@ -122,7 +122,7 @@ namespace Recellection.Code.Controllers
         {
             int scoutSize = 10;
 
-            //Take the units from the base building
+            //Take the units from the base fromBuilding
             Tile source = m_view.getTileAt(m_view.baseBuilding.GetPosition());
 
             //Move the units to some location at the other end of the map
@@ -141,7 +141,7 @@ namespace Recellection.Code.Controllers
         {
             Vector2 baseCoords = m_view.baseBuilding.GetPosition();
 
-            //Get the opposite end of the map relative to the base building.
+            //Get the opposite end of the map relative to the base fromBuilding.
             Vector2 quadrantCenter = Vector2.Subtract(new Vector2(m_view.mapWidth, m_view.mapHeight), baseCoords);
 
             //Create the "inner" border for the opposite quadrant. 
@@ -176,7 +176,7 @@ namespace Recellection.Code.Controllers
             int diffX = (int)(point.X - closestFriendly.X);
             int diffY = (int)(point.Y - closestFriendly.Y);
 
-            //How close to the enemy building we should build
+            //How close to the enemy fromBuilding we should build
             //These values may be calculated using more advanced logic.
             int offsetX = diffX / 2;
             int offsetY = diffY / 2;
@@ -265,8 +265,8 @@ namespace Recellection.Code.Controllers
 
 
         /// <summary>
-        /// Called when a new building should be created. Creates a building of a given type at the 
-        /// given point from the given base building.
+        /// Called when a new fromBuilding should be created. Creates a fromBuilding of a given type at the 
+        /// given point from the given base fromBuilding.
         /// </summary>
         /// <param name="point"></param>
         /// <param name="baseBuilding"></param>

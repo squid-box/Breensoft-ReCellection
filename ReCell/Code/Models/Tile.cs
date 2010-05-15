@@ -240,10 +240,10 @@ namespace Recellection.Code.Models
         }
 
         /// <summary>
-        /// Attempt to set a building in this tile.
+        /// Attempt to set a fromBuilding in this tile.
         /// </summary>
-        /// <param name="building">Building to place here.</param>
-        /// <returns>True iff building was placed, False if this Tile already is occupied.</returns>
+        /// <param name="fromBuilding">Building to place here.</param>
+        /// <returns>True iff fromBuilding was placed, False if this Tile already is occupied.</returns>
         public bool SetBuilding(Building building)
         {
             if (this.building != null || building == null)
@@ -265,9 +265,9 @@ namespace Recellection.Code.Models
             }
         }
         /// <summary>
-        /// Get the building placed in this tile.
+        /// Get the fromBuilding placed in this tile.
         /// </summary>
-        /// <returns>If this tile has a building it will be returned, otherwise returns null.</returns>
+        /// <returns>If this tile has a fromBuilding it will be returned, otherwise returns null.</returns>
         public Building GetBuilding()
         {
             return this.building;
@@ -319,7 +319,7 @@ namespace Recellection.Code.Models
         }
 
         /// <summary>
-        /// Removes building in this tile.
+        /// Removes fromBuilding in this tile.
         /// </summary>
         public void RemoveBuilding()
         {

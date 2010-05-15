@@ -36,13 +36,14 @@ namespace Recellection.Code.Controllers
 		protected GraphController()
 		{
 			components = new List<Graph>();
+			logger.SetTarget(LoggerSetup.GetLogFileTarget("graphcontrol.log"));
 			logger.Info("Constructed a new GraphController.");
 		}
 		
 		/// <summary>
-		/// Gets the graph of a building by searching through all graphs.
+		/// Gets the graph of a fromBuilding by searching through all graphs.
 		/// </summary>
-		/// <param name="b">The building to find the graph for.</param>
+		/// <param name="b">The fromBuilding to find the graph for.</param>
 		/// <returns>The found graph.</returns>
 		internal Graph GetGraph(Building b)
 		{
@@ -59,9 +60,9 @@ namespace Recellection.Code.Controllers
 		}
 		
 		/// <summary>
-		/// Removes a building from its graph.
+		/// Removes a fromBuilding from its graph.
 		/// </summary>
-		/// <param name="building">The building to remove.</param>
+		/// <param name="fromBuilding">The fromBuilding to remove.</param>
 		public void RemoveBuilding(Building building)
 		{
 			logger.Info("Removed building "+building+".");
@@ -69,10 +70,10 @@ namespace Recellection.Code.Controllers
 		}
 		
 		/// <summary>
-		/// Adds a building to a the same graph as another building.
+		/// Adds a fromBuilding to a the same graph as another fromBuilding.
 		/// </summary>
-		/// <param name="source">The building with a graph.</param>
-		/// <param name="newBuilding">A new building, not belonging to a graph yet.</param>
+		/// <param name="source">The fromBuilding with a graph.</param>
+		/// <param name="newBuilding">A new fromBuilding, not belonging to a graph yet.</param>
 		public void AddBuilding(Building source, Building newBuilding)
 		{
 			logger.Info("Added building " + newBuilding + " with source " + source + ".");
@@ -80,11 +81,11 @@ namespace Recellection.Code.Controllers
 		}
 		
 		/// <summary>
-		/// Adds a base building. Base buildings forms their own graphs, and thus a new graph is created here.
+		/// Adds a base fromBuilding. Base buildings forms their own graphs, and thus a new graph is created here.
 		/// </summary>
-		/// <param name="newBaseBuilding">The fresh base building to create a graph from.</param>
-        /// <param name="sourceBuilding">The building using to build this, if the source building
-        /// has no base building in its graph create a new one otherwise</param>
+		/// <param name="newBaseBuilding">The fresh base fromBuilding to create a graph from.</param>
+        /// <param name="sourceBuilding">The fromBuilding using to build this, if the source fromBuilding
+        /// has no base fromBuilding in its graph create a new one otherwise</param>
 		/// <returns>The created graph.</returns>
 		public Graph AddBaseBuilding(BaseBuilding newBaseBuilding, Building sourceBuilding)
 		{
@@ -107,9 +108,9 @@ namespace Recellection.Code.Controllers
 		}
 
         /// <summary>
-        /// Adds a base building. Base buildings forms their own graphs, and thus a new graph is created here.
+        /// Adds a base fromBuilding. Base buildings forms their own graphs, and thus a new graph is created here.
         /// </summary>
-        /// <param name="newBaseBuilding">The fresh base building to create a graph from.</param>
+        /// <param name="newBaseBuilding">The fresh base fromBuilding to create a graph from.</param>
         /// <returns>The created graph.</returns>
         public Graph AddBaseBuilding(BaseBuilding newBaseBuilding)
         {
@@ -120,9 +121,9 @@ namespace Recellection.Code.Controllers
         }
 		
 		/// <summary>
-		/// Sets the weight of a building.
+		/// Sets the weight of a fromBuilding.
 		/// </summary>
-		/// <param name="building">The building to set the weight for.</param>
+		/// <param name="fromBuilding">The fromBuilding to set the weight for.</param>
 		/// <param name="weight">The new weight.</param>
 		public void SetWeight(Building building, int weight)
 		{
@@ -131,9 +132,9 @@ namespace Recellection.Code.Controllers
 		}
 		
 		/// <summary>
-		/// Sets the weight of a building by creating a menu and asking the user what weight the building should have.
+		/// Sets the weight of a fromBuilding by creating a menu and asking the user what weight the fromBuilding should have.
 		/// </summary>
-		/// <param name="b">The building to set a weight for.</param>
+		/// <param name="b">The fromBuilding to set a weight for.</param>
 		public void SetWeight(Building b)
 		{
 			//Menu menu = new Menu();
@@ -149,10 +150,10 @@ namespace Recellection.Code.Controllers
 		}
 		
 		/// <summary>
-		/// Gets the weight of a building.
+		/// Gets the weight of a fromBuilding.
 		/// </summary>
-		/// <param name="building">The building to get the weight for.</param>
-		/// <returns>The weight of the building.</returns>
+		/// <param name="fromBuilding">The fromBuilding to get the weight for.</param>
+		/// <returns>The weight of the fromBuilding.</returns>
 		public int GetWeight(Building building)
 		{
 			logger.Debug("Getting the weight for building " + building + ".");
@@ -172,7 +173,7 @@ namespace Recellection.Code.Controllers
 				logger.Debug("Calculating weights for graph "+g+".");
 				int totalUnits = SumUnitsInGraph(g);
 
-				// Figure out the unit balance for each building
+				// Figure out the unit balance for each fromBuilding
 				LinkedList<BuildingBalance> inNeed = new LinkedList<BuildingBalance>();
 				LinkedList<BuildingBalance> withExcess = new LinkedList<BuildingBalance>();
 				logger.Debug("Figuring out the unit balancing for each building");
@@ -213,7 +214,7 @@ namespace Recellection.Code.Controllers
 					return;
 				}
 
-				// Try to even out the unit count in every building
+				// Try to even out the unit count in every fromBuilding
 				logger.Debug("Trying to even out the unit count in every building.");
 				bool balancingIsPossible = inNeed.Count > 0 && withExcess.Count > 0;
 				while (balancingIsPossible)
@@ -222,7 +223,7 @@ namespace Recellection.Code.Controllers
 					BuildingBalance has = withExcess.First.Value;
 					int transferableUnits = Math.Min(has.balance, Math.Abs(want.balance));
 
-					logger.Trace("Transferring units "+transferableUnits+" from " + want + " to " + has + ".");
+					logger.Trace("Transferring units "+transferableUnits+" from " + want.building + " to " + has.building + ".");
 					
 					has.balance -= transferableUnits;
 					want.balance += transferableUnits;
@@ -231,15 +232,14 @@ namespace Recellection.Code.Controllers
 					
 					if (has.balance == 0)
 					{
-						logger.Trace("Having building "+has+" is now satisfied. Removing from balancing.");
-						
-						withExcess.Remove(has);
+						logger.Trace("Having building "+has.building+" is now satisfied. Removing from balancing.");
+						withExcess.RemoveFirst();
 					}
 					
 					if (want.balance == 0)
 					{
-						logger.Trace("Wanting building "+want + " is now satisfied. Removing from balancing.");
-						inNeed.Remove(want);
+						logger.Trace("Wanting building "+want.building + " is now satisfied. Removing from balancing.");
+						inNeed.RemoveFirst();
 					}
 					
 					
@@ -279,7 +279,7 @@ namespace Recellection.Code.Controllers
 		}
 		
 		/// <param name="numberOfUnits">The number of units to move.</param>
-		/// <param name="from">From what building to move.</param>
+		/// <param name="from">From what fromBuilding to move.</param>
 		/// <param name="to">Destination for the units.</param>
 		private void MoveUnits(int numberOfUnits, Building from, Building to)
 		{
@@ -288,7 +288,7 @@ namespace Recellection.Code.Controllers
 	}
 
 	/// <summary>
-	/// Exception for when a building does not appear to belong to a graph.
+	/// Exception for when a fromBuilding does not appear to belong to a graph.
 	/// This is serious enough to have its own exception.
 	/// </summary>
 	public class GraphLessBuildingException : Exception

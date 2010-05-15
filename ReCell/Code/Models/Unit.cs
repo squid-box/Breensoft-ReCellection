@@ -213,7 +213,7 @@ namespace Recellection.Code.Models
 			{
 				if (targetEntity != null)
 				{
-					// If it's a home-building, we disperse around it :)
+					// If it's a home-fromBuilding, we disperse around it :)
 					if (targetEntity is Building && targetEntity.owner == this.owner)
 					{
 						// We will now recieve new positions within a radius of our secondary target.
@@ -254,6 +254,11 @@ namespace Recellection.Code.Models
         public float GetPowerLevel()
         {
             return powerLevel;
+        }
+        
+        public bool isPatrolling()
+        {
+			return this.disperseAround == null;
         }
     }
 }

@@ -83,8 +83,8 @@ namespace Recellection.Code.Controllers
 					
                 }
 
-				//logger.Info("Weighting graphs!");
-				//graphControl.CalculateWeights();
+				logger.Info("Weighting graphs!");
+				graphControl.CalculateWeights();
 				
                 // This is where we start "animating" all movement
                 // FIXME: This ain't okay, hombrey
