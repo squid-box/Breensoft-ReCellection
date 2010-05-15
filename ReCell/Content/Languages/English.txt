@@ -43,6 +43,13 @@ SpecialCommandMenu6=CTest6
 SpecialCommandMenu7=CTest7
 SpecialCommandMenu8=CTest8
 
+Yes=Yes
+No=No
+AreYouSureYouWantToQuit=Are you sure you want to quit?
+
+[Graph]
+SetImportance=What weight do you want to set?
+
 [Game entities]
 BaseCell=Base Cell
 DefensiveCell=Defensive Cell

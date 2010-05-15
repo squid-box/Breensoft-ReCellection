@@ -89,7 +89,7 @@ namespace Recellection.Code.Models
                     }
                 }
             }
-            if (ev.type == EventType.REMOVE)
+            else if (ev.type == EventType.REMOVE)
             {
                 foreach (Unit u in ev.subject)
                 {
