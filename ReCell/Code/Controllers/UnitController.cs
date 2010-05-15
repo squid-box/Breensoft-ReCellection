@@ -27,7 +27,7 @@ namespace Recellection.Code.Controllers
         /// <param name="to">Tile tile to move units to</param>
         public static void MoveUnits(int amount, Tile from, Tile to)
         {
-			logger.SetThreshold(LogLevel.INFO);
+			logger.SetThreshold(LogLevel.DEBUG);
 			
             bool fromBuilding = (from.GetBuilding() != null);
             bool toBuilding = (to.GetBuilding() != null);
@@ -76,8 +76,9 @@ namespace Recellection.Code.Controllers
             // We don't want to remove units from a tile, as they do it themselves
             if (fromBuilding)
             {
-				logger.Info("Removing unit from building!");
-                from.GetBuilding().RemoveUnits(toBeRemovedFromBuilding);
+				logger.Info("Removing " + toBeRemovedFromBuilding.Count + " units from building with "+from.GetBuilding().CountUnits()+" units.");
+				from.GetBuilding().RemoveUnits(toBeRemovedFromBuilding);
+				logger.Info("There is now "+from.GetBuilding().CountUnits()+" units in the building.");
             }
         }
 
