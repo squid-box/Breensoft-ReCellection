@@ -37,7 +37,7 @@ namespace Recellection.Code.Controllers
         /// </summary>
         /// <param name="b">The fromBuilding to add units to.</param>
         /// <param name="units">A list of units.</param>
-        public void addUnits(Building b, List<Unit> units)
+        public void AddUnits(Building b, List<Unit> units)
         {
             b.AddUnits(units);
         }
