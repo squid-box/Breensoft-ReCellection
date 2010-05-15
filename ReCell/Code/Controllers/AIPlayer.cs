@@ -29,7 +29,9 @@ namespace Recellection.Code.Controllers
         /// </summary>
         /// <param name="opponents"></param>
         /// <param name="view"></param>
-        public AIPlayer(List<Player> opponents, AIView view, Color c):base(c,"AIPLAYER"){
+        public AIPlayer(List<Player> opponents, AIView view, Color c)
+            : base(c, "AIPLAYER")
+        {
             randomFactory = new Random();
             m_view = view;
             m_opponents = opponents;
@@ -43,7 +45,8 @@ namespace Recellection.Code.Controllers
         /// The main method. When called it causes the AIPlayer to reevaluate 
         /// its situation and make appropriate changes.
         /// </summary>
-        public void MakeMove(){
+        public void MakeMove()
+        {
 
             for (int i = 0; i < m_interrestPoints.Count; i++)
             {
@@ -88,7 +91,8 @@ namespace Recellection.Code.Controllers
         {
             Vector2 best = list[0];
             Vector2 temp = best;
-            for(int i = 1; i < list.Count; i++){
+            for (int i = 1; i < list.Count; i++)
+            {
                 temp = list[i];
                 if (Vector2.Distance(temp, point) < Vector2.Distance(temp, best))
                 {
@@ -111,7 +115,7 @@ namespace Recellection.Code.Controllers
             if (diff > 0) //more enemy units than friendly
             {
                 int weight = GraphController.Instance.GetWeight(building);
-                GraphController.Instance.SetWeight(building, weight + (diff/2)); //increase the weight by the difference in units / 2
+                GraphController.Instance.SetWeight(building, weight + (diff / 2)); //increase the weight by the difference in units / 2
             }
         }
 
@@ -150,13 +154,13 @@ namespace Recellection.Code.Controllers
             quadrantEdge = new Vector2(Math.Abs(quadrantEdge.X), Math.Abs(quadrantEdge.Y));
             //Create the "outer" border for the opposite quadrant.
             Vector2 quadrantEdge2 = Vector2.Add(quadrantCenter, baseCoords);
-            
+
 
             //Finally pick a set of coordinates within the opposite quadrant.
 
-            float xVal = quadrantEdge.X + (float)randomFactory.NextDouble()*quadrantEdge2.X;
-            float yVal = quadrantEdge.Y + (float)randomFactory.NextDouble()*quadrantEdge2.Y;
-           
+            float xVal = quadrantEdge.X + (float)randomFactory.NextDouble() * quadrantEdge2.X;
+            float yVal = quadrantEdge.Y + (float)randomFactory.NextDouble() * quadrantEdge2.Y;
+
             Vector2 result = new Vector2(xVal, yVal);
 
             return result;
@@ -202,7 +206,7 @@ namespace Recellection.Code.Controllers
             }
             if (CanHoldPoint(point))
             {
-                IssueBuildOrder(point, m_view.baseBuilding , Globals.BuildingTypes.Resource);
+                IssueBuildOrder(point, m_view.baseBuilding, Globals.BuildingTypes.Resource);
             }
             else
             {
@@ -210,7 +214,7 @@ namespace Recellection.Code.Controllers
             }
         }
 
-        
+
         /// <summary>
         /// Returns true if the AIPlayer is already harvesting at the given coordinates.
         /// </summary>
@@ -244,7 +248,7 @@ namespace Recellection.Code.Controllers
         /// <returns></returns>
         private bool CanHoldPoint(Vector2 point)
         {
-            if (unitCountAt(point, this) > (unitCountAt(point, m_opponents[0])+ unitCountAt(GetClosestPointFromList(point, m_enemyPoints), m_opponents[0])))
+            if (unitCountAt(point, this) > (unitCountAt(point, m_opponents[0]) + unitCountAt(GetClosestPointFromList(point, m_enemyPoints), m_opponents[0])))
             {
                 return true;
             }
@@ -273,7 +277,7 @@ namespace Recellection.Code.Controllers
         /// <param name="buildingType"></param>
         private void IssueBuildOrder(Vector2 point, Building baseBuilding, Globals.BuildingTypes buildingType)
         {
-            BuildingController.AddBuilding(buildingType, baseBuilding, point, m_view.world,this);
+            BuildingController.AddBuilding(buildingType, baseBuilding, point, m_view.world, this);
         }
 
     }
