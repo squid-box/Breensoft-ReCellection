@@ -1,6 +1,6 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 10.00
-# Visual C# Express 2008
+# Visual Studio 2008
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RecellectionTests", "RecellectionTests\RecellectionTests.csproj", "{24FC33BD-7778-4783-A7BC-77AD3C75C3E9}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Recellection", "ReCell\Recellection.csproj", "{9EF79D24-402C-4248-BC08-87327E783F35}"
