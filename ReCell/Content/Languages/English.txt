@@ -11,6 +11,8 @@ MainMenu6=Test6
 MainMenu7=Test7
 MainMenu8=Test8
 
+ChooseBuilding=Choose the kind of cell you want to build.
+
 OptionsMenu1=OTest1
 OptionsMenu2=OTest2
 OptionsMenu3=OTest3
@@ -42,3 +44,7 @@ SpecialCommandMenu7=CTest7
 SpecialCommandMenu8=CTest8
 
 [Game entities]
+BaseCell=Base Cell
+DefensiveCell=Defensive Cell
+AggressiveCell=Aggressive Cell
+ResourceCell=Resurce Cell
