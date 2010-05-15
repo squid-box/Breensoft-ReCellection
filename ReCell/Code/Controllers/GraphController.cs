@@ -148,7 +148,7 @@ namespace Recellection.Code.Controllers
 			doptions.Add(new MenuIcon("Medium high priority"), 16);
 			doptions.Add(new MenuIcon("High priority"), 32);
 			doptions.Add(new MenuIcon("Very high priority"), 64);
-			doptions.Add(new MenuIcon("GET TO THA CH OPPAH!"), 128);
+			doptions.Add(new MenuIcon("GET TO THA CHOPPAH!"), 128);
 
 			Menu menu = new Menu(Globals.MenuLayout.NineMatrix, 
 							new List<MenuIcon>(doptions.Keys),
