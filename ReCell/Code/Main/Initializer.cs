@@ -73,8 +73,8 @@ namespace Recellection.Code.Main
 				else if (response == quit)
 				{
 					List<MenuIcon> promptOptions = new List<MenuIcon>();
-					MenuIcon yes = new MenuIcon(Language.Instance.GetString("Yes"));
-					MenuIcon no = new MenuIcon(Language.Instance.GetString("No"));
+					MenuIcon yes = new MenuIcon(Language.Instance.GetString("Yes"), Recellection.textureMap.GetTexture(Globals.TextureTypes.Yes));
+					MenuIcon no = new MenuIcon(Language.Instance.GetString("No"), Recellection.textureMap.GetTexture(Globals.TextureTypes.No));
 					promptOptions.Add(yes);
 					promptOptions.Add(no);
 					MenuController.LoadMenu(new Menu(Globals.MenuLayout.Prompt, promptOptions, Language.Instance.GetString("AreYouSureYouWantToQuit")));
