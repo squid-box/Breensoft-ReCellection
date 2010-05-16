@@ -189,7 +189,7 @@ namespace Recellection.Code.Models
 			int y = (int)this.position.Y;
 			Unit.world.map.GetTile(x, y).RemoveUnit(this);
 
-            Vector2 direction = Vector2.Subtract(this.targetPosition, this.position);//new Vector2(this.targetPosition.X - this.position.X, this.targetPosition.Y - this.position.Y);
+            Vector2 direction = Vector2.Subtract(this.targetPosition, this.position);
             direction.Normalize();
 
 			// Move unit towards target.
