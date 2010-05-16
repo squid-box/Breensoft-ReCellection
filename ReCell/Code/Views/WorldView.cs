@@ -26,7 +26,7 @@ namespace Recellection.Code.Views
         private Texture2D backgroundTex = Recellection.textureMap.GetTexture(Globals.TextureTypes.white);
 
         public static bool doLights = false;
-        public static bool doGrain = true;
+        public static bool doGrain = false;
         public static bool doRipples = false;
         
         private Effect bgShaders;
