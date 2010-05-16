@@ -143,7 +143,7 @@ namespace Recellection.Code.Views
             #region THIS IS BACKGROUNDDRAWAGE!
 
 			//Texture2D back = Recellection.textureMap.GetTexture(Globals.TextureTypes.white);
-			//Layer = 1.0f;
+			Layer = 1.0f;
 			drawTexture(spriteBatch, backgroundTex, new Rectangle(0, 0, Recellection.viewPort.Width, Recellection.viewPort.Height));
             #endregion
 			
