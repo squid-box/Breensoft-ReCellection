@@ -151,7 +151,7 @@ namespace Recellection.Code.Models
         /// <param name="systemTime">Time variable passed from XNA main loop.</param>
         public void Update(int systemTime)
         {
-            if (!this.isDead)
+            if (! this.isDead)
             {
 				targetPosition = calculateTargetPosition();
 				this.Move(systemTime);
@@ -205,17 +205,7 @@ namespace Recellection.Code.Models
                 {
                     float newX = position.X + MOVEMENT_SPEED * deltaTime * direction.X * direction.Length();
                     position = new Vector2(newX, position.Y);
-                }/*
-				else if (this.targetPosition.X > this.position.X)
-				{
-					float newX = position.X + MOVEMENT_SPEED * deltaTime * direction.X * direction.Length();
-					position = new Vector2(newX, position.Y);
-				}
-				else if (this.targetPosition.X < this.position.X)
-				{
-                    float newX = position.X - MOVEMENT_SPEED * deltaTime * direction.X * direction.Length();
-					position = new Vector2(newX, position.Y);
-				}*/
+                }
 			}
 			if (this.targetPosition.Y != NO_TARGET)
 			{
@@ -229,17 +219,7 @@ namespace Recellection.Code.Models
                 {
                     float newY = position.Y + MOVEMENT_SPEED * deltaTime * direction.Y * direction.Length();
                     position = new Vector2(position.X, newY);
-                }/* 
-				else if (distance > 0)
-				{
-                    float newY = position.Y + MOVEMENT_SPEED * deltaTime * direction.Y * direction.Length();
-					position = new Vector2(position.X, newY);
-				}
-				else if (distance < 0)
-				{
-                    float newY = position.Y - MOVEMENT_SPEED * deltaTime * direction.Y * direction.Length();
-					position = new Vector2(position.X, newY);
-				}*/
+                }
 			}
 
 			// Tile management!
@@ -267,6 +247,21 @@ namespace Recellection.Code.Models
 						this.rallyPoint = TargetEntity;
 						((Building)targetEntity).AddUnit(this);
 						isDispersed = true;
+					}
+					
+					// If this is an enemy! KILL IT! OMG
+					if (TargetEntity.owner != this.owner)
+					{
+						this.Kill();
+						
+						if (TargetEntity is Unit)
+						{
+							((Unit)TargetEntity).Kill();
+						}
+						else if (TargetEntity is Building)
+						{
+							((Building)TargetEntity).Damage(1);
+						}
 					}
 					
 					TargetEntity = null;
