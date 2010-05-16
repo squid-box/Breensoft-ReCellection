@@ -68,7 +68,19 @@ namespace Recellection.Code.Controllers
 		public void RemoveBuilding(Building building)
 		{
 			logger.Info("Removed building "+building+".");
+            Graph temp = GetGraph(building);
+            if (building is BaseBuilding)
+            {
+                temp.baseBuilding = null;
+            }
+            if (GetGraph(building).CountBuildings() == 1)
+            {
+                building.owner.GetGraphs().Remove(temp);
+            }
+            
 			GetGraph(building).Remove(building);
+
+            components.Remove(temp);
 		}
 		
 		/// <summary>

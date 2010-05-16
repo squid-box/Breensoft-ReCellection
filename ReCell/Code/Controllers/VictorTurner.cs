@@ -47,24 +47,24 @@ namespace Recellection.Code.Controllers
         {
 
             while (!finished)
-            {	
-				logger.Debug("Victor turner is turning the page!");
+            {
                 foreach (Player player in players)
                 {
-                    updateFogOfWar(player);
+                    //updateFogOfWar(player);
 
-                    if(HasLost(player))
+                    if (HasLost(player))
                     {
                         world.RemovePlayer(player);
                     }
-                    if(HasWon())
+                    if (HasWon())
                     {
-
                         finished = true;
-                        break;  
+                        break;
                     }
-                    
-                    
+                }
+				logger.Debug("Victor turner is turning the page!");
+                foreach (Player player in players)
+                {
 					if (player is AIPlayer)
 					{
 						logger.Debug(player.color + " is a AIPlayer!");
@@ -81,7 +81,10 @@ namespace Recellection.Code.Controllers
 						logger.Fatal("Could not identify "+player.color+" player!");
 					}
                 }
-
+                if (finished)
+                {
+                    break;
+                }
 				logger.Info("Weighting graphs!");
 				graphControl.CalculateWeights();
 

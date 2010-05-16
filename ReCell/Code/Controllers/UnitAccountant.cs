@@ -62,6 +62,10 @@ namespace Recellection.Code.Controllers
                 Vector2 buildingOffset = new Vector2(0.125f, 0.125f);
 
                 BaseBuilding b = g.baseBuilding;
+                if (b == null)
+                {
+                    continue;
+                }
                 int unitsToProduce = b.RateOfProduction;
                 if (b.RateOfProduction + totalUnits > POP_CAP_PER_PLAYER)
                 {
