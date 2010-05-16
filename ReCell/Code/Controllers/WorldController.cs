@@ -93,7 +93,7 @@ namespace Recellection.Code.Controllers
 						{
 							finished = true;
 						}
-                        if (sel.point.X == 2 && sel.point.Y == 1 && map.GetTile(sel.point).GetBuilding != null)
+                        if (sel.point.X == 2 && sel.point.Y == 1 && map.GetTile(sel.point).GetBuilding() != null)
                         {
                             BuildingMenu(sel);
                         }
