@@ -53,7 +53,6 @@ namespace Recellection.Code.Controllers
             
 
             uint totalUnits = owner.CountUnits();
-            Vector2 buildingOffset = new Vector2(0.125f, 0.125f);
 
             foreach (Graph g in owner.GetGraphs())
             {
@@ -79,7 +78,7 @@ namespace Recellection.Code.Controllers
                     // Places them randomly around the fromBuilding. - John
                     // No, it does not. - Martin
 
-                    res.Add(new Unit(b.owner, Vector2.Add(buildingOffset, b.position), b));
+                    res.Add(new Unit(b.owner, b.position, b));
                 }
                 b.AddUnits(res);
             }
