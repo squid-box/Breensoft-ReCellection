@@ -15,7 +15,7 @@ namespace Recellection.Code.Controllers
     /// <summary>
     /// The purpose of this component is to control the entire world. It is part of the realization of SR1.7.
     /// </summary>
-    class WorldController
+    public class WorldController
     {
         /// <summary>
         /// The different states this controller will assume
@@ -30,7 +30,10 @@ namespace Recellection.Code.Controllers
         
         private const long SCROLL_ZONE_DWELL_TIME = 0;//250000;
         private char[] REG_EXP = { '_' };
-        public bool finished { get; set; }
+        
+        // Static is temporary, remove after debugging is done
+        public static bool finished { get; set; }
+        
         private Logger myLogger;
         
 		private Selection previousSelection;
