@@ -266,7 +266,7 @@ namespace Recellection.Code.Controllers
 
         public static void HurtBuilding(Building toHurt, World theWorld)
         {
-            toHurt.Damage(1000);
+            /*toHurt.Damage(1);
 
             if (!toHurt.IsAlive())
             {
@@ -274,8 +274,24 @@ namespace Recellection.Code.Controllers
             }
             lock (theWorld)
             {
-                theWorld.GetMap().GetTile((int)toHurt.position.X, (int)toHurt.position.Y).RemoveBuilding();
+                //theWorld.GetMap().GetTile((int)toHurt.position.X, (int)toHurt.position.Y).RemoveBuilding();
+            }*/
+            HurtBuilding(toHurt);
+        }
+        public static void HurtBuilding(Building toHurt)
+        {
+            toHurt.Damage(1);
+
+            if (!toHurt.IsAlive())
+            {
+                RemoveBuilding(toHurt);
+                lock (toHurt.controlZone)
+                {
+                    toHurt.controlZone.First().RemoveBuilding();
+                    //theWorld.GetMap().GetTile((int)toHurt.position.X, (int)toHurt.position.Y).RemoveBuilding();
+                }
             }
+            
         }
     }
 }
