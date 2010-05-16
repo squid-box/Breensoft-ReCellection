@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Recellection.Code.Models;
+using Recellection.Code.Views;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework;
 using Recellection.Code.Utility.Logger;
@@ -92,6 +93,10 @@ namespace Recellection.Code.Controllers
 						{
 							finished = true;
 						}
+                        if (sel.point.X == 2 && sel.point.Y == 1)
+                        {
+                            BuildingMenu(sel);
+                        }
                         break;
 					case State.BUILDING:
 						// A fromBuilding has been selected!
@@ -302,6 +307,52 @@ namespace Recellection.Code.Controllers
             }
 
             MenuController.LoadMenu(new Menu(allMenuIcons));
+    }
+    /// <summary>
+    /// Loads the Building menu from a selection.
+    /// Must have building on tile.
+    /// </summary>
+    /// <param name="theSelection"></param>
+        private void BuildingMenu(Selection theSelection)
+        {
+            World.Map map = theWorld.GetMap();
+            Building building = map.GetTile(theSelection.point).GetBuilding();
+            MenuIcon setWeight = new MenuIcon(Language.Instance.GetString("SetWeight"), null, Color.Black);
+            MenuIcon buildCell = new MenuIcon(Language.Instance.GetString("BuildCell"), null, Color.Black);
+            MenuIcon removeCell = new MenuIcon(Language.Instance.GetString("RemoveCell"), null, Color.Black);
+            MenuIcon upgradeUnits = new MenuIcon(Language.Instance.GetString("UpgradeUnits"), null, Color.Black);
+            List<MenuIcon> menuIcons = new List<MenuIcon>();
+            menuIcons.Add(setWeight);
+            menuIcons.Add(buildCell);
+            menuIcons.Add(removeCell);
+            menuIcons.Add(upgradeUnits);
+
+            Menu buildingMenu = new Menu(Globals.MenuLayout.FourMatrix, menuIcons, Language.Instance.GetString("BuildingMenu"), Color.Black);
+            MenuController.LoadMenu(buildingMenu);
+            Recellection.CurrentState = MenuView.Instance;
+
+            MenuIcon choosenMenu = MenuController.GetInput();
+            Recellection.CurrentState = WorldView.Instance;
+            MenuController.UnloadMenu();
+
+            if (choosenMenu.Equals(setWeight))
+            {
+                GraphController.Instance.SetWeight(building);
+            }
+            else if (choosenMenu.Equals(buildCell))
+            {
+                Tile destTile = map.GetTile(theSelection.point);
+                BuildingController.ConstructBuilding(playerInControll, destTile, building, theWorld);
+            }
+            else if (choosenMenu.Equals(removeCell))
+            {
+                GraphController.Instance.RemoveBuilding(building);
+            }
+            else //else upgradeUnits
+            {
+                //put upgrade code here /co
+            }
         }
+
     }
 }
