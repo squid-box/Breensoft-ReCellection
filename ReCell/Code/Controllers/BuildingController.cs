@@ -262,5 +262,20 @@ namespace Recellection.Code.Controllers
             return (uint)(defaultCost + (buildingCount * buildingCount * defaultCost / 2));
 
         }
+
+
+        public static void HurtBuilding(Building toHurt, World theWorld)
+        {
+            toHurt.Damage(1);
+
+            if (!toHurt.IsAlive())
+            {
+                RemoveBuilding(toHurt);
+            }
+            lock (theWorld)
+            {
+                theWorld.GetMap().GetTile((int)toHurt.position.X, (int)toHurt.position.Y).RemoveBuilding();
+            }
+        }
     }
 }

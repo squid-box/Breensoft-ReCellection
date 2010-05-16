@@ -47,28 +47,28 @@ namespace Recellection.Code.Controllers
         {
 
             while (!finished)
-            {	
-				logger.Debug("Victor turner is turning the page!");
+            {
                 foreach (Player player in players)
                 {
-                    //gameInitializer.suitGuys[player].ProduceUnits(); 
+                    //updateFogOfWar(player);
 
-                    if(HasLost(player))
+                    if (HasLost(player))
                     {
                         world.RemovePlayer(player);
                     }
-                    if(HasWon())
+                    if (HasWon())
                     {
-
                         finished = true;
-                        break;  
+                        break;
                     }
-                    
-                    
+                }
+				logger.Debug("Victor turner is turning the page!");
+                foreach (Player player in players)
+                {
 					if (player is AIPlayer)
 					{
 						logger.Debug(player.color + " is a AIPlayer!");
-						((AIPlayer)player).MakeMove();
+						//((AIPlayer)player).MakeMove();
 					}
 					else if (player is Player)
 					{
@@ -81,7 +81,10 @@ namespace Recellection.Code.Controllers
 						logger.Fatal("Could not identify "+player.color+" player!");
 					}
                 }
-
+                if (finished)
+                {
+                    break;
+                }
 				logger.Info("Weighting graphs!");
 				graphControl.CalculateWeights();
 
@@ -102,7 +105,7 @@ namespace Recellection.Code.Controllers
 					{
 						for (int y = 0; y < theWholeFuckingWorld.height; y++)
 						{
-							UnitController.Update(theWholeFuckingWorld.GetTile(x, y).GetUnits(), 1);
+							UnitController.Update(theWholeFuckingWorld.GetTile(x, y).GetUnits(), 1, world.GetMap());
 						}
 					}
 					System.Threading.Thread.Sleep(10);
@@ -114,6 +117,33 @@ namespace Recellection.Code.Controllers
                 }
             }
 
+        }
+
+        private void updateFogOfWar(Player player)
+        {
+            lock (world)
+            {
+                foreach (Tile t in world.GetMap().map)
+                {
+                    if (t.GetBuilding() != null)
+                    {
+                        for (int x = -2; x <= 2; x++)
+                        {
+                            for (int y = -2; y <= 2; y++)
+                            {
+                                if (world.isWithinMap(x + (int)t.position.X, y + (int)t.position.Y))
+                                {
+                                    //Get the tile and check if it is visible already else set it to visible.
+                                    if (!world.GetMap().GetTile(x + (int)t.position.X, y + (int)t.position.Y).IsVisible(t.GetBuilding().owner))
+                                    {
+
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
         }
 
         /// <summary>

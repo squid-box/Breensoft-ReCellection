@@ -69,6 +69,8 @@ namespace Recellection.Code.Main
 					Recellection.CurrentState = new WorldView(gameInit.theWorld);
 					VictorTurner vt = new VictorTurner(gameInit);
 					vt.Run();
+                    Recellection.playBeethoven();
+                    Environment.Exit(0);
 				}
 				else if (response == quit)
 				{

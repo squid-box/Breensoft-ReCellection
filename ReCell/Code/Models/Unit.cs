@@ -5,6 +5,7 @@ using System.Text;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Recellection.Code.Utility.Logger;
+using Recellection.Code.Controllers;
 
 namespace Recellection.Code.Models
 {
@@ -133,8 +134,6 @@ namespace Recellection.Code.Models
             {
 				((Building)rallyPoint).RemoveUnit(this);
             }
-            // Make pop:ing sound!
-            Sounds.Instance.LoadSound("Celldeath").Play();
         }
         
         private void callRainCheckOnTarget()
@@ -151,7 +150,7 @@ namespace Recellection.Code.Models
         /// <param name="systemTime">Time variable passed from XNA main loop.</param>
         public void Update(int systemTime)
         {
-            if (!this.isDead)
+            if (! this.isDead)
             {
 				targetPosition = calculateTargetPosition();
 				this.Move(systemTime);
@@ -247,6 +246,23 @@ namespace Recellection.Code.Models
 						this.rallyPoint = TargetEntity;
 						((Building)targetEntity).AddUnit(this);
 						isDispersed = true;
+					}
+					
+					// If this is an enemy! KILL IT! OMG
+					if (TargetEntity.owner != this.owner)
+					{
+						if (TargetEntity is Unit && ! ((Unit)TargetEntity).isDead)
+						{
+							this.Kill();
+							((Unit)TargetEntity).Kill();
+							Sounds.Instance.LoadSound("Celldeath").Play();
+						}
+						else if (TargetEntity is Building && ((Building)TargetEntity).IsAlive())
+						{
+							this.Kill();
+							BuildingController.HurtBuilding((Building)TargetEntity, world);
+							Sounds.Instance.LoadSound("Celldeath").Play();
+						}
 					}
 					
 					TargetEntity = null;
