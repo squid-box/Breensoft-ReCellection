@@ -189,7 +189,7 @@ namespace Recellection.Code.Models
 			int y = (int)this.position.Y;
 			Unit.world.map.GetTile(x, y).RemoveUnit(this);
 
-            Vector2 direction = Vector2.Subtract(this.targetPosition, this.position);//new Vector2(this.targetPosition.X - this.position.X, this.targetPosition.Y - this.position.Y);
+            Vector2 direction = Vector2.Subtract(this.targetPosition, this.position);
             direction.Normalize();
 
 			// Move unit towards target.
@@ -205,17 +205,7 @@ namespace Recellection.Code.Models
                 {
                     float newX = position.X + MOVEMENT_SPEED * deltaTime * direction.X * direction.Length();
                     position = new Vector2(newX, position.Y);
-                }/*
-				else if (this.targetPosition.X > this.position.X)
-				{
-					float newX = position.X + MOVEMENT_SPEED * deltaTime * direction.X * direction.Length();
-					position = new Vector2(newX, position.Y);
-				}
-				else if (this.targetPosition.X < this.position.X)
-				{
-                    float newX = position.X - MOVEMENT_SPEED * deltaTime * direction.X * direction.Length();
-					position = new Vector2(newX, position.Y);
-				}*/
+                }
 			}
 			if (this.targetPosition.Y != NO_TARGET)
 			{
@@ -229,17 +219,7 @@ namespace Recellection.Code.Models
                 {
                     float newY = position.Y + MOVEMENT_SPEED * deltaTime * direction.Y * direction.Length();
                     position = new Vector2(position.X, newY);
-                }/* 
-				else if (distance > 0)
-				{
-                    float newY = position.Y + MOVEMENT_SPEED * deltaTime * direction.Y * direction.Length();
-					position = new Vector2(position.X, newY);
-				}
-				else if (distance < 0)
-				{
-                    float newY = position.Y - MOVEMENT_SPEED * deltaTime * direction.Y * direction.Length();
-					position = new Vector2(position.X, newY);
-				}*/
+                }
 			}
 
 			// Tile management!
