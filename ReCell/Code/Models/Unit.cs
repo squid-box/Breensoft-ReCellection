@@ -249,6 +249,21 @@ namespace Recellection.Code.Models
 						isDispersed = true;
 					}
 					
+					// If this is an enemy! KILL IT! OMG
+					if (TargetEntity.owner != this.owner)
+					{
+						this.Kill();
+						
+						if (TargetEntity is Unit)
+						{
+							((Unit)TargetEntity).Kill();
+						}
+						else if (TargetEntity is Building)
+						{
+							((Building)TargetEntity).Damage(1);
+						}
+					}
+					
 					TargetEntity = null;
 				}
 				
