@@ -51,7 +51,7 @@ namespace Recellection.Code.Controllers
 				logger.Debug("Victor turner is turning the page!");
                 foreach (Player player in players)
                 {
-                    gameInitializer.suitGuys[player].ProduceUnits(); 
+                    //gameInitializer.suitGuys[player].ProduceUnits(); 
 
                     if(HasLost(player))
                     {
@@ -84,7 +84,12 @@ namespace Recellection.Code.Controllers
 
 				logger.Info("Weighting graphs!");
 				graphControl.CalculateWeights();
-				
+
+                foreach (Player player in players)
+                {
+                    gameInitializer.suitGuys[player].ProduceUnits();
+                }
+
                 // This is where we start "animating" all movement
                 // FIXME: This ain't okay, hombrey
                 // Let the units move!

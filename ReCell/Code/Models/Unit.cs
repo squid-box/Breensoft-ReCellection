@@ -189,7 +189,7 @@ namespace Recellection.Code.Models
 			int y = (int)this.position.Y;
 			Unit.world.map.GetTile(x, y).RemoveUnit(this);
 
-            Vector2 direction = new Vector2(this.targetPosition.X - this.position.X, this.targetPosition.Y - this.position.Y);
+            Vector2 direction = Vector2.Subtract(this.targetPosition, this.position);//new Vector2(this.targetPosition.X - this.position.X, this.targetPosition.Y - this.position.Y);
             direction.Normalize();
 
 			// Move unit towards target.
@@ -229,7 +229,7 @@ namespace Recellection.Code.Models
                 {
                     float newY = position.Y + MOVEMENT_SPEED * deltaTime * direction.Y * direction.Length();
                     position = new Vector2(position.X, newY);
-                }/*
+                }/* 
 				else if (distance > 0)
 				{
                     float newY = position.Y + MOVEMENT_SPEED * deltaTime * direction.Y * direction.Length();
