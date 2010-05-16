@@ -313,10 +313,10 @@ namespace Recellection.Code.Controllers
     /// <param name="theSelection"></param>
         private void BuildingMenu(Selection theSelection)
         {
-            Point absoluteCoordinate = new Point(theSelection.point.X + theWorld.LookingAt.X,
+            Point absoluteCordinate = new Point(theSelection.point.X + theWorld.LookingAt.X,
                                                      theSelection.point.Y + theWorld.LookingAt.Y);
             World.Map map = theWorld.GetMap();
-            Building building = map.GetTile(AbsoluteCoordinate.point).GetBuilding();
+            Building building = map.GetTile(absoluteCordinate).GetBuilding();
             MenuIcon setWeight = new MenuIcon(Language.Instance.GetString("SetWeight"), null, Color.Black);
             MenuIcon buildCell = new MenuIcon(Language.Instance.GetString("BuildCell"), null, Color.Black);
             MenuIcon removeCell = new MenuIcon(Language.Instance.GetString("RemoveCell"), null, Color.Black);
@@ -341,7 +341,7 @@ namespace Recellection.Code.Controllers
             }
             else if (choosenMenu.Equals(buildCell))
             {
-                Tile destTile = map.GetTile(absoluteCoordinate);
+                Tile destTile = map.GetTile(absoluteCordinate);
                 BuildingController.ConstructBuilding(playerInControll, destTile, building, theWorld);
             }
             else if (choosenMenu.Equals(removeCell))
