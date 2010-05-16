@@ -255,7 +255,7 @@ namespace Recellection.Code.Models
 						// Make pop:ing sound!
 						Sounds.Instance.LoadSound("Celldeath").Play();
 						
-						if (TargetEntity is Unit)
+						if (TargetEntity is Unit && ! ((Unit)TargetEntity).isDead)
 						{
 							((Unit)TargetEntity).Kill();
 						}
