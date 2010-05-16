@@ -256,7 +256,7 @@ namespace Recellection.Code.Models
 						{
 							this.Kill();
 							((Unit)TargetEntity).Kill();
-							Sounds.Instance.LoadSound("Celldeath").Play();
+							SoundsController.playSound("Celldeath", this.position);
 						}
 						else if (TargetEntity is Building && ((Building)TargetEntity).IsAlive())
 						{
