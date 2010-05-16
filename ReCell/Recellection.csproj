@@ -120,6 +120,7 @@
     <Compile Include="Code\Controllers\GraphController.cs" />
     <Compile Include="Code\Controllers\Localizer.cs" />
     <Compile Include="Code\Controllers\MenuController.cs" />
+    <Compile Include="Code\Controllers\SoundsController.cs" />
     <Compile Include="Code\Controllers\TobiiController.cs" />
     <Compile Include="Code\Controllers\UnitAccountant.cs" />
     <Compile Include="Code\Controllers\UnitController.cs" />
@@ -141,6 +142,7 @@
     <Compile Include="Code\Models\Graph.cs" />
     <Compile Include="Code\Models\GUIRegion.cs" />
     <Compile Include="Code\Models\IModel.cs" />
+    <Compile Include="Code\Models\KamikazeUnit.cs" />
     <Compile Include="Code\Models\Language.cs" />
     <Compile Include="Code\Models\Menu.cs" />
     <Compile Include="Code\Models\MenuIcon.cs" />
@@ -153,6 +155,10 @@
     <Compile Include="Code\Models\Tile.cs" />
     <Compile Include="Code\Models\Unit.cs" />
     <Compile Include="Code\Models\World.cs" />
+    <Compile Include="Code\ParticleSystems\Light.cs" />
+    <Compile Include="Code\ParticleSystems\LightParticleSystem.cs" />
+    <Compile Include="Code\ParticleSystems\Ripple.cs" />
+    <Compile Include="Code\ParticleSystems\RippleHandler.cs" />
     <Compile Include="Code\Sounds\AudioPlayer.cs" />
     <Compile Include="Code\Utility\Console\KeyBindings.cs" />
     <Compile Include="Code\Utility\Console\PythonInterpreter.cs" />

@@ -5,6 +5,7 @@ using System.Text;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Recellection.Code.Utility.Logger;
+using Recellection.Code.Controllers;
 
 namespace Recellection.Code.Models
 {
@@ -133,8 +134,6 @@ namespace Recellection.Code.Models
             {
 				((Building)rallyPoint).RemoveUnit(this);
             }
-            // Make pop:ing sound!
-            Sounds.Instance.LoadSound("Celldeath").Play();
         }
         
         private void callRainCheckOnTarget()
@@ -151,7 +150,7 @@ namespace Recellection.Code.Models
         /// <param name="systemTime">Time variable passed from XNA main loop.</param>
         public void Update(int systemTime)
         {
-            if (!this.isDead)
+            if (! this.isDead)
             {
 				targetPosition = calculateTargetPosition();
 				this.Move(systemTime);
@@ -189,8 +188,9 @@ namespace Recellection.Code.Models
 			int y = (int)this.position.Y;
 			Unit.world.map.GetTile(x, y).RemoveUnit(this);
 
-            Vector2 direction = new Vector2(this.targetPosition.X - this.position.X, this.targetPosition.Y - this.position.Y);
+            Vector2 direction = Vector2.Subtract(this.targetPosition, this.position);
             direction.Normalize();
+
 
 			// Move unit towards target.
 			if (this.targetPosition.X != NO_TARGET)
@@ -205,17 +205,7 @@ namespace Recellection.Code.Models
                 {
                     float newX = position.X + MOVEMENT_SPEED * deltaTime * direction.X * direction.Length();
                     position = new Vector2(newX, position.Y);
-                }/*
-				else if (this.targetPosition.X > this.position.X)
-				{
-					float newX = position.X + MOVEMENT_SPEED * deltaTime * direction.X * direction.Length();
-					position = new Vector2(newX, position.Y);
-				}
-				else if (this.targetPosition.X < this.position.X)
-				{
-                    float newX = position.X - MOVEMENT_SPEED * deltaTime * direction.X * direction.Length();
-					position = new Vector2(newX, position.Y);
-				}*/
+                }
 			}
 			if (this.targetPosition.Y != NO_TARGET)
 			{
@@ -229,17 +219,7 @@ namespace Recellection.Code.Models
                 {
                     float newY = position.Y + MOVEMENT_SPEED * deltaTime * direction.Y * direction.Length();
                     position = new Vector2(position.X, newY);
-                }/*
-				else if (distance > 0)
-				{
-                    float newY = position.Y + MOVEMENT_SPEED * deltaTime * direction.Y * direction.Length();
-					position = new Vector2(position.X, newY);
-				}
-				else if (distance < 0)
-				{
-                    float newY = position.Y - MOVEMENT_SPEED * deltaTime * direction.Y * direction.Length();
-					position = new Vector2(position.X, newY);
-				}*/
+                }
 			}
 
 			// Tile management!
@@ -249,7 +229,7 @@ namespace Recellection.Code.Models
 			Unit.world.map.GetTile(x, y).AddUnit(this);
 		}
 
-		private bool stopMovingIfGoalIsReached()
+		virtual protected bool stopMovingIfGoalIsReached()
 		{
 			// If we are reasonably close to target.
 			float dx = this.position.X - this.targetPosition.X;
@@ -261,12 +241,29 @@ namespace Recellection.Code.Models
 				if (TargetEntity != null)
 				{
 					// If it's a home-fromBuilding, we disperse around it :)
-					if (TargetEntity is Building && TargetEntity.owner == this.owner)
+					if ( TargetEntity is Building && ((Building)TargetEntity).IsAlive() && TargetEntity.owner == this.owner)
 					{
 						// We will now recieve new positions within a radius of our secondary target.
 						this.rallyPoint = TargetEntity;
 						((Building)targetEntity).AddUnit(this);
 						isDispersed = true;
+					}
+					
+					// If this is an enemy! KILL IT! OMG
+					if (TargetEntity.owner != this.owner)
+					{
+						if (TargetEntity is Unit && ! ((Unit)TargetEntity).isDead)
+						{
+							this.Kill();
+							((Unit)TargetEntity).Kill();
+							SoundsController.playSound("Celldeath", this.position);
+						}
+						else if (TargetEntity is Building && ((Building)TargetEntity).IsAlive())
+						{
+							this.Kill();
+							BuildingController.HurtBuilding((Building)TargetEntity, world);
+							Sounds.Instance.LoadSound("Celldeath").Play();
+						}
 					}
 					
 					TargetEntity = null;

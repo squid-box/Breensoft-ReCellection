@@ -37,6 +37,7 @@ namespace Recellection.Code.Controllers
 		protected GraphController()
 		{
 			components = new List<Graph>();
+			logger.SetThreshold(LogLevel.ERROR);
 			logger.SetTarget(LoggerSetup.GetLogFileTarget("graphcontrol.log"));
 			logger.Info("Constructed a new GraphController.");
 		}
@@ -67,7 +68,21 @@ namespace Recellection.Code.Controllers
 		public void RemoveBuilding(Building building)
 		{
 			logger.Info("Removed building "+building+".");
+            Graph temp = GetGraph(building);
+            if (building is BaseBuilding)
+            {
+                temp.baseBuilding = null;
+            }
+            
+            
 			GetGraph(building).Remove(building);
+
+            
+            if (temp.CountBuildings() == 0)
+            {
+                building.owner.GetGraphs().Remove(temp);
+                components.Remove(temp);
+            }
 		}
 		
 		/// <summary>
@@ -92,18 +107,14 @@ namespace Recellection.Code.Controllers
 		{
             if (sourceBuilding == null || (sourceBuilding).baseBuilding.IsAlive())
             {
-                logger.Info("Added base building " + newBaseBuilding + " and created a new graph from it.");
-
-                Graph graph = new Graph(newBaseBuilding);
-                components.Add(graph);
-                return graph;
+                return AddBaseBuilding(newBaseBuilding);
             }
-
             else
             {
                 logger.Info("Added base building " + newBaseBuilding + " to a graph missing an alive base building.");
                 Graph graph = GetGraph(sourceBuilding);
                 graph.baseBuilding = newBaseBuilding;
+                graph.Add(newBaseBuilding);
                 return graph;
             }
 		}
@@ -139,26 +150,34 @@ namespace Recellection.Code.Controllers
 		public void SetWeight(Building b)
 		{
 			Dictionary<MenuIcon, int> doptions = new Dictionary<MenuIcon,int>(8);
-			
-			doptions.Add(new MenuIcon("Non-vital priority"), 1);
-			doptions.Add(new MenuIcon("Low priority"), 2);
-			doptions.Add(new MenuIcon("Medium low priority"), 4);
-			doptions.Add(new MenuIcon("Medium priority"), 8);
-			
-			doptions.Add(new MenuIcon("Medium high priority"), 16);
-			doptions.Add(new MenuIcon("High priority"), 32);
-			doptions.Add(new MenuIcon("Very high priority"), 64);
-			doptions.Add(new MenuIcon("GET TO THA CHOPPAH!"), 128);
+
+			doptions.Add(new MenuIcon("Non-vital priority", Recellection.textureMap.GetTexture(Globals.TextureTypes.Priority1)), 1);
+			doptions.Add(new MenuIcon("Low priority", Recellection.textureMap.GetTexture(Globals.TextureTypes.Priority2)), 2);
+			doptions.Add(new MenuIcon("Medium low priority", Recellection.textureMap.GetTexture(Globals.TextureTypes.Priority3)), 4);
+			doptions.Add(new MenuIcon("Medium priority", Recellection.textureMap.GetTexture(Globals.TextureTypes.Priority4)), 8);
+
+			doptions.Add(new MenuIcon("Medium high priority", Recellection.textureMap.GetTexture(Globals.TextureTypes.Priority5)), 16);
+			doptions.Add(new MenuIcon("High priority", Recellection.textureMap.GetTexture(Globals.TextureTypes.Priority6)), 32);
+			doptions.Add(new MenuIcon("Very high priority", Recellection.textureMap.GetTexture(Globals.TextureTypes.Priority7)), 64);
+			doptions.Add(new MenuIcon("GET TO THE CHOPPAH!", Recellection.textureMap.GetTexture(Globals.TextureTypes.Priority8)), 128);
 
 			Menu menu = new Menu(Globals.MenuLayout.NineMatrix, 
 							new List<MenuIcon>(doptions.Keys),
 							Language.Instance.GetString("SetImportance"));
 			
 			MenuController.LoadMenu(menu);
-
+			
             Recellection.CurrentState = MenuView.Instance;
 
-			SetWeight(b, doptions[MenuController.GetInput()]);
+			#region GET TO THE CHOPPAH!
+			MenuIcon selection = MenuController.GetInput();
+			if (128 == doptions[selection])
+			{
+				Sounds.Instance.LoadSound("choppah").Play();
+			}
+			#endregion
+			
+			SetWeight(b, doptions[selection]);
 			Recellection.CurrentState = WorldView.Instance;
 			MenuController.UnloadMenu();
 		}
@@ -188,8 +207,8 @@ namespace Recellection.Code.Controllers
 				int totalUnits = SumUnitsInGraph(g);
 
 				// Figure out the unit balance for each fromBuilding
-				LinkedList<BuildingBalance> inNeed = new LinkedList<BuildingBalance>();
-				LinkedList<BuildingBalance> withExcess = new LinkedList<BuildingBalance>();
+				Queue<BuildingBalance> inNeed = new Queue<BuildingBalance>();
+				Queue<BuildingBalance> withExcess = new Queue<BuildingBalance>();
 				logger.Debug("Figuring out the unit balancing for each building");
 				foreach(Building b in g.GetBuildings())
 				{
@@ -201,7 +220,7 @@ namespace Recellection.Code.Controllers
 					if (unitBalance > 0)
 					{
 						logger.Trace("Building has extra units to give.");
-						withExcess.AddLast(new BuildingBalance(b, unitBalance));
+						withExcess.Enqueue(new BuildingBalance(b, unitBalance));
 					}
 					else if (unitBalance < 0)
 					{
@@ -210,7 +229,7 @@ namespace Recellection.Code.Controllers
 						if (unitBalance < 0)
 						{
 							logger.Trace("Building is still in need of units.");
-							inNeed.AddLast(new BuildingBalance(b, unitBalance));
+							inNeed.Enqueue(new BuildingBalance(b, unitBalance));
 						}
 					}
 					else
@@ -223,14 +242,14 @@ namespace Recellection.Code.Controllers
 				if (inNeed.Count == 0)
 				{
 					logger.Debug("There is no need, don't balance.");
-					return;
+                    continue;
 				}
 				
 				// If there is nothing to give, don't balance.
 				if (withExcess.Count == 0)
 				{
 					logger.Debug("There is nothing to give, don't balance.");
-					return;
+					continue;
 				}
 
 				// Try to even out the unit count in every fromBuilding
@@ -238,8 +257,8 @@ namespace Recellection.Code.Controllers
 				bool balancingIsPossible = inNeed.Count > 0 && withExcess.Count > 0;
 				while (balancingIsPossible)
 				{
-					BuildingBalance want = inNeed.First.Value;
-					BuildingBalance has = withExcess.First.Value;
+					BuildingBalance want = inNeed.Peek();
+					BuildingBalance has = withExcess.Peek();
 					int transferableUnits = Math.Min(has.balance, Math.Abs(want.balance));
 
 					logger.Trace("Transferring units "+transferableUnits+" from " + has.building + " to " + want.building + ".");
@@ -252,13 +271,13 @@ namespace Recellection.Code.Controllers
 					if (has.balance == 0)
 					{
 						logger.Trace("Having building "+has.building+" is now satisfied. Removing from balancing.");
-						withExcess.RemoveFirst();
+						withExcess.Dequeue();
 					}
 					
 					if (want.balance == 0)
 					{
 						logger.Trace("Wanting building "+want.building + " is now satisfied. Removing from balancing.");
-						inNeed.RemoveFirst();
+						inNeed.Dequeue();
 					}
 					
 					

@@ -20,6 +20,8 @@ namespace Recellection.Code.Controllers
     /// Signature: Jane Doe (yyyy-mm-dd)
     public sealed class UnitAccountant
 	{
+        private const uint POP_CAP_PER_PLAYER = 200;
+
 		private Logger logger = LoggerFactory.GetLogger();
         private Player owner;
 
@@ -48,19 +50,36 @@ namespace Recellection.Code.Controllers
         public void ProduceUnits()
         {
             Random randomer = new Random();
+            
+
+            uint totalUnits = owner.CountUnits();
+            Vector2 buildingOffset = new Vector2(0.125f, 0.125f);
 
             foreach (Graph g in owner.GetGraphs())
             {
 				List<Unit> res = new List<Unit>();
+
+                //TODO Remove when middle point position is implemented.
                 
+
                 BaseBuilding b = g.baseBuilding;
-				logger.Debug("Producing "+b.RateOfProduction+" units!");
-                for (int i = 0; i < b.RateOfProduction; i++)
+                if (b == null)
+                {
+                    continue;
+                }
+                int unitsToProduce = b.RateOfProduction;
+                if (b.RateOfProduction + totalUnits > POP_CAP_PER_PLAYER)
+                {
+                    unitsToProduce = (int) (POP_CAP_PER_PLAYER - totalUnits);
+                }
+                logger.Debug("Producing " + unitsToProduce + " units!");
+
+                for (int i = 0; i < unitsToProduce; i++)
                 {
                     // Places them randomly around the fromBuilding. - John
                     // No, it does not. - Martin
 
-                    res.Add(new Unit(b.owner, b.position, b));
+                    res.Add(new Unit(b.owner, Vector2.Add(buildingOffset, b.position), b));
                 }
                 b.AddUnits(res);
             }

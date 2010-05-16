@@ -6,6 +6,7 @@ using Recellection.Code;
 using Recellection.Code.Models;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Recellection.Code.Utility.Logger;
 
 namespace Recellection.Code.Controllers
 {
@@ -21,6 +22,7 @@ namespace Recellection.Code.Controllers
         private List<Vector2> m_enemyPoints;
         private int distanceThreshold;
         private Random randomFactory;
+        private Logger log;
 
 
 
@@ -32,6 +34,7 @@ namespace Recellection.Code.Controllers
         public AIPlayer(List<Player> opponents, AIView view, Color c)
             : base(c, "AIPLAYER")
         {
+            log = Utility.Logger.LoggerFactory.GetLogger();
             randomFactory = new Random();
             m_view = view;
             m_opponents = opponents;
@@ -127,11 +130,24 @@ namespace Recellection.Code.Controllers
             int scoutSize = 10;
 
             //Take the units from the base fromBuilding
-            Tile source = m_view.getTileAt(m_view.baseBuilding.GetPosition());
+            Building bb = GetGraphs()[0].baseBuilding;
+            if (bb == null)
+            {
+                log.Fatal("Base Building was null");
+            }
+            Tile source = m_view.getTileAt(bb.GetPosition());
+            if (source == null)
+            {
+                return;
+                
+            }
 
             //Move the units to some location at the other end of the map
             Tile dest = m_view.getTileAt(randomPointAtOppositeQuadrant());
-
+            if (dest == null)
+            {
+                return;
+            }
             UnitController.MoveUnits(scoutSize, source, dest);
         }
 
@@ -143,23 +159,64 @@ namespace Recellection.Code.Controllers
         /// <returns></returns>
         private Vector2 randomPointAtOppositeQuadrant()
         {
-            Vector2 baseCoords = m_view.baseBuilding.GetPosition();
+            Vector2 baseCoords = GetGraphs()[0].baseBuilding.GetPosition();
+            Vector2 mapSize = new Vector2(m_view.mapWidth, m_view.mapHeight);
 
-            //Get the opposite end of the map relative to the base fromBuilding.
-            Vector2 quadrantCenter = Vector2.Subtract(new Vector2(m_view.mapWidth, m_view.mapHeight), baseCoords);
+            Vector2 middle = new Vector2(mapSize.X / 2, mapSize.Y / 2);
 
-            //Create the "inner" border for the opposite quadrant. 
-            Vector2 quadrantEdge = Vector2.Subtract(quadrantCenter, baseCoords);
-            //Make sure that the coordinates are given positive values only
-            quadrantEdge = new Vector2(Math.Abs(quadrantEdge.X), Math.Abs(quadrantEdge.Y));
-            //Create the "outer" border for the opposite quadrant.
-            Vector2 quadrantEdge2 = Vector2.Add(quadrantCenter, baseCoords);
+            Vector2 inner;
+            Vector2 outer;
+
+            //The map is divided into four parts as follows:
+            //|q1 | q2|
+            //|q3 | q4|
+
+            //base in quadrant 1, opponent in q4
+            if (baseCoords.X <= middle.X && baseCoords.Y <= middle.Y)
+            {
+                inner = middle;
+                outer = mapSize;
+            }
+            //base in quadrant 2, opponent in q3
+            else if (baseCoords.X > middle.X && baseCoords.Y <= middle.Y)
+            {
+                inner = new Vector2(0, mapSize.Y);
+                outer = middle;
+            }
+            //base in quadrant 3, opponent in q2
+            else if (baseCoords.X <= middle.X && baseCoords.Y > middle.Y)
+            {
+                inner = middle;
+                outer = new Vector2(mapSize.X, 0);
+            }
+            //base in quadrant 4, opponent in q1
+            else
+            {
+                inner = new Vector2(0, 0);
+                outer = middle;
+            }
 
 
             //Finally pick a set of coordinates within the opposite quadrant.
 
-            float xVal = quadrantEdge.X + (float)randomFactory.NextDouble() * quadrantEdge2.X;
-            float yVal = quadrantEdge.Y + (float)randomFactory.NextDouble() * quadrantEdge2.Y;
+            float xVal = inner.X + (float)randomFactory.NextDouble() * outer.X;
+            float yVal = inner.Y + (float)randomFactory.NextDouble() * outer.Y;
+            if (xVal == 0)
+            {
+                xVal += 1;
+            }
+            if (xVal == mapSize.X)
+            {
+                xVal -= 1;
+            }
+            if (yVal == 0)
+            {
+                yVal += 1;
+            }
+            if (yVal == mapSize.Y)
+            {
+                yVal -= 1;
+            }
 
             Vector2 result = new Vector2(xVal, yVal);
 
@@ -206,7 +263,7 @@ namespace Recellection.Code.Controllers
             }
             if (CanHoldPoint(point))
             {
-                IssueBuildOrder(point, m_view.baseBuilding, Globals.BuildingTypes.Resource);
+                IssueBuildOrder(point, GetGraphs()[0].baseBuilding, Globals.BuildingTypes.Resource);
             }
             else
             {
@@ -277,7 +334,7 @@ namespace Recellection.Code.Controllers
         /// <param name="buildingType"></param>
         private void IssueBuildOrder(Vector2 point, Building baseBuilding, Globals.BuildingTypes buildingType)
         {
-            BuildingController.AddBuilding(buildingType, baseBuilding, point, m_view.world, this);
+            BuildingController.AddBuilding(buildingType, GetGraphs()[0].baseBuilding, point, m_view.world, this);
         }
 
     }

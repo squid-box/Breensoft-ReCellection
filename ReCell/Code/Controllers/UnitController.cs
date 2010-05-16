@@ -115,12 +115,44 @@ namespace Recellection.Code.Controllers
         /// </summary>
         /// <param name="units">The set of units to be updated</param>
         /// <param name="systemTime">The time passed since something</param>
-        public static void Update(IEnumerable<Unit> units, int systemTime)
+        public static void Update(IEnumerable<Unit> units, int systemTime, World.Map worldMap)
         {
             foreach (Unit u in units)
             {
+				// Try to find enemies for this unit!
+				FindEnemy(u, worldMap);
+				
+				// Update position
                 u.Update(systemTime);
             }
+        }
+        
+        private static void FindEnemy(Unit u, World.Map worldMap)
+		{
+			if (u.TargetEntity == null
+			 || u.TargetEntity.owner != u.owner)
+			{
+				Tile t = worldMap.GetTile((int)u.position.X, (int)u.position.Y);
+				
+				// Search for units
+				foreach (Unit ou in t.GetUnits())
+				{
+					// Is this an enemy?
+					if (u.owner != ou.owner)
+					{
+						// FIGHT TO THE DEATH!
+						u.TargetEntity = ou;
+						return;
+					}
+				}
+				
+				// Is there a building to kill?
+				if (t.GetBuilding() != null && t.GetBuilding().owner != u.owner)
+				{
+					u.TargetEntity = t.GetBuilding();
+					return;
+				}
+			}
         }
     }
 }

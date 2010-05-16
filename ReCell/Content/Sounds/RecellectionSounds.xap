@@ -96,6 +96,32 @@ Global Settings
         }
     }
 
+    Category
+    {
+        Name = Effects;
+        Public = 1;
+        Background Music = 0;
+        Volume = 0;
+
+        Category Entry
+        {
+            Name = Global;
+        }
+
+        Instance Limit
+        {
+            Max Instances = 255;
+            Behavior = 0;
+
+            Crossfade
+            {
+                Fade In = 0;
+                Fade Out = 0;
+                Crossfade Type = 0;
+            }
+        }
+    }
+
     Variable
     {
         Name = OrientationAngle;
@@ -215,6 +241,56 @@ Global Settings
         Max = 1000000.000000;
     }
 
+    Variable
+    {
+        Name = Volume;
+        Public = 1;
+        Global = 0;
+        Internal = 0;
+        External = 0;
+        Monitored = 1;
+        Reserved = 0;
+        Read Only = 0;
+        Time = 0;
+        Value = 0.000000;
+        Initial Value = 0.000000;
+        Min = -96.000000;
+        Max = 6.000000;
+    }
+
+    RPC
+    {
+        Name = ChangeVolume;
+
+        RPC Curve
+        {
+            Name = Sound::756887df-be05-4fef-931d-023065a7ba3f;
+            Property = 0;
+            Sound = 1;
+            Line Color = 4294528798;
+            Viewable = 1;
+
+            Variable Entry
+            {
+                Name = Volume;
+            }
+
+            RPC Point
+            {
+                X = -96.000000;
+                Y = -9600.000000;
+                Curve = 0;
+            }
+
+            RPC Point
+            {
+                X = 6.000000;
+                Y = 600.000000;
+                Curve = 0;
+            }
+        }
+    }
+
     Compression Preset
     {
         Name = Lossy;
@@ -243,10 +319,14 @@ Wave Bank
     Windows Bank Path Edited = 1;
     Seek Tables = 1;
     Compression Preset Name = <none>;
+    Xbox Bank Last Modified Low = 0;
+    Xbox Bank Last Modified High = 0;
+    PC Bank Last Modified Low = 0;
+    PC Bank Last Modified High = 0;
     Header Last Modified Low = 0;
     Header Last Modified High = 0;
-    Bank Last Revised Low = 3817031990;
-    Bank Last Revised High = 30077805;
+    Bank Last Revised Low = 2594662517;
+    Bank Last Revised High = 30078174;
 
     Wave
     {
@@ -569,6 +649,52 @@ Wave Bank
             Last Modified High = 30077804;
         }
     }
+
+    Wave
+    {
+        Name = Get to da choppa!;
+        File = Get to da choppa!.wav;
+        Build Settings Last Modified Low = 3019068429;
+        Build Settings Last Modified High = 30078173;
+
+        Cache
+        {
+            Format Tag = 0;
+            Channels = 2;
+            Sampling Rate = 44100;
+            Bits Per Sample = 1;
+            Play Region Offset = 44;
+            Play Region Length = 325008;
+            Loop Region Offset = 0;
+            Loop Region Length = 0;
+            File Type = 1;
+            Last Modified Low = 2495548486;
+            Last Modified High = 30078173;
+        }
+    }
+
+    Wave
+    {
+        Name = nananananananana;
+        File = nananananananana.wav;
+        Build Settings Last Modified Low = 2561420615;
+        Build Settings Last Modified High = 30078174;
+
+        Cache
+        {
+            Format Tag = 0;
+            Channels = 2;
+            Sampling Rate = 44100;
+            Bits Per Sample = 1;
+            Play Region Offset = 44;
+            Play Region Length = 9173396;
+            Loop Region Offset = 0;
+            Loop Region Length = 0;
+            File Type = 1;
+            Last Modified Low = 2441323746;
+            Last Modified High = 30078174;
+        }
+    }
 }
 
 Sound Bank
@@ -684,7 +810,12 @@ Sound Bank
 
         Category Entry
         {
-            Name = Default;
+            Name = Effects;
+        }
+
+        RPC Entry
+        {
+            RPC Name = ChangeVolume;
         }
 
         Track
@@ -731,7 +862,12 @@ Sound Bank
 
         Category Entry
         {
-            Name = Default;
+            Name = Effects;
+        }
+
+        RPC Entry
+        {
+            RPC Name = ChangeVolume;
         }
 
         Track
@@ -778,7 +914,12 @@ Sound Bank
 
         Category Entry
         {
-            Name = Default;
+            Name = Effects;
+        }
+
+        RPC Entry
+        {
+            RPC Name = ChangeVolume;
         }
 
         Track
@@ -825,7 +966,12 @@ Sound Bank
 
         Category Entry
         {
-            Name = Default;
+            Name = Effects;
+        }
+
+        RPC Entry
+        {
+            RPC Name = ChangeVolume;
         }
 
         Track
@@ -872,7 +1018,12 @@ Sound Bank
 
         Category Entry
         {
-            Name = Default;
+            Name = Effects;
+        }
+
+        RPC Entry
+        {
+            RPC Name = ChangeVolume;
         }
 
         Track
@@ -1013,7 +1164,12 @@ Sound Bank
 
         Category Entry
         {
-            Name = Default;
+            Name = Effects;
+        }
+
+        RPC Entry
+        {
+            RPC Name = ChangeVolume;
         }
 
         Track
@@ -1060,7 +1216,12 @@ Sound Bank
 
         Category Entry
         {
-            Name = Default;
+            Name = Effects;
+        }
+
+        RPC Entry
+        {
+            RPC Name = ChangeVolume;
         }
 
         Track
@@ -1107,7 +1268,7 @@ Sound Bank
 
         Category Entry
         {
-            Name = Default;
+            Name = Music;
         }
 
         Track
@@ -1155,7 +1316,12 @@ Sound Bank
 
         Category Entry
         {
-            Name = Default;
+            Name = Effects;
+        }
+
+        RPC Entry
+        {
+            RPC Name = ChangeVolume;
         }
 
         Track
@@ -1233,6 +1399,100 @@ Sound Bank
                     Bank Index = 0;
                     Entry Name = nefoerdufaarinte;
                     Entry Index = 13;
+                    Weight = 255;
+                    Weight Min = 0;
+                }
+            }
+        }
+    }
+
+    Sound
+    {
+        Name = Get to da choppa!;
+        Volume = -1200;
+        Pitch = 0;
+        Priority = 0;
+
+        Category Entry
+        {
+            Name = Default;
+        }
+
+        Track
+        {
+            Volume = 0;
+            Use Filter = 0;
+
+            Play Wave Event
+            {
+                Break Loop = 0;
+                Use Speaker Position = 0;
+                Use Center Speaker = 1;
+                New Speaker Position On Loop = 1;
+                Speaker Position Angle = 0.000000;
+                Speaer Position Arc = 0.000000;
+
+                Event Header
+                {
+                    Timestamp = 0;
+                    Relative = 0;
+                    Random Recurrence = 0;
+                    Random Offset = 0;
+                }
+
+                Wave Entry
+                {
+                    Bank Name = Wave Bank;
+                    Bank Index = 0;
+                    Entry Name = Get to da choppa!;
+                    Entry Index = 14;
+                    Weight = 255;
+                    Weight Min = 0;
+                }
+            }
+        }
+    }
+
+    Sound
+    {
+        Name = nananananananana;
+        Volume = -1200;
+        Pitch = 0;
+        Priority = 0;
+
+        Category Entry
+        {
+            Name = Default;
+        }
+
+        Track
+        {
+            Volume = 0;
+            Use Filter = 0;
+
+            Play Wave Event
+            {
+                Break Loop = 0;
+                Use Speaker Position = 0;
+                Use Center Speaker = 1;
+                New Speaker Position On Loop = 1;
+                Speaker Position Angle = 0.000000;
+                Speaer Position Arc = 0.000000;
+
+                Event Header
+                {
+                    Timestamp = 0;
+                    Relative = 0;
+                    Random Recurrence = 0;
+                    Random Offset = 0;
+                }
+
+                Wave Entry
+                {
+                    Bank Name = Wave Bank;
+                    Bank Index = 0;
+                    Entry Name = nananananananana;
+                    Entry Index = 15;
                     Weight = 255;
                     Weight Min = 0;
                 }
@@ -1455,6 +1715,46 @@ Sound Bank
         {
             Name = nefoerdufaarinte;
             Index = 13;
+            Weight Min = 0;
+            Weight Max = 255;
+        }
+    }
+
+    Cue
+    {
+        Name = choppah;
+
+        Variation
+        {
+            Variation Type = 3;
+            Variation Table Type = 1;
+            New Variation on Loop = 0;
+        }
+
+        Sound Entry
+        {
+            Name = Get to da choppa!;
+            Index = 14;
+            Weight Min = 0;
+            Weight Max = 255;
+        }
+    }
+
+    Cue
+    {
+        Name = nananananananana;
+
+        Variation
+        {
+            Variation Type = 3;
+            Variation Table Type = 1;
+            New Variation on Loop = 0;
+        }
+
+        Sound Entry
+        {
+            Name = nananananananana;
+            Index = 15;
             Weight Min = 0;
             Weight Max = 255;
         }
