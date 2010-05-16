@@ -262,7 +262,7 @@ namespace Recellection.Code.Models
 						}
 						else if (TargetEntity is Building)
 						{
-							BuildingController.HurtBuilding((Building)TargetEntity);
+							BuildingController.HurtBuilding((Building)TargetEntity, world);
 						}
 					}
 					
