@@ -37,7 +37,9 @@ namespace Recellection
             BarrierBuilding, AggressiveBuilding, ResourceBuilding, Unit, white, logo,
 
             MainMenu, OptionsMenu, Help, PromptMenu, GetIntMenu,
-            CommandMenu, SpecialCommandMenu, ThreeByThree, TwoByTwo, NoTexture,Yes,No, Light
+            CommandMenu, SpecialCommandMenu, ThreeByThree, TwoByTwo, NoTexture,Yes,No, Light,
+
+			Priority1, Priority2, Priority3, Priority4, Priority5, Priority6, Priority7, Priority8
         }
 
         public enum GameStates
