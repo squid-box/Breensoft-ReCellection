@@ -102,7 +102,7 @@ namespace Recellection.Code.Controllers
 					{
 						for (int y = 0; y < theWholeFuckingWorld.height; y++)
 						{
-							UnitController.Update(theWholeFuckingWorld.GetTile(x, y).GetUnits(), 1);
+							UnitController.Update(theWholeFuckingWorld.GetTile(x, y).GetUnits(), 1, world.GetMap());
 						}
 					}
 					System.Threading.Thread.Sleep(10);
