@@ -16,8 +16,8 @@ Global Settings
     Header File = PlaySound.h;
     Exclude Category Names = 0;
     Exclude Variable Names = 0;
-    Last Modified Low = 493240616;
-    Last Modified High = 30076775;
+    Last Modified Low = 30076775;
+    Last Modified High = 493240616;
 
     Category
     {
@@ -75,6 +75,32 @@ Global Settings
         Name = Music;
         Public = 1;
         Background Music = 1;
+        Volume = 0;
+
+        Category Entry
+        {
+            Name = Global;
+        }
+
+        Instance Limit
+        {
+            Max Instances = 255;
+            Behavior = 0;
+
+            Crossfade
+            {
+                Fade In = 0;
+                Fade Out = 0;
+                Crossfade Type = 0;
+            }
+        }
+    }
+
+    Category
+    {
+        Name = Effects;
+        Public = 1;
+        Background Music = 0;
         Volume = 0;
 
         Category Entry
@@ -215,6 +241,56 @@ Global Settings
         Max = 1000000.000000;
     }
 
+    Variable
+    {
+        Name = Volume;
+        Public = 1;
+        Global = 0;
+        Internal = 0;
+        External = 0;
+        Monitored = 1;
+        Reserved = 0;
+        Read Only = 0;
+        Time = 0;
+        Value = 0.000000;
+        Initial Value = 0.000000;
+        Min = -96.000000;
+        Max = 6.000000;
+    }
+
+    RPC
+    {
+        Name = ChangeVolume;
+
+        RPC Curve
+        {
+            Name = Sound::756887df-be05-4fef-931d-023065a7ba3f;
+            Property = 0;
+            Sound = 1;
+            Line Color = 4294528798;
+            Viewable = 1;
+
+            Variable Entry
+            {
+                Name = Volume;
+            }
+
+            RPC Point
+            {
+                X = -96.000000;
+                Y = -9600.000000;
+                Curve = 0;
+            }
+
+            RPC Point
+            {
+                X = 6.000000;
+                Y = 600.000000;
+                Curve = 0;
+            }
+        }
+    }
+
     Compression Preset
     {
         Name = Lossy;
@@ -243,6 +319,12 @@ Wave Bank
     Windows Bank Path Edited = 1;
     Seek Tables = 1;
     Compression Preset Name = <none>;
+    Xbox Bank Last Modified Low = 0;
+    Xbox Bank Last Modified High = 0;
+    PC Bank Last Modified Low = 0;
+    PC Bank Last Modified High = 0;
+    Header Last Modified Low = 0;
+    Header Last Modified High = 0;
     Bank Last Revised Low = 2594662517;
     Bank Last Revised High = 30078174;
 
@@ -622,6 +704,8 @@ Sound Bank
     Windows File = Win\Sound Bank.xsb;
     Xbox Bank Path Edited = 0;
     Windows Bank Path Edited = 0;
+    Header Last Modified High = 0;
+    Header Last Modified Low = 0;
 
     Sound
     {
@@ -726,7 +810,12 @@ Sound Bank
 
         Category Entry
         {
-            Name = Default;
+            Name = Effects;
+        }
+
+        RPC Entry
+        {
+            RPC Name = ChangeVolume;
         }
 
         Track
@@ -773,7 +862,12 @@ Sound Bank
 
         Category Entry
         {
-            Name = Default;
+            Name = Effects;
+        }
+
+        RPC Entry
+        {
+            RPC Name = ChangeVolume;
         }
 
         Track
@@ -820,7 +914,12 @@ Sound Bank
 
         Category Entry
         {
-            Name = Default;
+            Name = Effects;
+        }
+
+        RPC Entry
+        {
+            RPC Name = ChangeVolume;
         }
 
         Track
@@ -867,7 +966,12 @@ Sound Bank
 
         Category Entry
         {
-            Name = Default;
+            Name = Effects;
+        }
+
+        RPC Entry
+        {
+            RPC Name = ChangeVolume;
         }
 
         Track
@@ -914,7 +1018,12 @@ Sound Bank
 
         Category Entry
         {
-            Name = Default;
+            Name = Effects;
+        }
+
+        RPC Entry
+        {
+            RPC Name = ChangeVolume;
         }
 
         Track
@@ -1055,7 +1164,12 @@ Sound Bank
 
         Category Entry
         {
-            Name = Default;
+            Name = Effects;
+        }
+
+        RPC Entry
+        {
+            RPC Name = ChangeVolume;
         }
 
         Track
@@ -1102,7 +1216,12 @@ Sound Bank
 
         Category Entry
         {
-            Name = Default;
+            Name = Effects;
+        }
+
+        RPC Entry
+        {
+            RPC Name = ChangeVolume;
         }
 
         Track
@@ -1149,7 +1268,7 @@ Sound Bank
 
         Category Entry
         {
-            Name = Default;
+            Name = Music;
         }
 
         Track
@@ -1197,7 +1316,12 @@ Sound Bank
 
         Category Entry
         {
-            Name = Default;
+            Name = Effects;
+        }
+
+        RPC Entry
+        {
+            RPC Name = ChangeVolume;
         }
 
         Track
