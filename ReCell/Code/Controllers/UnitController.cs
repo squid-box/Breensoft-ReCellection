@@ -120,15 +120,19 @@ namespace Recellection.Code.Controllers
             foreach (Unit u in units)
             {
 				// Try to find enemies for this unit!
-				Tile t = worldMap.GetTile((int)u.position.X, (int)u.position.Y);
-				foreach (Unit ou in t.GetUnits())
+				if (u.TargetEntity != null &&
+					u.TargetEntity.owner != u.owner)
 				{
-					// Is this an enemy?
-					if (u.owner != ou.owner)
+					Tile t = worldMap.GetTile((int)u.position.X, (int)u.position.Y);
+					foreach (Unit ou in t.GetUnits())
 					{
-						// FIGHT TO THE DEATH!
-						u.TargetEntity = ou;
-						logger.Info("FIGHT TO THE DEATH!");
+						// Is this an enemy?
+						if (u.owner != ou.owner)
+						{
+							// FIGHT TO THE DEATH!
+							u.TargetEntity = ou;
+							break;
+						}
 					}
 				}
 				

@@ -37,6 +37,7 @@ namespace Recellection.Code.Controllers
 		protected GraphController()
 		{
 			components = new List<Graph>();
+			logger.SetThreshold(LogLevel.ERROR);
 			logger.SetTarget(LoggerSetup.GetLogFileTarget("graphcontrol.log"));
 			logger.Info("Constructed a new GraphController.");
 		}
