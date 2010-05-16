@@ -151,7 +151,7 @@ namespace Recellection.Code.Models
         /// <param name="systemTime">Time variable passed from XNA main loop.</param>
         public void Update(int systemTime)
         {
-            if (!this.isDead)
+            if (! this.isDead)
             {
 				targetPosition = calculateTargetPosition();
 				this.Move(systemTime);
@@ -247,6 +247,21 @@ namespace Recellection.Code.Models
 						this.rallyPoint = TargetEntity;
 						((Building)targetEntity).AddUnit(this);
 						isDispersed = true;
+					}
+					
+					// If this is an enemy! KILL IT! OMG
+					if (TargetEntity.owner != this.owner)
+					{
+						this.Kill();
+						
+						if (TargetEntity is Unit)
+						{
+							((Unit)TargetEntity).Kill();
+						}
+						else if (TargetEntity is Building)
+						{
+							((Building)TargetEntity).Damage(1);
+						}
 					}
 					
 					TargetEntity = null;
