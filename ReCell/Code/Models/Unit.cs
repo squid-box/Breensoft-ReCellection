@@ -191,6 +191,7 @@ namespace Recellection.Code.Models
             Vector2 direction = Vector2.Subtract(this.targetPosition, this.position);
             direction.Normalize();
 
+
 			// Move unit towards target.
 			if (this.targetPosition.X != NO_TARGET)
 			{
@@ -228,7 +229,7 @@ namespace Recellection.Code.Models
 			Unit.world.map.GetTile(x, y).AddUnit(this);
 		}
 
-		private bool stopMovingIfGoalIsReached()
+		virtual protected bool stopMovingIfGoalIsReached()
 		{
 			// If we are reasonably close to target.
 			float dx = this.position.X - this.targetPosition.X;

@@ -86,11 +86,16 @@ namespace Recellection.Code.Controllers
                     break;
                 }
 				logger.Info("Weighting graphs!");
-				graphControl.CalculateWeights();
-
                 foreach (Player player in players)
                 {
                     gameInitializer.suitGuys[player].ProduceUnits();
+                }
+
+				graphControl.CalculateWeights();
+
+                foreach (Player p in players)
+                {
+                    BuildingController.AggressiveBuildingAct(p);
                 }
 
                 // This is where we start "animating" all movement
@@ -111,10 +116,7 @@ namespace Recellection.Code.Controllers
 					System.Threading.Thread.Sleep(10);
 				}
 
-                foreach( Player p in players)
-                {
-                    BuildingController.AggressiveBuildingAct(p);
-                }
+                
             }
 
         }
