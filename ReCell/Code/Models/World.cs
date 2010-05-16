@@ -213,5 +213,10 @@ namespace Recellection.Code.Models
         {
             return map;
         }
+
+        public bool isWithinMap(int x, int y)
+        {
+            return x > 0 && x < map.width && y > 0 && y < map.height;
+        }
     }
 }
