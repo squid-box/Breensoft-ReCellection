@@ -58,15 +58,15 @@ namespace Recellection.Code
             {
                 Tile tempTile = world.GetMap().GetTile((int)coords.X, (int)coords.Y);
 
-                /* Uncomment when fog of war is properly implemented
+                ///* Uncomment when fog of war is properly implemented
                 if (tempTile.IsVisible(ai))
                 {
                     return tempTile;
                 }
-                 * */
+                
                 return tempTile;
             }
-            throw new NullReferenceException();
+            //throw new NullReferenceException();
             return null;
         }
 

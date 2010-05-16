@@ -16,6 +16,7 @@ SetWeight=Set level of protection.
 BuildCell=Build a new cell.
 RemoveCell=Remove this cell.
 UpgradeUnits=Upgrade all units.
+BuildingMenu=Choose what you want to do with the cell.
 
 OptionsMenu1=OTest1
 OptionsMenu2=OTest2
