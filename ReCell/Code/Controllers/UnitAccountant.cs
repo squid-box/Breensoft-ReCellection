@@ -49,12 +49,12 @@ namespace Recellection.Code.Controllers
         {
             Random randomer = new Random();
             //TODO Remove when middle point position is implemented.
-            Vector2 buildingOffset = new Vector2(0.125f, 0.125f);
+            
 
             foreach (Graph g in owner.GetGraphs())
             {
 				List<Unit> res = new List<Unit>();
-                
+                Vector2 buildingOffset = new Vector2(0.125f, 0.125f);
                 BaseBuilding b = g.baseBuilding;
 				logger.Debug("Producing "+b.RateOfProduction+" units!");
                 buildingOffset = Vector2.Add(buildingOffset, b.position);
