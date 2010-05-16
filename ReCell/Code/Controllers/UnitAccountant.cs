@@ -48,19 +48,22 @@ namespace Recellection.Code.Controllers
         public void ProduceUnits()
         {
             Random randomer = new Random();
+            //TODO Remove when middle point position is implemented.
+            
 
             foreach (Graph g in owner.GetGraphs())
             {
 				List<Unit> res = new List<Unit>();
-                
+                Vector2 buildingOffset = new Vector2(0.125f, 0.125f);
                 BaseBuilding b = g.baseBuilding;
 				logger.Debug("Producing "+b.RateOfProduction+" units!");
+                buildingOffset = Vector2.Add(buildingOffset, b.position);
                 for (int i = 0; i < b.RateOfProduction; i++)
                 {
                     // Places them randomly around the fromBuilding. - John
                     // No, it does not. - Martin
 
-                    res.Add(new Unit(b.owner, b.position, b));
+                    res.Add(new Unit(b.owner, buildingOffset, b));
                 }
                 b.AddUnits(res);
             }
