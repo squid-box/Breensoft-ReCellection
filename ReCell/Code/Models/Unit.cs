@@ -151,7 +151,7 @@ namespace Recellection.Code.Models
         /// <param name="systemTime">Time variable passed from XNA main loop.</param>
         public void Update(int systemTime)
         {
-            if (!this.isDead)
+            if (! this.isDead)
             {
 				targetPosition = calculateTargetPosition();
 				this.Move(systemTime);
