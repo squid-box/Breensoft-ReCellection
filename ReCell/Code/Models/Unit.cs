@@ -251,18 +251,17 @@ namespace Recellection.Code.Models
 					// If this is an enemy! KILL IT! OMG
 					if (TargetEntity.owner != this.owner)
 					{
-						this.Kill();
-
-						// Make pop:ing sound!
-						Sounds.Instance.LoadSound("Celldeath").Play();
-						
 						if (TargetEntity is Unit && ! ((Unit)TargetEntity).isDead)
 						{
+							this.Kill();
 							((Unit)TargetEntity).Kill();
+							Sounds.Instance.LoadSound("Celldeath").Play();
 						}
-						else if (TargetEntity is Building)
+						else if (TargetEntity is Building && ((Building)TargetEntity).IsAlive())
 						{
+							this.Kill();
 							BuildingController.HurtBuilding((Building)TargetEntity, world);
+							Sounds.Instance.LoadSound("Celldeath").Play();
 						}
 					}
 					
