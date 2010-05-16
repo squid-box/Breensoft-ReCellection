@@ -261,8 +261,8 @@ namespace Recellection.Code.Models
 						else if (TargetEntity is Building && ((Building)TargetEntity).IsAlive())
 						{
 							this.Kill();
-							BuildingController.HurtBuilding((Building)TargetEntity, world);
-							Sounds.Instance.LoadSound("Celldeath").Play();
+							BuildingController.HurtBuilding((Building)TargetEntity);
+							SoundsController.playSound("Celldeath", this.position);
 						}
 					}
 					
