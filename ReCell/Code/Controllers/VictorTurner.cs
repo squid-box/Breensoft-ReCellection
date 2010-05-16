@@ -51,7 +51,7 @@ namespace Recellection.Code.Controllers
 				logger.Debug("Victor turner is turning the page!");
                 foreach (Player player in players)
                 {
-                    //gameInitializer.suitGuys[player].ProduceUnits(); 
+                    updateFogOfWar(player);
 
                     if(HasLost(player))
                     {
@@ -114,6 +114,33 @@ namespace Recellection.Code.Controllers
                 }
             }
 
+        }
+
+        private void updateFogOfWar(Player player)
+        {
+            lock (world)
+            {
+                foreach (Tile t in world.GetMap().map)
+                {
+                    if (t.GetBuilding() != null)
+                    {
+                        for (int x = -2; x <= 2; x++)
+                        {
+                            for (int y = -2; y <= 2; y++)
+                            {
+                                if (world.isWithinMap(x + (int)t.position.X, y + (int)t.position.Y))
+                                {
+                                    //Get the tile and check if it is visible already else set it to visible.
+                                    if (!world.GetMap().GetTile(x + (int)t.position.X, y + (int)t.position.Y).IsVisible(t.GetBuilding().owner))
+                                    {
+
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
         }
 
         /// <summary>
