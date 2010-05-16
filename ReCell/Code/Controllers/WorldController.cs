@@ -33,11 +33,7 @@ namespace Recellection.Code.Controllers
         public bool finished { get; set; }
         private Logger myLogger;
         
-        private State state;
-        private Selection selection;
-
-		private Building selectedBuilding;
-		private Tile selectedTile;
+		private Selection previousSelection;
 		
 		private Player playerInControll;
 
@@ -51,7 +47,6 @@ namespace Recellection.Code.Controllers
         // Create 
         public WorldController(Player p, World theWorld)
         {
-            state = State.NONE;
             //Debugging
             finished = false;
             myLogger = LoggerFactory.GetLogger();
@@ -65,14 +60,18 @@ namespace Recellection.Code.Controllers
         }
 
         public void Run()
-        {
+		{
+			Selection sel = new Selection();
+			sel.state = State.NONE;
+			
 			finished = false;
             while (!finished)
             {
+				previousSelection = sel;
 				
                 // Generate the appropriate menu for this state.
                 // Get the active GUI Region and invoke the associated method.
-				Selection sel = retrieveSelection();
+				sel = retrieveSelection();
 
 				
                 // They are used if the state needs true coordinates, scroll only uses deltas.
@@ -86,14 +85,14 @@ namespace Recellection.Code.Controllers
                     case State.TILE:
                         // A tile has been selected, store it.
 						// Save the selected tile, for later!
-                        selectedTile = map.GetTile(absoluteCoordinate);
+                        Tile selectedTile = map.GetTile(absoluteCoordinate);
 
 						// Debug finish
 						if (sel.point.X == 1 && sel.point.Y == 1)
 						{
 							finished = true;
 						}
-                        if (sel.point.X == 2 && sel.point.Y == 1 && map.GetTile(sel.point).GetBuilding() != null)
+						if (sel.point.X == 2 && sel.point.Y == 1 && map.GetTile(previousSelection.point).GetBuilding() != null)
                         {
                             BuildingMenu(sel);
                         }
@@ -105,7 +104,7 @@ namespace Recellection.Code.Controllers
 						// TODO:  - Activate menu (what u wanna do /w fromBuilding?)
 						// TODO:  - DO SHIT!
 
-						selectedBuilding = map.GetTile(absoluteCoordinate).GetBuilding();
+						Building selectedBuilding = map.GetTile(absoluteCoordinate).GetBuilding();
 
 						sel = retrieveSelection();
 						absoluteCoordinate = new Point(sel.point.X + theWorld.LookingAt.X,
