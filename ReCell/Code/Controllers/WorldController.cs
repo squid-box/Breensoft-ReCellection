@@ -94,7 +94,7 @@ namespace Recellection.Code.Controllers
 						}
 						if (sel.point.X == 2 && sel.point.Y == 1 && map.GetTile(previousSelection.point).GetBuilding() != null)
                         {
-                            BuildingMenu(sel);
+                            BuildingMenu(previousSelection);
                         }
                         break;
 					case State.BUILDING:
