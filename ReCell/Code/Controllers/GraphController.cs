@@ -73,14 +73,16 @@ namespace Recellection.Code.Controllers
             {
                 temp.baseBuilding = null;
             }
-            if (GetGraph(building).CountBuildings() == 1)
-            {
-                building.owner.GetGraphs().Remove(temp);
-            }
+            
             
 			GetGraph(building).Remove(building);
 
-            components.Remove(temp);
+            
+            if (temp.CountBuildings() == 0)
+            {
+                building.owner.GetGraphs().Remove(temp);
+                components.Remove(temp);
+            }
 		}
 		
 		/// <summary>

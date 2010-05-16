@@ -240,7 +240,7 @@ namespace Recellection.Code.Models
 				if (TargetEntity != null)
 				{
 					// If it's a home-fromBuilding, we disperse around it :)
-					if (TargetEntity is Building && TargetEntity.owner == this.owner)
+					if ( TargetEntity is Building && ((Building)TargetEntity).IsAlive() && TargetEntity.owner == this.owner)
 					{
 						// We will now recieve new positions within a radius of our secondary target.
 						this.rallyPoint = TargetEntity;
