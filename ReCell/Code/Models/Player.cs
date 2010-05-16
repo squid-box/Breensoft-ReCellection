@@ -125,5 +125,18 @@ namespace Recellection.Code.Models
             }
             return retur;
         }
+
+        public uint CountUnits()
+        {
+            uint retur = 0;
+            foreach (Graph g in graphs)
+            {
+                foreach (Building b in g.GetBuildings())
+                {
+                    retur += (uint)b.CountUnits();
+                }
+            }
+            return retur;
+        }
     }
 }

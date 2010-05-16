@@ -41,16 +41,20 @@ namespace Recellection.Code.Controllers
         /// <param name="b"></param>
         private static void AttackTargets(AggressiveBuilding b)
         {
+            //TODO remove when middlepoint position is implemeted.
+            Vector2 buildingOffset = new Vector2(0.125f, 0.125f);
+
             logger.Trace("Attacking targets around a aggressive building at x: "+b.position.X+" y: "+b.position.Y );
-            /*foreach (Unit u in b.currentTargets)
+            foreach (Unit u in b.currentTargets)
             {
                 //Show kill graphix and make sound.
 
                 //Kill units here.....
+                KamikazeUnit temp = new KamikazeUnit(b.owner, Vector2.Add(b.position, buildingOffset), u);
 
-            }*/
+            }
             logger.Trace("Killing " + b.currentTargets.Count + " units.");
-            UnitController.KillUnits(b.currentTargets, b.currentTargets.Count);
+            //UnitController.KillUnits(b.currentTargets, b.currentTargets.Count);
             b.currentTargets.Clear();
         }
 
@@ -74,8 +78,8 @@ namespace Recellection.Code.Controllers
             menuIcons.Add(resourceCell);
             menuIcons.Add(defensiveCell);
             menuIcons.Add(aggressiveCell);
-            Menu BuildingMenu = new Menu(Globals.MenuLayout.FourMatrix, menuIcons, Language.Instance.GetString("ChooseBuilding"), Color.Black);
-            MenuController.LoadMenu(BuildingMenu);
+            Menu ConstructBuildingMenu = new Menu(Globals.MenuLayout.FourMatrix, menuIcons, Language.Instance.GetString("ChooseBuilding"), Color.Black);
+            MenuController.LoadMenu(ConstructBuildingMenu);
             Recellection.CurrentState = MenuView.Instance;
             Globals.BuildingTypes Building;
 
@@ -261,6 +265,37 @@ namespace Recellection.Code.Controllers
             uint buildingCount = payer.CountBuildingsOfType(type);
             return (uint)(defaultCost + (buildingCount * buildingCount * defaultCost / 2));
 
+        }
+
+
+        public static void HurtBuilding(Building toHurt, World theWorld)
+        {
+            /*toHurt.Damage(1);
+
+            if (!toHurt.IsAlive())
+            {
+                RemoveBuilding(toHurt);
+            }
+            lock (theWorld)
+            {
+                //theWorld.GetMap().GetTile((int)toHurt.position.X, (int)toHurt.position.Y).RemoveBuilding();
+            }*/
+            HurtBuilding(toHurt);
+        }
+        public static void HurtBuilding(Building toHurt)
+        {
+            toHurt.Damage(1);
+
+            if (!toHurt.IsAlive())
+            {
+                RemoveBuilding(toHurt);
+                lock (toHurt.controlZone)
+                {
+                    toHurt.controlZone.First().RemoveBuilding();
+                    //theWorld.GetMap().GetTile((int)toHurt.position.X, (int)toHurt.position.Y).RemoveBuilding();
+                }
+            }
+            
         }
     }
 }
