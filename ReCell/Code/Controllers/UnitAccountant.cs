@@ -53,13 +53,14 @@ namespace Recellection.Code.Controllers
             
 
             uint totalUnits = owner.CountUnits();
+            Vector2 buildingOffset = new Vector2(0.125f, 0.125f);
 
             foreach (Graph g in owner.GetGraphs())
             {
 				List<Unit> res = new List<Unit>();
 
                 //TODO Remove when middle point position is implemented.
-                Vector2 buildingOffset = new Vector2(0.125f, 0.125f);
+                
 
                 BaseBuilding b = g.baseBuilding;
                 if (b == null)
@@ -72,13 +73,13 @@ namespace Recellection.Code.Controllers
                     unitsToProduce = (int) (POP_CAP_PER_PLAYER - totalUnits);
                 }
                 logger.Debug("Producing " + unitsToProduce + " units!");
-                buildingOffset = Vector2.Add(buildingOffset, b.position);
+
                 for (int i = 0; i < unitsToProduce; i++)
                 {
                     // Places them randomly around the fromBuilding. - John
                     // No, it does not. - Martin
 
-                    res.Add(new Unit(b.owner, buildingOffset, b));
+                    res.Add(new Unit(b.owner, Vector2.Add(buildingOffset, b.position), b));
                 }
                 b.AddUnits(res);
             }

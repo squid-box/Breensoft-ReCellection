@@ -41,16 +41,20 @@ namespace Recellection.Code.Controllers
         /// <param name="b"></param>
         private static void AttackTargets(AggressiveBuilding b)
         {
+            //TODO remove when middlepoint position is implemeted.
+            Vector2 buildingOffset = new Vector2(0.125f, 0.125f);
+
             logger.Trace("Attacking targets around a aggressive building at x: "+b.position.X+" y: "+b.position.Y );
-            /*foreach (Unit u in b.currentTargets)
+            foreach (Unit u in b.currentTargets)
             {
                 //Show kill graphix and make sound.
 
                 //Kill units here.....
+                KamikazeUnit temp = new KamikazeUnit(b.owner, Vector2.Add(b.position, buildingOffset), u);
 
-            }*/
+            }
             logger.Trace("Killing " + b.currentTargets.Count + " units.");
-            UnitController.KillUnits(b.currentTargets, b.currentTargets.Count);
+            //UnitController.KillUnits(b.currentTargets, b.currentTargets.Count);
             b.currentTargets.Clear();
         }
 
