@@ -266,7 +266,7 @@ namespace Recellection.Code.Controllers
 
         public static void HurtBuilding(Building toHurt, World theWorld)
         {
-            toHurt.Damage(1000);
+            toHurt.Damage(1);
 
             if (!toHurt.IsAlive())
             {
