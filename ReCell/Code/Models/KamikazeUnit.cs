@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+using Recellection.Code.Controllers;
 
 namespace Recellection.Code.Models
 {
@@ -33,7 +35,7 @@ namespace Recellection.Code.Models
                         {
                             this.Kill();
                             ((Unit)TargetEntity).Kill();
-                            Sounds.Instance.LoadSound("Celldeath").Play();
+                            SoundsController.playSound("Celldeath", this.position);
                         }
                     }
 
@@ -43,10 +45,16 @@ namespace Recellection.Code.Models
             if(TargetEntity == null || TargetEntity is Unit && ((Unit)TargetEntity).isDead)
             {
                 this.Kill();
+                SoundsController.playSound("Celldeath", this.position);
                 return true;
             }
 
             return false;
+        }
+
+        public override Texture2D GetSprite()
+        {
+            return Recellection.textureMap.GetTexture(Globals.TextureTypes.Kamikaze);
         }
     }
 }
