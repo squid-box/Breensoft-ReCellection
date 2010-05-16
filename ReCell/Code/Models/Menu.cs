@@ -302,8 +302,8 @@ namespace Recellection
                 {
 					mi.targetTextureRectangle =
                         new Microsoft.Xna.Framework.Rectangle(
-							(position % 3) * iconWidth / 2 - mi.texture.Width / 2,
-							(position / 3) * iconHeight / 2 - mi.texture.Height / 2,
+							(position % 3) * iconWidth  + (iconWidth / 2)  - (mi.texture.Width / 2),
+							(position / 3) * iconHeight + (iconWidth / 2)  - (mi.texture.Height / 2),
 							(mi.texture.Width),
 							(mi.texture.Height));
 
