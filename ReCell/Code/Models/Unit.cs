@@ -133,8 +133,6 @@ namespace Recellection.Code.Models
             {
 				((Building)rallyPoint).RemoveUnit(this);
             }
-            // Make pop:ing sound!
-            Sounds.Instance.LoadSound("Celldeath").Play();
         }
         
         private void callRainCheckOnTarget()
@@ -253,6 +251,9 @@ namespace Recellection.Code.Models
 					if (TargetEntity.owner != this.owner)
 					{
 						this.Kill();
+
+						// Make pop:ing sound!
+						Sounds.Instance.LoadSound("Celldeath").Play();
 						
 						if (TargetEntity is Unit)
 						{

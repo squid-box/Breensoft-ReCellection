@@ -120,8 +120,7 @@ namespace Recellection.Code.Controllers
             foreach (Unit u in units)
             {
 				// Try to find enemies for this unit!
-				if (u.TargetEntity != null &&
-					u.TargetEntity.owner != u.owner)
+				if (u.TargetEntity == null || u.TargetEntity.owner != u.owner)
 				{
 					Tile t = worldMap.GetTile((int)u.position.X, (int)u.position.Y);
 					foreach (Unit ou in t.GetUnits())
