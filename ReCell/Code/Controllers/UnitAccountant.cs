@@ -50,14 +50,17 @@ namespace Recellection.Code.Controllers
         public void ProduceUnits()
         {
             Random randomer = new Random();
-            //TODO Remove when middle point position is implemented.
+            
 
             uint totalUnits = owner.CountUnits();
 
             foreach (Graph g in owner.GetGraphs())
             {
 				List<Unit> res = new List<Unit>();
+
+                //TODO Remove when middle point position is implemented.
                 Vector2 buildingOffset = new Vector2(0.125f, 0.125f);
+
                 BaseBuilding b = g.baseBuilding;
                 int unitsToProduce = b.RateOfProduction;
                 if (b.RateOfProduction + totalUnits > POP_CAP_PER_PLAYER)
