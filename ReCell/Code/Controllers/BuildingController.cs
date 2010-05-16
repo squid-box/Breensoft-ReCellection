@@ -49,6 +49,7 @@ namespace Recellection.Code.Controllers
                 //Kill units here.....
 
             }*/
+            logger.Trace("Killing " + b.currentTargets.Count + " units.");
             UnitController.KillUnits(b.currentTargets, b.currentTargets.Count);
             b.currentTargets.Clear();
         }
@@ -73,8 +74,8 @@ namespace Recellection.Code.Controllers
             menuIcons.Add(resourceCell);
             menuIcons.Add(defensiveCell);
             menuIcons.Add(aggressiveCell);
-            Menu BuildingMenu = new Menu(Globals.MenuLayout.FourMatrix, menuIcons, Language.Instance.GetString("ChooseBuilding"), Color.Black);
-            MenuController.LoadMenu(BuildingMenu);
+            Menu ConstructBuildingMenu = new Menu(Globals.MenuLayout.FourMatrix, menuIcons, Language.Instance.GetString("ChooseBuilding"), Color.Black);
+            MenuController.LoadMenu(ConstructBuildingMenu);
             Recellection.CurrentState = MenuView.Instance;
             Globals.BuildingTypes Building;
 

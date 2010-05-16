@@ -92,18 +92,14 @@ namespace Recellection.Code.Controllers
 		{
             if (sourceBuilding == null || (sourceBuilding).baseBuilding.IsAlive())
             {
-                logger.Info("Added base building " + newBaseBuilding + " and created a new graph from it.");
-
-                Graph graph = new Graph(newBaseBuilding);
-                components.Add(graph);
-                return graph;
+                return AddBaseBuilding(newBaseBuilding);
             }
-
             else
             {
                 logger.Info("Added base building " + newBaseBuilding + " to a graph missing an alive base building.");
                 Graph graph = GetGraph(sourceBuilding);
                 graph.baseBuilding = newBaseBuilding;
+                graph.Add(newBaseBuilding);
                 return graph;
             }
 		}
@@ -223,14 +219,14 @@ namespace Recellection.Code.Controllers
 				if (inNeed.Count == 0)
 				{
 					logger.Debug("There is no need, don't balance.");
-					return;
+                    continue;
 				}
 				
 				// If there is nothing to give, don't balance.
 				if (withExcess.Count == 0)
 				{
 					logger.Debug("There is nothing to give, don't balance.");
-					return;
+					continue;
 				}
 
 				// Try to even out the unit count in every fromBuilding

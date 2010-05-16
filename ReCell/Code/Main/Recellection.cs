@@ -39,8 +39,11 @@ namespace Recellection
         public static Viewport viewPort;
         public static SpriteFont screenFont;
         public static Color breen = new Color(new Vector3(0.4f, 0.3f, 0.1f));
+        public static Effect bgShader;
         public static GraphicsDeviceManager graphics;
         public Thread LogicThread { get; set; }
+
+        
 
         TobiiController tobiiController;
         SpriteBatch spriteBatch;
@@ -108,6 +111,7 @@ namespace Recellection
 
             screenFont = Content.Load<SpriteFont>("Fonts/ScreenFont");
             consoleFont = Content.Load<SpriteFont>("Fonts/ConsoleFont");
+            bgShader = Content.Load<Effect>("Shader/backgroundShaders");
 
             audioPlayer = new AudioPlayer(Content);
             audioPlayer.PlaySong(Globals.Songs.Theme);
@@ -195,6 +199,9 @@ namespace Recellection
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Draw(GameTime gameTime)
 		{
+            if(currentState is WorldView)
+                WorldView.Instance.RenderToTex(spriteBatch, gameTime);
+
 			spriteBatch.Begin(SpriteBlendMode.AlphaBlend, SpriteSortMode.BackToFront, SaveStateMode.None);
             if (currentState != null)
 			{

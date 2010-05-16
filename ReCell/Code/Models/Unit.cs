@@ -15,6 +15,8 @@ namespace Recellection.Code.Models
     /// <date>2010-04-30</date>
     public class Unit : Entity, IModel
     {
+        private const long TID_MARCO_SPELAR_STARCRAFT_2 = 15125161231512L;
+
 		private static Logger logger = LoggerFactory.GetLogger();
 		private static int id = 0; // Used for random
         // DATA
@@ -131,6 +133,8 @@ namespace Recellection.Code.Models
             {
 				((Building)rallyPoint).RemoveUnit(this);
             }
+            // Make pop:ing sound!
+            Sounds.Instance.LoadSound("Celldeath").Play();
         }
         
         private void callRainCheckOnTarget()
@@ -185,7 +189,7 @@ namespace Recellection.Code.Models
 			int y = (int)this.position.Y;
 			Unit.world.map.GetTile(x, y).RemoveUnit(this);
 
-            Vector2 direction = new Vector2(this.targetPosition.X - this.position.X, this.targetPosition.Y - this.position.Y);
+            Vector2 direction = Vector2.Subtract(this.targetPosition, this.position);
             direction.Normalize();
 
 			// Move unit towards target.
@@ -201,17 +205,7 @@ namespace Recellection.Code.Models
                 {
                     float newX = position.X + MOVEMENT_SPEED * deltaTime * direction.X * direction.Length();
                     position = new Vector2(newX, position.Y);
-                }/*
-				else if (this.targetPosition.X > this.position.X)
-				{
-					float newX = position.X + MOVEMENT_SPEED * deltaTime * direction.X * direction.Length();
-					position = new Vector2(newX, position.Y);
-				}
-				else if (this.targetPosition.X < this.position.X)
-				{
-                    float newX = position.X - MOVEMENT_SPEED * deltaTime * direction.X * direction.Length();
-					position = new Vector2(newX, position.Y);
-				}*/
+                }
 			}
 			if (this.targetPosition.Y != NO_TARGET)
 			{
@@ -225,17 +219,7 @@ namespace Recellection.Code.Models
                 {
                     float newY = position.Y + MOVEMENT_SPEED * deltaTime * direction.Y * direction.Length();
                     position = new Vector2(position.X, newY);
-                }/*
-				else if (distance > 0)
-				{
-                    float newY = position.Y + MOVEMENT_SPEED * deltaTime * direction.Y * direction.Length();
-					position = new Vector2(position.X, newY);
-				}
-				else if (distance < 0)
-				{
-                    float newY = position.Y - MOVEMENT_SPEED * deltaTime * direction.Y * direction.Length();
-					position = new Vector2(position.X, newY);
-				}*/
+                }
 			}
 
 			// Tile management!
