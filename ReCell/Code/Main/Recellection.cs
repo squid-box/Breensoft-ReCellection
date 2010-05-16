@@ -168,6 +168,11 @@ namespace Recellection
 				this.Exit();
 			}
 			
+			if (kBState.IsKeyDown(Keys.End))
+			{
+				WorldController.finished = true;
+			}
+			
             if (kBState.IsKeyDown(Keys.F) && lastKBState.IsKeyUp(Keys.F))
             {
                 System.Windows.Forms.Form form = (System.Windows.Forms.Form)System.Windows.Forms.Control.FromHandle(this.Window.Handle);
