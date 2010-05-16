@@ -95,14 +95,14 @@ namespace Recellection.Code.Controllers
                 // Let the units move!
                 logger.Info("Moving units!");
                 
-                for(int i = 0; i < 100; i++)
+                for(int i = 0; i < 200; i++)
                 {
 					Code.Models.World.Map theWholeFuckingWorld = world.GetMap();
 					for (int x = 0; x < theWholeFuckingWorld.width; x++)
 					{
 						for (int y = 0; y < theWholeFuckingWorld.height; y++)
 						{
-							UnitController.Update(theWholeFuckingWorld.GetTile(x, y).GetUnits(), 1);
+							UnitController.Update(theWholeFuckingWorld.GetTile(x, y).GetUnits(), 1, world.GetMap());
 						}
 					}
 					System.Threading.Thread.Sleep(10);

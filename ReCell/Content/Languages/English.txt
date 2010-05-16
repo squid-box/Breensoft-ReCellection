@@ -12,6 +12,10 @@ MainMenu7=Test7
 MainMenu8=Test8
 
 ChooseBuilding=Choose the kind of cell you want to build.
+SetWeight=Set level of protection.
+BuildCell=Build a new cell.
+RemoveCell=Remove this cell.
+UpgradeUnits=Upgrade all units.
 
 OptionsMenu1=OTest1
 OptionsMenu2=OTest2
