@@ -63,7 +63,6 @@ namespace Recellection.Code.Controllers
 		{
 			Selection sel = new Selection();
 			sel.state = State.NONE;
-			
 			finished = false;
             while (!finished)
             {
@@ -72,7 +71,6 @@ namespace Recellection.Code.Controllers
                 // Generate the appropriate menu for this state.
                 // Get the active GUI Region and invoke the associated method.
 				sel = retrieveSelection();
-
 				
                 // They are used if the state needs true coordinates, scroll only uses deltas.
                 Point absoluteCoordinate = new Point(sel.point.X + theWorld.LookingAt.X, 
