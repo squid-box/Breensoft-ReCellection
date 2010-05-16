@@ -73,14 +73,16 @@ namespace Recellection.Code.Controllers
             {
                 temp.baseBuilding = null;
             }
-            if (GetGraph(building).CountBuildings() == 1)
-            {
-                building.owner.GetGraphs().Remove(temp);
-            }
+            
             
 			GetGraph(building).Remove(building);
 
-            components.Remove(temp);
+            
+            if (temp.CountBuildings() == 0)
+            {
+                building.owner.GetGraphs().Remove(temp);
+                components.Remove(temp);
+            }
 		}
 		
 		/// <summary>
@@ -205,8 +207,8 @@ namespace Recellection.Code.Controllers
 				int totalUnits = SumUnitsInGraph(g);
 
 				// Figure out the unit balance for each fromBuilding
-				LinkedList<BuildingBalance> inNeed = new LinkedList<BuildingBalance>();
-				LinkedList<BuildingBalance> withExcess = new LinkedList<BuildingBalance>();
+				Queue<BuildingBalance> inNeed = new Queue<BuildingBalance>();
+				Queue<BuildingBalance> withExcess = new Queue<BuildingBalance>();
 				logger.Debug("Figuring out the unit balancing for each building");
 				foreach(Building b in g.GetBuildings())
 				{
@@ -218,7 +220,7 @@ namespace Recellection.Code.Controllers
 					if (unitBalance > 0)
 					{
 						logger.Trace("Building has extra units to give.");
-						withExcess.AddLast(new BuildingBalance(b, unitBalance));
+						withExcess.Enqueue(new BuildingBalance(b, unitBalance));
 					}
 					else if (unitBalance < 0)
 					{
@@ -227,7 +229,7 @@ namespace Recellection.Code.Controllers
 						if (unitBalance < 0)
 						{
 							logger.Trace("Building is still in need of units.");
-							inNeed.AddLast(new BuildingBalance(b, unitBalance));
+							inNeed.Enqueue(new BuildingBalance(b, unitBalance));
 						}
 					}
 					else
@@ -255,8 +257,8 @@ namespace Recellection.Code.Controllers
 				bool balancingIsPossible = inNeed.Count > 0 && withExcess.Count > 0;
 				while (balancingIsPossible)
 				{
-					BuildingBalance want = inNeed.First.Value;
-					BuildingBalance has = withExcess.First.Value;
+					BuildingBalance want = inNeed.Peek();
+					BuildingBalance has = withExcess.Peek();
 					int transferableUnits = Math.Min(has.balance, Math.Abs(want.balance));
 
 					logger.Trace("Transferring units "+transferableUnits+" from " + has.building + " to " + want.building + ".");
@@ -269,13 +271,13 @@ namespace Recellection.Code.Controllers
 					if (has.balance == 0)
 					{
 						logger.Trace("Having building "+has.building+" is now satisfied. Removing from balancing.");
-						withExcess.RemoveFirst();
+						withExcess.Dequeue();
 					}
 					
 					if (want.balance == 0)
 					{
 						logger.Trace("Wanting building "+want.building + " is now satisfied. Removing from balancing.");
-						inNeed.RemoveFirst();
+						inNeed.Dequeue();
 					}
 					
 					
