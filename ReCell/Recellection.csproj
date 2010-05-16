@@ -20,7 +20,7 @@
     <ManifestCertificateThumbprint>32D2A2A7C29AF997CD9B107E2724ACBA594DEC06</ManifestCertificateThumbprint>
     <ManifestKeyFile>Recellection_TemporaryKey.pfx</ManifestKeyFile>
     <GenerateManifests>true</GenerateManifests>
-    <SignManifests>true</SignManifests>
+    <SignManifests>false</SignManifests>
     <PublishUrl>C:\Users\Martin Nycander\Desktop\</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Disk</InstallFrom>
