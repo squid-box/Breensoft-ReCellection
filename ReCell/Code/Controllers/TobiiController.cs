@@ -103,12 +103,29 @@ namespace Recellection
         /// <param name="menu"></param>
         public void LoadMenu(Menu menu)
         {
-            //Interaction.Regions.Clear();    // This seems to break, at least on my laptop.
-            //Interaction.
+            //Interaction.Regions.Clear();    // This seems to break, at least on my laptop.          
             foreach(GUIRegion region in menu.GetRegions())
             {
                 AddRegion(region);
             }
+            #region offregions handled seperately
+            if (menu.TopOffRegion != null)
+            {                
+                AddRegion(menu.TopOffRegion.region);
+            }
+            if (menu.BottomOffRegion != null)
+            {
+                AddRegion(menu.BottomOffRegion.region);
+            }
+            if (menu.RightOffRegion != null)
+            {
+                AddRegion(menu.RightOffRegion.region);
+            }
+            if (menu.LeftOffRegion != null)
+            {
+                AddRegion(menu.LeftOffRegion.region);
+            }
+            #endregion
 
         }
 
@@ -119,8 +136,7 @@ namespace Recellection
         /// <param name="menu"></param>
         [Obsolete("not tested yet")]
         public void UnloadMenu(Menu menu)
-        {
-            
+        {            
             foreach (GUIRegion region in menu.GetRegions())
             {
                 Interaction.RemoveRegion(region.RegionIdentifier);
