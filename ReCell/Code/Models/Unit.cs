@@ -137,8 +137,8 @@ namespace Recellection.Code.Models
 			{
 				// We will wander around our disperseAround
 				isDispersed = false;
-				return new Vector2(disperseAround.position.X + ((float)rand.NextDouble() * 2f - 1f),
-										disperseAround.position.Y + ((float)rand.NextDouble() * 2f - 1f));
+				return new Vector2(disperseAround.position.X + ((float)rand.NextDouble() * 3f - 1.5f),
+										disperseAround.position.Y + ((float)rand.NextDouble() * 3f - 1.5f));
 			}
 			else
 			{
