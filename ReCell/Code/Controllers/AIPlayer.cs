@@ -6,6 +6,7 @@ using Recellection.Code;
 using Recellection.Code.Models;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Recellection.Code.Utility.Logger;
 
 namespace Recellection.Code.Controllers
 {
@@ -21,6 +22,7 @@ namespace Recellection.Code.Controllers
         private List<Vector2> m_enemyPoints;
         private int distanceThreshold;
         private Random randomFactory;
+        private Logger log;
 
 
 
@@ -32,6 +34,7 @@ namespace Recellection.Code.Controllers
         public AIPlayer(List<Player> opponents, AIView view, Color c)
             : base(c, "AIPLAYER")
         {
+            log = Utility.Logger.LoggerFactory.GetLogger();
             randomFactory = new Random();
             m_view = view;
             m_opponents = opponents;
@@ -127,7 +130,17 @@ namespace Recellection.Code.Controllers
             int scoutSize = 10;
 
             //Take the units from the base fromBuilding
-            Tile source = m_view.getTileAt(m_view.baseBuilding.GetPosition());
+            Building bb = GetGraphs()[0].baseBuilding;
+            if (bb == null)
+            {
+                log.Fatal("Base Building was null");
+            }
+            Tile source = m_view.getTileAt(bb.GetPosition());
+            if (source == null)
+            {
+                return;
+                
+            }
 
             //Move the units to some location at the other end of the map
             Tile dest = m_view.getTileAt(randomPointAtOppositeQuadrant());
@@ -143,7 +156,7 @@ namespace Recellection.Code.Controllers
         /// <returns></returns>
         private Vector2 randomPointAtOppositeQuadrant()
         {
-            Vector2 baseCoords = m_view.baseBuilding.GetPosition();
+            Vector2 baseCoords = GetGraphs()[0].baseBuilding.GetPosition();
 
             //Get the opposite end of the map relative to the base fromBuilding.
             Vector2 quadrantCenter = Vector2.Subtract(new Vector2(m_view.mapWidth, m_view.mapHeight), baseCoords);
@@ -206,7 +219,7 @@ namespace Recellection.Code.Controllers
             }
             if (CanHoldPoint(point))
             {
-                IssueBuildOrder(point, m_view.baseBuilding, Globals.BuildingTypes.Resource);
+                IssueBuildOrder(point, GetGraphs()[0].baseBuilding, Globals.BuildingTypes.Resource);
             }
             else
             {
@@ -277,7 +290,7 @@ namespace Recellection.Code.Controllers
         /// <param name="buildingType"></param>
         private void IssueBuildOrder(Vector2 point, Building baseBuilding, Globals.BuildingTypes buildingType)
         {
-            BuildingController.AddBuilding(buildingType, baseBuilding, point, m_view.world, this);
+            BuildingController.AddBuilding(buildingType, GetGraphs()[0].baseBuilding, point, m_view.world, this);
         }
 
     }
