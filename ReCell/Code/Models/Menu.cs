@@ -14,12 +14,62 @@ namespace Recellection
 	/// </summary>
 
 	public class Menu
-	{
+    {
+        
         private const int FONT_SIZE = 40;
         private const int FONT_WIDTH = 20;
         private const int CHARS_PER_ROW = 15;
         
-	    private List<MenuIcon> icons;
+        #region offRegions
+
+        
+        private MenuIcon leftOffRegion;
+        public MenuIcon LeftOffRegion
+        {
+            get { return leftOffRegion; }
+            set 
+            { 
+                leftOffRegion = value;
+                leftOffRegion.region = new GUIRegion(Recellection.windowHandle,new System.Windows.Rect(-500,0,500,System.Windows.Forms.SystemInformation.PrimaryMonitorSize.Height));
+            }
+        }
+
+        private MenuIcon rightOffRegion;
+        public MenuIcon RightOffRegion
+        {
+            get { return rightOffRegion; }
+            set 
+            { 
+                rightOffRegion = value;
+                rightOffRegion.region = new GUIRegion(Recellection.windowHandle, new System.Windows.Rect(System.Windows.Forms.SystemInformation.PrimaryMonitorSize.Width, 0, 500, System.Windows.Forms.SystemInformation.PrimaryMonitorSize.Height));
+            }
+        }
+
+        private MenuIcon topOffRegion;
+        public MenuIcon TopOffRegion
+        {
+            get { return topOffRegion; }
+            set
+            {
+                topOffRegion = value;
+                topOffRegion.region = new GUIRegion(Recellection.windowHandle, new System.Windows.Rect(0, -500, System.Windows.Forms.SystemInformation.PrimaryMonitorSize.Height,500));
+            }
+        }
+
+        private MenuIcon bottomOffRegion;
+        public MenuIcon BottomOffRegion
+        {
+            get { return bottomOffRegion; }
+            set
+            {
+                bottomOffRegion = value;
+                bottomOffRegion.region = new GUIRegion(Recellection.windowHandle, new System.Windows.Rect(0, System.Windows.Forms.SystemInformation.PrimaryMonitorSize.Height, System.Windows.Forms.SystemInformation.PrimaryMonitorSize.Width, 500));
+            }
+        }
+
+        #endregion
+
+        private List<MenuIcon> icons;
         private Texture2D menuPic;
         public String explanation { get; private set; }
         public Vector2 explanationDrawPos { get; private set; }
