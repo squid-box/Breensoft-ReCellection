@@ -5,6 +5,7 @@ using System.Text;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Recellection.Code.Utility.Logger;
+using Recellection.Code.Controllers;
 
 namespace Recellection.Code.Models
 {
@@ -261,7 +262,7 @@ namespace Recellection.Code.Models
 						}
 						else if (TargetEntity is Building)
 						{
-							((Building)TargetEntity).Damage(1);
+							BuildingController.HurtBuilding((Building)TargetEntity, world);
 						}
 					}
 					
