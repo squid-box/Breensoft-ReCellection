@@ -6,6 +6,7 @@ using Microsoft.Xna.Framework.Graphics;
 using System.Threading;
 using Recellection.Code.Main;
 using Recellection.Code.Models;
+using System.Diagnostics;
 
 // We should be able to test internals
 [assembly: InternalsVisibleTo("RecellectionTests")]
@@ -19,6 +20,9 @@ namespace Recellection
         /// </summary>
         static void Main(string[] args)
 		{
+            Process p = Process.GetCurrentProcess();
+            p.PriorityClass = ProcessPriorityClass.High;
+
 			LoggerSetup.Initialize();
 
 			Language.Instance.SetLanguage("English");
