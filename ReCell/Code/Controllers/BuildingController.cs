@@ -117,7 +117,7 @@ namespace Recellection.Code.Controllers
 
             // If we have selected a tile, and we can place a building at the selected tile...					
 
-            if (! BuildingController.AddBuilding(Building, sourceBuilding,
+            if (! AddBuilding(Building, sourceBuilding,
                     constructTile.position, theWorld, player))
             {
                 Sounds.Instance.LoadSound("Denied").Play();
