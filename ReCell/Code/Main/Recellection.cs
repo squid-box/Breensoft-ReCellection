@@ -48,6 +48,7 @@ namespace Recellection
         TobiiController tobiiController;
         SpriteBatch spriteBatch;
 
+		public static SpriteFont worldFont;
 
         // Current state!
         private static IView currentState;
@@ -111,6 +112,7 @@ namespace Recellection
 
             screenFont = Content.Load<SpriteFont>("Fonts/ScreenFont");
             consoleFont = Content.Load<SpriteFont>("Fonts/ConsoleFont");
+			worldFont = Content.Load<SpriteFont>("Fonts/WorldFont");
             bgShader = Content.Load<Effect>("Shader/backgroundShaders");
 
             audioPlayer = new AudioPlayer(Content);

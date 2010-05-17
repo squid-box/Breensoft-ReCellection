@@ -9,6 +9,7 @@ using Microsoft.Xna.Framework;
 using Recellection.Code.Utility.Logger;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using Recellection.Code.Utility.Console;
 
 namespace Recellection.Code.Views
 {
@@ -275,7 +276,17 @@ namespace Recellection.Code.Views
 
                     Rectangle r = new Rectangle(x * Globals.TILE_SIZE, y * Globals.TILE_SIZE, Globals.TILE_SIZE, Globals.TILE_SIZE);
 
-                    spriteBatch.Draw(t.GetSprite(), r, Color.White);
+					spriteBatch.Draw(t.GetSprite(), r, Color.White);
+					Building b = t.GetBuilding();
+					if (b != null)
+					{
+						float fontX, fontY;
+						Vector2 stringSize = Recellection.worldFont.MeasureString(b.GetUnits().Count.ToString());
+						fontX = (float)(r.X + r.Width/2) - stringSize.X/2;
+						fontY = (float)(r.Y + r.Height/4) - stringSize.Y;
+
+						spriteBatch.DrawString(Recellection.worldFont, b.GetUnits().Count.ToString(), new Vector2(fontX, fontY), Color.Black);
+					}
                 }
             }
             
