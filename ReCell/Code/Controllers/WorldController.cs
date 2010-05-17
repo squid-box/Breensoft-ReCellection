@@ -347,11 +347,23 @@ namespace Recellection.Code.Controllers
 					Sounds.Instance.LoadSound("Denied");
 					return;
 				}
+
+				Point DestAbsoluteCordinate = new Point(destsel.point.X + theWorld.LookingAt.X,
+													 destsel.point.Y + theWorld.LookingAt.Y);
+				Tile selectedTile = map.GetTile(DestAbsoluteCordinate);
+				Building selectedBuilding = selectedTile.GetBuilding();
 				
-                Point DestAbsoluteCordinate = new Point(destsel.point.X + theWorld.LookingAt.X,
-                                                     destsel.point.Y + theWorld.LookingAt.Y);
-                Tile destTile = map.GetTile(absoluteCordinate);
-                BuildingController.ConstructBuilding(playerInControll, destTile, building, theWorld);
+				if (selectedBuilding != null
+				 && selectedTile.GetBuilding() == null
+				 && selectedBuilding.owner == playerInControll)
+                {
+					BuildingController.ConstructBuilding(playerInControll, selectedTile, building, theWorld);
+				}
+				else
+				{
+					Sounds.Instance.LoadSound("Denied");
+					return;
+				}
             }
             else if (choosenMenu.Equals(removeCell))
             {
