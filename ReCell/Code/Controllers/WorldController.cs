@@ -25,7 +25,8 @@ namespace Recellection.Code.Controllers
         public struct Selection
         {
 			public State state;
-			public Point point;
+            public Point point;
+            public Point absPoint;
         }
         
         private const long SCROLL_ZONE_DWELL_TIME = 0;//250000;
@@ -74,17 +75,13 @@ namespace Recellection.Code.Controllers
 				sel = retrieveSelection();
 				
                 // They are used if the state needs true coordinates, scroll only uses deltas.
-                Point absoluteCoordinate = new Point(sel.point.X + theWorld.LookingAt.X,
-													 sel.point.Y + theWorld.LookingAt.Y);
-				Point PreviousAbsoluteCoordinate = new Point(previousSelection.point.X + theWorld.LookingAt.X,
-											 previousSelection.point.Y + theWorld.LookingAt.Y);
 
 				World.Map map = theWorld.GetMap();
 
 				// If this is the first time we select a tile...
 				if(selectedTile != null)
 					selectedTile.active = false;
-				selectedTile = map.GetTile(absoluteCoordinate);
+				selectedTile = map.GetTile(sel.absPoint);
 				selectedTile.active = true;
 
 				if (sel.point.X == 1 && sel.point.Y == 1)
@@ -119,7 +116,8 @@ namespace Recellection.Code.Controllers
 
 			x = Int32.Parse(splitted[0]);
 			y = Int32.Parse(splitted[1]);
-			
+
+            Point absoluteCordinate = new Point(x + theWorld.LookingAt.X, y + theWorld.LookingAt.Y);
             Selection s = new Selection();
             if(activatedMenuIcon.labelColor.Equals(Color.NavajoWhite))
             {
@@ -128,11 +126,13 @@ namespace Recellection.Code.Controllers
 				{
 					s.state = State.BUILDING;
 					s.point = new Point(x, y);
+                    s.absPoint = absoluteCordinate;
 				}
 				else
 				{
 					s.state = State.TILE;
 					s.point = new Point(x, y);
+                    s.absPoint = absoluteCordinate;
 				}
             }
             else if (activatedMenuIcon.labelColor.Equals(Color.Chocolate))
@@ -268,10 +268,9 @@ namespace Recellection.Code.Controllers
     /// <param name="theSelection"></param>
         private void BuildingMenu(Selection theSelection)
         {
-            Point absoluteCordinate = new Point(theSelection.point.X + theWorld.LookingAt.X,
-                                                     theSelection.point.Y + theWorld.LookingAt.Y);
+            
             World.Map map = theWorld.GetMap();
-            Building building = map.GetTile(absoluteCordinate).GetBuilding();
+            Building building = map.GetTile(theSelection.absPoint).GetBuilding();
             if (building == null || building.owner != playerInControll)
             {
                 return;
@@ -305,10 +304,7 @@ namespace Recellection.Code.Controllers
 					Sounds.Instance.LoadSound("Denied");
 					return;
 				}
-
-				Point DestAbsoluteCordinate = new Point(destsel.point.X + theWorld.LookingAt.X,
-													 destsel.point.Y + theWorld.LookingAt.Y);
-				Tile selectedTile = map.GetTile(DestAbsoluteCordinate);
+                Tile selectedTile = map.GetTile(destsel.absPoint);
 				
 				if (selectedTile.GetBuilding() == null)
                 {
