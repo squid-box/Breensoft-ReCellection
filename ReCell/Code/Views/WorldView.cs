@@ -24,7 +24,7 @@ namespace Recellection.Code.Views
         private List<Tile> tileCollection;
 
         private Texture2D backgroundTex = Recellection.textureMap.GetTexture(Globals.TextureTypes.white);
-
+		
         public static bool doLights = false;
         public static bool doGrain = false;
         public static bool doRipples = false;
@@ -52,7 +52,8 @@ namespace Recellection.Code.Views
 
             this.World = world;
             myLogger = LoggerFactory.GetLogger();
-            myLogger.SetThreshold(LogLevel.ERROR);
+            //myLogger.SetTarget(LoggerSetup.GetLogFileTarget("WorldView.log"));
+            myLogger.SetThreshold(LogLevel.FATAL);
             myLogger.Info("Created a WorldView.");
 
             //To make sure the lookingAt in world would make the world view draw tiles that does not exists align it.
@@ -127,7 +128,13 @@ namespace Recellection.Code.Views
 				this.World.LookingAt = new Point(this.World.LookingAt.X, 0);
             }
         }
-
+		
+		private Vector2 TileToPixels(Vector2 tileCoords)
+		{
+			Vector2 pixelCoords = new Vector2();
+			Vector2.Multiply(ref tileCoords, (float)Globals.TILE_SIZE, out pixelCoords);
+			return pixelCoords;
+		}
 
         /// <summary>
         /// I have no idea what this is supposed to do.
@@ -147,51 +154,52 @@ namespace Recellection.Code.Views
 			drawTexture(spriteBatch, backgroundTex, new Rectangle(0, 0, Recellection.viewPort.Width, Recellection.viewPort.Height));
             #endregion
 			
-            Building b;
             lock (tileCollection)
-            {
+			{
+				Layer = 0.75f;
+				// Go through each players graphs and draw lines between buildings.
+				foreach (Player p in World.players)
+				{
+					List<Graph> graphs = p.GetGraphs();
+					lock (graphs)
+					{
+						foreach (Graph g in graphs)
+						{
+							BaseBuilding bb = g.baseBuilding;
+							
+							if (bb == null)
+							{
+								// Graph is broken :(
+								continue;
+							}
+							
+							foreach(Building b in g.GetBuildings())
+							{
+								if (b == bb)
+									continue;
+								Vector2 lookAt = new Vector2(World.LookingAt.X, World.LookingAt.Y);
+								myLogger.Info("Drawing line between "+bb+" and "+b+".");
+								DrawLine(spriteBatch, TileToPixels(bb.position-lookAt), TileToPixels(b.position-lookAt), 
+											new Color(b.owner.color, 80), 10);
+							}
+						}
+					}
+				}
+				
                 foreach (Tile t in tileCollection)
-                {/*
-                    int x = (int)(t.position.X - (World.LookingAt.X));
-                    int y = (int)(t.position.Y - (World.LookingAt.Y));
-
-                    Rectangle r = new Rectangle(x * Globals.TILE_SIZE, y * Globals.TILE_SIZE, Globals.TILE_SIZE, Globals.TILE_SIZE);
-                    this.Layer = 0.9f;
-                    this.drawTexture(spriteBatch, t.GetSprite() , r);
-                    */
+                {
                     // Building? On my Tile?! It's more likely than you think.
-                    b = t.GetBuilding();
+                    Building b = t.GetBuilding();
                     if (b != null)
                     {
                         myLogger.Info("Found a building on the tile.");
 						this.Layer = 0.0f;
-						int bx = (int)Math.Round((b.position.X - World.LookingAt.X) * Globals.TILE_SIZE);
-						int by = (int)Math.Round((b.position.Y - World.LookingAt.Y) * Globals.TILE_SIZE);
-                        this.drawTexture(spriteBatch, b.GetSprite(),
-                            new Rectangle(bx, by, b.GetSprite().Width, b.GetSprite().Height),
+						Texture2D spr = b.GetSprite();
+						int bx = (int)Math.Round((b.position.X - World.LookingAt.X) * Globals.TILE_SIZE) - spr.Width/2;
+						int by = (int)Math.Round((b.position.Y - World.LookingAt.Y) * Globals.TILE_SIZE) - spr.Height/2;
+						this.drawTexture(spriteBatch, spr,
+							new Rectangle(bx, by, spr.Width, spr.Height),
                             b.owner.color);
-                    }
-
-                    // Go through each players graphs and draw lines between buildings.
-                    foreach (Player p in World.players)
-                    {
-                        lock (p.GetGraphs())
-                        {
-                            foreach (Graph g in p.GetGraphs())
-                            {
-                                Building[] bob = g.GetBuildings().ToArray();
-                                if (bob.Length < 1)
-                                {
-                                    for (int i = 1; i < bob.Length; i++)
-                                    {
-                                        /* Här tänkte jag ta och dra linjer
-                                         * mellan varje byggnad i grafen.
-                                         * But man, those lines.
-                                         */
-                                    }
-                                }
-                            }
-                        }
                     }
 
                     // Find those units!
@@ -202,12 +210,13 @@ namespace Recellection.Code.Views
                         foreach (Unit u in units)
                         {
                             this.Layer = 0.5f;
-							int ux = (int)Math.Round((u.position.X - World.LookingAt.X) * Globals.TILE_SIZE);
-							int uy = (int)Math.Round((u.position.Y - World.LookingAt.Y) * Globals.TILE_SIZE);
-                            this.drawTexture(spriteBatch, u.GetSprite(), new Rectangle(ux, uy, u.GetSprite().Width, u.GetSprite().Height), u.GetOwner().color);
+                            Texture2D spr = u.GetSprite();
+							int ux = (int)Math.Round((u.position.X - World.LookingAt.X) * Globals.TILE_SIZE) - spr.Width/2;
+							int uy = (int)Math.Round((u.position.Y - World.LookingAt.Y) * Globals.TILE_SIZE) - spr.Height/2;
+                            this.drawTexture(spriteBatch, spr, new Rectangle(ux, uy, spr.Width, spr.Height), u.GetOwner().color);
                         }
                     }
-                }
+				}
             }
 		}
         override public void Update(GameTime passedTime)
@@ -248,7 +257,7 @@ namespace Recellection.Code.Views
             
 			this.World.LookingAt = new Point(x, y);
         }
-
+		
         public void RenderToTex(SpriteBatch spriteBatch, GameTime gameTime)
         {
             RenderTarget2D backgroundTarget = new RenderTarget2D(Recellection.graphics.GraphicsDevice, Recellection.viewPort.Width, Recellection.viewPort.Height, 1, Recellection.graphics.GraphicsDevice.DisplayMode.Format);

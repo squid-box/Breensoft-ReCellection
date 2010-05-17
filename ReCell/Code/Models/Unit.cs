@@ -192,6 +192,7 @@ namespace Recellection.Code.Models
             Vector2 direction = Vector2.Subtract(this.targetPosition, this.position);
             direction.Normalize();
 
+
 			// Move unit towards target.
 			if (this.targetPosition.X != NO_TARGET)
 			{
@@ -229,7 +230,7 @@ namespace Recellection.Code.Models
 			Unit.world.map.GetTile(x, y).AddUnit(this);
 		}
 
-		private bool stopMovingIfGoalIsReached()
+		virtual protected bool stopMovingIfGoalIsReached()
 		{
 			// If we are reasonably close to target.
 			float dx = this.position.X - this.targetPosition.X;
@@ -241,7 +242,7 @@ namespace Recellection.Code.Models
 				if (TargetEntity != null)
 				{
 					// If it's a home-fromBuilding, we disperse around it :)
-					if (TargetEntity is Building && TargetEntity.owner == this.owner)
+					if ( TargetEntity is Building && ((Building)TargetEntity).IsAlive() && TargetEntity.owner == this.owner)
 					{
 						// We will now recieve new positions within a radius of our secondary target.
 						this.rallyPoint = TargetEntity;
@@ -252,18 +253,17 @@ namespace Recellection.Code.Models
 					// If this is an enemy! KILL IT! OMG
 					if (TargetEntity.owner != this.owner)
 					{
-						this.Kill();
-
-						// Make pop:ing sound!
-						Sounds.Instance.LoadSound("Celldeath").Play();
-						
 						if (TargetEntity is Unit && ! ((Unit)TargetEntity).isDead)
 						{
+							this.Kill();
 							((Unit)TargetEntity).Kill();
+							SoundsController.playSound("Celldeath", this.position);
 						}
-						else if (TargetEntity is Building)
+						else if (TargetEntity is Building && ((Building)TargetEntity).IsAlive())
 						{
-							BuildingController.HurtBuilding((Building)TargetEntity, world);
+							this.Kill();
+							BuildingController.HurtBuilding((Building)TargetEntity);
+							SoundsController.playSound("Celldeath", this.position);
 						}
 					}
 					
