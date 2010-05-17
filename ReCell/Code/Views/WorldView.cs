@@ -210,6 +210,27 @@ namespace Recellection.Code.Views
 						this.drawTexture(spriteBatch, spr,
 							new Rectangle(bx, by, spr.Width, spr.Height),
                             b.owner.color);
+
+                        //Number of units drawage
+                        int x = (int)(t.position.X - (World.LookingAt.X));
+                        int y = (int)(t.position.Y - (World.LookingAt.Y));
+                        Rectangle r = new Rectangle(x * Globals.TILE_SIZE, y * Globals.TILE_SIZE, Globals.TILE_SIZE, Globals.TILE_SIZE);
+                        float fontX, fontY;
+                        Vector2 stringSize;
+                        string infosz;
+
+                        infosz = b.GetUnits().Count.ToString();
+                        stringSize = Recellection.worldFont.MeasureString(infosz);
+                        fontX = (float)(r.X + r.Width / 2) - stringSize.X / 2;
+                        fontY = (float)(r.Y + r.Height / 4) - stringSize.Y;
+                        spriteBatch.DrawString(Recellection.worldFont, infosz, new Vector2(fontX, fontY), Color.Black);
+
+                        infosz = GraphController.Instance.GetWeight(b).ToString();
+                        stringSize = Recellection.worldFont.MeasureString(infosz);
+                        fontX = (float)(r.X + r.Width / 2) - stringSize.X / 2;
+                        fontY = (float)(r.Y + 3 * r.Height / 4) - stringSize.Y;
+                        spriteBatch.DrawString(Recellection.worldFont, infosz, new Vector2(fontX, fontY), Color.Black);
+
                     }
 
                     // Find those units!
@@ -301,25 +322,6 @@ namespace Recellection.Code.Views
                         if (t.active)
                         {
                             spriteBatch.Draw(Recellection.textureMap.GetTexture(Globals.TextureTypes.ActiveTile), r, Color.White);
-                        }
-                        Building b = t.GetBuilding();
-                        if (b != null)
-                        {
-                            float fontX, fontY;
-                            Vector2 stringSize;
-                            string infosz;
-
-                            infosz = b.GetUnits().Count.ToString();
-                            stringSize = Recellection.worldFont.MeasureString(infosz);
-                            fontX = (float)(r.X + r.Width / 2) - stringSize.X / 2;
-                            fontY = (float)(r.Y + r.Height / 4) - stringSize.Y;
-                            spriteBatch.DrawString(Recellection.worldFont, infosz, new Vector2(fontX, fontY), Color.Black);
-
-                            infosz = GraphController.Instance.GetWeight(b).ToString();
-                            stringSize = Recellection.worldFont.MeasureString(infosz);
-                            fontX = (float)(r.X + r.Width / 2) - stringSize.X / 2;
-                            fontY = (float)(r.Y + 3 * r.Height / 4) - stringSize.Y;
-                            spriteBatch.DrawString(Recellection.worldFont, infosz, new Vector2(fontX, fontY), Color.Black);
                         }
                     }
 
