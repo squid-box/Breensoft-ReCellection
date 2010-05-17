@@ -34,6 +34,7 @@ namespace Recellection.Code.Controllers
         private Logger myLogger;
         
 		private Selection previousSelection;
+		private Tile selectedTile;
 		
 		private Player playerInControll;
 
@@ -79,7 +80,12 @@ namespace Recellection.Code.Controllers
 											 previousSelection.point.Y + theWorld.LookingAt.Y);
 
 				World.Map map = theWorld.GetMap();
-				Tile selectedTile = map.GetTile(absoluteCoordinate);
+
+				// If this is the first time we select a tile...
+				if(selectedTile != null)
+					selectedTile.active = false;
+				selectedTile = map.GetTile(absoluteCoordinate);
+				selectedTile.active = true;
 
 				if (sel.point.X == 1 && sel.point.Y == 1)
 				{
