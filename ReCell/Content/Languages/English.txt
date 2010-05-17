@@ -11,6 +11,12 @@ MainMenu6=Test6
 MainMenu7=Test7
 MainMenu8=Test8
 
+ChooseBuilding=Choose the kind of cell you want to build.
+SetWeight=Set level of protection.
+BuildCell=Build a new cell.
+RemoveCell=Remove this cell.
+UpgradeUnits=Upgrade all units.
+
 OptionsMenu1=OTest1
 OptionsMenu2=OTest2
 OptionsMenu3=OTest3
@@ -41,4 +47,15 @@ SpecialCommandMenu6=CTest6
 SpecialCommandMenu7=CTest7
 SpecialCommandMenu8=CTest8
 
+Yes=Yes
+No=No
+AreYouSureYouWantToQuit=Are you sure you want to quit?
+
+[Graph]
+SetImportance=What weight do you want to set?
+
 [Game entities]
+BaseCell=Base Cell
+DefensiveCell=Defensive Cell
+AggressiveCell=Aggressive Cell
+ResourceCell=Resurce Cell

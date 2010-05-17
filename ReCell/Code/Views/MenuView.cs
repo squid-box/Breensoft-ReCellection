@@ -13,7 +13,7 @@ using Microsoft.Xna.Framework.Content;
 namespace Recellection
 {
 
-	public sealed class MenuView : IView
+	public class MenuView : IView
 	{
 		/// <summary>
 		/// author: co
@@ -71,12 +71,12 @@ namespace Recellection
 				if (mi.texture != null)
 				{
 					Layer = 0.5f;
-					this.drawTexture(spriteBatch, mi.texture, mi.targetRectangle);
+					this.drawTexture(spriteBatch, mi.texture, mi.targetTextureRectangle);
 				}
 				if (mi.label != null)
 				{
 					Layer = 0.25f;
-                    spriteBatch.DrawString(Recellection.screenFont, mi.label, new Vector2(mi.targetRectangle.X, mi.targetRectangle.Y), mi.labelColor);
+                    spriteBatch.DrawString(Recellection.screenFont, mi.label, new Vector2(mi.targetLabelRectangle.X, mi.targetLabelRectangle.Y), mi.labelColor);
 				}
 			}
 		}

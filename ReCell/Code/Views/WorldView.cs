@@ -18,20 +18,38 @@ namespace Recellection.Code.Views
     /// to the player. The World View contains the information that is relevant to a single player, and
     /// therefore has a reference to a Player-object.
     /// </summary>
-    class WorldView : IView
+    public class WorldView : IView
     {
         public Logger myLogger;
         private List<Tile> tileCollection;
 
-        private Texture2D backgroundTex;
+        private Texture2D backgroundTex = Recellection.textureMap.GetTexture(Globals.TextureTypes.white);
+
+        public static bool doLights = false;
+        public static bool doGrain = false;
+        public static bool doRipples = false;
+        
+        private Effect bgShaders;
+        private float calmRippleLowerBound = 1.5f;
+        private float calmRippleWaveDivider;
+        private float calmRippleMovementRate = 0.01f;
+        private float calmRippleDistortion = 0.5f;
+        private float crawler = 0;
+        private LightParticleSystem lps;
 
 		private static int maxCols = (int)((float)Recellection.viewPort.Width / (float)Globals.TILE_SIZE);
 		private static int maxRows = (int)((float)Recellection.viewPort.Height / (float)Globals.TILE_SIZE);
 		
         public World World { get; private set; }
 
+		public static WorldView Instance { get; set; }
+
         public WorldView(World world)
         {
+            lps = new LightParticleSystem(0.05f, Recellection.textureMap.GetTexture(Globals.TextureTypes.Light));
+
+            this.bgShaders = Recellection.bgShader;
+
             this.World = world;
             myLogger = LoggerFactory.GetLogger();
             myLogger.SetThreshold(LogLevel.ERROR);
@@ -47,8 +65,7 @@ namespace Recellection.Code.Views
             //this.World.LookingAt = new Vector2(0, 0);
             CreateCurrentView(this, new Event<Point>(this.World.LookingAt,EventType.ALTER));
 
-            
-
+			Instance = this;
         }
 
         private void CreateCurrentView(Object o, Event<Point> ev)
@@ -125,23 +142,23 @@ namespace Recellection.Code.Views
         {
             #region THIS IS BACKGROUNDDRAWAGE!
 
-			Texture2D back = Recellection.textureMap.GetTexture(Globals.TextureTypes.white);
+			//Texture2D back = Recellection.textureMap.GetTexture(Globals.TextureTypes.white);
 			Layer = 1.0f;
-			drawTexture(spriteBatch, back, new Rectangle(0, 0, Recellection.viewPort.Width, Recellection.viewPort.Height));
+			drawTexture(spriteBatch, backgroundTex, new Rectangle(0, 0, Recellection.viewPort.Width, Recellection.viewPort.Height));
             #endregion
 			
             Building b;
             lock (tileCollection)
             {
                 foreach (Tile t in tileCollection)
-                {
+                {/*
                     int x = (int)(t.position.X - (World.LookingAt.X));
                     int y = (int)(t.position.Y - (World.LookingAt.Y));
 
                     Rectangle r = new Rectangle(x * Globals.TILE_SIZE, y * Globals.TILE_SIZE, Globals.TILE_SIZE, Globals.TILE_SIZE);
                     this.Layer = 0.9f;
                     this.drawTexture(spriteBatch, t.GetSprite() , r);
-
+                    */
                     // Building? On my Tile?! It's more likely than you think.
                     b = t.GetBuilding();
                     if (b != null)
@@ -158,17 +175,20 @@ namespace Recellection.Code.Views
                     // Go through each players graphs and draw lines between buildings.
                     foreach (Player p in World.players)
                     {
-                        foreach (Graph g in p.GetGraphs())
+                        lock (p.GetGraphs())
                         {
-                            Building[] bob = g.GetBuildings().ToArray();
-                            if (bob.Length < 1)
+                            foreach (Graph g in p.GetGraphs())
                             {
-                                for (int i = 1; i < bob.Length; i++)
+                                Building[] bob = g.GetBuildings().ToArray();
+                                if (bob.Length < 1)
                                 {
-                                    /* Här tänkte jag ta och dra linjer
-                                     * mellan varje byggnad i grafen.
-                                     * But man, those lines.
-                                     */
+                                    for (int i = 1; i < bob.Length; i++)
+                                    {
+                                        /* Här tänkte jag ta och dra linjer
+                                         * mellan varje byggnad i grafen.
+                                         * But man, those lines.
+                                         */
+                                    }
                                 }
                             }
                         }
@@ -229,18 +249,87 @@ namespace Recellection.Code.Views
 			this.World.LookingAt = new Point(x, y);
         }
 
-        public void RenderToTex(SpriteBatch spriteBatch)
+        public void RenderToTex(SpriteBatch spriteBatch, GameTime gameTime)
         {
             RenderTarget2D backgroundTarget = new RenderTarget2D(Recellection.graphics.GraphicsDevice, Recellection.viewPort.Width, Recellection.viewPort.Height, 1, Recellection.graphics.GraphicsDevice.DisplayMode.Format);
 
             Recellection.graphics.GraphicsDevice.SetRenderTarget(0, backgroundTarget);
             Recellection.graphics.GraphicsDevice.Clear(Color.White);
 
-            #region INSERT TILE DRAWING HEAR!!!!11
-            #endregion
+            spriteBatch.Begin();
+            lock (tileCollection)
+            {
+                foreach (Tile t in tileCollection)
+                {
+                    int x = (int)(t.position.X - (World.LookingAt.X));
+                    int y = (int)(t.position.Y - (World.LookingAt.Y));
+
+                    Rectangle r = new Rectangle(x * Globals.TILE_SIZE, y * Globals.TILE_SIZE, Globals.TILE_SIZE, Globals.TILE_SIZE);
+
+                    spriteBatch.Draw(t.GetSprite(), r, Color.White);
+                }
+            }
+            
+            if(doLights)
+                lps.UpdateAndDraw(gameTime, spriteBatch);
+
+            spriteBatch.End();
 
             Recellection.graphics.GraphicsDevice.SetRenderTarget(0, null);
             backgroundTex = backgroundTarget.GetTexture();
+
+
+            if (doGrain)
+            {
+                bgShaders.Parameters["Timer"].SetValue((float)gameTime.ElapsedRealTime.TotalSeconds + 1.23f);
+
+                Recellection.graphics.GraphicsDevice.SetRenderTarget(0, backgroundTarget);
+                Recellection.graphics.GraphicsDevice.Clear(Color.Black);
+
+                spriteBatch.Begin(SpriteBlendMode.None, SpriteSortMode.Immediate, SaveStateMode.None);
+                bgShaders.CurrentTechnique = bgShaders.Techniques["Grain"];
+                bgShaders.Begin();
+                bgShaders.CurrentTechnique.Passes[0].Begin();
+                spriteBatch.Draw(backgroundTex, Vector2.Zero, Color.White);
+                spriteBatch.End();
+                bgShaders.CurrentTechnique.Passes[0].End();
+                bgShaders.End();
+
+                // Change back to the back buffer, and get our scene
+                // as a texture.
+                Recellection.graphics.GraphicsDevice.SetRenderTarget(0, null);
+                backgroundTex = backgroundTarget.GetTexture();
+            }
+
+            if (doRipples)
+            {
+                crawler += calmRippleMovementRate;
+                if (crawler > MathHelper.TwoPi)
+                    crawler = 0;
+
+                calmRippleWaveDivider = (float)Math.Pow(Math.Sin(crawler), 2) + calmRippleLowerBound;
+
+                bgShaders.Parameters["calmWave"].SetValue((float)Math.PI / calmRippleWaveDivider);
+                bgShaders.Parameters["calmDistortion"].SetValue(calmRippleDistortion);
+                bgShaders.Parameters["calmCenterCoord"].SetValue(new Vector2(0.5f, 0.5f));
+
+                Recellection.graphics.GraphicsDevice.SetRenderTarget(0, backgroundTarget);
+                Recellection.graphics.GraphicsDevice.Clear(Color.Black);
+
+                spriteBatch.Begin(SpriteBlendMode.None, SpriteSortMode.Immediate, SaveStateMode.None);
+                bgShaders.CurrentTechnique = bgShaders.Techniques["Ripple"];
+                bgShaders.Begin();
+                bgShaders.CurrentTechnique.Passes[0].Begin();
+                spriteBatch.Draw(backgroundTex, Vector2.Zero, Color.White);
+                spriteBatch.End();
+                bgShaders.CurrentTechnique.Passes[0].End();
+                bgShaders.End();
+
+                // Change back to the back buffer, and get our scene
+                // as a texture.
+                Recellection.graphics.GraphicsDevice.SetRenderTarget(0, null);
+                backgroundTex = backgroundTarget.GetTexture();
+            }
         }
 	}
 }

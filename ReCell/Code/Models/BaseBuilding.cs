@@ -10,9 +10,9 @@ namespace Recellection.Code.Models
 {
 
     /// <summary>
-    /// The base building class serves the purpose of keeping track of 
+    /// The base fromBuilding class serves the purpose of keeping track of 
     /// all the other buildings associated with it.
-    /// A base building should never in this way be connected to another base building
+    /// A base fromBuilding should never in this way be connected to another base fromBuilding
     /// 
     /// Author: Viktor Eklund
     /// </summary>
@@ -36,7 +36,7 @@ namespace Recellection.Code.Models
 		public event Publish<Building> buildingsChanged;
 
         /// <summary>
-        /// Constructs a new base building
+        /// Constructs a new base fromBuilding
         /// </summary>
         /// <param name="name"></param>
         /// <param name="posX"></param>
@@ -52,7 +52,7 @@ namespace Recellection.Code.Models
         }
 
         /// <summary>
-        /// Constructs a new base building
+        /// Constructs a new base fromBuilding
         /// </summary>
         /// <param name="name"></param>
         /// <param name="posX"></param>
@@ -68,9 +68,9 @@ namespace Recellection.Code.Models
         }
 
         /// <summary>
-        /// Allows any building except a BaseBuilding to add itself to this basebuildings list of buildings
+        /// Allows any fromBuilding except a BaseBuilding to add itself to this basebuildings list of buildings
         /// </summary>
-        /// <param name="building"></param>
+        /// <param name="fromBuilding"></param>
         public void Visit(Building building)
         {
             childBuildings.AddLast(building);
@@ -81,9 +81,9 @@ namespace Recellection.Code.Models
         }
 
         /// <summary>
-        /// A building may remove itself with itself as identifier
+        /// A fromBuilding may remove itself with itself as identifier
         /// </summary>
-        /// <param name="building"></param>
+        /// <param name="fromBuilding"></param>
         public bool RemoveBuilding(Building building)
         {
             if (building.type == Globals.BuildingTypes.Resource)
@@ -96,9 +96,9 @@ namespace Recellection.Code.Models
 
         /// <summary>
         /// This function will prevent the real Visit function from being called
-        /// with a base building.
+        /// with a base fromBuilding.
         /// </summary>
-        /// <param name="building"></param>
+        /// <param name="fromBuilding"></param>
         public void Visit(BaseBuilding building)
         {
             throw new ArgumentException("A BaseBuilding should not be added as a child building to another BaseBuilding");

@@ -149,6 +149,14 @@ namespace Recellection.Code.Models
                 nits.Add(u);
 
                 this.units[u.GetOwner()] = nits;
+
+                if (unitsChanged != null)
+                {
+                    //I'm sorry for this ugly hax - John
+                    List<Unit> temp = new List<Unit>();
+                    temp.Add(u);
+                    unitsChanged(this, new Event<IEnumerable<Unit>>(temp, EventType.ADD));
+                }
             }
         }
 
@@ -196,6 +204,14 @@ namespace Recellection.Code.Models
             lock (units)
             {
                 this.units[u.GetOwner()].Remove(u);
+
+                if (unitsChanged != null)
+                {
+                    //I'm sorry for this ugly hax - John
+                    List<Unit> temp = new List<Unit>();
+                    temp.Add(u);
+                    unitsChanged(this, new Event<IEnumerable<Unit>>(temp, EventType.REMOVE));
+                }
             }
         }
 
@@ -240,10 +256,10 @@ namespace Recellection.Code.Models
         }
 
         /// <summary>
-        /// Attempt to set a building in this tile.
+        /// Attempt to set a fromBuilding in this tile.
         /// </summary>
-        /// <param name="building">Building to place here.</param>
-        /// <returns>True iff building was placed, False if this Tile already is occupied.</returns>
+        /// <param name="fromBuilding">Building to place here.</param>
+        /// <returns>True iff fromBuilding was placed, False if this Tile already is occupied.</returns>
         public bool SetBuilding(Building building)
         {
             if (this.building != null || building == null)
@@ -265,9 +281,9 @@ namespace Recellection.Code.Models
             }
         }
         /// <summary>
-        /// Get the building placed in this tile.
+        /// Get the fromBuilding placed in this tile.
         /// </summary>
-        /// <returns>If this tile has a building it will be returned, otherwise returns null.</returns>
+        /// <returns>If this tile has a fromBuilding it will be returned, otherwise returns null.</returns>
         public Building GetBuilding()
         {
             return this.building;
@@ -319,7 +335,7 @@ namespace Recellection.Code.Models
         }
 
         /// <summary>
-        /// Removes building in this tile.
+        /// Removes fromBuilding in this tile.
         /// </summary>
         public void RemoveBuilding()
         {
@@ -337,26 +353,26 @@ namespace Recellection.Code.Models
         /// </summary>
         /// <param name="obj">Other tile object</param>
         /// <returns>True if of the same terrain type.</returns>
-        public override bool Equals(System.Object obj)
-        {
-            Tile t = (Tile) obj;
-            return this.GetTerrainType().GetEnum().Equals(t.GetTerrainType().GetEnum());
-        }
+        //public override bool Equals(System.Object obj)
+        //{
+        //    Tile t = (Tile) obj;
+        //    return this.GetTerrainType().GetEnum().Equals(t.GetTerrainType().GetEnum());
+        //}
 
-        /// <summary>
-        /// Overrides the == operator.
-        /// </summary>
-        public static bool operator==(Tile obj1, Tile obj2)
-        {
-            return obj1.Equals(obj2);
-        }
-        /// <summary>
-        /// Overrides the != operator.
-        /// </summary>
-        public static bool operator !=(Tile obj1, Tile obj2)
-        {
-            return !obj1.Equals(obj2);
-        }
+        ///// <summary>
+        ///// Overrides the == operator.
+        ///// </summary>
+        //public static bool operator==(Tile obj1, Tile obj2)
+        //{
+        //    return obj1.Equals(obj2);
+        //}
+        ///// <summary>
+        ///// Overrides the != operator.
+        ///// </summary>
+        //public static bool operator !=(Tile obj1, Tile obj2)
+        //{
+        //    return !obj1.Equals(obj2);
+        //}
 
         /// <summary>
         /// Override that doesn't actually override things.
