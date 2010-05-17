@@ -15,7 +15,7 @@ namespace Recellection.Code.Controllers
     /// <summary>
     /// The purpose of this component is to control the entire world. It is part of the realization of SR1.7.
     /// </summary>
-    public class WorldController
+    class WorldController
     {
         /// <summary>
         /// The different states this controller will assume
@@ -30,10 +30,7 @@ namespace Recellection.Code.Controllers
         
         private const long SCROLL_ZONE_DWELL_TIME = 0;//250000;
         private char[] REG_EXP = { '_' };
-        
-        // Static is temporary, remove after debugging is done
-        public static bool finished { get; set; }
-        
+        public bool finished { get; set; }
         private Logger myLogger;
         
 		private Selection previousSelection;
@@ -80,10 +77,10 @@ namespace Recellection.Code.Controllers
 													 sel.point.Y + theWorld.LookingAt.Y);
 				
 				World.Map map = theWorld.GetMap();
-
-                switch (sel.state)
+                
+               /** switch (sel.state)
                 {
-                    case State.TILE:
+                    case State.TILE: **/
                         // A tile has been selected, store it.
 						// Save the selected tile, for later!
                         Tile selectedTile = map.GetTile(absoluteCoordinate);
@@ -95,11 +92,12 @@ namespace Recellection.Code.Controllers
 						{
 							finished = true;
 						}
-                        if (sel.point.X == 2 && sel.point.Y == 1 && map.GetTile(PreviousAbsoluteCoordinate).GetBuilding() != null)
+                        if (sel.point.X == 2 && sel.point.Y == 1 && sel.state == State.BUILDING)
                         {
                             BuildingMenu(previousSelection);
                         }
                         break;
+                        /**
 					case State.BUILDING:
 						// A fromBuilding has been selected!
 
@@ -141,8 +139,8 @@ namespace Recellection.Code.Controllers
                     case State.SCROLL:
 						theWorld.LookingAt = absoluteCoordinate; 
                         break;
-                }
-			}
+                }*/
+            }
 			//Sounds.Instance.LoadSound("acid").Play();
         }
 
