@@ -106,13 +106,11 @@ namespace Recellection.Code.Controllers
 
             // If we have selected a tile, and we can place a building at the selected tile...					
 
-                if (!BuildingController.AddBuilding(Building, sourceBuilding,
-                        constructTile.position, theWorld, player))
-                {
-                    Sounds.Instance.LoadSound("Denied").Play();
-                }         
-
-
+            if (! BuildingController.AddBuilding(Building, sourceBuilding,
+                    constructTile.position, theWorld, player))
+            {
+                Sounds.Instance.LoadSound("Denied").Play();
+            }
         }
 
         /// <summary>
@@ -142,6 +140,7 @@ namespace Recellection.Code.Controllers
                 return false;
             }
             
+            logger.Info("Building a building at position "+targetCoordinate+" of "+buildingType+".");
             
             lock (owner.GetGraphs())
             {
@@ -196,7 +195,8 @@ namespace Recellection.Code.Controllers
                     logger.Info("The source building only got " + sourceBuilding.CountUnits() + " units left.");
                 }
 
-                Sounds.Instance.LoadSound("buildingPlacement").Play();
+				//Sounds.Instance.LoadSound("buildingPlacement").Play();
+				Sounds.Instance.LoadSound("prego").Play();
             }
             return true;
         }
