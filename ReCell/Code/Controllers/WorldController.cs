@@ -96,58 +96,6 @@ namespace Recellection.Code.Controllers
 				{
 					BuildingMenu(previousSelection);
 				}
-				
-               /** switch (sel.state)
-                {
-                    case State.TILE: **/
-                        // A tile has been selected, store it.
-						// Save the selected tile, for later!
-
-						// Debug finish
-                       // break;
-                        /**
-					case State.BUILDING:
-						// A fromBuilding has been selected!
-
-						// TODO: Let BuildingController do shit! (use retrieveSelection)
-						// TODO:  - Activate menu (what u wanna do /w fromBuilding?)
-						// TODO:  - DO SHIT!
-
-						Building selectedBuilding = map.GetTile(absoluteCoordinate).GetBuilding();
-
-						sel = retrieveSelection();
-						absoluteCoordinate = new Point(sel.point.X + theWorld.LookingAt.X,
-													 sel.point.Y + theWorld.LookingAt.Y);
-						
-						if (sel.state == State.BUILDING)
-						{
-							// If we selected the same building again, SET WEIGHT OMGOMG
-							if (selectedBuilding == map.GetTile(absoluteCoordinate).GetBuilding())
-							{
-								GraphController.Instance.SetWeight(map.GetTile(absoluteCoordinate).GetBuilding());
-							}
-						}
-						
-						if (sel.state != State.TILE)
-						{
-							//Sounds.Instance.LoadSound("Denied").Play();
-							continue;
-						}
-						
-						selectedTile = map.GetTile(absoluteCoordinate);
-
-						if (selectedBuilding != null
-						 && selectedTile.GetBuilding() == null
-						 && selectedBuilding.owner == playerInControll)
-                        {
-                            BuildingController.ConstructBuilding(playerInControll, selectedTile, selectedBuilding, theWorld);
-                        }
-
-                        break;
-                    case State.SCROLL:
-						theWorld.LookingAt = absoluteCoordinate; 
-                        break;
-                }*/
             }
 			//Sounds.Instance.LoadSound("acid").Play();
         }

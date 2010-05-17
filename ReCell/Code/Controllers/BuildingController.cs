@@ -259,7 +259,11 @@ namespace Recellection.Code.Controllers
         /// <param name="b">The buiding to remove.</param>
         public static void RemoveBuilding(Building b)
         {
-            GraphController.Instance.RemoveBuilding(b);
+			GraphController.Instance.RemoveBuilding(b);
+			lock (b.controlZone)
+			{
+				b.controlZone.First().RemoveBuilding();
+			}
         }
 
         /// <summary>
@@ -279,16 +283,6 @@ namespace Recellection.Code.Controllers
 
         public static void HurtBuilding(Building toHurt, World theWorld)
         {
-            /*toHurt.Damage(1);
-
-            if (!toHurt.IsAlive())
-            {
-                RemoveBuilding(toHurt);
-            }
-            lock (theWorld)
-            {
-                //theWorld.GetMap().GetTile((int)toHurt.position.X, (int)toHurt.position.Y).RemoveBuilding();
-            }*/
             HurtBuilding(toHurt);
         }
         public static void HurtBuilding(Building toHurt)
@@ -298,11 +292,6 @@ namespace Recellection.Code.Controllers
             if (!toHurt.IsAlive())
             {
                 RemoveBuilding(toHurt);
-                lock (toHurt.controlZone)
-                {
-                    toHurt.controlZone.First().RemoveBuilding();
-                    //theWorld.GetMap().GetTile((int)toHurt.position.X, (int)toHurt.position.Y).RemoveBuilding();
-                }
             }
             
         }
