@@ -272,6 +272,10 @@ namespace Recellection.Code.Controllers
                                                      theSelection.point.Y + theWorld.LookingAt.Y);
             World.Map map = theWorld.GetMap();
             Building building = map.GetTile(absoluteCordinate).GetBuilding();
+            if (building == null)
+            {
+                return;
+            }
             MenuIcon setWeight = new MenuIcon(Language.Instance.GetString("SetWeight"), null, Color.Black);
             MenuIcon buildCell = new MenuIcon(Language.Instance.GetString("BuildCell"), null, Color.Black);
             MenuIcon removeCell = new MenuIcon(Language.Instance.GetString("RemoveCell"), null, Color.Black);
