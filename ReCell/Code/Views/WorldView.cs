@@ -214,6 +214,12 @@ namespace Recellection.Code.Views
                             Texture2D spr = u.GetSprite();
 							int ux = (int)Math.Round((u.position.X - World.LookingAt.X) * Globals.TILE_SIZE) - spr.Width/2;
 							int uy = (int)Math.Round((u.position.Y - World.LookingAt.Y) * Globals.TILE_SIZE) - spr.Height/2;
+							
+							Color c = u.GetOwner().color;
+							if (u.powerLevel > 1f)
+							{
+								c = Color.Lerp(c, Color.HotPink, 0.5f);
+							}
                             this.drawTexture(spriteBatch, spr, new Rectangle(ux, uy, spr.Width, spr.Height), u.GetOwner().color);
                         }
                     }

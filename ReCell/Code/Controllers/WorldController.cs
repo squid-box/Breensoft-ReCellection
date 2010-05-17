@@ -73,30 +73,32 @@ namespace Recellection.Code.Controllers
 				sel = retrieveSelection();
 				
                 // They are used if the state needs true coordinates, scroll only uses deltas.
-                Point absoluteCoordinate = new Point(sel.point.X + theWorld.LookingAt.X, 
+                Point absoluteCoordinate = new Point(sel.point.X + theWorld.LookingAt.X,
 													 sel.point.Y + theWorld.LookingAt.Y);
-				
+				Point PreviousAbsoluteCoordinate = new Point(previousSelection.point.X + theWorld.LookingAt.X,
+											 previousSelection.point.Y + theWorld.LookingAt.Y);
+
 				World.Map map = theWorld.GetMap();
-                
+				Tile selectedTile = map.GetTile(absoluteCoordinate);
+
+				if (sel.point.X == 1 && sel.point.Y == 1)
+				{
+					finished = true;
+				}
+				if (sel.point.X == 2 && sel.point.Y == 1
+				 && previousSelection.state == State.BUILDING)
+				{
+					BuildingMenu(previousSelection);
+				}
+				
                /** switch (sel.state)
                 {
                     case State.TILE: **/
                         // A tile has been selected, store it.
 						// Save the selected tile, for later!
-                        Tile selectedTile = map.GetTile(absoluteCoordinate);
-                        Point PreviousAbsoluteCoordinate = new Point(previousSelection.point.X + theWorld.LookingAt.X,
-                                                     previousSelection.point.Y + theWorld.LookingAt.Y);
 
 						// Debug finish
-						if (sel.point.X == 1 && sel.point.Y == 1)
-						{
-							finished = true;
-						}
-                        if (sel.point.X == 2 && sel.point.Y == 1 && sel.state == State.BUILDING)
-                        {
-                            BuildingMenu(previousSelection);
-                        }
-                        break;
+                       // break;
                         /**
 					case State.BUILDING:
 						// A fromBuilding has been selected!
@@ -329,7 +331,6 @@ namespace Recellection.Code.Controllers
             Menu buildingMenu = new Menu(Globals.MenuLayout.FourMatrix, menuIcons, Language.Instance.GetString("BuildingMenu"), Color.Black);
             MenuController.LoadMenu(buildingMenu);
             Recellection.CurrentState = MenuView.Instance;
-
             MenuIcon choosenMenu = MenuController.GetInput();
             Recellection.CurrentState = WorldView.Instance;
             MenuController.UnloadMenu();
@@ -340,6 +341,15 @@ namespace Recellection.Code.Controllers
             }
             else if (choosenMenu.Equals(buildCell))
             {
+                Selection destsel = retrieveSelection();
+                if (destsel.state != State.TILE)
+				{
+					Sounds.Instance.LoadSound("Denied");
+					return;
+				}
+				
+                Point DestAbsoluteCordinate = new Point(destsel.point.X + theWorld.LookingAt.X,
+                                                     destsel.point.Y + theWorld.LookingAt.Y);
                 Tile destTile = map.GetTile(absoluteCordinate);
                 BuildingController.ConstructBuilding(playerInControll, destTile, building, theWorld);
             }
