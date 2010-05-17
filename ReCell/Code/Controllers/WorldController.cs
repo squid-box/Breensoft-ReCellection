@@ -30,7 +30,7 @@ namespace Recellection.Code.Controllers
         
         private const long SCROLL_ZONE_DWELL_TIME = 0;//250000;
         private char[] REG_EXP = { '_' };
-        public bool finished { get; set; }
+        public static bool finished { get; set; }
         private Logger myLogger;
         
 		private Selection previousSelection;
