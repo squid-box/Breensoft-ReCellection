@@ -10,6 +10,7 @@ using Recellection.Code.Utility.Logger;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Recellection.Code.Utility.Console;
+using Recellection.Code.Controllers;
 
 namespace Recellection.Code.Views
 {
@@ -31,12 +32,14 @@ namespace Recellection.Code.Views
         public static bool doRipples = false;
         
         private Effect bgShaders;
+		private Texture2D activeTile;
         private float calmRippleLowerBound = 1.5f;
         private float calmRippleWaveDivider;
         private float calmRippleMovementRate = 0.01f;
         private float calmRippleDistortion = 0.5f;
         private float crawler = 0;
         private LightParticleSystem lps;
+		private Tile active;
 
 		private static int maxCols = (int)((float)Recellection.viewPort.Width / (float)Globals.TILE_SIZE);
 		private static int maxRows = (int)((float)Recellection.viewPort.Height / (float)Globals.TILE_SIZE);
@@ -47,6 +50,7 @@ namespace Recellection.Code.Views
 
         public WorldView(World world)
         {
+			
             lps = new LightParticleSystem(0.05f, Recellection.textureMap.GetTexture(Globals.TextureTypes.Light));
 
             this.bgShaders = Recellection.bgShader;
@@ -264,6 +268,7 @@ namespace Recellection.Code.Views
             
 			this.World.LookingAt = new Point(x, y);
         }
+
 		
         public void RenderToTex(SpriteBatch spriteBatch, GameTime gameTime)
         {
@@ -283,15 +288,31 @@ namespace Recellection.Code.Views
                     Rectangle r = new Rectangle(x * Globals.TILE_SIZE, y * Globals.TILE_SIZE, Globals.TILE_SIZE, Globals.TILE_SIZE);
 
 					spriteBatch.Draw(t.GetSprite(), r, Color.White);
+
+					if (t.active)
+					{
+						spriteBatch.Draw(Recellection.textureMap.GetTexture(Globals.TextureTypes.ActiveTile), r, Color.White);
+					}
 					Building b = t.GetBuilding();
 					if (b != null)
 					{
 						float fontX, fontY;
-						Vector2 stringSize = Recellection.worldFont.MeasureString(b.GetUnits().Count.ToString());
+						Vector2 stringSize;
+						string infosz;
+
+						infosz = b.GetUnits().Count.ToString();
+						stringSize = Recellection.worldFont.MeasureString(infosz);
 						fontX = (float)(r.X + r.Width/2) - stringSize.X/2;
 						fontY = (float)(r.Y + r.Height/4) - stringSize.Y;
+						spriteBatch.DrawString(Recellection.worldFont, infosz, new Vector2(fontX, fontY), Color.Black);
 
-						spriteBatch.DrawString(Recellection.worldFont, b.GetUnits().Count.ToString(), new Vector2(fontX, fontY), Color.Black);
+						infosz = GraphController.Instance.GetWeight(b).ToString();
+						stringSize = Recellection.worldFont.MeasureString(infosz);
+						fontX = (float)(r.X + r.Width / 2) - stringSize.X / 2;
+						fontY = (float)(r.Y + 3*r.Height / 4) - stringSize.Y;
+						spriteBatch.DrawString(Recellection.worldFont, infosz, new Vector2(fontX, fontY), Color.Black);
+
+
 					}
                 }
             }

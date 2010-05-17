@@ -43,8 +43,6 @@ namespace Recellection
         public static GraphicsDeviceManager graphics;
         public Thread LogicThread { get; set; }
 
-        
-
         TobiiController tobiiController;
         SpriteBatch spriteBatch;
 

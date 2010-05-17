@@ -27,6 +27,7 @@ namespace Recellection.Code.Models
         private HashSet<Player> visibleTo;
         private Dictionary<Player, HashSet<Unit>> units;
         private Building building;
+		public bool active {get; set;}
 
         // Events
         public event Publish<IEnumerable<Player>> visionChanged;
