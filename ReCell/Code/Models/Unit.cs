@@ -81,7 +81,7 @@ namespace Recellection.Code.Models
             this.isDead = false;
             this.owner = owner;
             this.rand = new Random(id++);
-            this.powerLevel = 1f;
+            this.powerLevel = 1.0f;
             world.GetMap().GetTile((int)position.X, (int)position.Y).AddUnit(this);
         }
 
