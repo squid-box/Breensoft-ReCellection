@@ -93,6 +93,7 @@ namespace Recellection.Code.Models
             this.owner = owner;
             this.rand = new Random(id++);
             world.GetMap().GetTile((int)position.X, (int)position.Y).AddUnit(this);
+            world.AddUnit(this);
         }
 
         #endregion
@@ -140,6 +141,7 @@ namespace Recellection.Code.Models
         {
             this.isDead = true;
 			world.GetMap().GetTile((int)position.X, (int)position.Y).RemoveUnit(owner, this);
+            world.RemoveUnit(this);
 			callRainCheckOnTarget();
             if (rallyPoint != null && rallyPoint is Building)
             {
