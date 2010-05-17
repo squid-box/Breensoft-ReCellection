@@ -367,7 +367,7 @@ namespace Recellection.Code.Controllers
             }
             else if (choosenMenu.Equals(removeCell))
             {
-                GraphController.Instance.RemoveBuilding(building);
+                BuildingController.RemoveBuilding(building);
             }
             else //else upgradeUnits
             {
