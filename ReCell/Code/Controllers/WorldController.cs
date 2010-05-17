@@ -331,7 +331,6 @@ namespace Recellection.Code.Controllers
             Menu buildingMenu = new Menu(Globals.MenuLayout.FourMatrix, menuIcons, Language.Instance.GetString("BuildingMenu"), Color.Black);
             MenuController.LoadMenu(buildingMenu);
             Recellection.CurrentState = MenuView.Instance;
-
             MenuIcon choosenMenu = MenuController.GetInput();
             Recellection.CurrentState = WorldView.Instance;
             MenuController.UnloadMenu();
@@ -343,6 +342,12 @@ namespace Recellection.Code.Controllers
             else if (choosenMenu.Equals(buildCell))
             {
                 Selection destsel = retrieveSelection();
+                if (destsel.state != State.TILE)
+				{
+					Sounds.Instance.LoadSound("Denied");
+					return;
+				}
+				
                 Point DestAbsoluteCordinate = new Point(destsel.point.X + theWorld.LookingAt.X,
                                                      destsel.point.Y + theWorld.LookingAt.Y);
                 Tile destTile = map.GetTile(absoluteCordinate);
