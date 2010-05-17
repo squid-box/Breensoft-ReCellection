@@ -246,7 +246,7 @@ namespace Recellection.Code.Views
 							int uy = (int)Math.Round((u.position.Y - World.LookingAt.Y) * Globals.TILE_SIZE) - spr.Height/2;
 							
 							Color c = u.GetOwner().color;
-							if (u.powerLevel > 1f)
+							if (u.powerLevel > 0f)
 							{
 								c = Color.Lerp(c, Color.HotPink, 0.6f);
 							}

@@ -81,7 +81,7 @@ namespace Recellection.Code.Models
             this.isDead = false;
             this.owner = owner;
             this.rand = new Random(id++);
-            this.powerLevel = 1.0f;
+            this.powerLevel = 0.0f;
             world.GetMap().GetTile((int)position.X, (int)position.Y).AddUnit(this);
         }
 
@@ -256,7 +256,7 @@ namespace Recellection.Code.Models
 					{
 						if (TargetEntity is Unit && ! ((Unit)TargetEntity).isDead)
 						{
-							if ((new Random()).NextDouble() > this.powerLevel)
+							if ((new Random()).NextDouble() >= this.powerLevel)
 							{
 								this.Kill();
 							}
@@ -266,7 +266,7 @@ namespace Recellection.Code.Models
 						}
 						else if (TargetEntity is Building && ((Building)TargetEntity).IsAlive())
 						{
-							if ((new Random()).NextDouble() > this.powerLevel)
+							if ((new Random()).NextDouble() >= this.powerLevel)
 							{
 								this.Kill();
 							}

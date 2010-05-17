@@ -15,7 +15,7 @@ namespace Recellection.Code.Models
     /// </summary>
     public class BarrierBuilding : Building
     {
-        private readonly float powerBonus = 1f;
+        private readonly float powerBonus = 0.3f;
 
         public float PowerBonus
         {
@@ -69,7 +69,6 @@ namespace Recellection.Code.Models
                         u.powerLevel += powerBonus;
                     }
                 }
-
             }
             else if (ev.type == EventType.REMOVE)
             {
