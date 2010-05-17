@@ -222,9 +222,9 @@ namespace Recellection.Code.Views
 							Color c = u.GetOwner().color;
 							if (u.powerLevel > 1f)
 							{
-								c = Color.Lerp(c, Color.HotPink, 0.5f);
+								c = Color.Lerp(c, Color.HotPink, 0.6f);
 							}
-                            this.drawTexture(spriteBatch, spr, new Rectangle(ux, uy, spr.Width, spr.Height), u.GetOwner().color);
+                            this.drawTexture(spriteBatch, spr, new Rectangle(ux, uy, spr.Width, spr.Height), c);
                         }
                     }
 				}
