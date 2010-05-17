@@ -357,11 +357,8 @@ namespace Recellection.Code.Controllers
 				Point DestAbsoluteCordinate = new Point(destsel.point.X + theWorld.LookingAt.X,
 													 destsel.point.Y + theWorld.LookingAt.Y);
 				Tile selectedTile = map.GetTile(DestAbsoluteCordinate);
-				Building selectedBuilding = selectedTile.GetBuilding();
 				
-				if (selectedBuilding != null
-				 && selectedTile.GetBuilding() == null
-				 && selectedBuilding.owner == playerInControll)
+				if (selectedTile.GetBuilding() == null)
                 {
 					BuildingController.ConstructBuilding(playerInControll, selectedTile, building, theWorld);
 				}
