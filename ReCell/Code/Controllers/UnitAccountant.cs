@@ -20,6 +20,8 @@ namespace Recellection.Code.Controllers
     /// Signature: Jane Doe (yyyy-mm-dd)
     public sealed class UnitAccountant
 	{
+        private const uint POP_CAP_PER_PLAYER = 200;
+
 		private Logger logger = LoggerFactory.GetLogger();
         private Player owner;
 
@@ -33,11 +35,11 @@ namespace Recellection.Code.Controllers
         }
 
         /// <summary>
-        /// Called by building, adds units to a building.
+        /// Called by fromBuilding, adds units to a fromBuilding.
         /// </summary>
-        /// <param name="b">The building to add units to.</param>
+        /// <param name="b">The fromBuilding to add units to.</param>
         /// <param name="units">A list of units.</param>
-        public void addUnits(Building b, List<Unit> units)
+        public void AddUnits(Building b, List<Unit> units)
         {
             b.AddUnits(units);
         }
@@ -48,26 +50,28 @@ namespace Recellection.Code.Controllers
         public void ProduceUnits()
         {
             Random randomer = new Random();
-            List<Unit> res;
-            Unit temp;
+            //TODO Remove when middle point position is implemented.
+
+            uint totalUnits = owner.CountUnits();
 
             foreach (Graph g in owner.GetGraphs())
             {
-                res = new List<Unit>();
-                
+				List<Unit> res = new List<Unit>();
+                Vector2 buildingOffset = new Vector2(0.125f, 0.125f);
                 BaseBuilding b = g.baseBuilding;
-				logger.Debug("Producing "+b.RateOfProduction+" units!");
-                for (int i = 0; i < b.RateOfProduction; i++)
+                int unitsToProduce = b.RateOfProduction;
+                if (b.RateOfProduction + totalUnits > POP_CAP_PER_PLAYER)
                 {
-                    // Places them randomly around the building. - John
+                    unitsToProduce = (int) (POP_CAP_PER_PLAYER - totalUnits);
+                }
+                logger.Debug("Producing " + unitsToProduce + " units!");
+                buildingOffset = Vector2.Add(buildingOffset, b.position);
+                for (int i = 0; i < unitsToProduce; i++)
+                {
+                    // Places them randomly around the fromBuilding. - John
                     // No, it does not. - Martin
 
-                    temp = new Unit(b.owner, b.position, b);
-                    temp.targetEntity = b;
-
-                    res.Add(temp);
-                    
-                    
+                    res.Add(new Unit(b.owner, buildingOffset, b));
                 }
                 b.AddUnits(res);
             }

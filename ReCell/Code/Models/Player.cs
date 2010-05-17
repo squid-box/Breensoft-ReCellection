@@ -31,7 +31,7 @@ namespace Recellection.Code.Models
         public Color color { get; private set; }
 
         /// <summary>
-        /// The building networks owned by a player
+        /// The fromBuilding networks owned by a player
         /// </summary>
         private List<Graph> graphs;
 
@@ -106,6 +106,37 @@ namespace Recellection.Code.Models
             }
         }
 
+        /// <summary>
+        /// This method calculates how many buildings of the specified type the player have.
+        /// </summary>
+        /// <param name="type">The type of building to count</param>
+        public uint CountBuildingsOfType(Globals.BuildingTypes type)
+        {
+            uint retur = 0;
+            foreach (Graph g in graphs)
+            {
+                foreach (Building b in g.GetBuildings())
+                {
+                    if (b.type == type)
+                    {
+                        retur += 1;
+                    }
+                }
+            }
+            return retur;
+        }
 
+        public uint CountUnits()
+        {
+            uint retur = 0;
+            foreach (Graph g in graphs)
+            {
+                foreach (Building b in g.GetBuildings())
+                {
+                    retur += (uint)b.CountUnits();
+                }
+            }
+            return retur;
+        }
     }
 }

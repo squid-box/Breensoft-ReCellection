@@ -6,6 +6,7 @@ using Recellection.Code;
 using Recellection.Code.Models;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Recellection.Code.Utility.Logger;
 
 namespace Recellection.Code.Controllers
 {
@@ -21,6 +22,7 @@ namespace Recellection.Code.Controllers
         private List<Vector2> m_enemyPoints;
         private int distanceThreshold;
         private Random randomFactory;
+        private Logger log;
 
 
 
@@ -29,7 +31,10 @@ namespace Recellection.Code.Controllers
         /// </summary>
         /// <param name="opponents"></param>
         /// <param name="view"></param>
-        public AIPlayer(List<Player> opponents, AIView view, Color c):base(c,"AIPLAYER"){
+        public AIPlayer(List<Player> opponents, AIView view, Color c)
+            : base(c, "AIPLAYER")
+        {
+            log = Utility.Logger.LoggerFactory.GetLogger();
             randomFactory = new Random();
             m_view = view;
             m_opponents = opponents;
@@ -43,7 +48,8 @@ namespace Recellection.Code.Controllers
         /// The main method. When called it causes the AIPlayer to reevaluate 
         /// its situation and make appropriate changes.
         /// </summary>
-        public void MakeMove(){
+        public void MakeMove()
+        {
 
             for (int i = 0; i < m_interrestPoints.Count; i++)
             {
@@ -88,7 +94,8 @@ namespace Recellection.Code.Controllers
         {
             Vector2 best = list[0];
             Vector2 temp = best;
-            for(int i = 1; i < list.Count; i++){
+            for (int i = 1; i < list.Count; i++)
+            {
                 temp = list[i];
                 if (Vector2.Distance(temp, point) < Vector2.Distance(temp, best))
                 {
@@ -100,9 +107,9 @@ namespace Recellection.Code.Controllers
 
 
         /// <summary>
-        /// Decides what the weight should be at the given building
+        /// Decides what the weight should be at the given fromBuilding
         /// </summary>
-        /// <param name="building"></param>
+        /// <param name="fromBuilding"></param>
         private void CalculateWeight(Building building)
         {
             int friendly = unitCountAt(building.position, this);
@@ -111,7 +118,7 @@ namespace Recellection.Code.Controllers
             if (diff > 0) //more enemy units than friendly
             {
                 int weight = GraphController.Instance.GetWeight(building);
-                GraphController.Instance.SetWeight(building, weight + (diff/2)); //increase the weight by the difference in units / 2
+                GraphController.Instance.SetWeight(building, weight + (diff / 2)); //increase the weight by the difference in units / 2
             }
         }
 
@@ -122,8 +129,18 @@ namespace Recellection.Code.Controllers
         {
             int scoutSize = 10;
 
-            //Take the units from the base building
-            Tile source = m_view.getTileAt(m_view.baseBuilding.GetPosition());
+            //Take the units from the base fromBuilding
+            Building bb = GetGraphs()[0].baseBuilding;
+            if (bb == null)
+            {
+                log.Fatal("Base Building was null");
+            }
+            Tile source = m_view.getTileAt(bb.GetPosition());
+            if (source == null)
+            {
+                return;
+                
+            }
 
             //Move the units to some location at the other end of the map
             Tile dest = m_view.getTileAt(randomPointAtOppositeQuadrant());
@@ -139,9 +156,9 @@ namespace Recellection.Code.Controllers
         /// <returns></returns>
         private Vector2 randomPointAtOppositeQuadrant()
         {
-            Vector2 baseCoords = m_view.baseBuilding.GetPosition();
+            Vector2 baseCoords = GetGraphs()[0].baseBuilding.GetPosition();
 
-            //Get the opposite end of the map relative to the base building.
+            //Get the opposite end of the map relative to the base fromBuilding.
             Vector2 quadrantCenter = Vector2.Subtract(new Vector2(m_view.mapWidth, m_view.mapHeight), baseCoords);
 
             //Create the "inner" border for the opposite quadrant. 
@@ -150,13 +167,13 @@ namespace Recellection.Code.Controllers
             quadrantEdge = new Vector2(Math.Abs(quadrantEdge.X), Math.Abs(quadrantEdge.Y));
             //Create the "outer" border for the opposite quadrant.
             Vector2 quadrantEdge2 = Vector2.Add(quadrantCenter, baseCoords);
-            
+
 
             //Finally pick a set of coordinates within the opposite quadrant.
 
-            float xVal = quadrantEdge.X + (float)randomFactory.NextDouble()*quadrantEdge2.X;
-            float yVal = quadrantEdge.Y + (float)randomFactory.NextDouble()*quadrantEdge2.Y;
-           
+            float xVal = quadrantEdge.X + (float)randomFactory.NextDouble() * quadrantEdge2.X;
+            float yVal = quadrantEdge.Y + (float)randomFactory.NextDouble() * quadrantEdge2.Y;
+
             Vector2 result = new Vector2(xVal, yVal);
 
             return result;
@@ -176,7 +193,7 @@ namespace Recellection.Code.Controllers
             int diffX = (int)(point.X - closestFriendly.X);
             int diffY = (int)(point.Y - closestFriendly.Y);
 
-            //How close to the enemy building we should build
+            //How close to the enemy fromBuilding we should build
             //These values may be calculated using more advanced logic.
             int offsetX = diffX / 2;
             int offsetY = diffY / 2;
@@ -202,7 +219,7 @@ namespace Recellection.Code.Controllers
             }
             if (CanHoldPoint(point))
             {
-                IssueBuildOrder(point, m_view.baseBuilding , Globals.BuildingTypes.Resource);
+                IssueBuildOrder(point, GetGraphs()[0].baseBuilding, Globals.BuildingTypes.Resource);
             }
             else
             {
@@ -210,7 +227,7 @@ namespace Recellection.Code.Controllers
             }
         }
 
-        
+
         /// <summary>
         /// Returns true if the AIPlayer is already harvesting at the given coordinates.
         /// </summary>
@@ -244,7 +261,7 @@ namespace Recellection.Code.Controllers
         /// <returns></returns>
         private bool CanHoldPoint(Vector2 point)
         {
-            if (unitCountAt(point, this) > (unitCountAt(point, m_opponents[0])+ unitCountAt(GetClosestPointFromList(point, m_enemyPoints), m_opponents[0])))
+            if (unitCountAt(point, this) > (unitCountAt(point, m_opponents[0]) + unitCountAt(GetClosestPointFromList(point, m_enemyPoints), m_opponents[0])))
             {
                 return true;
             }
@@ -265,15 +282,15 @@ namespace Recellection.Code.Controllers
 
 
         /// <summary>
-        /// Called when a new building should be created. Creates a building of a given type at the 
-        /// given point from the given base building.
+        /// Called when a new fromBuilding should be created. Creates a fromBuilding of a given type at the 
+        /// given point from the given base fromBuilding.
         /// </summary>
         /// <param name="point"></param>
         /// <param name="baseBuilding"></param>
         /// <param name="buildingType"></param>
         private void IssueBuildOrder(Vector2 point, Building baseBuilding, Globals.BuildingTypes buildingType)
         {
-            BuildingController.AddBuilding(buildingType, baseBuilding, point, m_view.world,this);
+            BuildingController.AddBuilding(buildingType, GetGraphs()[0].baseBuilding, point, m_view.world, this);
         }
 
     }

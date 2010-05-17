@@ -19,7 +19,6 @@ namespace Recellection.Code
         internal World world;
         internal List<Building> myBuildings { get; private set; }
         internal List<Vector2> roamingUnits { get; private set; }
-        internal Building baseBuilding;
         internal int mapHeight;
         internal int mapWidth;
 
@@ -34,8 +33,7 @@ namespace Recellection.Code
             mapHeight = world.GetMap().map.GetLength(0);
             mapWidth = world.GetMap().map.GetLength(1);
             myBuildings = new List<Building>();
-
-            roamingUnits = new List<Vector2>(); //A list of all units not located at a building.
+            roamingUnits = new List<Vector2>(); //A list of all units not located at a fromBuilding.
         }
 
         /// <summary>
@@ -56,15 +54,35 @@ namespace Recellection.Code
         /// <returns></returns>
         internal Tile getTileAt(Vector2 coords)
         {
-            Tile tempTile = world.GetMap().GetTile((int)coords.X, (int)coords.Y);
-            if (tempTile.IsVisible(ai))
+            if(valid(coords))
             {
+                Tile tempTile = world.GetMap().GetTile((int)coords.X, (int)coords.Y);
+
+                /* Uncomment when fog of war is properly implemented
+                if (tempTile.IsVisible(ai))
+                {
+                    return tempTile;
+                }
+                 * */
                 return tempTile;
             }
-            else
+            throw new NullReferenceException();
+            return null;
+        }
+
+
+        /// <summary>
+        /// Returns true if the coordinates provided are within the maps boundaries
+        /// </summary>
+        /// <param name="coords"></param>
+        /// <returns></returns>
+        private bool valid(Vector2 coords)
+        {
+            if (coords.X < mapWidth && coords.Y < mapHeight)
             {
-                return null;
+                return true;
             }
+            return false;
         }
 
 
@@ -84,7 +102,7 @@ namespace Recellection.Code
         }
 
         /// <summary>
-        /// Returns the building at the given coordinates provided that it is visible.
+        /// Returns the fromBuilding at the given coordinates provided that it is visible.
         /// </summary>
         /// <param name="point"></param>
         /// <returns></returns>

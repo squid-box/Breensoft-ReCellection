@@ -10,7 +10,7 @@ using Microsoft.Xna.Framework;
 namespace Recellection.Code.Models
 {
     /// <summary>
-    /// An Aggressive Building improves upon an ordinary building
+    /// An Aggressive Building improves upon an ordinary fromBuilding
     /// by having a targeted unit that will be subject to it's aggressive means.
     /// 
     /// Author: Viktor Eklund
@@ -89,7 +89,7 @@ namespace Recellection.Code.Models
                     }
                 }
             }
-            if (ev.type == EventType.REMOVE)
+            else if (ev.type == EventType.REMOVE)
             {
                 foreach (Unit u in ev.subject)
                 {
@@ -108,7 +108,7 @@ namespace Recellection.Code.Models
         /// Getter for the currently targeted unit
         /// </summary>
         /// <returns>
-        /// The target of this aggressive building, can be null
+        /// The target of this aggressive fromBuilding, can be null
         /// </returns>
         public List<Unit> GetTargets()
         {
