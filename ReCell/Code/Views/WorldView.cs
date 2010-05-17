@@ -248,7 +248,7 @@ namespace Recellection.Code.Views
 							Color c = u.GetOwner().color;
 							if (u.PowerLevel > 0f)
 							{
-								c = Color.Lerp(c, Color.HotPink, 0.3f + u.powerLevel*0.5f);
+								c = Color.Lerp(c, Color.HotPink, 0.3f + u.PowerLevel*0.5f);
 							}
                             this.drawTexture(spriteBatch, spr, new Rectangle(ux, uy, spr.Width, spr.Height), c);
                         }
