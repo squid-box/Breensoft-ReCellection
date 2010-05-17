@@ -88,10 +88,16 @@ namespace Recellection.Code.Controllers
 				{
 					finished = true;
 				}
-				if (sel.point.X == 2 && sel.point.Y == 1
-				 && previousSelection.state == State.BUILDING)
+				if (sel.point.X == 2 && sel.point.Y == 1)
 				{
-					BuildingMenu(previousSelection);
+					if (previousSelection.state == State.BUILDING)
+					{
+						BuildingMenu(previousSelection);
+					}
+					else if (previousSelection.state == State.TILE)
+					{
+						TileMenu(previousSelection);
+					}
 				}
             }
 			//Sounds.Instance.LoadSound("acid").Play();
@@ -145,127 +151,13 @@ namespace Recellection.Code.Controllers
                 throw new ArgumentException("Your argument is invalid, my beard is a windmill.");
             }
             return s;
-        }
-
-        private void createGUIRegionGridAndScrollZone()
-        {
-            int numOfRows = (int)(Recellection.viewPort.Height / Globals.TILE_SIZE) - 2;
-            int numOfCols = (int)(Recellection.viewPort.Width / Globals.TILE_SIZE) - 2;
-
-            menuMatrix = new MenuIcon[numOfCols, numOfRows];
-
-            scrollZone = new List<MenuIcon>();
-
-            //This will create a matrix with menuIcons, ignoring the ones
-            //closest to the edge.
-            for (int x = 0; x < numOfCols; x++)
-            {
-                for (int y = 0; y < numOfRows; y++)
-                {
-                    menuMatrix[x, y] = new MenuIcon("" + (x+1) + "_" + (y+1), null,Color.NavajoWhite);
-
-                    //Should not need a targetRectangle.
-                    /*menuMatrix[x, y].targetRectangle = new Microsoft.Xna.Framework.Rectangle(
-                        x * Globals.TILE_SIZE, y * Globals.TILE_SIZE, Globals.TILE_SIZE, Globals.TILE_SIZE);
-                    */
-                    //x + 1 and y + 1 should make them not be placed at the edge.
-                    menuMatrix[x, y].region = new GUIRegion(Recellection.windowHandle,
-                        new System.Windows.Rect((x+1) * Globals.TILE_SIZE, (y+1) * Globals.TILE_SIZE, Globals.TILE_SIZE, Globals.TILE_SIZE));
-                }
-
-            }
-            /*
-             * The following code creates the scroll zones with this pattern:
-             * 1 2 2 2 2 3
-             * 4         5
-             * 4         5
-             * 4         5
-             * 6 7 7 7 7 8
-             * 
-             * A number indicates wich index it has in the list, the label describes its position
-             */
-
-
-            #region UglyCode
-            int windowWidth = Recellection.viewPort.Width;
-            int windowHeight = Recellection.viewPort.Height;
-            //Will code the scroll zones in one line.
-
-            //First is a tile sized square top left on the screen.
-            scrollZone.Add(new MenuIcon("-1_-1",null,Color.Chocolate));
-            
-            scrollZone[0].region = new GUIRegion(Recellection.windowHandle, new System.Windows.Rect(0, 0, Globals.TILE_SIZE, Globals.TILE_SIZE));
-            scrollZone[0].region.DwellTime = new TimeSpan(SCROLL_ZONE_DWELL_TIME);
-            scrollZone[0].region.HideFeedbackIndicator = true;
-
-            //Second is a laying rectangle spanning the screen width minus two tile widths.
-            scrollZone.Add(new MenuIcon("0_-1", null, Color.Chocolate));
-            
-            scrollZone[1].region = new GUIRegion(Recellection.windowHandle, new System.Windows.Rect(Globals.TILE_SIZE, 0, windowWidth - Globals.TILE_SIZE * 2, Globals.TILE_SIZE));
-            scrollZone[1].region.DwellTime = new TimeSpan(SCROLL_ZONE_DWELL_TIME);
-            scrollZone[1].region.HideFeedbackIndicator = true;
-
-            //Third is like the first but placed to the far right.
-            scrollZone.Add(new MenuIcon("1_-1", null, Color.Chocolate));
-            
-            scrollZone[2].region = new GUIRegion(Recellection.windowHandle, new System.Windows.Rect(windowWidth - Globals.TILE_SIZE, 0, Globals.TILE_SIZE, Globals.TILE_SIZE));
-            scrollZone[2].region.DwellTime = new TimeSpan(SCROLL_ZONE_DWELL_TIME);
-            scrollZone[2].region.HideFeedbackIndicator = true;
-
-            //Fourth is a standing rectangle at the left side of the screen, its height is screen height minus two tile heights.
-            scrollZone.Add(new MenuIcon("-1_0", null, Color.Chocolate));
-            
-            scrollZone[3].region = new GUIRegion(Recellection.windowHandle, new System.Windows.Rect(0, Globals.TILE_SIZE, Globals.TILE_SIZE, windowHeight - Globals.TILE_SIZE*2));
-            scrollZone[3].region.DwellTime = new TimeSpan(SCROLL_ZONE_DWELL_TIME);
-            scrollZone[3].region.HideFeedbackIndicator = true;
-
-            //Fift is the same as the right but placed at the right side of the screen.
-            scrollZone.Add(new MenuIcon("1_0", null, Color.Chocolate));
-            
-            scrollZone[4].region = new GUIRegion(Recellection.windowHandle, new System.Windows.Rect(windowWidth - Globals.TILE_SIZE, Globals.TILE_SIZE, Globals.TILE_SIZE, windowHeight - Globals.TILE_SIZE * 2));
-            scrollZone[4].region.DwellTime = new TimeSpan(SCROLL_ZONE_DWELL_TIME);
-            scrollZone[4].region.HideFeedbackIndicator = true;
-
-            //Like the first but at the bottom
-            scrollZone.Add(new MenuIcon("-1_1", null, Color.Chocolate));
-            
-            scrollZone[5].region = new GUIRegion(Recellection.windowHandle, new System.Windows.Rect(0, windowHeight - Globals.TILE_SIZE, Globals.TILE_SIZE, Globals.TILE_SIZE));
-            scrollZone[5].region.DwellTime = new TimeSpan(SCROLL_ZONE_DWELL_TIME);
-            scrollZone[5].region.HideFeedbackIndicator = true;
-            //Like the second but at the bottom
-            scrollZone.Add(new MenuIcon("0_1", null, Color.Chocolate));
-            
-            scrollZone[6].region = new GUIRegion(Recellection.windowHandle, new System.Windows.Rect(Globals.TILE_SIZE, windowHeight - Globals.TILE_SIZE, windowWidth - Globals.TILE_SIZE * 2, Globals.TILE_SIZE));
-            scrollZone[6].region.DwellTime = new TimeSpan(SCROLL_ZONE_DWELL_TIME);
-            scrollZone[6].region.HideFeedbackIndicator = true;
-
-            //Like the third but at the bottom
-            scrollZone.Add(new MenuIcon("1_1", null, Color.Chocolate));
-            
-            scrollZone[7].region = new GUIRegion(Recellection.windowHandle, new System.Windows.Rect(windowWidth - Globals.TILE_SIZE, windowHeight - Globals.TILE_SIZE, Globals.TILE_SIZE, Globals.TILE_SIZE));
-            scrollZone[7].region.DwellTime = new TimeSpan(SCROLL_ZONE_DWELL_TIME);
-            scrollZone[7].region.HideFeedbackIndicator = true;
-
-            #endregion
-
-            List<MenuIcon> allMenuIcons = new List<MenuIcon>();
-
-            foreach (MenuIcon mi in menuMatrix)
-            {
-                allMenuIcons.Add(mi);
-            }
-            foreach (MenuIcon mi in scrollZone)
-            {
-                allMenuIcons.Add(mi);
-            }
-
-            MenuController.LoadMenu(new Menu(allMenuIcons));
-    }
-    /// <summary>
-    /// Loads the Building menu from a selection.
-    /// Must have building on tile.
-    /// </summary>
-    /// <param name="theSelection"></param>
+		}
+		
+		/// <summary>
+		/// Loads the Building menu from a selection.
+		/// Must have building on tile.
+		/// </summary>
+		/// <param name="theSelection"></param>
         private void BuildingMenu(Selection theSelection)
         {
             
@@ -323,10 +215,153 @@ namespace Recellection.Code.Controllers
             else //else upgradeUnits
             {
                 //put upgrade code here /co
-                playerInControll.powerLevel += 0.1f;
-
             }
         }
 
+		private void TileMenu(Selection previousSelection)
+		{
+			MenuIcon moveUnits = new MenuIcon(Language.Instance.GetString("MoveUnits"), null, Color.Black);
+			MenuIcon cancel = new MenuIcon(Language.Instance.GetString("Cancel"), null, Color.Black);
+			
+			List<MenuIcon> menuIcons = new List<MenuIcon>();
+			menuIcons.Add(moveUnits);
+			menuIcons.Add(cancel);
+
+			Menu buildingMenu = new Menu(Globals.MenuLayout.FourMatrix, menuIcons, Language.Instance.GetString("TileMenu"), Color.Black);
+			MenuController.LoadMenu(buildingMenu);
+			Recellection.CurrentState = MenuView.Instance;
+			MenuIcon choosenMenu = MenuController.GetInput();
+			Recellection.CurrentState = WorldView.Instance;
+			MenuController.UnloadMenu();
+			
+			if (choosenMenu == moveUnits)
+			{
+				Selection currSel = retrieveSelection();
+				if (currSel.state != State.TILE)
+				{
+					return;
+				}
+				
+				Tile from = theWorld.GetMap().GetTile(previousSelection.absPoint);
+				Tile to = theWorld.GetMap().GetTile(currSel.absPoint);
+
+				UnitController.MoveUnits(from.GetUnits().Count, from, to);
+			}
+		}
+
+        private void createGUIRegionGridAndScrollZone()
+        {
+            int numOfRows = (int)(Recellection.viewPort.Height / Globals.TILE_SIZE) - 2;
+            int numOfCols = (int)(Recellection.viewPort.Width / Globals.TILE_SIZE) - 2;
+
+            menuMatrix = new MenuIcon[numOfCols, numOfRows];
+
+            scrollZone = new List<MenuIcon>();
+
+            //This will create a matrix with menuIcons, ignoring the ones
+            //closest to the edge.
+            for (int x = 0; x < numOfCols; x++)
+            {
+                for (int y = 0; y < numOfRows; y++)
+                {
+                    menuMatrix[x, y] = new MenuIcon("" + (x + 1) + "_" + (y + 1), null, Color.NavajoWhite);
+
+                    //Should not need a targetRectangle.
+                    /*menuMatrix[x, y].targetRectangle = new Microsoft.Xna.Framework.Rectangle(
+                        x * Globals.TILE_SIZE, y * Globals.TILE_SIZE, Globals.TILE_SIZE, Globals.TILE_SIZE);
+                    */
+                    //x + 1 and y + 1 should make them not be placed at the edge.
+                    menuMatrix[x, y].region = new GUIRegion(Recellection.windowHandle,
+                        new System.Windows.Rect((x + 1) * Globals.TILE_SIZE, (y + 1) * Globals.TILE_SIZE, Globals.TILE_SIZE, Globals.TILE_SIZE));
+                }
+
+            }
+            /*
+             * The following code creates the scroll zones with this pattern:
+             * 1 2 2 2 2 3
+             * 4         5
+             * 4         5
+             * 4         5
+             * 6 7 7 7 7 8
+             * 
+             * A number indicates wich index it has in the list, the label describes its position
+             */
+
+
+            #region UglyCode
+            int windowWidth = Recellection.viewPort.Width;
+            int windowHeight = Recellection.viewPort.Height;
+            //Will code the scroll zones in one line.
+
+            //First is a tile sized square top left on the screen.
+            scrollZone.Add(new MenuIcon("-1_-1", null, Color.Chocolate));
+
+            scrollZone[0].region = new GUIRegion(Recellection.windowHandle, new System.Windows.Rect(0, 0, Globals.TILE_SIZE, Globals.TILE_SIZE));
+            scrollZone[0].region.DwellTime = new TimeSpan(SCROLL_ZONE_DWELL_TIME);
+            scrollZone[0].region.HideFeedbackIndicator = true;
+
+            //Second is a laying rectangle spanning the screen width minus two tile widths.
+            scrollZone.Add(new MenuIcon("0_-1", null, Color.Chocolate));
+
+            scrollZone[1].region = new GUIRegion(Recellection.windowHandle, new System.Windows.Rect(Globals.TILE_SIZE, 0, windowWidth - Globals.TILE_SIZE * 2, Globals.TILE_SIZE));
+            scrollZone[1].region.DwellTime = new TimeSpan(SCROLL_ZONE_DWELL_TIME);
+            scrollZone[1].region.HideFeedbackIndicator = true;
+
+            //Third is like the first but placed to the far right.
+            scrollZone.Add(new MenuIcon("1_-1", null, Color.Chocolate));
+
+            scrollZone[2].region = new GUIRegion(Recellection.windowHandle, new System.Windows.Rect(windowWidth - Globals.TILE_SIZE, 0, Globals.TILE_SIZE, Globals.TILE_SIZE));
+            scrollZone[2].region.DwellTime = new TimeSpan(SCROLL_ZONE_DWELL_TIME);
+            scrollZone[2].region.HideFeedbackIndicator = true;
+
+            //Fourth is a standing rectangle at the left side of the screen, its height is screen height minus two tile heights.
+            scrollZone.Add(new MenuIcon("-1_0", null, Color.Chocolate));
+
+            scrollZone[3].region = new GUIRegion(Recellection.windowHandle, new System.Windows.Rect(0, Globals.TILE_SIZE, Globals.TILE_SIZE, windowHeight - Globals.TILE_SIZE * 2));
+            scrollZone[3].region.DwellTime = new TimeSpan(SCROLL_ZONE_DWELL_TIME);
+            scrollZone[3].region.HideFeedbackIndicator = true;
+
+            //Fift is the same as the right but placed at the right side of the screen.
+            scrollZone.Add(new MenuIcon("1_0", null, Color.Chocolate));
+
+            scrollZone[4].region = new GUIRegion(Recellection.windowHandle, new System.Windows.Rect(windowWidth - Globals.TILE_SIZE, Globals.TILE_SIZE, Globals.TILE_SIZE, windowHeight - Globals.TILE_SIZE * 2));
+            scrollZone[4].region.DwellTime = new TimeSpan(SCROLL_ZONE_DWELL_TIME);
+            scrollZone[4].region.HideFeedbackIndicator = true;
+
+            //Like the first but at the bottom
+            scrollZone.Add(new MenuIcon("-1_1", null, Color.Chocolate));
+
+            scrollZone[5].region = new GUIRegion(Recellection.windowHandle, new System.Windows.Rect(0, windowHeight - Globals.TILE_SIZE, Globals.TILE_SIZE, Globals.TILE_SIZE));
+            scrollZone[5].region.DwellTime = new TimeSpan(SCROLL_ZONE_DWELL_TIME);
+            scrollZone[5].region.HideFeedbackIndicator = true;
+            //Like the second but at the bottom
+            scrollZone.Add(new MenuIcon("0_1", null, Color.Chocolate));
+
+            scrollZone[6].region = new GUIRegion(Recellection.windowHandle, new System.Windows.Rect(Globals.TILE_SIZE, windowHeight - Globals.TILE_SIZE, windowWidth - Globals.TILE_SIZE * 2, Globals.TILE_SIZE));
+            scrollZone[6].region.DwellTime = new TimeSpan(SCROLL_ZONE_DWELL_TIME);
+            scrollZone[6].region.HideFeedbackIndicator = true;
+
+            //Like the third but at the bottom
+            scrollZone.Add(new MenuIcon("1_1", null, Color.Chocolate));
+
+            scrollZone[7].region = new GUIRegion(Recellection.windowHandle, new System.Windows.Rect(windowWidth - Globals.TILE_SIZE, windowHeight - Globals.TILE_SIZE, Globals.TILE_SIZE, Globals.TILE_SIZE));
+            scrollZone[7].region.DwellTime = new TimeSpan(SCROLL_ZONE_DWELL_TIME);
+            scrollZone[7].region.HideFeedbackIndicator = true;
+
+            #endregion
+
+            List<MenuIcon> allMenuIcons = new List<MenuIcon>();
+
+            foreach (MenuIcon mi in menuMatrix)
+            {
+                allMenuIcons.Add(mi);
+            }
+            foreach (MenuIcon mi in scrollZone)
+            {
+                allMenuIcons.Add(mi);
+            }
+
+            MenuController.LoadMenu(new Menu(allMenuIcons));
+        }
     }
 }
