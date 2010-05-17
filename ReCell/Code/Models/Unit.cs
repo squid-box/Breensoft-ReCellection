@@ -28,7 +28,18 @@ namespace Recellection.Code.Models
         public bool isDispersed { get; set; }         // Whether or not this unit should recieve a new target from the dispersion procedure
 		public bool hasArrived { get { return (targetPosition.X == NO_TARGET && targetPosition.Y == NO_TARGET); } }
         public bool isDead { get; set; }              // Status of unit
-        public float powerLevel { get; set; }
+        public float powerLevel;
+        public float PowerLevel
+        {
+            get
+            {
+                return powerLevel + owner.powerLevel;
+            }
+            set
+            {
+                powerLevel = value;
+            }
+        }
         private static World world;
 
 		private Random rand;
@@ -81,7 +92,6 @@ namespace Recellection.Code.Models
             this.isDead = false;
             this.owner = owner;
             this.rand = new Random(id++);
-            this.powerLevel = 0.0f;
             world.GetMap().GetTile((int)position.X, (int)position.Y).AddUnit(this);
         }
 
@@ -256,7 +266,7 @@ namespace Recellection.Code.Models
 					{
 						if (TargetEntity is Unit && ! ((Unit)TargetEntity).isDead)
 						{
-							if ((new Random()).NextDouble() >= this.powerLevel)
+							if ((new Random()).NextDouble() >= this.PowerLevel)
 							{
 								this.Kill();
 							}
@@ -266,7 +276,7 @@ namespace Recellection.Code.Models
 						}
 						else if (TargetEntity is Building && ((Building)TargetEntity).IsAlive())
 						{
-							if ((new Random()).NextDouble() >= this.powerLevel)
+							if ((new Random()).NextDouble() >= this.PowerLevel)
 							{
 								this.Kill();
 							}
@@ -294,14 +304,6 @@ namespace Recellection.Code.Models
 				return false;
 			}
 		}
-        
-        /// <returns>
-        /// Powerlevel of this unit.
-        /// </returns>
-        public float GetPowerLevel()
-        {
-            return powerLevel;
-        }
         
         public bool isPatrolling()
         {

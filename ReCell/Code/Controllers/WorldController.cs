@@ -323,6 +323,8 @@ namespace Recellection.Code.Controllers
             else //else upgradeUnits
             {
                 //put upgrade code here /co
+                playerInControll.powerLevel += 0.1f;
+
             }
         }
 

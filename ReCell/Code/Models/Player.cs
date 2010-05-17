@@ -29,7 +29,7 @@ namespace Recellection.Code.Models
         public PlayerColour colour {get; private set;}
 
         public Color color { get; private set; }
-
+        public float powerLevel { get; set; }
         /// <summary>
         /// The fromBuilding networks owned by a player
         /// </summary>
@@ -66,7 +66,7 @@ namespace Recellection.Code.Models
         /// </summary>
         public Player()
         {
-            this.name = "John doe";
+            this.name = "Vict0r Turner, aka John Doe";
             this.colour = PlayerColour.PURPLE;
             this.graphs = new List<Graph>();
         }
