@@ -51,9 +51,9 @@ namespace Recellection.Code.Models
             controlZone)
         {
 
-            for (int i = 0; i < controlZone.Count; i++)
+            foreach(Tile t in controlZone)
             {
-                controlZone.ElementAt(i).unitsChanged += BarrierBuilding_unitsChanged;
+                t.unitsChanged += BarrierBuilding_unitsChanged;
             }
 
         }
@@ -66,7 +66,7 @@ namespace Recellection.Code.Models
                 {
                     if (u.GetOwner() == this.owner)
                     {
-                        u.powerLevel *= powerBonus;
+                        u.powerLevel += powerBonus;
                     }
                 }
 
@@ -77,7 +77,7 @@ namespace Recellection.Code.Models
                 {
                     if (u.GetOwner() == this.owner)
                     {
-                        u.powerLevel /= powerBonus;
+                        u.powerLevel -= powerBonus;
                     }
                 }
             }
