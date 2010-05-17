@@ -52,6 +52,11 @@ Yes=Yes
 No=No
 AreYouSureYouWantToQuit=Are you sure you want to quit?
 
+[Tile options]
+TileMenu=What do you want to do with the tile?
+Cancel=Cancel
+MoveUnits=Move units
+
 [Graph]
 SetImportance=What weight do you want to set?
 
