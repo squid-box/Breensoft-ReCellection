@@ -20,7 +20,7 @@ namespace Recellection.Code.Controllers
         /// <summary>
         /// The different states this controller will assume
         /// </summary>
-        public enum State { NONE, BUILDING, TILE, MENU, ZOOMED, SCROLL };
+        public enum State { NONE, BUILDING, TILE, MENU };
         
         public struct Selection
         {
@@ -137,8 +137,8 @@ namespace Recellection.Code.Controllers
             }
             else if (activatedMenuIcon.labelColor.Equals(Color.Chocolate))
             {
-                s.state = State.SCROLL;
-                s.point = new Point(x, y);
+				theWorld.LookingAt = new Point(theWorld.LookingAt.X + x, theWorld.LookingAt.Y + y);
+				return retrieveSelection();
             }
             else
             {
