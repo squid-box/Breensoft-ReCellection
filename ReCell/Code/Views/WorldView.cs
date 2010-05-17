@@ -23,10 +23,12 @@ namespace Recellection.Code.Views
         public Logger myLogger;
         private List<Tile> tileCollection;
 
-        private Texture2D backgroundTex = Recellection.textureMap.GetTexture(Globals.TextureTypes.white);
+        private Texture2D backgroundTex;
+        private RenderTarget2D backgroundTarget;
 
+        private bool doRenderThisPass = true;
         public static bool doLights = false;
-        public static bool doGrain = false;
+        public static bool doGrain = true;
         public static bool doRipples = false;
         
         private Effect bgShaders;
@@ -46,9 +48,13 @@ namespace Recellection.Code.Views
 
         public WorldView(World world)
         {
+            backgroundTex = Recellection.textureMap.GetTexture(Globals.TextureTypes.white);
+            backgroundTarget = new RenderTarget2D(Recellection.graphics.GraphicsDevice, Recellection.viewPort.Width, Recellection.viewPort.Height, 1, Recellection.graphics.GraphicsDevice.DisplayMode.Format);
             lps = new LightParticleSystem(0.05f, Recellection.textureMap.GetTexture(Globals.TextureTypes.Light));
 
             this.bgShaders = Recellection.bgShader;
+
+            world.lookingAtEvent += UpdateBg;
 
             this.World = world;
             myLogger = LoggerFactory.GetLogger();
@@ -249,86 +255,94 @@ namespace Recellection.Code.Views
 			this.World.LookingAt = new Point(x, y);
         }
 
+        public void UpdateBg(Object publisher, Event<Point> ev)
+        {
+            doRenderThisPass = true;
+        }
+
         public void RenderToTex(SpriteBatch spriteBatch, GameTime gameTime)
         {
-            RenderTarget2D backgroundTarget = new RenderTarget2D(Recellection.graphics.GraphicsDevice, Recellection.viewPort.Width, Recellection.viewPort.Height, 1, Recellection.graphics.GraphicsDevice.DisplayMode.Format);
-
-            Recellection.graphics.GraphicsDevice.SetRenderTarget(0, backgroundTarget);
-            Recellection.graphics.GraphicsDevice.Clear(Color.White);
-
-            spriteBatch.Begin();
-            lock (tileCollection)
+            if (doRenderThisPass)
             {
-                foreach (Tile t in tileCollection)
+                Recellection.graphics.GraphicsDevice.SetRenderTarget(0, backgroundTarget);
+                Recellection.graphics.GraphicsDevice.Clear(Color.White);
+
+                spriteBatch.Begin();
+                lock (tileCollection)
                 {
-                    int x = (int)(t.position.X - (World.LookingAt.X));
-                    int y = (int)(t.position.Y - (World.LookingAt.Y));
+                    foreach (Tile t in tileCollection)
+                    {
+                        int x = (int)(t.position.X - (World.LookingAt.X));
+                        int y = (int)(t.position.Y - (World.LookingAt.Y));
 
-                    Rectangle r = new Rectangle(x * Globals.TILE_SIZE, y * Globals.TILE_SIZE, Globals.TILE_SIZE, Globals.TILE_SIZE);
+                        Rectangle r = new Rectangle(x * Globals.TILE_SIZE, y * Globals.TILE_SIZE, Globals.TILE_SIZE, Globals.TILE_SIZE);
 
-                    spriteBatch.Draw(t.GetSprite(), r, Color.White);
+                        spriteBatch.Draw(t.GetSprite(), r, Color.White);
+                    }
                 }
-            }
-            
-            if(doLights)
-                lps.UpdateAndDraw(gameTime, spriteBatch);
 
-            spriteBatch.End();
+                if (doLights)
+                    lps.UpdateAndDraw(gameTime, spriteBatch);
 
-            Recellection.graphics.GraphicsDevice.SetRenderTarget(0, null);
-            backgroundTex = backgroundTarget.GetTexture();
-
-
-            if (doGrain)
-            {
-                bgShaders.Parameters["Timer"].SetValue((float)gameTime.ElapsedRealTime.TotalSeconds + 1.23f);
-
-                Recellection.graphics.GraphicsDevice.SetRenderTarget(0, backgroundTarget);
-                Recellection.graphics.GraphicsDevice.Clear(Color.Black);
-
-                spriteBatch.Begin(SpriteBlendMode.None, SpriteSortMode.Immediate, SaveStateMode.None);
-                bgShaders.CurrentTechnique = bgShaders.Techniques["Grain"];
-                bgShaders.Begin();
-                bgShaders.CurrentTechnique.Passes[0].Begin();
-                spriteBatch.Draw(backgroundTex, Vector2.Zero, Color.White);
                 spriteBatch.End();
-                bgShaders.CurrentTechnique.Passes[0].End();
-                bgShaders.End();
 
-                // Change back to the back buffer, and get our scene
-                // as a texture.
                 Recellection.graphics.GraphicsDevice.SetRenderTarget(0, null);
                 backgroundTex = backgroundTarget.GetTexture();
-            }
 
-            if (doRipples)
-            {
-                crawler += calmRippleMovementRate;
-                if (crawler > MathHelper.TwoPi)
-                    crawler = 0;
 
-                calmRippleWaveDivider = (float)Math.Pow(Math.Sin(crawler), 2) + calmRippleLowerBound;
+                if (doGrain)
+                {
+                    bgShaders.Parameters["Timer"].SetValue((float)gameTime.ElapsedRealTime.TotalSeconds + 1.23f);
 
-                bgShaders.Parameters["calmWave"].SetValue((float)Math.PI / calmRippleWaveDivider);
-                bgShaders.Parameters["calmDistortion"].SetValue(calmRippleDistortion);
-                bgShaders.Parameters["calmCenterCoord"].SetValue(new Vector2(0.5f, 0.5f));
+                    Recellection.graphics.GraphicsDevice.SetRenderTarget(0, backgroundTarget);
+                    Recellection.graphics.GraphicsDevice.Clear(Color.Black);
 
-                Recellection.graphics.GraphicsDevice.SetRenderTarget(0, backgroundTarget);
-                Recellection.graphics.GraphicsDevice.Clear(Color.Black);
+                    spriteBatch.Begin(SpriteBlendMode.None, SpriteSortMode.Immediate, SaveStateMode.None);
+                    bgShaders.CurrentTechnique = bgShaders.Techniques["Grain"];
+                    bgShaders.Begin();
+                    bgShaders.CurrentTechnique.Passes[0].Begin();
+                    spriteBatch.Draw(backgroundTex, Vector2.Zero, Color.White);
+                    spriteBatch.End();
+                    bgShaders.CurrentTechnique.Passes[0].End();
+                    bgShaders.End();
 
-                spriteBatch.Begin(SpriteBlendMode.None, SpriteSortMode.Immediate, SaveStateMode.None);
-                bgShaders.CurrentTechnique = bgShaders.Techniques["Ripple"];
-                bgShaders.Begin();
-                bgShaders.CurrentTechnique.Passes[0].Begin();
-                spriteBatch.Draw(backgroundTex, Vector2.Zero, Color.White);
-                spriteBatch.End();
-                bgShaders.CurrentTechnique.Passes[0].End();
-                bgShaders.End();
+                    // Change back to the back buffer, and get our scene
+                    // as a texture.
+                    Recellection.graphics.GraphicsDevice.SetRenderTarget(0, null);
+                    backgroundTex = backgroundTarget.GetTexture();
+                }
 
-                // Change back to the back buffer, and get our scene
-                // as a texture.
-                Recellection.graphics.GraphicsDevice.SetRenderTarget(0, null);
-                backgroundTex = backgroundTarget.GetTexture();
+                if (doRipples)
+                {
+                    crawler += calmRippleMovementRate;
+                    if (crawler > MathHelper.TwoPi)
+                        crawler = 0;
+
+                    calmRippleWaveDivider = (float)Math.Pow(Math.Sin(crawler), 2) + calmRippleLowerBound;
+
+                    bgShaders.Parameters["calmWave"].SetValue((float)Math.PI / calmRippleWaveDivider);
+                    bgShaders.Parameters["calmDistortion"].SetValue(calmRippleDistortion);
+                    bgShaders.Parameters["calmCenterCoord"].SetValue(new Vector2(0.5f, 0.5f));
+
+                    Recellection.graphics.GraphicsDevice.SetRenderTarget(0, backgroundTarget);
+                    Recellection.graphics.GraphicsDevice.Clear(Color.Black);
+
+                    spriteBatch.Begin(SpriteBlendMode.None, SpriteSortMode.Immediate, SaveStateMode.None);
+                    bgShaders.CurrentTechnique = bgShaders.Techniques["Ripple"];
+                    bgShaders.Begin();
+                    bgShaders.CurrentTechnique.Passes[0].Begin();
+                    spriteBatch.Draw(backgroundTex, Vector2.Zero, Color.White);
+                    spriteBatch.End();
+                    bgShaders.CurrentTechnique.Passes[0].End();
+                    bgShaders.End();
+
+                    // Change back to the back buffer, and get our scene
+                    // as a texture.
+                    Recellection.graphics.GraphicsDevice.SetRenderTarget(0, null);
+                    backgroundTex = backgroundTarget.GetTexture();
+                }
+
+                doRenderThisPass = false;
             }
         }
 	}
