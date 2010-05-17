@@ -342,6 +342,9 @@ namespace Recellection.Code.Controllers
             }
             else if (choosenMenu.Equals(buildCell))
             {
+                Selection destsel = retrieveSelection();
+                Point DestAbsoluteCordinate = new Point(destsel.point.X + theWorld.LookingAt.X,
+                                                     destsel.point.Y + theWorld.LookingAt.Y);
                 Tile destTile = map.GetTile(absoluteCordinate);
                 BuildingController.ConstructBuilding(playerInControll, destTile, building, theWorld);
             }
