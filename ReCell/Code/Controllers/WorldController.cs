@@ -91,10 +91,16 @@ namespace Recellection.Code.Controllers
 				{
 					finished = true;
 				}
-				if (sel.point.X == 2 && sel.point.Y == 1
-				 && previousSelection.state == State.BUILDING)
+				if (sel.point.X == 2 && sel.point.Y == 1)
 				{
-					BuildingMenu(previousSelection);
+					if (previousSelection.state == State.BUILDING)
+					{
+						BuildingMenu(previousSelection);
+					}
+					else if (previousSelection.state == State.TILE)
+					{
+						TileMenu(previousSelection);
+					}
 				}
             }
 			//Sounds.Instance.LoadSound("acid").Play();
@@ -145,7 +151,103 @@ namespace Recellection.Code.Controllers
                 throw new ArgumentException("Your argument is invalid, my beard is a windmill.");
             }
             return s;
-        }
+		}
+		
+		/// <summary>
+		/// Loads the Building menu from a selection.
+		/// Must have building on tile.
+		/// </summary>
+		/// <param name="theSelection"></param>
+		private void BuildingMenu(Selection theSelection)
+		{
+			Point absoluteCordinate = new Point(theSelection.point.X + theWorld.LookingAt.X,
+													 theSelection.point.Y + theWorld.LookingAt.Y);
+			World.Map map = theWorld.GetMap();
+			Building building = map.GetTile(absoluteCordinate).GetBuilding();
+			if (building == null || building.owner != playerInControll)
+			{
+				return;
+			}
+			MenuIcon setWeight = new MenuIcon(Language.Instance.GetString("SetWeight"), null, Color.Black);
+			MenuIcon buildCell = new MenuIcon(Language.Instance.GetString("BuildCell"), null, Color.Black);
+			MenuIcon removeCell = new MenuIcon(Language.Instance.GetString("RemoveCell"), null, Color.Black);
+			MenuIcon upgradeUnits = new MenuIcon(Language.Instance.GetString("UpgradeUnits"), null, Color.Black);
+			List<MenuIcon> menuIcons = new List<MenuIcon>();
+			menuIcons.Add(setWeight);
+			menuIcons.Add(buildCell);
+			menuIcons.Add(removeCell);
+			menuIcons.Add(upgradeUnits);
+
+			Menu buildingMenu = new Menu(Globals.MenuLayout.FourMatrix, menuIcons, Language.Instance.GetString("BuildingMenu"), Color.Black);
+			MenuController.LoadMenu(buildingMenu);
+			Recellection.CurrentState = MenuView.Instance;
+			MenuIcon choosenMenu = MenuController.GetInput();
+			Recellection.CurrentState = WorldView.Instance;
+			MenuController.UnloadMenu();
+
+			if (choosenMenu.Equals(setWeight))
+			{
+				GraphController.Instance.SetWeight(building);
+			}
+			else if (choosenMenu.Equals(buildCell))
+			{
+				Selection destsel = retrieveSelection();
+				if (destsel.state != State.TILE)
+				{
+					Sounds.Instance.LoadSound("Denied");
+					return;
+				}
+
+				Point DestAbsoluteCordinate = new Point(destsel.point.X + theWorld.LookingAt.X,
+													 destsel.point.Y + theWorld.LookingAt.Y);
+				Tile selectedTile = map.GetTile(DestAbsoluteCordinate);
+
+				if (selectedTile.GetBuilding() == null)
+				{
+					BuildingController.ConstructBuilding(playerInControll, selectedTile, building, theWorld);
+				}
+				else
+				{
+					Sounds.Instance.LoadSound("Denied");
+					return;
+				}
+			}
+			else if (choosenMenu.Equals(removeCell))
+			{
+				BuildingController.RemoveBuilding(building);
+			}
+			else //else upgradeUnits
+			{
+				//put upgrade code here /co
+			}
+		}
+
+		private void TileMenu(Selection previousSelection)
+		{
+			MenuIcon moveUnits = new MenuIcon(Language.Instance.GetString("MoveUnits"), null, Color.Black);
+			MenuIcon cancel = new MenuIcon(Language.Instance.GetString("Cancel"), null, Color.Black);
+			
+			List<MenuIcon> menuIcons = new List<MenuIcon>();
+			menuIcons.Add(moveUnits);
+			menuIcons.Add(cancel);
+
+			Menu buildingMenu = new Menu(Globals.MenuLayout.FourMatrix, menuIcons, Language.Instance.GetString("TileMenu"), Color.Black);
+			MenuController.LoadMenu(buildingMenu);
+			Recellection.CurrentState = MenuView.Instance;
+			MenuIcon choosenMenu = MenuController.GetInput();
+			Recellection.CurrentState = WorldView.Instance;
+			MenuController.UnloadMenu();
+			
+			if (choosenMenu == moveUnits)
+			{
+				Selection currSel = retrieveSelection();
+				if (currSel.state != State.TILE)
+				{
+					return;
+				}
+				
+			}
+		}
 
         private void createGUIRegionGridAndScrollZone()
         {
@@ -260,75 +362,7 @@ namespace Recellection.Code.Controllers
             }
 
             MenuController.LoadMenu(new Menu(allMenuIcons));
-    }
-    /// <summary>
-    /// Loads the Building menu from a selection.
-    /// Must have building on tile.
-    /// </summary>
-    /// <param name="theSelection"></param>
-        private void BuildingMenu(Selection theSelection)
-        {
-            Point absoluteCordinate = new Point(theSelection.point.X + theWorld.LookingAt.X,
-                                                     theSelection.point.Y + theWorld.LookingAt.Y);
-            World.Map map = theWorld.GetMap();
-            Building building = map.GetTile(absoluteCordinate).GetBuilding();
-            if (building == null || building.owner != playerInControll)
-            {
-                return;
-            }
-            MenuIcon setWeight = new MenuIcon(Language.Instance.GetString("SetWeight"), null, Color.Black);
-            MenuIcon buildCell = new MenuIcon(Language.Instance.GetString("BuildCell"), null, Color.Black);
-            MenuIcon removeCell = new MenuIcon(Language.Instance.GetString("RemoveCell"), null, Color.Black);
-            MenuIcon upgradeUnits = new MenuIcon(Language.Instance.GetString("UpgradeUnits"), null, Color.Black);
-            List<MenuIcon> menuIcons = new List<MenuIcon>();
-            menuIcons.Add(setWeight);
-            menuIcons.Add(buildCell);
-            menuIcons.Add(removeCell);
-            menuIcons.Add(upgradeUnits);
-
-            Menu buildingMenu = new Menu(Globals.MenuLayout.FourMatrix, menuIcons, Language.Instance.GetString("BuildingMenu"), Color.Black);
-            MenuController.LoadMenu(buildingMenu);
-            Recellection.CurrentState = MenuView.Instance;
-            MenuIcon choosenMenu = MenuController.GetInput();
-            Recellection.CurrentState = WorldView.Instance;
-            MenuController.UnloadMenu();
-
-            if (choosenMenu.Equals(setWeight))
-            {
-                GraphController.Instance.SetWeight(building);
-            }
-            else if (choosenMenu.Equals(buildCell))
-            {
-                Selection destsel = retrieveSelection();
-                if (destsel.state != State.TILE)
-				{
-					Sounds.Instance.LoadSound("Denied");
-					return;
-				}
-
-				Point DestAbsoluteCordinate = new Point(destsel.point.X + theWorld.LookingAt.X,
-													 destsel.point.Y + theWorld.LookingAt.Y);
-				Tile selectedTile = map.GetTile(DestAbsoluteCordinate);
-				
-				if (selectedTile.GetBuilding() == null)
-                {
-					BuildingController.ConstructBuilding(playerInControll, selectedTile, building, theWorld);
-				}
-				else
-				{
-					Sounds.Instance.LoadSound("Denied");
-					return;
-				}
-            }
-            else if (choosenMenu.Equals(removeCell))
-            {
-                BuildingController.RemoveBuilding(building);
-            }
-            else //else upgradeUnits
-            {
-                //put upgrade code here /co
-            }
-        }
+	   }
 
     }
 }
