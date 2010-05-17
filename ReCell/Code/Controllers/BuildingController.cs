@@ -68,11 +68,22 @@ namespace Recellection.Code.Controllers
             //TODO Somehow present a menu to the player, and then 
             //use the information to ADD (not the document) the fromBuilding.
 
+			MenuIcon baseCell = new MenuIcon(Language.Instance.GetString("BaseCell") + 
+					" (" + CalculateBuildingCostInflation(Globals.BuildingTypes.Base, player)+")", 
+					Recellection.textureMap.GetTexture(Globals.TextureTypes.BaseBuilding), Color.Black);
 
-            MenuIcon baseCell = new MenuIcon(Language.Instance.GetString("BaseCell"), Recellection.textureMap.GetTexture(Globals.TextureTypes.BaseBuilding), Color.Black);
-            MenuIcon resourceCell = new MenuIcon(Language.Instance.GetString("ResourceCell"), Recellection.textureMap.GetTexture(Globals.TextureTypes.ResourceBuilding), Color.Black);
-            MenuIcon defensiveCell = new MenuIcon(Language.Instance.GetString("DefensiveCell"), Recellection.textureMap.GetTexture(Globals.TextureTypes.BarrierBuilding), Color.Black);
-            MenuIcon aggressiveCell = new MenuIcon(Language.Instance.GetString("AggressiveCell"), Recellection.textureMap.GetTexture(Globals.TextureTypes.AggressiveBuilding), Color.Black);
+			MenuIcon resourceCell = new MenuIcon(Language.Instance.GetString("ResourceCell") +
+					" (" + CalculateBuildingCostInflation(Globals.BuildingTypes.Resource, player) + ")", 
+					Recellection.textureMap.GetTexture(Globals.TextureTypes.ResourceBuilding), Color.Black);
+
+			MenuIcon defensiveCell = new MenuIcon(Language.Instance.GetString("DefensiveCell") +
+					" (" + CalculateBuildingCostInflation(Globals.BuildingTypes.Barrier, player) + ")", 
+					Recellection.textureMap.GetTexture(Globals.TextureTypes.BarrierBuilding), Color.Black);
+
+			MenuIcon aggressiveCell = new MenuIcon(Language.Instance.GetString("AggressiveCell") +
+					" (" + CalculateBuildingCostInflation(Globals.BuildingTypes.Aggressive, player) + ")", 
+					Recellection.textureMap.GetTexture(Globals.TextureTypes.AggressiveBuilding), Color.Black);
+				
             List<MenuIcon> menuIcons = new List<MenuIcon>();
             menuIcons.Add(baseCell);
             menuIcons.Add(resourceCell);
@@ -181,12 +192,10 @@ namespace Recellection.Code.Controllers
                                 (int)targetCoordinate.X, (int)targetCoordinate.Y, sourceBuilding.owner,
                                 GraphController.Instance.GetGraph(sourceBuilding).baseBuilding, controlZone);
                             break;
-
                     }
 
                     world.map.GetTile((int)targetCoordinate.X, (int)targetCoordinate.Y).SetBuilding(newBuilding);
                     GraphController.Instance.AddBuilding(sourceBuilding, newBuilding);
-
                 }
                 if (sourceBuilding != null)
                 {
