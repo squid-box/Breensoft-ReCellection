@@ -127,21 +127,21 @@ namespace Recellection.Code.Controllers
             {
                 foreach (Tile t in world.GetMap().map)
                 {
-                    if (t.GetBuilding() != null)
+                    if (t.GetBuilding() == null)
+						continue;
+						
+                    for (int x = -2; x <= 2; x++)
                     {
-                        for (int x = -2; x <= 2; x++)
+                        for (int y = -2; y <= 2; y++)
                         {
-                            for (int y = -2; y <= 2; y++)
-                            {
-                                if (world.isWithinMap(x + (int)t.position.X, y + (int)t.position.Y))
-                                {
-                                    //Get the tile and check if it is visible already else set it to visible.
-                                    if (!world.GetMap().GetTile(x + (int)t.position.X, y + (int)t.position.Y).IsVisible(t.GetBuilding().owner))
-                                    {
+                            if (! world.isWithinMap(x + (int)t.position.X, y + (int)t.position.Y))
+								continue;
+							
+                            //Get the tile and check if it is visible already else set it to visible.
+                            if (world.GetMap().GetTile(x + (int)t.position.X, y + (int)t.position.Y).IsVisible(t.GetBuilding().owner))
+								continue;
 
-                                    }
-                                }
-                            }
+                            // TODO: Do stuff.
                         }
                     }
                 }

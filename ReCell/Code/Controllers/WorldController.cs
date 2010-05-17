@@ -214,7 +214,7 @@ namespace Recellection.Code.Controllers
             }
             else //else upgradeUnits
             {
-                playerInControll.powerLevel += 0.1;
+                playerInControll.powerLevel += 0.1f;
             }
         }
 
