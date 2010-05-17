@@ -81,6 +81,7 @@ namespace Recellection.Code.Models
             this.isDead = false;
             this.owner = owner;
             this.rand = new Random(id++);
+            this.powerLevel = 1f;
             world.GetMap().GetTile((int)position.X, (int)position.Y).AddUnit(this);
         }
 
@@ -254,13 +255,21 @@ namespace Recellection.Code.Models
 					{
 						if (TargetEntity is Unit && ! ((Unit)TargetEntity).isDead)
 						{
-							this.Kill();
+							if ((new Random()).NextDouble() > this.powerLevel)
+							{
+								this.Kill();
+							}
+							
 							((Unit)TargetEntity).Kill();
 							SoundsController.playSound("Celldeath", this.position);
 						}
 						else if (TargetEntity is Building && ((Building)TargetEntity).IsAlive())
 						{
-							this.Kill();
+							if ((new Random()).NextDouble() > this.powerLevel)
+							{
+								this.Kill();
+							}
+							
 							BuildingController.HurtBuilding((Building)TargetEntity);
 							SoundsController.playSound("Celldeath", this.position);
 						}
@@ -284,15 +293,6 @@ namespace Recellection.Code.Models
 				return false;
 			}
 		}
-		
-        /// <summary>
-        /// Modify or set a new powerlevel for this unit.
-        /// </summary>
-        /// <param name="newPowerLevel">Default should be one, set a new value as 1.1 for a 10% powerbonus.</param>
-        public void SetPowerLevel(float newPowerLevel)
-        {
-            powerLevel = newPowerLevel;
-        }
         
         /// <returns>
         /// Powerlevel of this unit.

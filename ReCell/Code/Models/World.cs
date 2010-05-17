@@ -75,7 +75,7 @@ namespace Recellection.Code.Models
             /// <returns></returns>
             public Tile GetTile(int x, int y)
             {
-                if (x > width || y > height)
+                if (x < 0 || y < 0 || x > width || y > height)
                 {
                     throw new IndexOutOfRangeException("Attempted to set a tile outside the range of the map.");
                 }
