@@ -20,10 +20,10 @@ namespace Recellection.Code.Models
     /// </summary>
     public abstract class Building : Entity, IModel
     {
-        protected const int AGGRESSIVE_BUILDING_HEALTH = 80;
-        protected const int BARRIER_BUILDING_HEALTH = 90;
+        protected const int AGGRESSIVE_BUILDING_HEALTH = 40;
+        protected const int BARRIER_BUILDING_HEALTH = 50;
         protected const int BASE_BUILDING_HEALTH = 100;
-        protected const int RESOURCE_BUILDING_HEALTH = 70;
+        protected const int RESOURCE_BUILDING_HEALTH = 20;
 
         // Simple values
         public string name { get; protected set; }
@@ -68,7 +68,7 @@ namespace Recellection.Code.Models
         /// <param name="baseBuilding">The Base Building this fromBuilding belongs
         /// to</param>
         public Building(String name, int posX, int posY, int maxHealth,
-            Player owner, Globals.BuildingTypes type, BaseBuilding baseBuilding) : base(new Vector2(((float)posX)+0.25f, ((float)posY)+0.25f), owner)
+            Player owner, Globals.BuildingTypes type, BaseBuilding baseBuilding) : base(new Vector2(((float)posX)+0.5f, ((float)posY)+0.5f), owner)
         {
             if (maxHealth <= 0)
             {
@@ -112,7 +112,7 @@ namespace Recellection.Code.Models
         /// to</param>
         public Building(String name, int posX, int posY, int maxHealth,
             Player owner, Globals.BuildingTypes type, BaseBuilding baseBuilding,
-            LinkedList<Tile> controlZone) : base(new Vector2(((float)posX) + 0.25f, ((float)posY) + 0.25f), owner)
+            LinkedList<Tile> controlZone) : base(new Vector2(((float)posX) + 0.5f, ((float)posY) + 0.5f), owner)
         {
             if (maxHealth <= 0)
             {

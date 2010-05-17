@@ -27,6 +27,7 @@ namespace Recellection.Code.Models
         private HashSet<Player> visibleTo;
         private Dictionary<Player, HashSet<Unit>> units;
         private Building building;
+		public bool active {get; set;}
 
         // Events
         public event Publish<IEnumerable<Player>> visionChanged;
@@ -353,26 +354,26 @@ namespace Recellection.Code.Models
         /// </summary>
         /// <param name="obj">Other tile object</param>
         /// <returns>True if of the same terrain type.</returns>
-        public override bool Equals(System.Object obj)
-        {
-            Tile t = (Tile) obj;
-            return this.GetTerrainType().GetEnum().Equals(t.GetTerrainType().GetEnum());
-        }
+        //public override bool Equals(System.Object obj)
+        //{
+        //    Tile t = (Tile) obj;
+        //    return this.GetTerrainType().GetEnum().Equals(t.GetTerrainType().GetEnum());
+        //}
 
-        /// <summary>
-        /// Overrides the == operator.
-        /// </summary>
-        public static bool operator==(Tile obj1, Tile obj2)
-        {
-            return obj1.Equals(obj2);
-        }
-        /// <summary>
-        /// Overrides the != operator.
-        /// </summary>
-        public static bool operator !=(Tile obj1, Tile obj2)
-        {
-            return !obj1.Equals(obj2);
-        }
+        ///// <summary>
+        ///// Overrides the == operator.
+        ///// </summary>
+        //public static bool operator==(Tile obj1, Tile obj2)
+        //{
+        //    return obj1.Equals(obj2);
+        //}
+        ///// <summary>
+        ///// Overrides the != operator.
+        ///// </summary>
+        //public static bool operator !=(Tile obj1, Tile obj2)
+        //{
+        //    return !obj1.Equals(obj2);
+        //}
 
         /// <summary>
         /// Override that doesn't actually override things.

@@ -5,6 +5,7 @@ using System.Text;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Recellection.Code.Utility.Logger;
+using Recellection.Code.Controllers;
 
 namespace Recellection.Code.Models
 {
@@ -80,6 +81,7 @@ namespace Recellection.Code.Models
             this.isDead = false;
             this.owner = owner;
             this.rand = new Random(id++);
+            this.powerLevel = 1.0f;
             world.GetMap().GetTile((int)position.X, (int)position.Y).AddUnit(this);
         }
 
@@ -133,8 +135,6 @@ namespace Recellection.Code.Models
             {
 				((Building)rallyPoint).RemoveUnit(this);
             }
-            // Make pop:ing sound!
-            Sounds.Instance.LoadSound("Celldeath").Play();
         }
         
         private void callRainCheckOnTarget()
@@ -151,7 +151,7 @@ namespace Recellection.Code.Models
         /// <param name="systemTime">Time variable passed from XNA main loop.</param>
         public void Update(int systemTime)
         {
-            if (!this.isDead)
+            if (! this.isDead)
             {
 				targetPosition = calculateTargetPosition();
 				this.Move(systemTime);
@@ -169,6 +169,7 @@ namespace Recellection.Code.Models
 			{
 				// We will wander around our rallyPoint
 				isDispersed = false;
+
                 //The Floor is to makes sure that the entity does not have an offset for its position (like buildings who have 0.25)
                 //Then add 0.5 to end up in the middle of the tile and last the random should random a number between -1.3 to 1.3
 				return new Vector2(((float)Math.Floor(rallyPoint.position.X))+ 0.5f + ((float)rand.NextDouble() * 2.6f - 1.3f ),
@@ -191,6 +192,7 @@ namespace Recellection.Code.Models
 
             Vector2 direction = Vector2.Subtract(this.targetPosition, this.position);
             direction.Normalize();
+
 
 			// Move unit towards target.
 			if (this.targetPosition.X != NO_TARGET)
@@ -229,7 +231,7 @@ namespace Recellection.Code.Models
 			Unit.world.map.GetTile(x, y).AddUnit(this);
 		}
 
-		private bool stopMovingIfGoalIsReached()
+		virtual protected bool stopMovingIfGoalIsReached()
 		{
 			// If we are reasonably close to target.
 			float dx = this.position.X - this.targetPosition.X;
@@ -241,12 +243,37 @@ namespace Recellection.Code.Models
 				if (TargetEntity != null)
 				{
 					// If it's a home-fromBuilding, we disperse around it :)
-					if (TargetEntity is Building && TargetEntity.owner == this.owner)
+					if ( TargetEntity is Building && ((Building)TargetEntity).IsAlive() && TargetEntity.owner == this.owner)
 					{
 						// We will now recieve new positions within a radius of our secondary target.
 						this.rallyPoint = TargetEntity;
 						((Building)targetEntity).AddUnit(this);
 						isDispersed = true;
+					}
+					
+					// If this is an enemy! KILL IT! OMG
+					if (TargetEntity.owner != this.owner)
+					{
+						if (TargetEntity is Unit && ! ((Unit)TargetEntity).isDead)
+						{
+							if ((new Random()).NextDouble() > this.powerLevel)
+							{
+								this.Kill();
+							}
+							
+							((Unit)TargetEntity).Kill();
+							SoundsController.playSound("Celldeath", this.position);
+						}
+						else if (TargetEntity is Building && ((Building)TargetEntity).IsAlive())
+						{
+							if ((new Random()).NextDouble() > this.powerLevel)
+							{
+								this.Kill();
+							}
+							
+							BuildingController.HurtBuilding((Building)TargetEntity);
+							SoundsController.playSound("Celldeath", this.position);
+						}
 					}
 					
 					TargetEntity = null;
@@ -267,15 +294,6 @@ namespace Recellection.Code.Models
 				return false;
 			}
 		}
-		
-        /// <summary>
-        /// Modify or set a new powerlevel for this unit.
-        /// </summary>
-        /// <param name="newPowerLevel">Default should be one, set a new value as 1.1 for a 10% powerbonus.</param>
-        public void SetPowerLevel(float newPowerLevel)
-        {
-            powerLevel = newPowerLevel;
-        }
         
         /// <returns>
         /// Powerlevel of this unit.
