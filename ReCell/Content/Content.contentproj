@@ -55,6 +55,11 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Fonts\WorldFont.spritefont">
+      <Name>WorldFont</Name>
+      <Importer>FontDescriptionImporter</Importer>
+      <Processor>FontDescriptionProcessor</Processor>
+    </Compile>
     <None Include="Languages\English.txt">
       <Name>English</Name>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
