@@ -30,7 +30,7 @@ namespace Recellection.Code.Views
 
         private bool doRenderThisPass = true;
         public static bool doLights = false;
-        public static bool doGrain = true;
+        public static bool doGrain = false;
         public static bool doRipples = false;
         
         private Effect bgShaders;
@@ -234,23 +234,26 @@ namespace Recellection.Code.Views
                     }
 
                     // Find those units!
-                    HashSet<Unit> units = t.GetUnits();
-                    if (units.Count != 0)
+                    List<Unit> units = t.GetUnits();
+                    lock (units)
                     {
-                        myLogger.Info("Found unit(s) on the tile.");
-                        foreach (Unit u in units)
+                        if (units.Count != 0)
                         {
-                            this.Layer = 0.5f;
-                            Texture2D spr = u.GetSprite();
-							int ux = (int)Math.Round((u.position.X - World.LookingAt.X) * Globals.TILE_SIZE) - spr.Width/2;
-							int uy = (int)Math.Round((u.position.Y - World.LookingAt.Y) * Globals.TILE_SIZE) - spr.Height/2;
-							
-							Color c = u.GetOwner().color;
-							if (u.PowerLevel > 0f)
-							{
-								c = Color.Lerp(c, Color.HotPink, 0.3f + u.PowerLevel*0.5f);
-							}
-                            this.drawTexture(spriteBatch, spr, new Rectangle(ux, uy, spr.Width, spr.Height), c);
+                            myLogger.Info("Found unit(s) on the tile.");
+                            foreach (Unit u in units)
+                            {
+                                this.Layer = 0.5f;
+                                Texture2D spr = u.GetSprite();
+                                int ux = (int)Math.Round((u.position.X - World.LookingAt.X) * Globals.TILE_SIZE) - spr.Width / 2;
+                                int uy = (int)Math.Round((u.position.Y - World.LookingAt.Y) * Globals.TILE_SIZE) - spr.Height / 2;
+
+                                Color c = u.GetOwner().color;
+                                if (u.PowerLevel > 0f)
+                                {
+                                    c = Color.Lerp(c, Color.HotPink, 0.3f + u.PowerLevel * 0.5f);
+                                }
+                                this.drawTexture(spriteBatch, spr, new Rectangle(ux, uy, spr.Width, spr.Height), c);
+                            }
                         }
                     }
 				}
