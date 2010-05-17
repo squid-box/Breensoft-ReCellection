@@ -272,7 +272,7 @@ namespace Recellection.Code.Controllers
                                                      theSelection.point.Y + theWorld.LookingAt.Y);
             World.Map map = theWorld.GetMap();
             Building building = map.GetTile(absoluteCordinate).GetBuilding();
-            if (building == null)
+            if (building == null || building.owner != playerInControll)
             {
                 return;
             }
