@@ -59,9 +59,13 @@ namespace Recellection.Code.Models
         {
             currentTargets = new List<Unit>();
 
-            for(int i = 0; i < controlZone.Count; i++)
+            /*for(int i = 0; i < controlZone.Count; i++)
             {
                 controlZone.ElementAt(i).unitsChanged += AggressiveBuilding_unitsChanged;
+            }*/
+            foreach (Tile t in controlZone)
+            {
+                t.unitsChanged += AggressiveBuilding_unitsChanged;
             }
 
         }

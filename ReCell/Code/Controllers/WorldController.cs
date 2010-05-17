@@ -15,7 +15,7 @@ namespace Recellection.Code.Controllers
     /// <summary>
     /// The purpose of this component is to control the entire world. It is part of the realization of SR1.7.
     /// </summary>
-    class WorldController
+    public class WorldController
     {
         /// <summary>
         /// The different states this controller will assume
@@ -30,7 +30,10 @@ namespace Recellection.Code.Controllers
         
         private const long SCROLL_ZONE_DWELL_TIME = 0;//250000;
         private char[] REG_EXP = { '_' };
-        public bool finished { get; set; }
+        
+        // Static is temporary, remove after debugging is done
+        public static bool finished { get; set; }
+        
         private Logger myLogger;
         
 		private Selection previousSelection;
@@ -63,7 +66,6 @@ namespace Recellection.Code.Controllers
 		{
 			Selection sel = new Selection();
 			sel.state = State.NONE;
-			
 			finished = false;
             while (!finished)
             {
@@ -72,7 +74,6 @@ namespace Recellection.Code.Controllers
                 // Generate the appropriate menu for this state.
                 // Get the active GUI Region and invoke the associated method.
 				sel = retrieveSelection();
-
 				
                 // They are used if the state needs true coordinates, scroll only uses deltas.
                 Point absoluteCoordinate = new Point(sel.point.X + theWorld.LookingAt.X, 
@@ -86,13 +87,15 @@ namespace Recellection.Code.Controllers
                         // A tile has been selected, store it.
 						// Save the selected tile, for later!
                         Tile selectedTile = map.GetTile(absoluteCoordinate);
+                        Point PreviousAbsoluteCoordinate = new Point(previousSelection.point.X + theWorld.LookingAt.X,
+                                                     previousSelection.point.Y + theWorld.LookingAt.Y);
 
 						// Debug finish
 						if (sel.point.X == 1 && sel.point.Y == 1)
 						{
 							finished = true;
 						}
-						if (sel.point.X == 2 && sel.point.Y == 1 && map.GetTile(previousSelection.point).GetBuilding() != null)
+                        if (sel.point.X == 2 && sel.point.Y == 1 && map.GetTile(PreviousAbsoluteCoordinate).GetBuilding() != null)
                         {
                             BuildingMenu(previousSelection);
                         }
@@ -311,8 +314,10 @@ namespace Recellection.Code.Controllers
     /// <param name="theSelection"></param>
         private void BuildingMenu(Selection theSelection)
         {
+            Point absoluteCordinate = new Point(theSelection.point.X + theWorld.LookingAt.X,
+                                                     theSelection.point.Y + theWorld.LookingAt.Y);
             World.Map map = theWorld.GetMap();
-            Building building = map.GetTile(theSelection.point).GetBuilding();
+            Building building = map.GetTile(absoluteCordinate).GetBuilding();
             MenuIcon setWeight = new MenuIcon(Language.Instance.GetString("SetWeight"), null, Color.Black);
             MenuIcon buildCell = new MenuIcon(Language.Instance.GetString("BuildCell"), null, Color.Black);
             MenuIcon removeCell = new MenuIcon(Language.Instance.GetString("RemoveCell"), null, Color.Black);
@@ -337,7 +342,7 @@ namespace Recellection.Code.Controllers
             }
             else if (choosenMenu.Equals(buildCell))
             {
-                Tile destTile = map.GetTile(theSelection.point);
+                Tile destTile = map.GetTile(absoluteCordinate);
                 BuildingController.ConstructBuilding(playerInControll, destTile, building, theWorld);
             }
             else if (choosenMenu.Equals(removeCell))
