@@ -133,7 +133,7 @@ namespace Recellection.Code.Models
             {
                 foreach (Building b in g.GetBuildings())
                 {
-                    retur += (uint)b.CountUnits();
+                    retur += (uint)b.CountTotalUnits();
                 }
             }
             return retur;
