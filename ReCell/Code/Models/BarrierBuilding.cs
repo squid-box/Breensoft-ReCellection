@@ -15,7 +15,7 @@ namespace Recellection.Code.Models
     /// </summary>
     public class BarrierBuilding : Building
     {
-        private readonly float powerBonus = 1.1f;
+        private readonly float powerBonus = 1f;
 
         public float PowerBonus
         {
@@ -66,7 +66,7 @@ namespace Recellection.Code.Models
                 {
                     if (u.GetOwner() == this.owner)
                     {
-                        u.powerLevel += powerBonus;
+                        u.powerLevel *= powerBonus;
                     }
                 }
 
@@ -77,7 +77,7 @@ namespace Recellection.Code.Models
                 {
                     if (u.GetOwner() == this.owner)
                     {
-                        u.powerLevel -= powerBonus;
+                        u.powerLevel /= powerBonus;
                     }
                 }
             }

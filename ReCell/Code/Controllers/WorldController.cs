@@ -30,10 +30,11 @@ namespace Recellection.Code.Controllers
         
         private const long SCROLL_ZONE_DWELL_TIME = 0;//250000;
         private char[] REG_EXP = { '_' };
-        public bool finished { get; set; }
+        public static bool finished { get; set; }
         private Logger myLogger;
         
 		private Selection previousSelection;
+		private Tile selectedTile;
 		
 		private Player playerInControll;
 
@@ -63,7 +64,6 @@ namespace Recellection.Code.Controllers
 		{
 			Selection sel = new Selection();
 			sel.state = State.NONE;
-			
 			finished = false;
             while (!finished)
             {
@@ -72,74 +72,31 @@ namespace Recellection.Code.Controllers
                 // Generate the appropriate menu for this state.
                 // Get the active GUI Region and invoke the associated method.
 				sel = retrieveSelection();
-
 				
                 // They are used if the state needs true coordinates, scroll only uses deltas.
-                Point absoluteCoordinate = new Point(sel.point.X + theWorld.LookingAt.X, 
+                Point absoluteCoordinate = new Point(sel.point.X + theWorld.LookingAt.X,
 													 sel.point.Y + theWorld.LookingAt.Y);
-				
+				Point PreviousAbsoluteCoordinate = new Point(previousSelection.point.X + theWorld.LookingAt.X,
+											 previousSelection.point.Y + theWorld.LookingAt.Y);
+
 				World.Map map = theWorld.GetMap();
 
-                switch (sel.state)
-                {
-                    case State.TILE:
-                        // A tile has been selected, store it.
-						// Save the selected tile, for later!
-                        Tile selectedTile = map.GetTile(absoluteCoordinate);
+				// If this is the first time we select a tile...
+				if(selectedTile != null)
+					selectedTile.active = false;
+				selectedTile = map.GetTile(absoluteCoordinate);
+				selectedTile.active = true;
 
-						// Debug finish
-						if (sel.point.X == 1 && sel.point.Y == 1)
-						{
-							finished = true;
-						}
-						if (sel.point.X == 2 && sel.point.Y == 1 && map.GetTile(previousSelection.point).GetBuilding() != null)
-                        {
-                            BuildingMenu(sel);
-                        }
-                        break;
-					case State.BUILDING:
-						// A fromBuilding has been selected!
-
-						// TODO: Let BuildingController do shit! (use retrieveSelection)
-						// TODO:  - Activate menu (what u wanna do /w fromBuilding?)
-						// TODO:  - DO SHIT!
-
-						Building selectedBuilding = map.GetTile(absoluteCoordinate).GetBuilding();
-
-						sel = retrieveSelection();
-						absoluteCoordinate = new Point(sel.point.X + theWorld.LookingAt.X,
-													 sel.point.Y + theWorld.LookingAt.Y);
-						
-						if (sel.state == State.BUILDING)
-						{
-							// If we selected the same building again, SET WEIGHT OMGOMG
-							if (selectedBuilding == map.GetTile(absoluteCoordinate).GetBuilding())
-							{
-								GraphController.Instance.SetWeight(map.GetTile(absoluteCoordinate).GetBuilding());
-							}
-						}
-						
-						if (sel.state != State.TILE)
-						{
-							//Sounds.Instance.LoadSound("Denied").Play();
-							continue;
-						}
-						
-						selectedTile = map.GetTile(absoluteCoordinate);
-
-						if (selectedBuilding != null
-						 && selectedTile.GetBuilding() == null
-						 && selectedBuilding.owner == playerInControll)
-                        {
-                            BuildingController.ConstructBuilding(playerInControll, selectedTile, selectedBuilding, theWorld);
-                        }
-
-                        break;
-                    case State.SCROLL:
-						theWorld.LookingAt = absoluteCoordinate; 
-                        break;
-                }
-			}
+				if (sel.point.X == 1 && sel.point.Y == 1)
+				{
+					finished = true;
+				}
+				if (sel.point.X == 2 && sel.point.Y == 1
+				 && previousSelection.state == State.BUILDING)
+				{
+					BuildingMenu(previousSelection);
+				}
+            }
 			//Sounds.Instance.LoadSound("acid").Play();
         }
 
@@ -311,8 +268,14 @@ namespace Recellection.Code.Controllers
     /// <param name="theSelection"></param>
         private void BuildingMenu(Selection theSelection)
         {
+            Point absoluteCordinate = new Point(theSelection.point.X + theWorld.LookingAt.X,
+                                                     theSelection.point.Y + theWorld.LookingAt.Y);
             World.Map map = theWorld.GetMap();
-            Building building = map.GetTile(theSelection.point).GetBuilding();
+            Building building = map.GetTile(absoluteCordinate).GetBuilding();
+            if (building == null || building.owner != playerInControll)
+            {
+                return;
+            }
             MenuIcon setWeight = new MenuIcon(Language.Instance.GetString("SetWeight"), null, Color.Black);
             MenuIcon buildCell = new MenuIcon(Language.Instance.GetString("BuildCell"), null, Color.Black);
             MenuIcon removeCell = new MenuIcon(Language.Instance.GetString("RemoveCell"), null, Color.Black);
@@ -326,7 +289,6 @@ namespace Recellection.Code.Controllers
             Menu buildingMenu = new Menu(Globals.MenuLayout.FourMatrix, menuIcons, Language.Instance.GetString("BuildingMenu"), Color.Black);
             MenuController.LoadMenu(buildingMenu);
             Recellection.CurrentState = MenuView.Instance;
-
             MenuIcon choosenMenu = MenuController.GetInput();
             Recellection.CurrentState = WorldView.Instance;
             MenuController.UnloadMenu();
@@ -337,12 +299,30 @@ namespace Recellection.Code.Controllers
             }
             else if (choosenMenu.Equals(buildCell))
             {
-                Tile destTile = map.GetTile(theSelection.point);
-                BuildingController.ConstructBuilding(playerInControll, destTile, building, theWorld);
+                Selection destsel = retrieveSelection();
+                if (destsel.state != State.TILE)
+				{
+					Sounds.Instance.LoadSound("Denied");
+					return;
+				}
+
+				Point DestAbsoluteCordinate = new Point(destsel.point.X + theWorld.LookingAt.X,
+													 destsel.point.Y + theWorld.LookingAt.Y);
+				Tile selectedTile = map.GetTile(DestAbsoluteCordinate);
+				
+				if (selectedTile.GetBuilding() == null)
+                {
+					BuildingController.ConstructBuilding(playerInControll, selectedTile, building, theWorld);
+				}
+				else
+				{
+					Sounds.Instance.LoadSound("Denied");
+					return;
+				}
             }
             else if (choosenMenu.Equals(removeCell))
             {
-                GraphController.Instance.RemoveBuilding(building);
+                BuildingController.RemoveBuilding(building);
             }
             else //else upgradeUnits
             {

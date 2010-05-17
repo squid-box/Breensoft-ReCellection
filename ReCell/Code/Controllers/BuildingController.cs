@@ -41,16 +41,20 @@ namespace Recellection.Code.Controllers
         /// <param name="b"></param>
         private static void AttackTargets(AggressiveBuilding b)
         {
+            //TODO remove when middlepoint position is implemeted.
+            Vector2 buildingOffset = new Vector2(0.125f, 0.125f);
+
             logger.Trace("Attacking targets around a aggressive building at x: "+b.position.X+" y: "+b.position.Y );
-            /*foreach (Unit u in b.currentTargets)
+            foreach (Unit u in b.currentTargets)
             {
                 //Show kill graphix and make sound.
 
                 //Kill units here.....
+                KamikazeUnit temp = new KamikazeUnit(b.owner, Vector2.Add(b.position, buildingOffset), u);
 
-            }*/
+            }
             logger.Trace("Killing " + b.currentTargets.Count + " units.");
-            UnitController.KillUnits(b.currentTargets, b.currentTargets.Count);
+            //UnitController.KillUnits(b.currentTargets, b.currentTargets.Count);
             b.currentTargets.Clear();
         }
 
@@ -64,11 +68,22 @@ namespace Recellection.Code.Controllers
             //TODO Somehow present a menu to the player, and then 
             //use the information to ADD (not the document) the fromBuilding.
 
+			MenuIcon baseCell = new MenuIcon(Language.Instance.GetString("BaseCell") + 
+					" (" + CalculateBuildingCostInflation(Globals.BuildingTypes.Base, player)+")", 
+					Recellection.textureMap.GetTexture(Globals.TextureTypes.BaseBuilding), Color.Black);
 
-            MenuIcon baseCell = new MenuIcon(Language.Instance.GetString("BaseCell"), Recellection.textureMap.GetTexture(Globals.TextureTypes.BaseBuilding), Color.Black);
-            MenuIcon resourceCell = new MenuIcon(Language.Instance.GetString("ResourceCell"), Recellection.textureMap.GetTexture(Globals.TextureTypes.ResourceBuilding), Color.Black);
-            MenuIcon defensiveCell = new MenuIcon(Language.Instance.GetString("DefensiveCell"), Recellection.textureMap.GetTexture(Globals.TextureTypes.BarrierBuilding), Color.Black);
-            MenuIcon aggressiveCell = new MenuIcon(Language.Instance.GetString("AggressiveCell"), Recellection.textureMap.GetTexture(Globals.TextureTypes.AggressiveBuilding), Color.Black);
+			MenuIcon resourceCell = new MenuIcon(Language.Instance.GetString("ResourceCell") +
+					" (" + CalculateBuildingCostInflation(Globals.BuildingTypes.Resource, player) + ")", 
+					Recellection.textureMap.GetTexture(Globals.TextureTypes.ResourceBuilding), Color.Black);
+
+			MenuIcon defensiveCell = new MenuIcon(Language.Instance.GetString("DefensiveCell") +
+					" (" + CalculateBuildingCostInflation(Globals.BuildingTypes.Barrier, player) + ")", 
+					Recellection.textureMap.GetTexture(Globals.TextureTypes.BarrierBuilding), Color.Black);
+
+			MenuIcon aggressiveCell = new MenuIcon(Language.Instance.GetString("AggressiveCell") +
+					" (" + CalculateBuildingCostInflation(Globals.BuildingTypes.Aggressive, player) + ")", 
+					Recellection.textureMap.GetTexture(Globals.TextureTypes.AggressiveBuilding), Color.Black);
+				
             List<MenuIcon> menuIcons = new List<MenuIcon>();
             menuIcons.Add(baseCell);
             menuIcons.Add(resourceCell);
@@ -102,13 +117,11 @@ namespace Recellection.Code.Controllers
 
             // If we have selected a tile, and we can place a building at the selected tile...					
 
-                if (!BuildingController.AddBuilding(Building, sourceBuilding,
-                        constructTile.position, theWorld, player))
-                {
-                    Sounds.Instance.LoadSound("Denied").Play();
-                }         
-
-
+            if (! AddBuilding(Building, sourceBuilding,
+                    constructTile.position, theWorld, player))
+            {
+                Sounds.Instance.LoadSound("Denied").Play();
+            }
         }
 
         /// <summary>
@@ -138,6 +151,7 @@ namespace Recellection.Code.Controllers
                 return false;
             }
             
+            logger.Info("Building a building at position "+targetCoordinate+" of "+buildingType+".");
             
             lock (owner.GetGraphs())
             {
@@ -178,12 +192,10 @@ namespace Recellection.Code.Controllers
                                 (int)targetCoordinate.X, (int)targetCoordinate.Y, sourceBuilding.owner,
                                 GraphController.Instance.GetGraph(sourceBuilding).baseBuilding, controlZone);
                             break;
-
                     }
 
                     world.map.GetTile((int)targetCoordinate.X, (int)targetCoordinate.Y).SetBuilding(newBuilding);
                     GraphController.Instance.AddBuilding(sourceBuilding, newBuilding);
-
                 }
                 if (sourceBuilding != null)
                 {
@@ -192,7 +204,8 @@ namespace Recellection.Code.Controllers
                     logger.Info("The source building only got " + sourceBuilding.CountUnits() + " units left.");
                 }
 
-                Sounds.Instance.LoadSound("buildingPlacement").Play();
+				//Sounds.Instance.LoadSound("buildingPlacement").Play();
+				Sounds.Instance.LoadSound("prego").Play();
             }
             return true;
         }
@@ -246,7 +259,11 @@ namespace Recellection.Code.Controllers
         /// <param name="b">The buiding to remove.</param>
         public static void RemoveBuilding(Building b)
         {
-            GraphController.Instance.RemoveBuilding(b);
+			GraphController.Instance.RemoveBuilding(b);
+			lock (b.controlZone)
+			{
+				b.controlZone.First().RemoveBuilding();
+			}
         }
 
         /// <summary>
@@ -261,6 +278,22 @@ namespace Recellection.Code.Controllers
             uint buildingCount = payer.CountBuildingsOfType(type);
             return (uint)(defaultCost + (buildingCount * buildingCount * defaultCost / 2));
 
+        }
+
+
+        public static void HurtBuilding(Building toHurt, World theWorld)
+        {
+            HurtBuilding(toHurt);
+        }
+        public static void HurtBuilding(Building toHurt)
+        {
+            toHurt.Damage(1);
+
+            if (!toHurt.IsAlive())
+            {
+                RemoveBuilding(toHurt);
+            }
+            
         }
     }
 }
