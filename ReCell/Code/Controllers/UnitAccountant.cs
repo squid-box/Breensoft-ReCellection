@@ -50,7 +50,7 @@ namespace Recellection.Code.Controllers
             {
                 return 4711;
             }
-            return (int) ((20 * owner.powerLevel) * (20 * owner.powerLevel));//TODO change to a more sane formula.
+            return (int) ((20 * owner.powerLevel) * (20 * owner.powerLevel)) +4;//TODO change to a more sane formula.
         }
 
         public bool payAndUpgrade(Building building)
@@ -61,7 +61,7 @@ namespace Recellection.Code.Controllers
             }
             for (int i = 0; i < getUpgradeCost(); i++)
             {
-                building.RemoveUnit(building.units[0]);
+                building.RemoveUnit(building.units[building.units.Count-1]);
             }
             owner.powerLevel += 0.1f;
             return true;
