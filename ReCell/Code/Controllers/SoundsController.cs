@@ -58,7 +58,7 @@ namespace Recellection.Code.Controllers
             LoggerFactory.GetLogger().Trace("Playing sound at volume: " + newVolume + "db");
 
 			Cue cue = Sounds.Instance.LoadSound(soundIdentifier);
-			cue.SetVariable("Volume", volumeModifier);
+			cue.SetVariable("Volume", newVolume);
 			cue.Play();
         }
         #region TODO
