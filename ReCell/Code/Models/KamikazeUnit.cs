@@ -33,8 +33,8 @@ namespace Recellection.Code.Models
                     {
                         if (TargetEntity is Unit && !((Unit)TargetEntity).isDead)
                         {
-                            this.Kill();
-                            ((Unit)TargetEntity).Kill();
+							UnitController.KillUnit(this);
+							UnitController.KillUnit( ((Unit)TargetEntity));
                             SoundsController.playSound("Celldeath", this.position);
                         }
                     }
@@ -43,8 +43,8 @@ namespace Recellection.Code.Models
                 }
             }
             if(TargetEntity == null || TargetEntity is Unit && ((Unit)TargetEntity).isDead)
-            {
-                this.Kill();
+			{
+				UnitController.KillUnit(this);
                 SoundsController.playSound("Celldeath", this.position);
                 return true;
             }
