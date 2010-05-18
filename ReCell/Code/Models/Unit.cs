@@ -25,7 +25,7 @@ namespace Recellection.Code.Models
 		private Entity targetEntity;     // Target entity
         public Entity rallyPoint { get; set; }		// Target to fall back to if the primary target disappears. Also acts as center of dispersion
         public float rallyDistance { get; set; }
-        
+        private static Texture2D UNIT_TEXTURE = Recellection.textureMap.GetTexture(Globals.TextureTypes.Unit);
         public bool isDispersed { get; set; }         // Whether or not this unit should recieve a new target from the dispersion procedure
 		public bool hasArrived { get { return (targetPosition.X == NO_TARGET && targetPosition.Y == NO_TARGET); } }
         public bool isDead { get; set; }              // Status of unit
@@ -136,7 +136,7 @@ namespace Recellection.Code.Models
         /// <returns>Texture of this unit.</returns>
         public override Texture2D GetSprite()
         {
-            return Recellection.textureMap.GetTexture(Globals.TextureTypes.Unit);
+            return UNIT_TEXTURE;
         }
         
         public void Kill()
@@ -211,9 +211,8 @@ namespace Recellection.Code.Models
 		/// </summary>
 		private void Move(float deltaTime)
 		{
-			int x = (int)this.position.X;
-			int y = (int)this.position.Y;
-			Unit.world.map.GetTile(x, y).RemoveUnit(this);
+			int beforeX = (int)this.position.X;
+			int beforeY = (int)this.position.Y;
 
             Vector2 direction = Vector2.Subtract(this.targetPosition, this.position);
             direction.Normalize();
@@ -248,12 +247,16 @@ namespace Recellection.Code.Models
                     position = new Vector2(position.X, newY);
                 }
 			}
+			
+			int afterX = (int)this.position.X;
+			int afterY = (int)this.position.Y;
 
 			// Tile management!
-
-			x = (int)this.position.X;
-			y = (int)this.position.Y;
-			Unit.world.map.GetTile(x, y).AddUnit(this);
+			if (afterX != beforeX || afterY != beforeY)
+			{
+				Unit.world.map.GetTile(beforeX, beforeY).RemoveUnit(this);
+				Unit.world.map.GetTile(afterX, afterY).AddUnit(this);
+			}
 		}
 
 		virtual protected bool stopMovingIfGoalIsReached()

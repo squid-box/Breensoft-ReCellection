@@ -155,7 +155,7 @@ namespace Recellection.Code.Controllers
 				// Search for units
                 lock (t.GetUnits())
                 {
-                    foreach (Unit ou in t.GetUnits())
+                    foreach (Unit ou in t.GetUnits(u.owner.Enemy))
                     {
                         // Is this an enemy?
                         if (u.owner != ou.owner && ! ou.isDead)
