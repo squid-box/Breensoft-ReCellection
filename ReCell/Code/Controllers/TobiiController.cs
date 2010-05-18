@@ -70,6 +70,8 @@ namespace Recellection
             try
             {
                 TecClient.Init("Recellection");
+                TecClient.ClientSettings.OffWindowProcessing = true;
+                TecClient.ClientSettings.ApplySettings();
                 //TODO: more stuff?, like loading eye tracking preferences e.t.c?
             }
             catch (Exception)
@@ -86,14 +88,14 @@ namespace Recellection
         /// If more region IDs are wanted just add more to Globals.RegionCategories
         /// </summary>
         /// <param name="regionID"></param>
-        /// <param name="value"></param>
-        [Obsolete("No longer supported functionality, use LoadMenu instead")]
-        public void SetRegionsEnabled(Globals.RegionCategories regionID, bool value)
+        /// <param name="value"></param>       
+        public void SetRegionsEnabled(bool value)
         {
-            for (int i = 0; i < regionCategories[regionID].Count; i++)
+            foreach (IInteractionRegion region in Interaction.Regions.Values)
             {
-                Interaction.Regions[regionCategories[regionID].ElementAt(i)].Enabled = value;
+                region.Enabled = value;
             }
+            //Interaction.InteractionMode = value == true ? InteractionMode.On : InteractionMode.Off;            
         }
 
         /// <summary>
@@ -103,13 +105,11 @@ namespace Recellection
         /// <param name="menu"></param>
         public void LoadMenu(Menu menu)
         {
-            //Interaction.Regions.Clear();    // This seems to break, at least on my laptop.
-            //Interaction.
+            //Interaction.Regions.Clear();    // This seems to break, at least on my laptop.          
             foreach(GUIRegion region in menu.GetRegions())
             {
                 AddRegion(region);
-            }
-
+            }            
         }
 
         /// <summary>
@@ -117,22 +117,19 @@ namespace Recellection
         /// function with the menu that is currently loaded
         /// </summary>
         /// <param name="menu"></param>
-        [Obsolete("not tested yet")]
         public void UnloadMenu(Menu menu)
-        {
-            
+        {            
             foreach (GUIRegion region in menu.GetRegions())
             {
                 Interaction.RemoveRegion(region.RegionIdentifier);
             }
-        }
-
+        }       
         /// <summary>
         /// Will return a list of all the GUIRegions that are part of the specified category
         /// Will implement when a GUIRegion has a getter for, instead of inheriting from, 
-        /// WindowBoundInteractionRegion
+        /// WindowBoundInteractionRegion derpderpderp
         /// </summary>
-        /// <param name="regionID"></param>
+        /// <param name="regionID"></param>C:\Users\Viktor\.ssh\recellection\recellection\ReCell\Code\Controllers\BuildingController.cs
         /// <returns>List of GUIRegion</returns>
         [Obsolete("GUIRegion categories are no longer supported, do not use")]
         public List<GUIRegion> GetRegionsByCategory(Globals.RegionCategories regionID)
@@ -182,7 +179,7 @@ namespace Recellection
                 {
                     newRegion.DwellTime = new TimeSpan(0, 0, DEFAULT_TIME_SPAN);
                 }
-                newRegion.Enabled = true;
+                newRegion.Enabled = false;
 
                 //TODO: Figure out what these calls does
                 //newRegion.AlwaysInteractive = true; 

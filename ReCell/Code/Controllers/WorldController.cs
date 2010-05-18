@@ -107,7 +107,7 @@ namespace Recellection.Code.Controllers
 		{
 			myLogger.Debug("Waiting for input...");
 			MenuIcon activatedMenuIcon = MenuController.GetInput();
-			        
+						 
 		    int x = 0;
             int y = 0;
             String[] splitted = activatedMenuIcon.label.Split(REG_EXP);
@@ -168,13 +168,16 @@ namespace Recellection.Code.Controllers
             {
                 return;
             }
-            MenuIcon setWeight = new MenuIcon(Language.Instance.GetString("SetWeight"), null, Color.Black);
-            MenuIcon buildCell = new MenuIcon(Language.Instance.GetString("BuildCell"), null, Color.Black);
-            MenuIcon removeCell = new MenuIcon(Language.Instance.GetString("RemoveCell"), null, Color.Black);
-            MenuIcon upgradeUnits = new MenuIcon(Language.Instance.GetString("UpgradeUnits"), null, Color.Black);
-            MenuIcon moveUnits = new MenuIcon(Language.Instance.GetString("MoveUnits"), null, Color.Black);
-            MenuIcon repairCell = new MenuIcon(Language.Instance.GetString("RepairCell") + "(" + playerInControll.unitAcc.getUpgradeCost() + ")", null, Color.Black);
-            MenuIcon Cancel = new MenuIcon(Language.Instance.GetString("Cancel"), null, Color.Black); ;
+            int toHeal = Math.Min(building.maxHealth - building.currentHealth, building.units.Count());
+
+            MenuIcon setWeight = new MenuIcon(Language.Instance.GetString("SetWeight"));
+            MenuIcon buildCell = new MenuIcon(Language.Instance.GetString("BuildCell"));
+            MenuIcon removeCell = new MenuIcon(Language.Instance.GetString("RemoveCell"));
+			MenuIcon upgradeUnits = new MenuIcon(Language.Instance.GetString("UpgradeUnits") + " (" + playerInControll.unitAcc.getUpgradeCost() + ")");
+            MenuIcon moveUnits = new MenuIcon(Language.Instance.GetString("MoveUnits"));
+            MenuIcon repairCell = new MenuIcon(Language.Instance.GetString("RepairCell") + " (" + toHeal + ")");
+            MenuIcon Cancel = new MenuIcon(Language.Instance.GetString("Cancel"), Recellection.textureMap.GetTexture(Globals.TextureTypes.No));
+            
             List<MenuIcon> menuIcons = new List<MenuIcon>();
             menuIcons.Add(setWeight);
             menuIcons.Add(buildCell);
@@ -235,7 +238,8 @@ namespace Recellection.Code.Controllers
             }
             else if (choosenMenu.Equals(repairCell))
             {
-                return;
+                UnitController.MarkUnitsAsDead(building.units, toHeal);
+                building.Repair(toHeal);
             }
             else if (choosenMenu.Equals(Cancel))
             {
