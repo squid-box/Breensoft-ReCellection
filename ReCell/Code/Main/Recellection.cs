@@ -88,11 +88,13 @@ namespace Recellection
         {
             base.Initialize();
 
+#if DEBUG
             // Initialize the python console
             console = new PythonInterpreter(this, consoleFont);
 			console.AddGlobal("game", this);
+#endif
 
-            windowHandle = this.Window.Handle;
+			windowHandle = this.Window.Handle;
             
             IsFixedTimeStep = true;
             TargetElapsedTime = new TimeSpan(10000000L / 30L);
@@ -164,12 +166,13 @@ namespace Recellection
         /// </summary>
         private void HandleDebugInput()
         {
+#if DEBUG
             // If the console is open, we ignore input.
             if (console.IsActive())
             {
                 return;
             }
-
+#endif
             #region Update input states
 
             lastKBState = kBState;
@@ -228,9 +231,9 @@ namespace Recellection
             {
                 currentState.Draw(spriteBatch);
             }
-
+#if DEBUG
             spriteBatch.DrawString(screenFont, frameRate.ToString(), Vector2.Zero, Color.Red);
-
+#endif
             spriteBatch.End();
             // Do the FPS dance
             frameCounter++;

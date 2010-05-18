@@ -49,7 +49,7 @@ namespace Recellection.Code.Main
 			#endregion
 
             ShowSplashScreen();
-
+            
 			Cue backgroundSound = Sounds.Instance.LoadSound("Menu");
 			backgroundSound.Play();
 			Recellection.CurrentState = view;

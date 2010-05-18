@@ -113,7 +113,6 @@ namespace Recellection.Code.Controllers
 
 		public static void RemoveDeadUnits()
 		{
-			logger.Info("The unit Controller has " + toBeKilled.Count + " units in its list.");
 			foreach (Unit u in toBeKilled)
 			{
 				u.RemoveFromWorld();
