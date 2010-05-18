@@ -66,7 +66,7 @@ namespace Recellection
         /// <summary>
         /// this does not work!
         /// </summary>
-        [Obsolete("DO NOT USE")]
+        [Obsolete("Do not use, it does not work, it anti-works")]
         static void GoodFullScreen() 
         { 
             Recellection.graphics.ToggleFullScreen();
@@ -75,7 +75,6 @@ namespace Recellection
             foreach(Process theprocess in processlist){
                 if(theprocess.ProcessName == "Tobii.TecSDK.Server")
                 {
-                    System.Runtime.Remoting.ObjRef = theprocess.CreateObjRef(new System.Type);
                     System.Windows.Forms.Form form = (System.Windows.Forms.Form)System.Windows.Forms.Control.FromHandle(theprocess.MainWindowHandle);
                     form.Focus();
                 }
