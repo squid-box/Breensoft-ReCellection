@@ -73,7 +73,7 @@ namespace Recellection.Code.Controllers
 					if (player is AIPlayer)
 					{
 						logger.Debug(player.color + " is a AIPlayer!");
-						((AIPlayer)player).MakeMove();
+						//((AIPlayer)player).MakeMove();
 					}
 					else if (player is Player)
 					{
