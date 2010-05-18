@@ -162,7 +162,8 @@ namespace Recellection.Code.Controllers
         {
             
             World.Map map = theWorld.GetMap();
-            Building building = map.GetTile(theSelection.absPoint).GetBuilding();
+            Tile seltile = map.GetTile(theSelection.absPoint);
+            Building building = seltile.GetBuilding();
             if (building == null || building.owner != playerInControll)
             {
                 return;
@@ -171,13 +172,19 @@ namespace Recellection.Code.Controllers
             MenuIcon buildCell = new MenuIcon(Language.Instance.GetString("BuildCell"), null, Color.Black);
             MenuIcon removeCell = new MenuIcon(Language.Instance.GetString("RemoveCell"), null, Color.Black);
             MenuIcon upgradeUnits = new MenuIcon(Language.Instance.GetString("UpgradeUnits"), null, Color.Black);
+            MenuIcon moveUnits = new MenuIcon(Language.Instance.GetString("MoveUnits"), null, Color.Black);
+            MenuIcon repairCell = new MenuIcon(Language.Instance.GetString("RepairCell") + "(" + playerInControll.unitAcc.getUpgradeCost() + ")", null, Color.Black);
+            MenuIcon Cancel = new MenuIcon(Language.Instance.GetString("Cancel"), null, Color.Black); ;
             List<MenuIcon> menuIcons = new List<MenuIcon>();
             menuIcons.Add(setWeight);
             menuIcons.Add(buildCell);
             menuIcons.Add(removeCell);
             menuIcons.Add(upgradeUnits);
+            menuIcons.Add(moveUnits);
+            menuIcons.Add(repairCell);
+            menuIcons.Add(Cancel);
 
-            Menu buildingMenu = new Menu(Globals.MenuLayout.FourMatrix, menuIcons, Language.Instance.GetString("BuildingMenu"), Color.Black);
+            Menu buildingMenu = new Menu(Globals.MenuLayout.NineMatrix, menuIcons, Language.Instance.GetString("BuildingMenu"), Color.Black);
             MenuController.LoadMenu(buildingMenu);
             Recellection.CurrentState = MenuView.Instance;
             MenuIcon choosenMenu = MenuController.GetInput();
@@ -212,12 +219,37 @@ namespace Recellection.Code.Controllers
             {
                 BuildingController.RemoveBuilding(building);
             }
-            else //else upgradeUnits
+            else if (choosenMenu.Equals(upgradeUnits))
             {
-                playerInControll.powerLevel += 0.1f;
+                if (!playerInControll.unitAcc.payAndUpgrade(building))
+                {
+                    Sounds.Instance.LoadSound("Denied");
+                }
+            }
+            else if (choosenMenu.Equals(moveUnits))
+            {
+                Selection destsel = retrieveSelection();
+                Tile selectedTile = map.GetTile(destsel.absPoint);
+                UnitController.MoveUnits(building.GetUnits().Count, seltile, selectedTile);
+
+            }
+            else if (choosenMenu.Equals(repairCell))
+            {
+                return;
+            }
+            else if (choosenMenu.Equals(Cancel))
+            {
+                return;
+            }
+            else
+            {
+                return;
             }
         }
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="previousSelection"></param>
 		private void TileMenu(Selection previousSelection)
 		{
 			MenuIcon moveUnits = new MenuIcon(Language.Instance.GetString("MoveUnits"), null, Color.Black);
