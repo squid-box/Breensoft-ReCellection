@@ -139,6 +139,12 @@ namespace Recellection.Code.Models
         
         public void Kill()
         {
+			if (this.PowerLevel >= rand.NextDouble())
+			{
+				// We survive! WOO!
+				return;
+			}
+			
             this.isDead = true;
 			world.GetMap().GetTile((int)position.X, (int)position.Y).RemoveUnit(owner, this);
             world.RemoveUnit(this);
@@ -268,21 +274,13 @@ namespace Recellection.Code.Models
 					{
 						if (TargetEntity is Unit && ! ((Unit)TargetEntity).isDead)
 						{
-							if ((new Random()).NextDouble() >= this.PowerLevel)
-							{
-								this.Kill();
-							}
-							
-							((Unit)TargetEntity).Kill();
+							UnitController.KillUnit(this);
+							UnitController.KillUnit(((Unit)TargetEntity));
 							SoundsController.playSound("Celldeath", this.position);
 						}
 						else if (TargetEntity is Building && ((Building)TargetEntity).IsAlive())
 						{
-							if ((new Random()).NextDouble() >= this.PowerLevel)
-							{
-								this.Kill();
-							}
-							
+							UnitController.KillUnit(this);
 							BuildingController.HurtBuilding((Building)TargetEntity);
 							SoundsController.playSound("Celldeath", this.position);
 						}
