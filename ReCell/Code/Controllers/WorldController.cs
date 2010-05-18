@@ -218,9 +218,25 @@ namespace Recellection.Code.Controllers
             {
                 BuildingController.RemoveBuilding(building);
             }
-            else //else upgradeUnits
+            else if (choosenMenu.Equals(upgradeUnits))
             {
                 playerInControll.powerLevel += 0.1f;
+            }
+            else if (choosenMenu.Equals(moveUnits))
+            {
+                return;
+            }
+            else if (choosenMenu.Equals(repairCell))
+            {
+                return;
+            }
+            else if (choosenMenu.Equals(Cancel))
+            {
+                return;
+            }
+            else
+            {
+                return;
             }
         }
 
