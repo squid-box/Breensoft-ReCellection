@@ -182,6 +182,10 @@ namespace Recellection.Code.Controllers
             menuIcons.Add(removeCell);
             menuIcons.Add(upgradeUnits);
             menuIcons.Add(moveUnits);
+            menuIcons.Add(repairCell);
+            menuIcons.Add(icon7);
+            menuIcons.Add(icon8);
+            menuIcons.Add(Cancel);
 
             Menu buildingMenu = new Menu(Globals.MenuLayout.NineMatrix, menuIcons, Language.Instance.GetString("BuildingMenu"), Color.Black);
             MenuController.LoadMenu(buildingMenu);
