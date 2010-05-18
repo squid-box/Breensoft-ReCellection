@@ -53,7 +53,7 @@ namespace Recellection.Code.Controllers
             
 			float length = (new Vector2((lookingAt.X + ((Globals.VIEWPORT_WIDTH/Globals.TILE_SIZE) / 2)), (lookingAt.Y + ((Globals.VIEWPORT_HEIGHT/Globals.TILE_SIZE) / 2))) - point).Length();
 
-			float newVolume = 50.0f * (float) Math.Log10(-0.05f * length + 1.0f);
+			float newVolume = (GameOptions.Instance.musicVolume/-96.0f)*(50.0f * (float) Math.Log10(-0.05f * length + 1.0f));
 
             LoggerFactory.GetLogger().Trace("Playing sound at volume: " + newVolume + "db");
 
@@ -61,16 +61,15 @@ namespace Recellection.Code.Controllers
 			cue.SetVariable("Volume", newVolume);
 			cue.Play();
         }
-        #region TODO
-        public void changeMusicVolume(float percentage)
+
+        public static void changeMusicVolume(float percentage)
         {
-            /// TODO: IMPLEMENT
+            Sounds.Instance.GetCategory("music").SetVolume(percentage);
         }
 
-        public void changeEffectsVolume(float percentage)
+        public static void changeEffectsVolume(float percentage)
         {
-            /// TODO: IMPLEMENT
+            Sounds.Instance.GetCategory("effects").SetVolume(percentage);
         }
-        #endregion
     }
 }
