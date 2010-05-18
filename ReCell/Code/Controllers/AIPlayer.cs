@@ -50,7 +50,14 @@ namespace Recellection.Code.Controllers
         /// </summary>
         public void MakeMove()
         {
+            log.Info("AI Making a Move.");
 
+            if (m_enemyPoints.Count == 0 || m_interrestPoints.Count == 0)
+            {
+                Explore();
+                //CHEAT!
+                LookAtScreen();
+            }
             for (int i = 0; i < m_interrestPoints.Count; i++)
             {
                 Vector2 current = m_interrestPoints[i];
@@ -64,22 +71,52 @@ namespace Recellection.Code.Controllers
                     CalculateWeight(m_view.GetBuildingAt(current));
                 }
             }
-            if (m_enemyPoints.Count == 0)
+
+            for (int i = 0; i < m_enemyPoints.Count; i++)
             {
-                Explore();
-            }
-            else
-            {
-                for (int i = 0; i < m_enemyPoints.Count; i++)
+                Vector2 current = m_enemyPoints[i];
+                Vector2 nearby = GetClosestPointFromList(current, m_view.GetFriendlyBuildings());
+
+                if (Vector2.Distance(current, nearby) > distanceThreshold)
                 {
-                    Vector2 current = m_enemyPoints[i];
-                    Vector2 nearby = GetClosestPointFromList(current, m_interrestPoints);
-                    if (Vector2.Distance(current, nearby) > distanceThreshold)
+                    nearby = CalculatePointNear(current); //Find a good spot to go to
+                    m_interrestPoints[m_interrestPoints.Count-1] = nearby; //And add it to the todo-list
+                }
+                else //"nearby" is close enough.
+                {
+                    if (m_view.ContainsFriendlyBuilding(nearby))
                     {
-                        nearby = CalculatePointNear(current);
-                        m_interrestPoints[m_interrestPoints.Count] = nearby;
+                        CalculateWeight(m_view.GetBuildingAt(nearby));
                     }
-                    CalculateWeight(m_view.GetBuildingAt(nearby));
+                }
+            }
+        }
+
+
+        /// <summary>
+        /// The AI takes a look at all the tiles it can see (2010-05-16 everything) and
+        /// looks for enemy buildings and resource points.
+        /// </summary>
+        private void LookAtScreen()
+        {
+            Tile[,] wMap = m_view.world.GetMap().map;
+            Tile temp;
+            for (int i = 0; i < m_view.mapWidth; i++)
+            {
+                for (int j = 0; j < m_view.mapHeight; j++)
+                {
+                    temp = wMap[i, j];
+                    if(m_view.ContainsResourcePoint(temp)){
+                        m_interrestPoints.Add(temp.GetPosition());
+                    }
+                    if (m_view.ContainsEnemyBuilding(temp))
+                    {
+                        m_enemyPoints.Add(temp.GetPosition());
+                    }
+                    if (m_view.ContainsFriendlyBuilding(temp.GetPosition()))
+                    {
+                        m_view.myBuildings.Add(temp.GetBuilding());
+                    }
                 }
             }
         }
@@ -112,6 +149,10 @@ namespace Recellection.Code.Controllers
         /// <param name="fromBuilding"></param>
         private void CalculateWeight(Building building)
         {
+            if (building == null)
+            {
+                throw new NullReferenceException();
+            }
             int friendly = unitCountAt(building.position, this);
             int enemy = unitCountAt(GetClosestPointFromList(building.position, m_enemyPoints), m_opponents[0]);
             int diff = enemy - friendly;
@@ -127,14 +168,12 @@ namespace Recellection.Code.Controllers
         /// </summary>
         private void Explore()
         {
+            log.Info("AI Exploring.");
             int scoutSize = 10;
 
             //Take the units from the base fromBuilding
             Building bb = GetGraphs()[0].baseBuilding;
-            if (bb == null)
-            {
-                log.Fatal("Base Building was null");
-            }
+
             Tile source = m_view.getTileAt(bb.GetPosition());
             if (source == null)
             {
@@ -149,6 +188,7 @@ namespace Recellection.Code.Controllers
                 return;
             }
             UnitController.MoveUnits(scoutSize, source, dest);
+            log.Info("AI moved units to " + dest.GetPosition().X + "," + dest.GetPosition().Y);
         }
 
 
@@ -199,8 +239,8 @@ namespace Recellection.Code.Controllers
 
             //Finally pick a set of coordinates within the opposite quadrant.
 
-            float xVal = inner.X + (float)randomFactory.NextDouble() * outer.X;
-            float yVal = inner.Y + (float)randomFactory.NextDouble() * outer.Y;
+            float xVal = inner.X + (float)randomFactory.NextDouble() * (outer.X-inner.X);
+            float yVal = inner.Y + (float)randomFactory.NextDouble() * (outer.Y-inner.Y);
             if (xVal == 0)
             {
                 xVal += 1;
@@ -254,48 +294,26 @@ namespace Recellection.Code.Controllers
         /// <param name="point"></param>
         private void EvaluateResourcePoint(Vector2 point)
         {
-            if (Harvesting(point))
+            if (m_view.Harvesting(point) == this)
             {
                 if (CanHoldPoint(point))
                     return;
 
                 CalculateWeight(m_view.GetBuildingAt(point));
             }
-            if (CanHoldPoint(point))
+            Vector2 closestFriendly = GetClosestPointFromList(point, m_view.GetFriendlyBuildings());
+            if (CanHoldPoint(closestFriendly))
             {
-                IssueBuildOrder(point, GetGraphs()[0].baseBuilding, Globals.BuildingTypes.Resource);
+                IssueBuildOrder(point, m_view.GetBuildingAt(closestFriendly), Globals.BuildingTypes.Resource);
             }
             else
             {
-                CalculateWeight(m_view.GetBuildingAt(point));
+                CalculateWeight(m_view.GetBuildingAt(closestFriendly));
             }
         }
 
 
-        /// <summary>
-        /// Returns true if the AIPlayer is already harvesting at the given coordinates.
-        /// </summary>
-        /// <param name="point"></param>
-        /// <returns></returns>
-        private bool Harvesting(Vector2 point)
-        {
-            Building tempBuilding = m_view.GetBuildingAt(point);
 
-            if (tempBuilding == null)
-                return false;
-
-            if (tempBuilding.owner != this)
-            {
-                //TODO: Enemy harvesting at this location, very interresting.
-                return false;
-            }
-
-            if (m_view.GetBuildingAt(point).type == Globals.BuildingTypes.Resource)
-            {
-                return true;
-            }
-            return false;
-        }
 
         /// <summary>
         /// Evaluates whether or not the given point can be defended against a potential/ongoing attack
@@ -327,14 +345,14 @@ namespace Recellection.Code.Controllers
 
         /// <summary>
         /// Called when a new fromBuilding should be created. Creates a fromBuilding of a given type at the 
-        /// given point from the given base fromBuilding.
+        /// given point from the given sourceBuilding.
         /// </summary>
         /// <param name="point"></param>
         /// <param name="baseBuilding"></param>
         /// <param name="buildingType"></param>
-        private void IssueBuildOrder(Vector2 point, Building baseBuilding, Globals.BuildingTypes buildingType)
+        private void IssueBuildOrder(Vector2 point, Building sourceBuilding, Globals.BuildingTypes buildingType)
         {
-            BuildingController.AddBuilding(buildingType, GetGraphs()[0].baseBuilding, point, m_view.world, this);
+            BuildingController.AddBuilding(buildingType, sourceBuilding, point, m_view.world, this);
         }
 
     }
