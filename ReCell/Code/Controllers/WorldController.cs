@@ -232,7 +232,7 @@ namespace Recellection.Code.Controllers
             }
             else if (choosenMenu.Equals(upgradeUnits))
             {
-                if (!playerInControll.unitAcc.payAndUpgrade(building))
+                if (!playerInControll.unitAcc.PayAndUpgrade(building))
                 {
                     Sounds.Instance.LoadSound("Denied");
                 }
