@@ -111,7 +111,7 @@ namespace Recellection.Code.Controllers
 			toBeKilled.Add(u);
 		}
 
-		private static void RemoveDeadUnits()
+		public static void RemoveDeadUnits()
 		{
 			logger.Info("The unit Controller has " + toBeKilled.Count + " units in its list.");
 			foreach (Unit u in toBeKilled)

@@ -200,7 +200,7 @@ namespace Recellection.Code.Controllers
                 if (sourceBuilding != null)
                 {
                     logger.Info("The building has " + sourceBuilding.CountUnits() + " and the building costs " + price);
-                    UnitController.MarkUnitsAsDead(sourceBuilding.units, (int)price);
+                    owner.unitAcc.destroyUnits(sourceBuilding.units, (int)price);
                     logger.Info("The source building only got " + sourceBuilding.CountUnits() + " units left.");
                 }
 
