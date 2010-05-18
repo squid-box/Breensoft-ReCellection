@@ -179,7 +179,7 @@ namespace Recellection
                 {
                     newRegion.DwellTime = new TimeSpan(0, 0, DEFAULT_TIME_SPAN);
                 }
-                newRegion.Enabled = true;
+                newRegion.Enabled = false;
 
                 //TODO: Figure out what these calls does
                 //newRegion.AlwaysInteractive = true; 
