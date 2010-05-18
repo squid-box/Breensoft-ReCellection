@@ -5,6 +5,7 @@ using System.Text;
 using Recellection.Code.Models;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Audio;
+using Recellection.Code.Utility.Logger;
 
 namespace Recellection.Code.Controllers
 {
@@ -49,9 +50,12 @@ namespace Recellection.Code.Controllers
 			}
 			Point lookingAt = theWorld.LookingAt;
 
-			float length = (new Vector2((lookingAt.X + (Globals.VIEWPORT_WIDTH / 2)), (lookingAt.Y + (Globals.VIEWPORT_HEIGHT / 2))) - point).Length();
+            
+			float length = (new Vector2((lookingAt.X + ((Globals.VIEWPORT_WIDTH/Globals.TILE_SIZE) / 2)), (lookingAt.Y + ((Globals.VIEWPORT_HEIGHT/Globals.TILE_SIZE) / 2))) - point).Length();
 
-			float volumeModifier = -0.05f * length + 1.0f;
+			float newVolume = 10.0f * (float) Math.Log10(-0.05f * length + 1.0f);
+
+            LoggerFactory.GetLogger().Trace("Playing sound at volume: " + newVolume + "db");
 
 			Cue cue = Sounds.Instance.LoadSound(soundIdentifier);
 			cue.SetVariable("Volume", volumeModifier);
