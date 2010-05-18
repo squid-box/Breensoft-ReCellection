@@ -73,6 +73,7 @@ namespace Recellection.Code.Controllers
                     {
                         logger.Trace("Adding unit to patrol the 'to' building!");
                         u.TargetEntity = to.GetBuilding();
+                        u.rallyPoint = to.GetBuilding();
                     }
                 }
             }
@@ -92,20 +93,20 @@ namespace Recellection.Code.Controllers
         /// </summary>
         /// <param name="units"></param>
         /// <param name="amount"></param>
-        public static void KillUnits(IEnumerable<Unit> units, int amount)
+        public static void MarkUnitsAsDead(IEnumerable<Unit> units, int amount)
         {
             logger.Info("Unit Controller has be ordered to assasinate "+amount + " units.");
             foreach (Unit u in units)
             {
                 if (amount > 0)
                 {
-					KillUnit(u);
+					MarkUnitAsDead(u);
 					amount--;
                 }
             }
         }
         
-        public static void KillUnit(Unit u)
+        public static void MarkUnitAsDead(Unit u)
         {
 			toBeKilled.Add(u);
 		}
@@ -115,7 +116,7 @@ namespace Recellection.Code.Controllers
 			logger.Info("The unit Controller has " + toBeKilled.Count + " units in its list.");
 			foreach (Unit u in toBeKilled)
 			{
-				u.Kill();
+				u.RemoveFromWorld();
 			}
 			toBeKilled.Clear();
 		}
@@ -157,7 +158,7 @@ namespace Recellection.Code.Controllers
                     foreach (Unit ou in t.GetUnits())
                     {
                         // Is this an enemy?
-                        if (u.owner != ou.owner)
+                        if (u.owner != ou.owner && ! ou.isDead)
                         {
                             // FIGHT TO THE DEATH!
                             u.TargetEntity = ou;
