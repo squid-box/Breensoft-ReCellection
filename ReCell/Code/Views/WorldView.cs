@@ -218,18 +218,20 @@ namespace Recellection.Code.Views
                         float fontX, fontY;
                         Vector2 stringSize;
                         string infosz;
-
+						
+						this.Layer = 0.1f;
+						
                         infosz = b.GetUnits().Count.ToString();
                         stringSize = Recellection.worldFont.MeasureString(infosz);
                         fontX = (float)(r.X + r.Width / 2) - stringSize.X / 2;
                         fontY = (float)(r.Y + r.Height / 4) - stringSize.Y;
-                        spriteBatch.DrawString(Recellection.worldFont, infosz, new Vector2(fontX, fontY), Color.Black);
+                        spriteBatch.DrawString(Recellection.worldFont, infosz, new Vector2(fontX, fontY), Color.White, 0, new Vector2(0f), 1.0f, SpriteEffects.None, Layer);
 
                         infosz = GraphController.Instance.GetWeight(b).ToString();
                         stringSize = Recellection.worldFont.MeasureString(infosz);
                         fontX = (float)(r.X + r.Width / 2) - stringSize.X / 2;
                         fontY = (float)(r.Y + 3 * r.Height / 4) - stringSize.Y;
-                        spriteBatch.DrawString(Recellection.worldFont, infosz, new Vector2(fontX, fontY), Color.Black);
+						spriteBatch.DrawString(Recellection.worldFont, infosz, new Vector2(fontX, fontY), Color.White, 0, new Vector2(0f), 1.0f, SpriteEffects.None, Layer);
 
                     }
 
