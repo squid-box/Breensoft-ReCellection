@@ -33,6 +33,7 @@ namespace Recellection.Code.Main
             
             // Let all units belong to the world!
             Unit.SetWorld(theWorld);
+            new SoundsController(theWorld);
 
             Random randomer = new Random(seed);
 
