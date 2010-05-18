@@ -15,7 +15,7 @@ namespace Recellection.Code.Models
     /// </summary>
     public class BarrierBuilding : Building
     {
-        private readonly float powerBonus = 1.1f;
+        private readonly float powerBonus = 0.3f;
 
         public float PowerBonus
         {
@@ -51,9 +51,9 @@ namespace Recellection.Code.Models
             controlZone)
         {
 
-            for (int i = 0; i < controlZone.Count; i++)
+            foreach(Tile t in controlZone)
             {
-                controlZone.ElementAt(i).unitsChanged += BarrierBuilding_unitsChanged;
+                t.unitsChanged += BarrierBuilding_unitsChanged;
             }
 
         }
@@ -66,10 +66,9 @@ namespace Recellection.Code.Models
                 {
                     if (u.GetOwner() == this.owner)
                     {
-                        u.powerLevel += powerBonus;
+                        u.PowerLevel += powerBonus;
                     }
                 }
-
             }
             else if (ev.type == EventType.REMOVE)
             {
@@ -77,7 +76,7 @@ namespace Recellection.Code.Models
                 {
                     if (u.GetOwner() == this.owner)
                     {
-                        u.powerLevel -= powerBonus;
+                        u.PowerLevel -= powerBonus;
                     }
                 }
             }

@@ -28,7 +28,18 @@ namespace Recellection.Code.Models
         public bool isDispersed { get; set; }         // Whether or not this unit should recieve a new target from the dispersion procedure
 		public bool hasArrived { get { return (targetPosition.X == NO_TARGET && targetPosition.Y == NO_TARGET); } }
         public bool isDead { get; set; }              // Status of unit
-        public float powerLevel { get; set; }
+        public float powerLevel;
+        public float PowerLevel
+        {
+            get
+            {
+                return powerLevel + owner.powerLevel;
+            }
+            set
+            {
+                powerLevel = value;
+            }
+        }
         private static World world;
 
 		private Random rand;
@@ -82,6 +93,7 @@ namespace Recellection.Code.Models
             this.owner = owner;
             this.rand = new Random(id++);
             world.GetMap().GetTile((int)position.X, (int)position.Y).AddUnit(this);
+            world.AddUnit(this);
         }
 
         #endregion
@@ -129,6 +141,7 @@ namespace Recellection.Code.Models
         {
             this.isDead = true;
 			world.GetMap().GetTile((int)position.X, (int)position.Y).RemoveUnit(owner, this);
+            world.RemoveUnit(this);
 			callRainCheckOnTarget();
             if (rallyPoint != null && rallyPoint is Building)
             {
@@ -168,6 +181,7 @@ namespace Recellection.Code.Models
 			{
 				// We will wander around our rallyPoint
 				isDispersed = false;
+
                 //The Floor is to makes sure that the entity does not have an offset for its position (like buildings who have 0.25)
                 //Then add 0.5 to end up in the middle of the tile and last the random should random a number between -1.3 to 1.3
 				return new Vector2(((float)Math.Floor(rallyPoint.position.X))+ 0.5f + ((float)rand.NextDouble() * 2.6f - 1.3f ),
@@ -190,6 +204,7 @@ namespace Recellection.Code.Models
 
             Vector2 direction = Vector2.Subtract(this.targetPosition, this.position);
             direction.Normalize();
+
 
 			// Move unit towards target.
 			if (this.targetPosition.X != NO_TARGET)
@@ -228,7 +243,7 @@ namespace Recellection.Code.Models
 			Unit.world.map.GetTile(x, y).AddUnit(this);
 		}
 
-		private bool stopMovingIfGoalIsReached()
+		virtual protected bool stopMovingIfGoalIsReached()
 		{
 			// If we are reasonably close to target.
 			float dx = this.position.X - this.targetPosition.X;
@@ -240,7 +255,7 @@ namespace Recellection.Code.Models
 				if (TargetEntity != null)
 				{
 					// If it's a home-fromBuilding, we disperse around it :)
-					if (TargetEntity is Building && TargetEntity.owner == this.owner)
+					if ( TargetEntity is Building && ((Building)TargetEntity).IsAlive() && TargetEntity.owner == this.owner)
 					{
 						// We will now recieve new positions within a radius of our secondary target.
 						this.rallyPoint = TargetEntity;
@@ -253,15 +268,23 @@ namespace Recellection.Code.Models
 					{
 						if (TargetEntity is Unit && ! ((Unit)TargetEntity).isDead)
 						{
-							this.Kill();
+							if ((new Random()).NextDouble() >= this.PowerLevel)
+							{
+								this.Kill();
+							}
+							
 							((Unit)TargetEntity).Kill();
-							Sounds.Instance.LoadSound("Celldeath").Play();
+							SoundsController.playSound("Celldeath", this.position);
 						}
 						else if (TargetEntity is Building && ((Building)TargetEntity).IsAlive())
 						{
-							this.Kill();
-							BuildingController.HurtBuilding((Building)TargetEntity, world);
-							Sounds.Instance.LoadSound("Celldeath").Play();
+							if ((new Random()).NextDouble() >= this.PowerLevel)
+							{
+								this.Kill();
+							}
+							
+							BuildingController.HurtBuilding((Building)TargetEntity);
+							SoundsController.playSound("Celldeath", this.position);
 						}
 					}
 					
@@ -283,23 +306,6 @@ namespace Recellection.Code.Models
 				return false;
 			}
 		}
-		
-        /// <summary>
-        /// Modify or set a new powerlevel for this unit.
-        /// </summary>
-        /// <param name="newPowerLevel">Default should be one, set a new value as 1.1 for a 10% powerbonus.</param>
-        public void SetPowerLevel(float newPowerLevel)
-        {
-            powerLevel = newPowerLevel;
-        }
-        
-        /// <returns>
-        /// Powerlevel of this unit.
-        /// </returns>
-        public float GetPowerLevel()
-        {
-            return powerLevel;
-        }
         
         public bool isPatrolling()
         {

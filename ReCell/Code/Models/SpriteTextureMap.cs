@@ -22,6 +22,8 @@ namespace Recellection.Code.Models
     {
         private ContentManager content;
 
+        private Dictionary<Globals.TextureTypes, Texture2D> loadedTextures;
+
         /// <summary>
         /// Constructor for the SpriteTextureMap
         /// </summary>
@@ -30,6 +32,7 @@ namespace Recellection.Code.Models
         public SpriteTextureMap(ContentManager content)
         {
             this.content = content;
+            this.loadedTextures = new Dictionary<Globals.TextureTypes, Texture2D>();
         }
         
         /// <summary>
@@ -41,7 +44,11 @@ namespace Recellection.Code.Models
         /// <returns>The requested Texture2D</returns>
         public Texture2D GetTexture(Globals.TextureTypes texture)
         {
-            return content.Load<Texture2D>("Graphics/"+texture);
+            if(loadedTextures.ContainsKey(texture))
+            {
+                return loadedTextures[texture];
+            }
+            return loadedTextures[texture] = content.Load<Texture2D>("Graphics/" + texture);
         }
     }
 }

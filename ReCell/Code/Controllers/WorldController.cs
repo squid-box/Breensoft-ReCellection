@@ -20,20 +20,22 @@ namespace Recellection.Code.Controllers
         /// <summary>
         /// The different states this controller will assume
         /// </summary>
-        public enum State { NONE, BUILDING, TILE, MENU, ZOOMED, SCROLL };
+        public enum State { NONE, BUILDING, TILE, MENU };
         
         public struct Selection
         {
 			public State state;
-			public Point point;
+            public Point point;
+            public Point absPoint;
         }
         
         private const long SCROLL_ZONE_DWELL_TIME = 0;//250000;
         private char[] REG_EXP = { '_' };
-        public bool finished { get; set; }
+        public static bool finished { get; set; }
         private Logger myLogger;
         
 		private Selection previousSelection;
+		private Tile selectedTile;
 		
 		private Player playerInControll;
 
@@ -63,7 +65,6 @@ namespace Recellection.Code.Controllers
 		{
 			Selection sel = new Selection();
 			sel.state = State.NONE;
-			
 			finished = false;
             while (!finished)
             {
@@ -72,76 +73,33 @@ namespace Recellection.Code.Controllers
                 // Generate the appropriate menu for this state.
                 // Get the active GUI Region and invoke the associated method.
 				sel = retrieveSelection();
-
 				
                 // They are used if the state needs true coordinates, scroll only uses deltas.
-                Point absoluteCoordinate = new Point(sel.point.X + theWorld.LookingAt.X, 
-													 sel.point.Y + theWorld.LookingAt.Y);
-				
+
 				World.Map map = theWorld.GetMap();
 
-                switch (sel.state)
-                {
-                    case State.TILE:
-                        // A tile has been selected, store it.
-						// Save the selected tile, for later!
-                        Tile selectedTile = map.GetTile(absoluteCoordinate);
-                        Point PreviousAbsoluteCoordinate = new Point(previousSelection.point.X + theWorld.LookingAt.X,
-                                                     previousSelection.point.Y + theWorld.LookingAt.Y);
+				// If this is the first time we select a tile...
+				if(selectedTile != null)
+					selectedTile.active = false;
+				selectedTile = map.GetTile(sel.absPoint);
+				selectedTile.active = true;
 
-						// Debug finish
-						if (sel.point.X == 1 && sel.point.Y == 1)
-						{
-							finished = true;
-						}
-                        if (sel.point.X == 2 && sel.point.Y == 1 && map.GetTile(PreviousAbsoluteCoordinate).GetBuilding() != null)
-                        {
-                            BuildingMenu(previousSelection);
-                        }
-                        break;
-					case State.BUILDING:
-						// A fromBuilding has been selected!
-
-						// TODO: Let BuildingController do shit! (use retrieveSelection)
-						// TODO:  - Activate menu (what u wanna do /w fromBuilding?)
-						// TODO:  - DO SHIT!
-
-						Building selectedBuilding = map.GetTile(absoluteCoordinate).GetBuilding();
-
-						sel = retrieveSelection();
-						absoluteCoordinate = new Point(sel.point.X + theWorld.LookingAt.X,
-													 sel.point.Y + theWorld.LookingAt.Y);
-						
-						if (sel.state == State.BUILDING)
-						{
-							// If we selected the same building again, SET WEIGHT OMGOMG
-							if (selectedBuilding == map.GetTile(absoluteCoordinate).GetBuilding())
-							{
-								GraphController.Instance.SetWeight(map.GetTile(absoluteCoordinate).GetBuilding());
-							}
-						}
-						
-						if (sel.state != State.TILE)
-						{
-							//Sounds.Instance.LoadSound("Denied").Play();
-							continue;
-						}
-						
-						selectedTile = map.GetTile(absoluteCoordinate);
-
-						if (selectedBuilding != null
-						 && selectedTile.GetBuilding() == null
-						 && selectedBuilding.owner == playerInControll)
-                        {
-                            BuildingController.ConstructBuilding(playerInControll, selectedTile, selectedBuilding, theWorld);
-                        }
-
-                        break;
-                    case State.SCROLL:
-						theWorld.LookingAt = absoluteCoordinate; 
-                        break;
-                }
-			}
+				if (sel.point.X == 1 && sel.point.Y == 1)
+				{
+					finished = true;
+				}
+				if (sel.point.X == 2 && sel.point.Y == 1)
+				{
+					if (previousSelection.state == State.BUILDING)
+					{
+						BuildingMenu(previousSelection);
+					}
+					else if (previousSelection.state == State.TILE)
+					{
+						TileMenu(previousSelection);
+					}
+				}
+            }
 			//Sounds.Instance.LoadSound("acid").Play();
         }
 
@@ -164,7 +122,8 @@ namespace Recellection.Code.Controllers
 
 			x = Int32.Parse(splitted[0]);
 			y = Int32.Parse(splitted[1]);
-			
+
+            Point absoluteCordinate = new Point(x + theWorld.LookingAt.X, y + theWorld.LookingAt.Y);
             Selection s = new Selection();
             if(activatedMenuIcon.labelColor.Equals(Color.NavajoWhite))
             {
@@ -173,24 +132,144 @@ namespace Recellection.Code.Controllers
 				{
 					s.state = State.BUILDING;
 					s.point = new Point(x, y);
+                    s.absPoint = absoluteCordinate;
 				}
 				else
 				{
 					s.state = State.TILE;
 					s.point = new Point(x, y);
+                    s.absPoint = absoluteCordinate;
 				}
             }
             else if (activatedMenuIcon.labelColor.Equals(Color.Chocolate))
             {
-                s.state = State.SCROLL;
-                s.point = new Point(x, y);
+				theWorld.LookingAt = new Point(theWorld.LookingAt.X + x, theWorld.LookingAt.Y + y);
+				return retrieveSelection();
             }
             else
             {
                 throw new ArgumentException("Your argument is invalid, my beard is a windmill.");
             }
             return s;
+		}
+		
+		/// <summary>
+		/// Loads the Building menu from a selection.
+		/// Must have building on tile.
+		/// </summary>
+		/// <param name="theSelection"></param>
+        private void BuildingMenu(Selection theSelection)
+        {
+            
+            World.Map map = theWorld.GetMap();
+            Building building = map.GetTile(theSelection.absPoint).GetBuilding();
+            if (building == null || building.owner != playerInControll)
+            {
+                return;
+            }
+            MenuIcon setWeight = new MenuIcon(Language.Instance.GetString("SetWeight"), null, Color.Black);
+            MenuIcon buildCell = new MenuIcon(Language.Instance.GetString("BuildCell"), null, Color.Black);
+            MenuIcon removeCell = new MenuIcon(Language.Instance.GetString("RemoveCell"), null, Color.Black);
+            MenuIcon upgradeUnits = new MenuIcon(Language.Instance.GetString("UpgradeUnits"), null, Color.Black);
+            MenuIcon moveUnits = new MenuIcon(Language.Instance.GetString("MoveUnits"), null, Color.Black);
+            MenuIcon repairCell = new MenuIcon(Language.Instance.GetString("RepairCell"), null, Color.Black);
+            MenuIcon icon7 = null;
+            MenuIcon icon8 = null;
+            MenuIcon Cancel = new MenuIcon(Language.Instance.GetString("Cancel"), null, Color.Black); ;
+            List<MenuIcon> menuIcons = new List<MenuIcon>();
+            menuIcons.Add(setWeight);
+            menuIcons.Add(buildCell);
+            menuIcons.Add(removeCell);
+            menuIcons.Add(upgradeUnits);
+            menuIcons.Add(moveUnits);
+
+            Menu buildingMenu = new Menu(Globals.MenuLayout.NineMatrix, menuIcons, Language.Instance.GetString("BuildingMenu"), Color.Black);
+            MenuController.LoadMenu(buildingMenu);
+            Recellection.CurrentState = MenuView.Instance;
+            MenuIcon choosenMenu = MenuController.GetInput();
+            Recellection.CurrentState = WorldView.Instance;
+            MenuController.UnloadMenu();
+
+            if (choosenMenu.Equals(setWeight))
+            {
+                GraphController.Instance.SetWeight(building);
+            }
+            else if (choosenMenu.Equals(buildCell))
+            {
+                Selection destsel = retrieveSelection();
+                if (destsel.state != State.TILE)
+				{
+					Sounds.Instance.LoadSound("Denied");
+					return;
+				}
+                Tile selectedTile = map.GetTile(destsel.absPoint);
+				
+				if (selectedTile.GetBuilding() == null)
+                {
+					BuildingController.ConstructBuilding(playerInControll, selectedTile, building, theWorld);
+				}
+				else
+				{
+					Sounds.Instance.LoadSound("Denied");
+					return;
+				}
+            }
+            else if (choosenMenu.Equals(removeCell))
+            {
+                BuildingController.RemoveBuilding(building);
+            }
+            else if (choosenMenu.Equals(upgradeUnits))
+            {
+                playerInControll.powerLevel += 0.1f;
+            }
+            else if (choosenMenu.Equals(moveUnits))
+            {
+                return;
+            }
+            else if (choosenMenu.Equals(repairCell))
+            {
+                return;
+            }
+            else if (choosenMenu.Equals(Cancel))
+            {
+                return;
+            }
+            else
+            {
+                return;
+            }
         }
+
+		private void TileMenu(Selection previousSelection)
+		{
+			MenuIcon moveUnits = new MenuIcon(Language.Instance.GetString("MoveUnits"), null, Color.Black);
+			MenuIcon cancel = new MenuIcon(Language.Instance.GetString("Cancel"), null, Color.Black);
+			
+			List<MenuIcon> menuIcons = new List<MenuIcon>();
+			menuIcons.Add(moveUnits);
+			menuIcons.Add(cancel);
+
+			Menu buildingMenu = new Menu(Globals.MenuLayout.FourMatrix, menuIcons, Language.Instance.GetString("TileMenu"), Color.Black);
+			MenuController.LoadMenu(buildingMenu);
+			Recellection.CurrentState = MenuView.Instance;
+			MenuIcon choosenMenu = MenuController.GetInput();
+			Recellection.CurrentState = WorldView.Instance;
+			MenuController.UnloadMenu();
+			
+			if (choosenMenu == moveUnits)
+			{
+				Selection currSel = retrieveSelection();
+				if (currSel.state != State.TILE)
+				{
+					return;
+				}
+				
+				Tile from = theWorld.GetMap().GetTile(previousSelection.absPoint);
+				Tile to = theWorld.GetMap().GetTile(currSel.absPoint);
+
+				UnitController.MoveUnits(from.GetUnits().Count, from, to);
+			}
+		}
 
         private void createGUIRegionGridAndScrollZone()
         {
@@ -207,7 +286,7 @@ namespace Recellection.Code.Controllers
             {
                 for (int y = 0; y < numOfRows; y++)
                 {
-                    menuMatrix[x, y] = new MenuIcon("" + (x+1) + "_" + (y+1), null,Color.NavajoWhite);
+                    menuMatrix[x, y] = new MenuIcon("" + (x + 1) + "_" + (y + 1), null, Color.NavajoWhite);
 
                     //Should not need a targetRectangle.
                     /*menuMatrix[x, y].targetRectangle = new Microsoft.Xna.Framework.Rectangle(
@@ -215,7 +294,7 @@ namespace Recellection.Code.Controllers
                     */
                     //x + 1 and y + 1 should make them not be placed at the edge.
                     menuMatrix[x, y].region = new GUIRegion(Recellection.windowHandle,
-                        new System.Windows.Rect((x+1) * Globals.TILE_SIZE, (y+1) * Globals.TILE_SIZE, Globals.TILE_SIZE, Globals.TILE_SIZE));
+                        new System.Windows.Rect((x + 1) * Globals.TILE_SIZE, (y + 1) * Globals.TILE_SIZE, Globals.TILE_SIZE, Globals.TILE_SIZE));
                 }
 
             }
@@ -237,56 +316,56 @@ namespace Recellection.Code.Controllers
             //Will code the scroll zones in one line.
 
             //First is a tile sized square top left on the screen.
-            scrollZone.Add(new MenuIcon("-1_-1",null,Color.Chocolate));
-            
+            scrollZone.Add(new MenuIcon("-1_-1", null, Color.Chocolate));
+
             scrollZone[0].region = new GUIRegion(Recellection.windowHandle, new System.Windows.Rect(0, 0, Globals.TILE_SIZE, Globals.TILE_SIZE));
             scrollZone[0].region.DwellTime = new TimeSpan(SCROLL_ZONE_DWELL_TIME);
             scrollZone[0].region.HideFeedbackIndicator = true;
 
             //Second is a laying rectangle spanning the screen width minus two tile widths.
             scrollZone.Add(new MenuIcon("0_-1", null, Color.Chocolate));
-            
+
             scrollZone[1].region = new GUIRegion(Recellection.windowHandle, new System.Windows.Rect(Globals.TILE_SIZE, 0, windowWidth - Globals.TILE_SIZE * 2, Globals.TILE_SIZE));
             scrollZone[1].region.DwellTime = new TimeSpan(SCROLL_ZONE_DWELL_TIME);
             scrollZone[1].region.HideFeedbackIndicator = true;
 
             //Third is like the first but placed to the far right.
             scrollZone.Add(new MenuIcon("1_-1", null, Color.Chocolate));
-            
+
             scrollZone[2].region = new GUIRegion(Recellection.windowHandle, new System.Windows.Rect(windowWidth - Globals.TILE_SIZE, 0, Globals.TILE_SIZE, Globals.TILE_SIZE));
             scrollZone[2].region.DwellTime = new TimeSpan(SCROLL_ZONE_DWELL_TIME);
             scrollZone[2].region.HideFeedbackIndicator = true;
 
             //Fourth is a standing rectangle at the left side of the screen, its height is screen height minus two tile heights.
             scrollZone.Add(new MenuIcon("-1_0", null, Color.Chocolate));
-            
-            scrollZone[3].region = new GUIRegion(Recellection.windowHandle, new System.Windows.Rect(0, Globals.TILE_SIZE, Globals.TILE_SIZE, windowHeight - Globals.TILE_SIZE*2));
+
+            scrollZone[3].region = new GUIRegion(Recellection.windowHandle, new System.Windows.Rect(0, Globals.TILE_SIZE, Globals.TILE_SIZE, windowHeight - Globals.TILE_SIZE * 2));
             scrollZone[3].region.DwellTime = new TimeSpan(SCROLL_ZONE_DWELL_TIME);
             scrollZone[3].region.HideFeedbackIndicator = true;
 
             //Fift is the same as the right but placed at the right side of the screen.
             scrollZone.Add(new MenuIcon("1_0", null, Color.Chocolate));
-            
+
             scrollZone[4].region = new GUIRegion(Recellection.windowHandle, new System.Windows.Rect(windowWidth - Globals.TILE_SIZE, Globals.TILE_SIZE, Globals.TILE_SIZE, windowHeight - Globals.TILE_SIZE * 2));
             scrollZone[4].region.DwellTime = new TimeSpan(SCROLL_ZONE_DWELL_TIME);
             scrollZone[4].region.HideFeedbackIndicator = true;
 
             //Like the first but at the bottom
             scrollZone.Add(new MenuIcon("-1_1", null, Color.Chocolate));
-            
+
             scrollZone[5].region = new GUIRegion(Recellection.windowHandle, new System.Windows.Rect(0, windowHeight - Globals.TILE_SIZE, Globals.TILE_SIZE, Globals.TILE_SIZE));
             scrollZone[5].region.DwellTime = new TimeSpan(SCROLL_ZONE_DWELL_TIME);
             scrollZone[5].region.HideFeedbackIndicator = true;
             //Like the second but at the bottom
             scrollZone.Add(new MenuIcon("0_1", null, Color.Chocolate));
-            
+
             scrollZone[6].region = new GUIRegion(Recellection.windowHandle, new System.Windows.Rect(Globals.TILE_SIZE, windowHeight - Globals.TILE_SIZE, windowWidth - Globals.TILE_SIZE * 2, Globals.TILE_SIZE));
             scrollZone[6].region.DwellTime = new TimeSpan(SCROLL_ZONE_DWELL_TIME);
             scrollZone[6].region.HideFeedbackIndicator = true;
 
             //Like the third but at the bottom
             scrollZone.Add(new MenuIcon("1_1", null, Color.Chocolate));
-            
+
             scrollZone[7].region = new GUIRegion(Recellection.windowHandle, new System.Windows.Rect(windowWidth - Globals.TILE_SIZE, windowHeight - Globals.TILE_SIZE, Globals.TILE_SIZE, Globals.TILE_SIZE));
             scrollZone[7].region.DwellTime = new TimeSpan(SCROLL_ZONE_DWELL_TIME);
             scrollZone[7].region.HideFeedbackIndicator = true;
@@ -305,54 +384,6 @@ namespace Recellection.Code.Controllers
             }
 
             MenuController.LoadMenu(new Menu(allMenuIcons));
-    }
-    /// <summary>
-    /// Loads the Building menu from a selection.
-    /// Must have building on tile.
-    /// </summary>
-    /// <param name="theSelection"></param>
-        private void BuildingMenu(Selection theSelection)
-        {
-            Point absoluteCordinate = new Point(theSelection.point.X + theWorld.LookingAt.X,
-                                                     theSelection.point.Y + theWorld.LookingAt.Y);
-            World.Map map = theWorld.GetMap();
-            Building building = map.GetTile(absoluteCordinate).GetBuilding();
-            MenuIcon setWeight = new MenuIcon(Language.Instance.GetString("SetWeight"), null, Color.Black);
-            MenuIcon buildCell = new MenuIcon(Language.Instance.GetString("BuildCell"), null, Color.Black);
-            MenuIcon removeCell = new MenuIcon(Language.Instance.GetString("RemoveCell"), null, Color.Black);
-            MenuIcon upgradeUnits = new MenuIcon(Language.Instance.GetString("UpgradeUnits"), null, Color.Black);
-            List<MenuIcon> menuIcons = new List<MenuIcon>();
-            menuIcons.Add(setWeight);
-            menuIcons.Add(buildCell);
-            menuIcons.Add(removeCell);
-            menuIcons.Add(upgradeUnits);
-
-            Menu buildingMenu = new Menu(Globals.MenuLayout.FourMatrix, menuIcons, Language.Instance.GetString("BuildingMenu"), Color.Black);
-            MenuController.LoadMenu(buildingMenu);
-            Recellection.CurrentState = MenuView.Instance;
-
-            MenuIcon choosenMenu = MenuController.GetInput();
-            Recellection.CurrentState = WorldView.Instance;
-            MenuController.UnloadMenu();
-
-            if (choosenMenu.Equals(setWeight))
-            {
-                GraphController.Instance.SetWeight(building);
-            }
-            else if (choosenMenu.Equals(buildCell))
-            {
-                Tile destTile = map.GetTile(absoluteCordinate);
-                BuildingController.ConstructBuilding(playerInControll, destTile, building, theWorld);
-            }
-            else if (choosenMenu.Equals(removeCell))
-            {
-                GraphController.Instance.RemoveBuilding(building);
-            }
-            else //else upgradeUnits
-            {
-                //put upgrade code here /co
-            }
         }
-
     }
 }
