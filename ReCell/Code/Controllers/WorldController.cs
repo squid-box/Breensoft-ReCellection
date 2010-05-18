@@ -107,7 +107,7 @@ namespace Recellection.Code.Controllers
 		{
 			myLogger.Debug("Waiting for input...");
 			MenuIcon activatedMenuIcon = MenuController.GetInput();
-			        
+						 
 		    int x = 0;
             int y = 0;
             String[] splitted = activatedMenuIcon.label.Split(REG_EXP);
