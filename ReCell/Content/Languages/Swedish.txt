@@ -15,7 +15,11 @@ ChooseBuilding=Välj den typ av cell du vill bygga.
 SetWeight=Välj Beredskapsnivå.
 BuildCell=Bygg Cell.
 RemoveCell=Förstör denna cell.
+UpgradeUnits=Uppgradera alla små celler.
 BuildingMenu=Bygg Cell.
+MoveUnits=Flytta små cellerna.
+RepairCell=Reparera cell.
+Cancel=Avbryt
 
 OptionsMenu1=OTest1
 OptionsMenu2=OTest2
