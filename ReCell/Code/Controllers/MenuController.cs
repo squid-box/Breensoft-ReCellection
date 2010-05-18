@@ -55,6 +55,11 @@ namespace Recellection.Code.Controllers
 			menuModel.Push(m);
 			tobiiController.LoadMenu(m);
 		}
+		
+		public static void DisableMenuInput()
+		{
+			tobiiController.SetRegionsEnabled(false);
+		}
 
 		/// <summary>
 		/// Removes the currently opened menu, and reveals the one below.
@@ -75,6 +80,7 @@ namespace Recellection.Code.Controllers
 		/// <returns>An activated Region in the current menu</returns>
 		public static MenuIcon GetInput()
 		{
+			tobiiController.SetRegionsEnabled(true);
 			GUIRegion activated = tobiiController.GetActivatedRegion();
 
             //tobiiController.UnloadMenu(menuModel.Peek());
