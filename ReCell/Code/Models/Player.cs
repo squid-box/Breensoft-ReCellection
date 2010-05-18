@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Microsoft.Xna.Framework.Graphics;
+using Recellection.Code.Controllers;
 
 namespace Recellection.Code.Models
 {
@@ -30,6 +31,7 @@ namespace Recellection.Code.Models
 
         public Color color { get; private set; }
         public float powerLevel { get; set; }
+        public UnitAccountant unitAcc { get; set; }
         /// <summary>
         /// The fromBuilding networks owned by a player
         /// </summary>
@@ -57,7 +59,7 @@ namespace Recellection.Code.Models
         {
             this.name = name;
             this.color = color;
-
+            this.unitAcc = new UnitAccountant(this);
             this.graphs = new List<Graph>();
         }
 
@@ -69,6 +71,7 @@ namespace Recellection.Code.Models
             this.name = "Vict0r Turner, aka John Doe";
             this.colour = PlayerColour.PURPLE;
             this.graphs = new List<Graph>();
+            this.unitAcc = new UnitAccountant(this);
         }
 
         /// <summary>

@@ -19,7 +19,7 @@ namespace Recellection.Code.Models
 	public class Graph : IModel
 	{
 		private static Logger logger = LoggerFactory.GetLogger();
-		private static int defaultWeight = 1;
+		private static int defaultWeight = 0;
 		
 		public event Publish<Building> weightChanged;
         public BaseBuilding baseBuilding { get; set; }
