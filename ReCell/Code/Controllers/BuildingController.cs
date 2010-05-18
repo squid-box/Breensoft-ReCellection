@@ -12,7 +12,7 @@ namespace Recellection.Code.Controllers
 {
     class BuildingController
     {
-        private const int MAX_BUILDING_RANGE = 3;
+        public const int MAX_BUILDING_RANGE = 3;
 
         private static Logger logger = LoggerFactory.GetLogger();
         /// <summary>
