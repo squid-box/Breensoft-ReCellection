@@ -54,7 +54,7 @@ namespace Recellection.Code.Controllers
 
             }
             logger.Trace("Killing " + b.currentTargets.Count + " units.");
-            //UnitController.KillUnits(b.currentTargets, b.currentTargets.Count);
+            //UnitController.MarkUnitsAsDead(b.currentTargets, b.currentTargets.Count);
             b.currentTargets.Clear();
         }
 
@@ -200,7 +200,7 @@ namespace Recellection.Code.Controllers
                 if (sourceBuilding != null)
                 {
                     logger.Info("The building has " + sourceBuilding.CountUnits() + " and the building costs " + price);
-                    UnitController.KillUnits(sourceBuilding.units, (int)price);
+                    UnitController.MarkUnitsAsDead(sourceBuilding.units, (int)price);
                     logger.Info("The source building only got " + sourceBuilding.CountUnits() + " units left.");
                 }
 
