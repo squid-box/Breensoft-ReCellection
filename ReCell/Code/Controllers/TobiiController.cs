@@ -109,26 +109,7 @@ namespace Recellection
             foreach(GUIRegion region in menu.GetRegions())
             {
                 AddRegion(region);
-            }
-            #region offregions handled seperately
-            if (menu.TopOffRegion != null)
-            {                
-                AddRegion(menu.TopOffRegion.region);
-            }
-            if (menu.BottomOffRegion != null)
-            {
-                AddRegion(menu.BottomOffRegion.region);
-            }
-            if (menu.RightOffRegion != null)
-            {
-                AddRegion(menu.RightOffRegion.region);
-            }
-            if (menu.LeftOffRegion != null)
-            {
-                AddRegion(menu.LeftOffRegion.region);
-            }
-            #endregion
-
+            }            
         }
 
         /// <summary>
