@@ -420,7 +420,8 @@ namespace Recellection.Code.Models
         /// <returns>Texture of this unit.</returns>
         public override Texture2D GetSprite()
         {
-            return Recellection.textureMap.GetTexture(this.GetTerrainType().GetTexture());
+            return type.GetTexture();
+
         }
     }
 }
