@@ -53,7 +53,7 @@ namespace Recellection.Code.Controllers
             
 			float length = (new Vector2((lookingAt.X + ((Globals.VIEWPORT_WIDTH/Globals.TILE_SIZE) / 2)), (lookingAt.Y + ((Globals.VIEWPORT_HEIGHT/Globals.TILE_SIZE) / 2))) - point).Length();
 
-			float newVolume = 10.0f * (float) Math.Log10(-0.05f * length + 1.0f);
+			float newVolume = 50.0f * (float) Math.Log10(-0.05f * length + 1.0f);
 
             LoggerFactory.GetLogger().Trace("Playing sound at volume: " + newVolume + "db");
 
