@@ -30,8 +30,8 @@ namespace Recellection.Code
         public AIView(World p_world)
         {
             world = p_world;
-            mapHeight = world.GetMap().map.GetLength(0);
-            mapWidth = world.GetMap().map.GetLength(1);
+            mapHeight = world.GetMap().map.GetLength(1);
+            mapWidth = world.GetMap().map.GetLength(0);
             myBuildings = new List<Building>();
             roamingUnits = new List<Vector2>(); //A list of all units not located at a fromBuilding.
         }
@@ -54,20 +54,19 @@ namespace Recellection.Code
         /// <returns></returns>
         internal Tile getTileAt(Vector2 coords)
         {
-            if(valid(coords))
+            if(!valid(coords))
             {
-                Tile tempTile = world.GetMap().GetTile((int)coords.X, (int)coords.Y);
-
-                ///* Uncomment when fog of war is properly implemented
-                if (tempTile.IsVisible(ai))
-                {
-                    return tempTile;
-                }
-                
-                return tempTile;
+                throw new NullReferenceException();
             }
-            //throw new NullReferenceException();
-            return null;
+            Tile tempTile = world.GetMap().GetTile((int)coords.X, (int)coords.Y);
+
+            ///* Uncomment when fog of war is properly implemented
+            //if (tempTile.IsVisible(ai))
+            //{
+            //    return tempTile;
+            //}
+            
+            return tempTile;
         }
 
 
@@ -88,18 +87,31 @@ namespace Recellection.Code
 
         /// <summary>
         /// Checks whether or not there is a Resource Point at the given coordinates.
+        /// Overloaded function, also works with a tile.
         /// </summary>
         /// <param name="current"></param>
         /// <returns></returns>
         internal bool ContainsResourcePoint(Vector2 current)
         {
             Tile tempTile = getTileAt(current);
-            if (tempTile.GetTerrainType().getResourceModifier() > 0)
+            return ContainsResourcePoint(tempTile);
+        }
+
+        /// <summary>
+        /// Checks whether or not there is a Resource Point on the given Tile.
+        /// </summary>
+        /// <param name="current"></param>
+        /// <returns></returns>
+        internal bool ContainsResourcePoint(Tile current)
+        {
+            if (current.GetTerrainType().getResourceModifier() > 0)
             {
                 return true;
             }
             return false;
         }
+
+
 
         /// <summary>
         /// Returns the fromBuilding at the given coordinates provided that it is visible.
@@ -112,17 +124,73 @@ namespace Recellection.Code
         }
 
         /// <summary>
+        /// Checks whether or not the given coordinates contains a friendly building.
+        /// </summary>
+        /// <param name="point"></param>
+        /// <returns></returns>
+        internal bool ContainsFriendlyBuilding(Vector2 point)
+        {
+            Tile temp = getTileAt(point);
+            if (temp != null && temp.GetBuilding() != null && temp.GetBuilding().GetOwner() == ai)
+            {
+                return true;
+            }
+            return false;
+        }
+
+        /// <summary>
         /// Returns the coordinates of all the friendly buildings
         /// </summary>
         /// <returns></returns>
         internal List<Vector2> GetFriendlyBuildings()
         {
             List<Vector2> coordinates = new List<Vector2>();
-            for (int i = 0; i < coordinates.Count; i++)
+            for (int i = 0; i < myBuildings.Count; i++)
             {
                 coordinates.Add(myBuildings[i].position);
             }
             return coordinates;
         }
+
+        /// <summary>
+        /// Checks whether or not the given tile contains an enemy building.
+        /// </summary>
+        /// <param name="t"></param>
+        /// <returns></returns>
+        internal bool ContainsEnemyBuilding(Tile t)
+        {
+            if (t.GetBuilding() == null)
+            {
+                return false;
+            }
+            if (t.GetBuilding().GetOwner() != ai)
+            {
+                return true;
+            }
+            return false;
+        }
+
+        /// <summary>
+        /// Returns the player who is harvesting at the given coordinates or null if noone is.
+        /// </summary>
+        /// <param name="point"></param>
+        /// <returns></returns>
+        internal Player Harvesting(Vector2 point)
+        {
+            Building tempBuilding = GetBuildingAt(point);
+
+            if (tempBuilding == null)
+                return null;
+
+            if (tempBuilding.type == Globals.BuildingTypes.Resource)
+            {
+                return tempBuilding.GetOwner();
+            }
+            else
+            {
+                return null;
+            }
+        }
+
     }
 }
