@@ -134,6 +134,8 @@ namespace Recellection.Code.Models
 
         public List<Player> players { get; private set; }
 
+        public HashSet<Unit> units { get; private set; }
+
         /// <summary>
         /// Constructor of the game world. Creates an empty list of players
         /// as well as an empty matrix of the given dimensions.
@@ -147,6 +149,7 @@ namespace Recellection.Code.Models
             this.seed = seed;
             SetMap(map);
 			this.lookingAt = Point.Zero;
+            this.units = new HashSet<Unit>();
         }
 
         /// <summary>
@@ -219,5 +222,21 @@ namespace Recellection.Code.Models
             return x > 0 && x < map.width && y > 0 && y < map.height;
         }
 
+
+        public void AddUnit(Unit u)
+        {
+            lock (units)
+            {
+                units.Add(u);
+            }
+        }
+
+        public void RemoveUnit(Unit u)
+        {
+            lock (units)
+            {
+                units.Remove(u);
+            }
+        }
     }
 }

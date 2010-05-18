@@ -204,8 +204,7 @@ namespace Recellection.Code.Controllers
                     logger.Info("The source building only got " + sourceBuilding.CountUnits() + " units left.");
                 }
 
-				//Sounds.Instance.LoadSound("buildingPlacement").Play();
-				Sounds.Instance.LoadSound("prego").Play();
+				Sounds.Instance.LoadSound("buildingPlacement").Play();
             }
             return true;
         }
