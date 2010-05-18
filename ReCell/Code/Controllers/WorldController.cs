@@ -100,7 +100,6 @@ namespace Recellection.Code.Controllers
 					}
 				}
             }
-			//Sounds.Instance.LoadSound("acid").Play();
         }
 
 		public Selection retrieveSelection()
