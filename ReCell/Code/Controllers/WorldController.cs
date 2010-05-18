@@ -173,8 +173,6 @@ namespace Recellection.Code.Controllers
             MenuIcon upgradeUnits = new MenuIcon(Language.Instance.GetString("UpgradeUnits"), null, Color.Black);
             MenuIcon moveUnits = new MenuIcon(Language.Instance.GetString("MoveUnits"), null, Color.Black);
             MenuIcon repairCell = new MenuIcon(Language.Instance.GetString("RepairCell"), null, Color.Black);
-            MenuIcon icon7 = null;
-            MenuIcon icon8 = null;
             MenuIcon Cancel = new MenuIcon(Language.Instance.GetString("Cancel"), null, Color.Black); ;
             List<MenuIcon> menuIcons = new List<MenuIcon>();
             menuIcons.Add(setWeight);
@@ -183,8 +181,6 @@ namespace Recellection.Code.Controllers
             menuIcons.Add(upgradeUnits);
             menuIcons.Add(moveUnits);
             menuIcons.Add(repairCell);
-            menuIcons.Add(icon7);
-            menuIcons.Add(icon8);
             menuIcons.Add(Cancel);
 
             Menu buildingMenu = new Menu(Globals.MenuLayout.NineMatrix, menuIcons, Language.Instance.GetString("BuildingMenu"), Color.Black);
