@@ -101,7 +101,7 @@ namespace Recellection.Code.Models
             {
                 case Globals.TerrainTypes.Infected:
                     return INFECTED_TEXTURE;
-                case Globals.TerrainTypes.Membrane:
+                case Globals.TerrainTypes.Water:
                     return WATER_TEXTURE;
                 case Globals.TerrainTypes.Mucus:
                     return MUCUS_TEXTURE;
