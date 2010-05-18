@@ -323,7 +323,7 @@ namespace Recellection.Code.Controllers
             if (Vector2.Distance(current, nearby) > distanceThreshold)
             {
                 nearby = CalculatePointNear(current); //Find a good spot to go to
-                m_view.interrestPoints[m_view.interrestPoints.Count - 1] = nearby; //And add it to the todo-list
+                m_view.AddInterrestPoint(nearby); //And add it to the todo-list
             }
             else //"nearby" is close enough.
             {
