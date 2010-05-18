@@ -245,17 +245,17 @@ namespace Recellection.Code.Controllers
             {
                 xVal += 1;
             }
-            if (xVal == mapSize.X)
+            if (xVal >= mapSize.X)
             {
-                xVal -= 1;
+                xVal = mapSize.X-1;
             }
             if (yVal == 0)
             {
                 yVal += 1;
             }
-            if (yVal == mapSize.Y)
+            if (yVal >= mapSize.Y)
             {
-                yVal -= 1;
+                yVal = mapSize.Y-1;
             }
 
             Vector2 result = new Vector2(xVal, yVal);
