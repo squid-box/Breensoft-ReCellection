@@ -38,12 +38,16 @@ namespace Recellection.Code.Main
             Random randomer = new Random(seed);
 
             myLogger.Info("Adding players.");
-            Player temp = new Player(Color.Blue, "John");
-            theWorld.AddPlayer(temp);
+            Player human = new Player(Color.Blue, "John");
+            theWorld.AddPlayer(human);
 
             List<Player> temp2 = new List<Player>();
-            temp2.Add(temp);
-            theWorld.AddPlayer(new AIPlayer(temp2, new AIView(theWorld),Color.Red));
+            temp2.Add(human);
+            AIPlayer ai = new AIPlayer(temp2, new AIView(theWorld),Color.Red);
+            theWorld.AddPlayer(ai);
+            
+            human.Enemy = ai;
+            ai.Enemy = human;
 
             myLogger.Info("Creating spawnpoints.");
             SpawnPoints(theWorld.players, theWorld.map.width, theWorld.map.height, randomer);

@@ -32,6 +32,9 @@ namespace Recellection.Code.Models
         public Color color { get; private set; }
         public float powerLevel { get; set; }
         public UnitAccountant unitAcc { get; set; }
+        
+        public Player Enemy { get; set; }
+        
         /// <summary>
         /// The fromBuilding networks owned by a player
         /// </summary>
