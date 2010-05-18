@@ -44,6 +44,32 @@ namespace Recellection.Code.Controllers
             b.AddUnits(units);
         }
 
+        public int getUpgradeCost()
+        {
+            if (owner.powerLevel >= 0.6f)
+            {
+                return 4711;
+            }
+            return (int) ((20 * owner.powerLevel) * (20 * owner.powerLevel)) +4;//TODO change to a more sane formula.
+        }
+
+        public bool PayAndUpgrade(Building building)
+        {
+            if (building.units.Count < getUpgradeCost() || owner.powerLevel >= 0.6f)
+            {
+                return false;
+            }
+            DestroyUnits(building.units, getUpgradeCost());
+            owner.powerLevel += 0.1f;
+            return true;
+
+        }
+        public void DestroyUnits(List<Unit> u, int n)
+        {
+            UnitController.MarkUnitsAsDead(u, n);
+            UnitController.RemoveDeadUnits();
+        }
+
         /// <summary>
         /// Quite possibly a horribly slow way of adding units.
         /// </summary>
@@ -78,10 +104,27 @@ namespace Recellection.Code.Controllers
                     // Places them randomly around the fromBuilding. - John
                     // No, it does not. - Martin
 
-                    res.Add(new Unit(b.owner, b.position, b));
+                    Unit temp = new Unit(b.owner, b.position, b);
+                    
+                    res.Add(temp);
                 }
+                b.owner.AddUnits(res);
                 b.AddUnits(res);
             }
+        }
+
+        /// <summary>
+        /// The increese in cost is 50% extra for each building of that type built.
+        /// </summary>
+        /// <param name="type"></param>
+        /// <param name="payer">The player this building is built for</param>
+        /// <returns>The cost when considering the price inflation</returns>
+        public uint CalculateBuildingCostInflation(Globals.BuildingTypes type)
+        {
+            uint defaultCost = Building.GetBuyPrice(type);
+            uint buildingCount = owner.CountBuildingsOfType(type);
+            return (uint)(defaultCost + (buildingCount * buildingCount * defaultCost / 2));
+
         }
     }
 }

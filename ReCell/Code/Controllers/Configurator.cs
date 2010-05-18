@@ -65,10 +65,14 @@ namespace Recellection.Code.Controllers
                 if (GameOptions.Instance.musicMuted)
                 {
                     GameOptions.Instance.musicMuted = false;
+                    SoundsController.changeEffectsVolume(GameOptions.Instance.sfxVolume);
+                    SoundsController.changeMusicVolume(GameOptions.Instance.musicVolume);
                 }
                 else
                 {
                     GameOptions.Instance.musicMuted = true;
+                    SoundsController.changeEffectsVolume(0.0f);
+                    SoundsController.changeMusicVolume(0.0f);
                 }
                 MenuController.UnloadMenu();
             }

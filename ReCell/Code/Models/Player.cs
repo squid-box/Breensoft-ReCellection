@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Microsoft.Xna.Framework.Graphics;
+using Recellection.Code.Controllers;
 
 namespace Recellection.Code.Models
 {
@@ -29,11 +30,17 @@ namespace Recellection.Code.Models
         public PlayerColour colour {get; private set;}
 
         public Color color { get; private set; }
-
+        public float powerLevel { get; set; }
+        public UnitAccountant unitAcc { get; set; }
+        
+        public Player Enemy { get; set; }
+        
         /// <summary>
         /// The fromBuilding networks owned by a player
         /// </summary>
         private List<Graph> graphs;
+
+        private HashSet<Unit> units;
 
         /// <summary>
         /// The level of upgrades of the player
@@ -51,14 +58,16 @@ namespace Recellection.Code.Models
             this.colour = colour;
 
             this.graphs = new List<Graph>();
+            this.units = new HashSet<Unit>();
         }
 
         public Player(Color color, string name)
         {
             this.name = name;
             this.color = color;
-
+            this.unitAcc = new UnitAccountant(this);
             this.graphs = new List<Graph>();
+            this.units = new HashSet<Unit>();
         }
 
         /// <summary>
@@ -66,9 +75,10 @@ namespace Recellection.Code.Models
         /// </summary>
         public Player()
         {
-            this.name = "John doe";
+            this.name = "Vict0r Turner, aka John Doe";
             this.colour = PlayerColour.PURPLE;
             this.graphs = new List<Graph>();
+            this.unitAcc = new UnitAccountant(this);
         }
 
         /// <summary>
@@ -128,15 +138,44 @@ namespace Recellection.Code.Models
 
         public uint CountUnits()
         {
-            uint retur = 0;
-            foreach (Graph g in graphs)
+            return (uint)units.Count;
+        }
+
+
+        public void AddUnit(Unit u)
+        {
+            lock (units)
             {
-                foreach (Building b in g.GetBuildings())
+                units.Add(u);
+            }
+
+        }
+
+        public void AddUnits(List<Unit> units)
+        {
+            lock (this.units)
+            {
+                this.units.UnionWith(units);
+            }
+        }
+
+        public void RemoveUnit(Unit u)
+        {
+            lock (units)
+            {
+                units.Remove(u);
+            }
+        }
+
+        public void RemoveUnits(List<Unit> units)
+        {
+            lock (units)
+            {
+                foreach(Unit u in units)
                 {
-                    retur += (uint)b.CountUnits();
+                    this.units.Remove(u);
                 }
             }
-            return retur;
         }
     }
 }

@@ -12,6 +12,8 @@ namespace Recellection.Code.Controllers
 {
     class BuildingController
     {
+        public const int MAX_BUILDING_RANGE = 3;
+
         private static Logger logger = LoggerFactory.GetLogger();
         /// <summary>
         /// Let all Aggressive Buildings for the player Acquire Target(s)
@@ -54,9 +56,9 @@ namespace Recellection.Code.Controllers
 
             }
             logger.Trace("Killing " + b.currentTargets.Count + " units.");
-            //UnitController.KillUnits(b.currentTargets, b.currentTargets.Count);
+            //UnitController.MarkUnitsAsDead(b.currentTargets, b.currentTargets.Count);
             b.currentTargets.Clear();
-        }
+        }  
 
         /// <summary>
         /// 
@@ -68,11 +70,22 @@ namespace Recellection.Code.Controllers
             //TODO Somehow present a menu to the player, and then 
             //use the information to ADD (not the document) the fromBuilding.
 
+			MenuIcon baseCell = new MenuIcon(Language.Instance.GetString("BaseCell") + 
+					" (" + player.unitAcc.CalculateBuildingCostInflation(Globals.BuildingTypes.Base)+")", 
+					Recellection.textureMap.GetTexture(Globals.TextureTypes.BaseBuilding), Color.Black);
 
-            MenuIcon baseCell = new MenuIcon(Language.Instance.GetString("BaseCell"), Recellection.textureMap.GetTexture(Globals.TextureTypes.BaseBuilding), Color.Black);
-            MenuIcon resourceCell = new MenuIcon(Language.Instance.GetString("ResourceCell"), Recellection.textureMap.GetTexture(Globals.TextureTypes.ResourceBuilding), Color.Black);
-            MenuIcon defensiveCell = new MenuIcon(Language.Instance.GetString("DefensiveCell"), Recellection.textureMap.GetTexture(Globals.TextureTypes.BarrierBuilding), Color.Black);
-            MenuIcon aggressiveCell = new MenuIcon(Language.Instance.GetString("AggressiveCell"), Recellection.textureMap.GetTexture(Globals.TextureTypes.AggressiveBuilding), Color.Black);
+			MenuIcon resourceCell = new MenuIcon(Language.Instance.GetString("ResourceCell") +
+                    " (" + player.unitAcc.CalculateBuildingCostInflation(Globals.BuildingTypes.Resource) + ")", 
+					Recellection.textureMap.GetTexture(Globals.TextureTypes.ResourceBuilding), Color.Black);
+
+			MenuIcon defensiveCell = new MenuIcon(Language.Instance.GetString("DefensiveCell") +
+                    " (" + player.unitAcc.CalculateBuildingCostInflation(Globals.BuildingTypes.Barrier) + ")", 
+					Recellection.textureMap.GetTexture(Globals.TextureTypes.BarrierBuilding), Color.Black);
+
+			MenuIcon aggressiveCell = new MenuIcon(Language.Instance.GetString("AggressiveCell") +
+                    " (" + player.unitAcc.CalculateBuildingCostInflation(Globals.BuildingTypes.Aggressive) + ")", 
+					Recellection.textureMap.GetTexture(Globals.TextureTypes.AggressiveBuilding), Color.Black);
+				
             List<MenuIcon> menuIcons = new List<MenuIcon>();
             menuIcons.Add(baseCell);
             menuIcons.Add(resourceCell);
@@ -105,24 +118,51 @@ namespace Recellection.Code.Controllers
 
 
             // If we have selected a tile, and we can place a building at the selected tile...					
-
-                if (!BuildingController.AddBuilding(Building, sourceBuilding,
+            try
+            {
+                if (!AddBuilding(Building, sourceBuilding,
                         constructTile.position, theWorld, player))
                 {
                     Sounds.Instance.LoadSound("Denied").Play();
-                }         
+                }
+            }
+            catch (BuildingOutOfRangeException bore)
+            {
+                throw bore;
+            }
+        }
 
+        public class BuildingOutOfRangeException : Exception
+        {
+            private static string msg = "Your source building is out of range";
 
+            public BuildingOutOfRangeException()
+                : base(msg)
+            {
+            }
         }
 
         /// <summary>
-        /// 
+        /// Returns two points with the interval of wich the building can be built in.
+        /// The points is returned inclusively, both points are valid coordinates. 
         /// </summary>
-        /// <param name="player"></param>
-        public static void RazeBuilding(Player player, Tile constructTile, Building sourceBuilding)
+        /// <param name="sourceBuildingPosition"></param>
+        /// <param name="world"></param>
+        /// <returns>First in the list is the upperLeft point and the last is the lowerRight point.</returns>
+        public static List<Point> GetValidBuildingInterval(Vector2 sourceBuildingPosition, World world)
         {
-            logger.Trace("Razing a building for a player");
+            List<Point> retur = new List<Point>(2);
+            Point upperLeft = new Point(
+                (int)MathHelper.Clamp(sourceBuildingPosition.X - MAX_BUILDING_RANGE, 0, world.GetMap().width),
+                (int)MathHelper.Clamp(sourceBuildingPosition.Y - MAX_BUILDING_RANGE, 0, world.GetMap().height));
+            Point lowerRight = new Point(
+                (int)MathHelper.Clamp(sourceBuildingPosition.X + MAX_BUILDING_RANGE, 0, world.GetMap().width),
+                (int)MathHelper.Clamp(sourceBuildingPosition.Y + MAX_BUILDING_RANGE, 0, world.GetMap().height));
 
+            retur.Add(upperLeft);
+            retur.Add(lowerRight);
+
+            return retur;
         }
 
         /// <summary>
@@ -136,12 +176,17 @@ namespace Recellection.Code.Controllers
         public static bool AddBuilding(Globals.BuildingTypes buildingType,
             Building sourceBuilding, Vector2 targetCoordinate, World world, Player owner)
         {
-            uint price = CalculateBuildingCostInflation(buildingType,owner);
+            if (sourceBuilding != null && buildingType != Globals.BuildingTypes.Base && (Math.Abs(((int)sourceBuilding.position.X) - targetCoordinate.X) > MAX_BUILDING_RANGE || (Math.Abs(((int)sourceBuilding.position.X) - targetCoordinate.X) > MAX_BUILDING_RANGE)))
+            {
+                throw new BuildingOutOfRangeException();
+            }
+            uint price = owner.unitAcc.CalculateBuildingCostInflation(buildingType);
             if (sourceBuilding != null && (uint)sourceBuilding.CountUnits() < price)
             {
                 return false;
             }
             
+            logger.Info("Building a building at position "+targetCoordinate+" of "+buildingType+".");
             
             lock (owner.GetGraphs())
             {
@@ -182,21 +227,19 @@ namespace Recellection.Code.Controllers
                                 (int)targetCoordinate.X, (int)targetCoordinate.Y, sourceBuilding.owner,
                                 GraphController.Instance.GetGraph(sourceBuilding).baseBuilding, controlZone);
                             break;
-
                     }
 
                     world.map.GetTile((int)targetCoordinate.X, (int)targetCoordinate.Y).SetBuilding(newBuilding);
                     GraphController.Instance.AddBuilding(sourceBuilding, newBuilding);
-
                 }
                 if (sourceBuilding != null)
                 {
                     logger.Info("The building has " + sourceBuilding.CountUnits() + " and the building costs " + price);
-                    UnitController.KillUnits(sourceBuilding.units, (int)price);
+                    owner.unitAcc.DestroyUnits(sourceBuilding.units, (int)price);
                     logger.Info("The source building only got " + sourceBuilding.CountUnits() + " units left.");
                 }
 
-                Sounds.Instance.LoadSound("buildingPlacement").Play();
+				Sounds.Instance.LoadSound("buildingPlacement").Play();
             }
             return true;
         }
@@ -250,36 +293,15 @@ namespace Recellection.Code.Controllers
         /// <param name="b">The buiding to remove.</param>
         public static void RemoveBuilding(Building b)
         {
-            GraphController.Instance.RemoveBuilding(b);
+			GraphController.Instance.RemoveBuilding(b);
+			lock (b.controlZone)
+			{
+				b.controlZone.First().RemoveBuilding();
+			}
         }
-
-        /// <summary>
-        /// The increese in cost is 50% extra for each building of that type built.
-        /// </summary>
-        /// <param name="type"></param>
-        /// <param name="payer">The player this building is built for</param>
-        /// <returns>The cost when considering the price inflation</returns>
-        public static uint CalculateBuildingCostInflation(Globals.BuildingTypes type, Player payer)
-        {
-            uint defaultCost = Building.GetBuyPrice(type);
-            uint buildingCount = payer.CountBuildingsOfType(type);
-            return (uint)(defaultCost + (buildingCount * buildingCount * defaultCost / 2));
-
-        }
-
 
         public static void HurtBuilding(Building toHurt, World theWorld)
         {
-            /*toHurt.Damage(1);
-
-            if (!toHurt.IsAlive())
-            {
-                RemoveBuilding(toHurt);
-            }
-            lock (theWorld)
-            {
-                //theWorld.GetMap().GetTile((int)toHurt.position.X, (int)toHurt.position.Y).RemoveBuilding();
-            }*/
             HurtBuilding(toHurt);
         }
         public static void HurtBuilding(Building toHurt)
@@ -289,11 +311,6 @@ namespace Recellection.Code.Controllers
             if (!toHurt.IsAlive())
             {
                 RemoveBuilding(toHurt);
-                lock (toHurt.controlZone)
-                {
-                    toHurt.controlZone.First().RemoveBuilding();
-                    //theWorld.GetMap().GetTile((int)toHurt.position.X, (int)toHurt.position.Y).RemoveBuilding();
-                }
             }
             
         }

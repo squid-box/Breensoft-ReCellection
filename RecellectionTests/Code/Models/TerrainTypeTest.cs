@@ -15,7 +15,7 @@ namespace Recellection.Code.Models
         public void init()
         {
             tp1 = new TerrainType();
-            tp2 = new TerrainType(Globals.TextureTypes.Infected);
+            tp2 = new TerrainType(Globals.TerrainTypes.Infected);
         }
 
         [Test]
@@ -23,7 +23,7 @@ namespace Recellection.Code.Models
         {
             Assert.AreEqual(Globals.TextureTypes.Membrane, tp1.GetEnum());
             Assert.AreNotEqual(Globals.TextureTypes.Infected, tp1.GetEnum());
-            tp1.setType(Globals.TextureTypes.Slow);
+            tp1.setType(Globals.TerrainTypes.Slow);
             Assert.AreEqual(Globals.TextureTypes.Slow, tp1.GetEnum());
         }
 

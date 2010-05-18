@@ -28,7 +28,7 @@ namespace Recellection.Code.Main
 		{
 			logger.Debug("Initializer is running.");
 
-			#region Show main menu. TODO: Make a real menu.
+			#region Build main menu
 			MenuIcon newgame = new MenuIcon("New game", null, Color.Black);
 			MenuIcon options = new MenuIcon("Options", null, Color.Black);
 			MenuIcon help = new MenuIcon("Help", null, Color.Black);
@@ -49,7 +49,7 @@ namespace Recellection.Code.Main
 			#endregion
 
             ShowSplashScreen();
-
+            
 			Cue backgroundSound = Sounds.Instance.LoadSound("Menu");
 			backgroundSound.Play();
 			Recellection.CurrentState = view;

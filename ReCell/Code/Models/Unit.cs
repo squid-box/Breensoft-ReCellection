@@ -24,11 +24,23 @@ namespace Recellection.Code.Models
         public Vector2 targetPosition { get; set; }   // Target coordinate
 		private Entity targetEntity;     // Target entity
         public Entity rallyPoint { get; set; }		// Target to fall back to if the primary target disappears. Also acts as center of dispersion
-        
+        public float rallyDistance { get; set; }
+        private readonly static Texture2D UNIT_TEXTURE = Recellection.textureMap.GetTexture(Globals.TextureTypes.Unit);
         public bool isDispersed { get; set; }         // Whether or not this unit should recieve a new target from the dispersion procedure
 		public bool hasArrived { get { return (targetPosition.X == NO_TARGET && targetPosition.Y == NO_TARGET); } }
         public bool isDead { get; set; }              // Status of unit
-        public float powerLevel { get; set; }
+        public float powerLevel;
+        public float PowerLevel
+        {
+            get
+            {
+                return powerLevel + owner.powerLevel;
+            }
+            set
+            {
+                powerLevel = value;
+            }
+        }
         private static World world;
 
 		private Random rand;
@@ -74,6 +86,7 @@ namespace Recellection.Code.Models
         public Unit(Player owner, Vector2 position, Entity target) : base(position, owner)
         {
 			this.rallyPoint = target;
+			this.rallyDistance = 1.5f;
             this.position = position;
             this.targetPosition = new Vector2(NO_TARGET, NO_TARGET);
             this.angle = 0;
@@ -82,6 +95,7 @@ namespace Recellection.Code.Models
             this.owner = owner;
             this.rand = new Random(id++);
             world.GetMap().GetTile((int)position.X, (int)position.Y).AddUnit(this);
+            world.AddUnit(this);
         }
 
         #endregion
@@ -107,7 +121,7 @@ namespace Recellection.Code.Models
 				
 				targetEntity = value;
 
-				if (targetEntity is Building)
+				if (targetEntity is Building && targetEntity.owner == this.owner)
 				{
 					((Building)targetEntity).incomingUnits.Add(this);
 				}
@@ -122,23 +136,35 @@ namespace Recellection.Code.Models
         /// <returns>Texture of this unit.</returns>
         public override Texture2D GetSprite()
         {
-            return Recellection.textureMap.GetTexture(Globals.TextureTypes.Unit);
+            return UNIT_TEXTURE;
         }
         
         public void Kill()
         {
+			if (this.PowerLevel >= rand.NextDouble())
+			{
+				// We survive! WOO!
+				return;
+			}
+			
             this.isDead = true;
+            UnitController.MarkUnitAsDead(this);
+        }
+        
+        public void RemoveFromWorld()
+		{
 			world.GetMap().GetTile((int)position.X, (int)position.Y).RemoveUnit(owner, this);
+			world.RemoveUnit(this);
 			callRainCheckOnTarget();
-            if (rallyPoint != null && rallyPoint is Building)
-            {
+			if (rallyPoint != null && rallyPoint is Building)
+			{
 				((Building)rallyPoint).RemoveUnit(this);
-            }
+			}
         }
         
         private void callRainCheckOnTarget()
         {
-			if (targetEntity is Building)
+			if (targetEntity is Building && targetEntity.owner == this.owner)
 			{
 				((Building)targetEntity).incomingUnits.Remove(this);
 			}
@@ -168,10 +194,19 @@ namespace Recellection.Code.Models
 			{
 				// We will wander around our rallyPoint
 				isDispersed = false;
-                //The Floor is to makes sure that the entity does not have an offset for its position (like buildings who have 0.25)
-                //Then add 0.5 to end up in the middle of the tile and last the random should random a number between -1.3 to 1.3
-				return new Vector2(((float)Math.Floor(rallyPoint.position.X))+ 0.5f + ((float)rand.NextDouble() * 2.6f - 1.3f ),
-                                   ((float)Math.Floor(rallyPoint.position.Y))+ 0.5f + ((float)rand.NextDouble() * 2.6f - 1.3f));
+				
+				if (Vector2.Distance(rallyPoint.position, this.position) > rallyDistance)
+				{
+					TargetEntity = rallyPoint;
+					return rallyPoint.position;
+				}
+				else
+				{
+					double angle = rand.NextDouble() * 2 * Math.PI;
+					double distance = rand.NextDouble() * (double)rallyDistance;
+
+					return rallyPoint.position + (new Vector2((float)(Math.Cos(angle) * distance), (float)(Math.Sin(angle) * distance)));
+				}
 			}
 			else
 			{
@@ -184,9 +219,8 @@ namespace Recellection.Code.Models
 		/// </summary>
 		private void Move(float deltaTime)
 		{
-			int x = (int)this.position.X;
-			int y = (int)this.position.Y;
-			Unit.world.map.GetTile(x, y).RemoveUnit(this);
+			int beforeX = (int)this.position.X;
+			int beforeY = (int)this.position.Y;
 
             Vector2 direction = Vector2.Subtract(this.targetPosition, this.position);
             direction.Normalize();
@@ -221,12 +255,16 @@ namespace Recellection.Code.Models
                     position = new Vector2(position.X, newY);
                 }
 			}
+			
+			int afterX = (int)this.position.X;
+			int afterY = (int)this.position.Y;
 
 			// Tile management!
-
-			x = (int)this.position.X;
-			y = (int)this.position.Y;
-			Unit.world.map.GetTile(x, y).AddUnit(this);
+			if (afterX != beforeX || afterY != beforeY)
+			{
+				Unit.world.map.GetTile(beforeX, beforeY).RemoveUnit(this);
+				Unit.world.map.GetTile(afterX, afterY).AddUnit(this);
+			}
 		}
 
 		virtual protected bool stopMovingIfGoalIsReached()
@@ -240,32 +278,7 @@ namespace Recellection.Code.Models
 			{
 				if (TargetEntity != null)
 				{
-					// If it's a home-fromBuilding, we disperse around it :)
-					if ( TargetEntity is Building && ((Building)TargetEntity).IsAlive() && TargetEntity.owner == this.owner)
-					{
-						// We will now recieve new positions within a radius of our secondary target.
-						this.rallyPoint = TargetEntity;
-						((Building)targetEntity).AddUnit(this);
-						isDispersed = true;
-					}
-					
-					// If this is an enemy! KILL IT! OMG
-					if (TargetEntity.owner != this.owner)
-					{
-						if (TargetEntity is Unit && ! ((Unit)TargetEntity).isDead)
-						{
-							this.Kill();
-							((Unit)TargetEntity).Kill();
-							SoundsController.playSound("Celldeath", this.position);
-						}
-						else if (TargetEntity is Building && ((Building)TargetEntity).IsAlive())
-						{
-							this.Kill();
-							BuildingController.HurtBuilding((Building)TargetEntity);
-							SoundsController.playSound("Celldeath", this.position);
-						}
-					}
-					
+					ActOnTargetEntity();
 					TargetEntity = null;
 				}
 				
@@ -284,22 +297,36 @@ namespace Recellection.Code.Models
 				return false;
 			}
 		}
-		
-        /// <summary>
-        /// Modify or set a new powerlevel for this unit.
-        /// </summary>
-        /// <param name="newPowerLevel">Default should be one, set a new value as 1.1 for a 10% powerbonus.</param>
-        public void SetPowerLevel(float newPowerLevel)
-        {
-            powerLevel = newPowerLevel;
-        }
         
-        /// <returns>
-        /// Powerlevel of this unit.
-        /// </returns>
-        public float GetPowerLevel()
+        private void ActOnTargetEntity()
         {
-            return powerLevel;
+			if (TargetEntity.owner == this.owner)
+			{
+				// If it's a home-fromBuilding, we disperse around it :)
+				if (TargetEntity is Building && ((Building)TargetEntity).IsAlive())
+				{
+					// We will now recieve new positions within a radius of our secondary target.
+					rallyPoint = TargetEntity;
+					rallyDistance = 1.5f;
+					((Building)targetEntity).AddUnit(this);
+					isDispersed = true;
+				}
+			}
+			else // If this is an enemy! KILL IT! OMG				
+			{
+				if (TargetEntity is Unit && !((Unit)TargetEntity).isDead)
+				{
+					this.Kill();
+					((Unit)TargetEntity).Kill();
+					SoundsController.playSound("Celldeath", this.position);
+				}
+				else if (TargetEntity is Building && ((Building)TargetEntity).IsAlive())
+				{
+					this.Kill();
+					BuildingController.HurtBuilding((Building)TargetEntity);
+					SoundsController.playSound("Celldeath", this.position);
+				}
+			}
         }
         
         public bool isPatrolling()
