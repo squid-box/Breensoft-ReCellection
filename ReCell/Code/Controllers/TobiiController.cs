@@ -196,9 +196,9 @@ namespace Recellection
             //}
             //else
             //{
-            //    List<WindowBoundInteractionRegionIdentifier> temp = new List<WindowBoundInteractionRegionIdentifier>();
-            //    temp.Add(newRegion.RegionIdentifier);
-            //    regionCategories.Add(regionID, temp);
+            //    List<WindowBoundInteractionRegionIdentifier> human = new List<WindowBoundInteractionRegionIdentifier>();
+            //    human.Add(newRegion.RegionIdentifier);
+            //    regionCategories.Add(regionID, human);
             //}
 
             try

@@ -211,9 +211,8 @@ namespace Recellection.Code.Models
 		/// </summary>
 		private void Move(float deltaTime)
 		{
-			int x = (int)this.position.X;
-			int y = (int)this.position.Y;
-			Unit.world.map.GetTile(x, y).RemoveUnit(this);
+			int beforeX = (int)this.position.X;
+			int beforeY = (int)this.position.Y;
 
             Vector2 direction = Vector2.Subtract(this.targetPosition, this.position);
             direction.Normalize();
@@ -248,12 +247,16 @@ namespace Recellection.Code.Models
                     position = new Vector2(position.X, newY);
                 }
 			}
+			
+			int afterX = (int)this.position.X;
+			int afterY = (int)this.position.Y;
 
 			// Tile management!
-
-			x = (int)this.position.X;
-			y = (int)this.position.Y;
-			Unit.world.map.GetTile(x, y).AddUnit(this);
+			if (afterX != beforeX || afterY != beforeY)
+			{
+				Unit.world.map.GetTile(beforeX, beforeY).RemoveUnit(this);
+				Unit.world.map.GetTile(afterX, afterY).AddUnit(this);
+			}
 		}
 
 		virtual protected bool stopMovingIfGoalIsReached()
