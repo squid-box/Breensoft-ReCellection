@@ -64,12 +64,12 @@ namespace Recellection.Code.Controllers
 
         public static void changeMusicVolume(float percentage)
         {
-            Sounds.Instance.GetCategory("music").SetVolume(percentage);
+            Sounds.Instance.GetCategory("Music").SetVolume(percentage);
         }
 
         public static void changeEffectsVolume(float percentage)
         {
-            Sounds.Instance.GetCategory("effects").SetVolume(percentage);
+            Sounds.Instance.GetCategory("Effects").SetVolume(percentage);
         }
     }
 }
