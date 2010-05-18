@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using Microsoft.Xna.Framework;
 using Recellection.Code.Models;
+using Recellection.Code.Utility.Logger;
 
 /*
  * The AI View keeps track of things relevant for the AI Player.
@@ -15,13 +16,22 @@ namespace Recellection.Code
 {
     class AIView
     {
-        private Player ai;
-        internal World world;
-        internal List<Building> myBuildings { get; private set; }
-        internal List<Vector2> roamingUnits { get; private set; }
-        internal int mapHeight;
-        internal int mapWidth;
 
+        //############## Variables ##############//
+
+        private Player ai;
+        private Logger log;
+
+        internal World world { get; private set; }
+        internal List<Building> myBuildings { get; private set; }
+        internal List<Player> opponents { get; private set; }
+        internal List<Vector2> interrestPoints { get; private set; }
+        internal List<Vector2> enemyPoints { get; private set; }
+        internal int mapHeight { get; private set; }
+        internal int mapWidth { get; private set; }
+
+
+        //############## Construction ##############//
 
         /// <summary>
         /// Constructor.
@@ -29,11 +39,19 @@ namespace Recellection.Code
         /// <param name="p_world"></param>
         public AIView(World p_world)
         {
+            log = Utility.Logger.LoggerFactory.GetLogger();
+            //LoggerFactory.globalThreshold = LogLevel.FATAL;
+
             world = p_world;
             mapHeight = world.GetMap().map.GetLength(1);
             mapWidth = world.GetMap().map.GetLength(0);
+
             myBuildings = new List<Building>();
-            roamingUnits = new List<Vector2>(); //A list of all units not located at a fromBuilding.
+
+            opponents = world.players; //Remove the AI player when it has called RegisterPlayer
+
+            interrestPoints = new List<Vector2>();
+            enemyPoints = new List<Vector2>();
         }
 
         /// <summary>
@@ -41,48 +59,48 @@ namespace Recellection.Code
         /// of who it is making calls for.
         /// </summary>
         /// <param name="p"></param>
-        internal void registerPlayer(Player p)
+        internal void RegisterPlayer(Player p)
         {
             ai = p;
+            opponents.Remove(ai);
         }
+
+
+        //############## Logic functions ##############//
 
         /// <summary>
-        /// Returns the Tile located in the given coordinates provided that it is visible.
-        /// If it is not visible, null is returned.
+        /// The AI takes a look at all the tiles it can see (everything as of2010-05-16) and
+        /// looks for enemy buildings and resource points.
         /// </summary>
-        /// <param name="coords"></param>
-        /// <returns></returns>
-        internal Tile getTileAt(Vector2 coords)
+        internal void LookAtScreen()
         {
-            if(!valid(coords))
+            for (int i = 0; i < mapWidth; i++)
             {
-                throw new NullReferenceException();
+                for (int j = 0; j < mapHeight; j++)
+                {
+                    Tile temp = world.GetMap().GetTile(i,j);
+                    if (Valid(temp.GetPosition()))
+                    {
+                        if (ContainsResourcePoint(temp))
+                        {
+                            interrestPoints.Add(temp.GetPosition());
+                        }
+                        if (ContainsEnemyBuilding(temp))
+                        {
+                            enemyPoints.Add(temp.GetPosition());
+                        }
+                        if (ContainsFriendlyBuilding(temp.GetPosition()))
+                        {
+                            myBuildings.Add(temp.GetBuilding());
+                        }
+                    }
+                }
             }
-            Tile tempTile = world.GetMap().GetTile((int)coords.X, (int)coords.Y);
-
-            ///* Uncomment when fog of war is properly implemented
-            //if (tempTile.IsVisible(ai))
-            //{
-            //    return tempTile;
-            //}
-            
-            return tempTile;
         }
 
 
-        /// <summary>
-        /// Returns true if the coordinates provided are within the maps boundaries
-        /// </summary>
-        /// <param name="coords"></param>
-        /// <returns></returns>
-        private bool valid(Vector2 coords)
-        {
-            if (coords.X < mapWidth && coords.Y < mapHeight)
-            {
-                return true;
-            }
-            return false;
-        }
+        //############## Utility functions ##############//
+
 
 
         /// <summary>
@@ -93,7 +111,7 @@ namespace Recellection.Code
         /// <returns></returns>
         internal bool ContainsResourcePoint(Vector2 current)
         {
-            Tile tempTile = getTileAt(current);
+            Tile tempTile = GetTileAt(current);
             return ContainsResourcePoint(tempTile);
         }
 
@@ -104,25 +122,13 @@ namespace Recellection.Code
         /// <returns></returns>
         internal bool ContainsResourcePoint(Tile current)
         {
-            if (current.GetTerrainType().getResourceModifier() > 0)
+            if (current.GetTerrainType().getResourceModifier() == 12)
             {
                 return true;
             }
             return false;
         }
-
-
-
-        /// <summary>
-        /// Returns the fromBuilding at the given coordinates provided that it is visible.
-        /// </summary>
-        /// <param name="point"></param>
-        /// <returns></returns>
-        internal Building GetBuildingAt(Vector2 point)
-        {
-            return getTileAt(point).GetBuilding();
-        }
-
+       
         /// <summary>
         /// Checks whether or not the given coordinates contains a friendly building.
         /// </summary>
@@ -130,26 +136,12 @@ namespace Recellection.Code
         /// <returns></returns>
         internal bool ContainsFriendlyBuilding(Vector2 point)
         {
-            Tile temp = getTileAt(point);
+            Tile temp = GetTileAt(point);
             if (temp != null && temp.GetBuilding() != null && temp.GetBuilding().GetOwner() == ai)
             {
                 return true;
             }
             return false;
-        }
-
-        /// <summary>
-        /// Returns the coordinates of all the friendly buildings
-        /// </summary>
-        /// <returns></returns>
-        internal List<Vector2> GetFriendlyBuildings()
-        {
-            List<Vector2> coordinates = new List<Vector2>();
-            for (int i = 0; i < myBuildings.Count; i++)
-            {
-                coordinates.Add(myBuildings[i].position);
-            }
-            return coordinates;
         }
 
         /// <summary>
@@ -164,6 +156,20 @@ namespace Recellection.Code
                 return false;
             }
             if (t.GetBuilding().GetOwner() != ai)
+            {
+                return true;
+            }
+            return false;
+        }
+
+        /// <summary>
+        /// Returns true if the coordinates provided are within the maps boundaries
+        /// </summary>
+        /// <param name="coords"></param>
+        /// <returns></returns>
+        internal bool Valid(Vector2 coords)
+        {
+            if (coords.X < mapWidth && coords.Y < mapHeight)
             {
                 return true;
             }
@@ -191,6 +197,66 @@ namespace Recellection.Code
                 return null;
             }
         }
+
+
+
+        //############## Getter functions ##############//
+
+
+        /// <summary>
+        /// Returns the list of interrest points currently held.
+        /// </summary>
+        /// <returns></returns>
+        internal List<Vector2> GetInterrestPoints()
+        {
+            return interrestPoints;
+        }
+
+        /// <summary>
+        /// Returns the Tile located in the given coordinates provided that it is visible.
+        /// If it is not visible, null is returned.
+        /// </summary>
+        /// <param name="coords"></param>
+        /// <returns></returns>
+        internal Tile GetTileAt(Vector2 coords)
+        {
+            //log.Fatal("Accessing Tile at "+coords.X+","+coords.Y);
+            Tile tempTile = world.GetMap().GetTile((int)coords.X, (int)coords.Y);
+
+            ///* Uncomment when fog of war is properly implemented
+            //if (tempTile.IsVisible(ai))
+            //{
+            //    return tempTile;
+            //}
+
+            return tempTile;
+        }
+
+        /// <summary>
+        /// Returns the fromBuilding at the given coordinates provided that it is visible.
+        /// </summary>
+        /// <param name="point"></param>
+        /// <returns></returns>
+        internal Building GetBuildingAt(Vector2 point)
+        {
+            return GetTileAt(point).GetBuilding();
+        }
+
+        /// <summary>
+        /// Returns the coordinates of all the friendly buildings
+        /// </summary>
+        /// <returns></returns>
+        internal List<Vector2> GetFriendlyBuildings()
+        {
+            List<Vector2> coordinates = new List<Vector2>();
+            for (int i = 0; i < myBuildings.Count; i++)
+            {
+                coordinates.Add(myBuildings[i].position);
+            }
+            return coordinates;
+        }
+
+
 
     }
 }

@@ -17,9 +17,6 @@ namespace Recellection.Code.Controllers
          * Variables
          */
         private AIView m_view;
-        private List<Player> m_opponents;
-        private List<Vector2> m_interrestPoints;
-        private List<Vector2> m_enemyPoints;
         private int distanceThreshold;
         private Random randomFactory;
         private Logger log;
@@ -31,16 +28,31 @@ namespace Recellection.Code.Controllers
         /// </summary>
         /// <param name="opponents"></param>
         /// <param name="view"></param>
+        [Obsolete("parameter opponents no longer needed. Overloaded constructor exists.")]
         public AIPlayer(List<Player> opponents, AIView view, Color c)
             : base(c, "AIPLAYER")
         {
             log = Utility.Logger.LoggerFactory.GetLogger();
             randomFactory = new Random();
             m_view = view;
-            m_opponents = opponents;
-            m_interrestPoints = new List<Vector2>();
-            m_enemyPoints = new List<Vector2>();
-            view.registerPlayer(this);
+
+            view.RegisterPlayer(this);
+            distanceThreshold = 3; //Arbitrary number at the moment
+        }
+
+        /// <summary>
+        /// Constructor. The AIPlayer requires only an AIView in addition to the parameters needed for a regular Player.
+        /// </summary>
+        /// <param name="view"></param>
+        [Obsolete("parameter opponents no longer needed. Overloaded constructor exists.")]
+        public AIPlayer(AIView view, Color c)
+            : base(c, "AIPLAYER")
+        {
+            log = Utility.Logger.LoggerFactory.GetLogger();
+            randomFactory = new Random();
+            m_view = view;
+
+            view.RegisterPlayer(this);
             distanceThreshold = 3; //Arbitrary number at the moment
         }
 
@@ -50,17 +62,45 @@ namespace Recellection.Code.Controllers
         /// </summary>
         public void MakeMove()
         {
-            log.Info("AI Making a Move.");
+            log.Fatal("AI Making a Move.");
 
-            if (m_enemyPoints.Count == 0 || m_interrestPoints.Count == 0)
+            m_view.LookAtScreen(); //Have the AI View update the local variables
+
+            //Relevant if fog of war is implemented, currently replaced by LookAtScreen
+            //if (m_view.enemyPoints.Count == 0 || m_view.interrestPoints.Count == 0)
+            //{
+                //Explore();
+            //}
+
+            
+            IterateInterrestPoints();
+
+            for (int i = 0; i < m_view.enemyPoints.Count; i++)
             {
-                Explore();
-                //CHEAT!
-                LookAtScreen();
+                Vector2 current = m_view.enemyPoints[i];
+                EvaluateEnemyPoint(current);
             }
-            for (int i = 0; i < m_interrestPoints.Count; i++)
+        }
+
+        /// <summary>
+        /// Takes a look at the newest revision of the interresPoints and iterates over them,
+        /// then making appropriate calls to game controllers.
+        /// </summary>
+        private void IterateInterrestPoints()
+        {
+            List<Vector2> interrestPoints = m_view.GetInterrestPoints();
+
+            for (int i = 0; i < interrestPoints.Count; i++)
             {
-                Vector2 current = m_interrestPoints[i];
+                Vector2 current = interrestPoints[i];
+
+                //HACK! Invalid coords should not be added to the list in the first place.
+                //Suspect that LookAtScreen is incorrect.
+                if (!m_view.Valid(current))
+                {
+                    log.Fatal("erroneous point " + current.X + "," + current.Y);
+                    continue;
+                }
 
                 if (m_view.ContainsResourcePoint(current))
                 {
@@ -71,55 +111,9 @@ namespace Recellection.Code.Controllers
                     CalculateWeight(m_view.GetBuildingAt(current));
                 }
             }
-
-            for (int i = 0; i < m_enemyPoints.Count; i++)
-            {
-                Vector2 current = m_enemyPoints[i];
-                Vector2 nearby = GetClosestPointFromList(current, m_view.GetFriendlyBuildings());
-
-                if (Vector2.Distance(current, nearby) > distanceThreshold)
-                {
-                    nearby = CalculatePointNear(current); //Find a good spot to go to
-                    m_interrestPoints[m_interrestPoints.Count-1] = nearby; //And add it to the todo-list
-                }
-                else //"nearby" is close enough.
-                {
-                    if (m_view.ContainsFriendlyBuilding(nearby))
-                    {
-                        CalculateWeight(m_view.GetBuildingAt(nearby));
-                    }
-                }
-            }
         }
 
 
-        /// <summary>
-        /// The AI takes a look at all the tiles it can see (2010-05-16 everything) and
-        /// looks for enemy buildings and resource points.
-        /// </summary>
-        private void LookAtScreen()
-        {
-            Tile[,] wMap = m_view.world.GetMap().map;
-            Tile temp;
-            for (int i = 0; i < m_view.mapWidth; i++)
-            {
-                for (int j = 0; j < m_view.mapHeight; j++)
-                {
-                    temp = wMap[i, j];
-                    if(m_view.ContainsResourcePoint(temp)){
-                        m_interrestPoints.Add(temp.GetPosition());
-                    }
-                    if (m_view.ContainsEnemyBuilding(temp))
-                    {
-                        m_enemyPoints.Add(temp.GetPosition());
-                    }
-                    if (m_view.ContainsFriendlyBuilding(temp.GetPosition()))
-                    {
-                        m_view.myBuildings.Add(temp.GetBuilding());
-                    }
-                }
-            }
-        }
 
         /// <summary>
         /// Returns the point in the given list that is closest to the given point.
@@ -144,7 +138,7 @@ namespace Recellection.Code.Controllers
 
 
         /// <summary>
-        /// Decides what the weight should be at the given fromBuilding
+        /// Decides what the weight should be at the given building
         /// </summary>
         /// <param name="fromBuilding"></param>
         private void CalculateWeight(Building building)
@@ -154,12 +148,17 @@ namespace Recellection.Code.Controllers
                 throw new NullReferenceException();
             }
             int friendly = unitCountAt(building.position, this);
-            int enemy = unitCountAt(GetClosestPointFromList(building.position, m_enemyPoints), m_opponents[0]);
+            int enemy = unitCountAt(GetClosestPointFromList(building.position, m_view.enemyPoints), m_view.opponents[0]);
             int diff = enemy - friendly;
             if (diff > 0) //more enemy units than friendly
             {
                 int weight = GraphController.Instance.GetWeight(building);
                 GraphController.Instance.SetWeight(building, weight + (diff / 2)); //increase the weight by the difference in units / 2
+            }
+            else
+            {
+                int weight = GraphController.Instance.GetWeight(building);
+                GraphController.Instance.SetWeight(building, weight + diff); //decrease the weight by the difference in units
             }
         }
 
@@ -168,13 +167,13 @@ namespace Recellection.Code.Controllers
         /// </summary>
         private void Explore()
         {
-            log.Info("AI Exploring.");
+            log.Fatal("AI Exploring.");
             int scoutSize = 10;
 
             //Take the units from the base fromBuilding
             Building bb = GetGraphs()[0].baseBuilding;
 
-            Tile source = m_view.getTileAt(bb.GetPosition());
+            Tile source = m_view.GetTileAt(bb.GetPosition());
             if (source == null)
             {
                 return;
@@ -182,13 +181,13 @@ namespace Recellection.Code.Controllers
             }
 
             //Move the units to some location at the other end of the map
-            Tile dest = m_view.getTileAt(randomPointAtOppositeQuadrant());
+            Tile dest = m_view.GetTileAt(randomPointAtOppositeQuadrant());
             if (dest == null)
             {
                 return;
             }
             UnitController.MoveUnits(scoutSize, source, dest);
-            log.Info("AI moved units to " + dest.GetPosition().X + "," + dest.GetPosition().Y);
+            log.Fatal("AI moved units to " + dest.GetPosition().X + "," + dest.GetPosition().Y);
         }
 
 
@@ -313,6 +312,29 @@ namespace Recellection.Code.Controllers
         }
 
 
+        /// <summary>
+        /// Decides what to do with the given enemy point
+        /// </summary>
+        /// <param name="current"></param>
+        private void EvaluateEnemyPoint(Vector2 current)
+        {
+            Vector2 nearby = GetClosestPointFromList(current, m_view.GetFriendlyBuildings());
+
+            if (Vector2.Distance(current, nearby) > distanceThreshold)
+            {
+                nearby = CalculatePointNear(current); //Find a good spot to go to
+                m_view.interrestPoints[m_view.interrestPoints.Count - 1] = nearby; //And add it to the todo-list
+            }
+            else //"nearby" is close enough.
+            {
+                if (m_view.ContainsFriendlyBuilding(nearby))
+                {
+                    CalculateWeight(m_view.GetBuildingAt(nearby));
+                }
+            }
+        }
+
+
 
 
         /// <summary>
@@ -323,7 +345,7 @@ namespace Recellection.Code.Controllers
         /// <returns></returns>
         private bool CanHoldPoint(Vector2 point)
         {
-            if (unitCountAt(point, this) > (unitCountAt(point, m_opponents[0]) + unitCountAt(GetClosestPointFromList(point, m_enemyPoints), m_opponents[0])))
+            if (unitCountAt(point, this) > (unitCountAt(point, m_view.opponents[0]) + unitCountAt(GetClosestPointFromList(point, m_view.enemyPoints), m_view.opponents[0])))
             {
                 return true;
             }
@@ -338,7 +360,7 @@ namespace Recellection.Code.Controllers
         /// <returns></returns>
         private int unitCountAt(Vector2 point, Player player)
         {
-            return m_view.getTileAt(point).GetUnits(player).ToArray().Length;
+            return m_view.GetTileAt(point).GetUnits(player).ToArray().Length;
         }
 
 
