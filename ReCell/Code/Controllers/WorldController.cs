@@ -207,10 +207,18 @@ namespace Recellection.Code.Controllers
 					return;
 				}
                 Tile selectedTile = map.GetTile(destsel.absPoint);
-				
+
+                //TODO Add a check to see if the tile is a correct one. The diffrence between the selected tiles coordinates and the source building shall not exceed 3.
 				if (selectedTile.GetBuilding() == null)
                 {
-					BuildingController.ConstructBuilding(playerInControll, selectedTile, building, theWorld);
+                    try
+                    {
+                        BuildingController.ConstructBuilding(playerInControll, selectedTile, building, theWorld);
+                    }
+                    catch (BuildingController.BuildingOutOfRangeException bore)
+                    {
+                        //TODO CO DO STUFF HERE.
+                    }
 				}
 				else
 				{
@@ -224,7 +232,7 @@ namespace Recellection.Code.Controllers
             }
             else if (choosenMenu.Equals(upgradeUnits))
             {
-                if (!playerInControll.unitAcc.payAndUpgrade(building))
+                if (!playerInControll.unitAcc.PayAndUpgrade(building))
                 {
                     Sounds.Instance.LoadSound("Denied");
                 }
