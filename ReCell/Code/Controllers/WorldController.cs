@@ -66,6 +66,7 @@ namespace Recellection.Code.Controllers
 			Selection sel = new Selection();
 			sel.state = State.NONE;
 			finished = false;
+            SoundsController.playSound("inGameMusic");
             while (!finished)
             {
 				previousSelection = sel;
@@ -100,7 +101,6 @@ namespace Recellection.Code.Controllers
 					}
 				}
             }
-			//Sounds.Instance.LoadSound("acid").Play();
         }
 
 		public Selection retrieveSelection()
