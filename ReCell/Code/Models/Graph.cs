@@ -145,9 +145,12 @@ namespace Recellection.Code.Models
 		/// <returns>An enumerator for all buildings in the graph.</returns>
 		public IEnumerable<Building> GetBuildings()
 		{
-			foreach(KeyValuePair<Building,int> b in buildings)
+			lock(buildings)
 			{
-				yield return b.Key;
+				foreach(KeyValuePair<Building,int> b in buildings)
+				{
+					yield return b.Key;
+				}
 			}
 		}
 
