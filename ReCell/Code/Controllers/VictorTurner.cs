@@ -88,7 +88,7 @@ namespace Recellection.Code.Controllers
 				logger.Info("Weighting graphs!");
                 foreach (Player player in players)
                 {
-                    gameInitializer.suitGuys[player].ProduceUnits();
+                    player.unitAcc.ProduceUnits();
                 }
 
 				graphControl.CalculateWeights();
