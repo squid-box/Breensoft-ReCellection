@@ -173,7 +173,7 @@ namespace Recellection.Code.Controllers
             MenuIcon removeCell = new MenuIcon(Language.Instance.GetString("RemoveCell"), null, Color.Black);
             MenuIcon upgradeUnits = new MenuIcon(Language.Instance.GetString("UpgradeUnits"), null, Color.Black);
             MenuIcon moveUnits = new MenuIcon(Language.Instance.GetString("MoveUnits"), null, Color.Black);
-            MenuIcon repairCell = new MenuIcon(Language.Instance.GetString("RepairCell"), null, Color.Black);
+            MenuIcon repairCell = new MenuIcon(Language.Instance.GetString("RepairCell") + "(" + playerInControll.unitAcc.getUpgraradeCost() + ")", null, Color.Black);
             MenuIcon Cancel = new MenuIcon(Language.Instance.GetString("Cancel"), null, Color.Black); ;
             List<MenuIcon> menuIcons = new List<MenuIcon>();
             menuIcons.Add(setWeight);
@@ -221,7 +221,10 @@ namespace Recellection.Code.Controllers
             }
             else if (choosenMenu.Equals(upgradeUnits))
             {
-                playerInControll.powerLevel += 0.1f;
+                if (!playerInControll.unitAcc.payAndUpgrade(building))
+                {
+                    Sounds.Instance.LoadSound("Denied");
+                }
             }
             else if (choosenMenu.Equals(moveUnits))
             {
