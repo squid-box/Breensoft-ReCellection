@@ -44,9 +44,9 @@ namespace Recellection.Code.Controllers
             b.AddUnits(units);
         }
 
-        public int getUpgraradeCost()
+        public int getUpgradeCost()
         {
-            if (owner.powerLevel <= 0.6f)
+            if (owner.powerLevel >= 0.6f)
             {
                 return 4711;
             }
@@ -55,11 +55,11 @@ namespace Recellection.Code.Controllers
 
         public bool payAndUpgrade(Building building)
         {
-            if (building.units.Count < getUpgraradeCost() || owner.powerLevel <= 0.6f)
+            if (building.units.Count < getUpgradeCost() || owner.powerLevel >= 0.6f)
             {
                 return false;
             }
-            for (int i = 0; i < getUpgraradeCost(); i++)
+            for (int i = 0; i < getUpgradeCost(); i++)
             {
                 building.RemoveUnit(building.units[0]);
             }
