@@ -59,12 +59,12 @@ namespace Recellection.Code.Controllers
             {
                 return false;
             }
-            destroyUnits(building.units, getUpgradeCost());
+            DestroyUnits(building.units, getUpgradeCost());
             owner.powerLevel += 0.1f;
             return true;
 
         }
-        public void destroyUnits(List<Unit> u, int n)
+        public void DestroyUnits(List<Unit> u, int n)
         {
             UnitController.MarkUnitsAsDead(u, n);
             UnitController.RemoveDeadUnits();
