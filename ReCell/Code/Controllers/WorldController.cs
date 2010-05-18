@@ -238,7 +238,7 @@ namespace Recellection.Code.Controllers
             }
             else if (choosenMenu.Equals(repairCell))
             {
-                playerInControll.unitAcc.destroyUnits(building.units, toHeal);
+                playerInControll.unitAcc.DestroyUnits(building.units, toHeal);
                 building.Repair(toHeal);
             }
             else if (choosenMenu.Equals(Cancel))
