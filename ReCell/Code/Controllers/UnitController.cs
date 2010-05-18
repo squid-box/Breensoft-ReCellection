@@ -18,6 +18,7 @@ namespace Recellection.Code.Controllers
     public class UnitController
     {
 		private static Logger logger = LoggerFactory.GetLogger();
+		private static List<Unit> toBeKilled = new List<Unit>();
 		
         /// <summary>
         /// Move a set of units from one tile to another
@@ -33,7 +34,7 @@ namespace Recellection.Code.Controllers
             bool toBuilding = (to.GetBuilding() != null);
             logger.Debug("Moving "+amount+" units from "+from+" to "+to);
 
-			HashSet<Unit> units;
+			List<Unit> units;
             // If we are moving units from a fromBuilding, they might not
             // all be on the same tile
             if (fromBuilding)
@@ -50,26 +51,29 @@ namespace Recellection.Code.Controllers
 			List<Unit> toBeRemovedFromBuilding = new List<Unit>();
 
 			// Move some units from the targetted tile
-            foreach (Unit u in units)
+            lock (units)
             {
-                if (amount <= 0)
+                foreach (Unit u in units)
                 {
-                    break;
-                }
+                    if (amount <= 0)
+                    {
+                        break;
+                    }
 
-				u.targetPosition = to.position;
-				amount--;
-                
-                if (u.isPatrolling())
-                {
-					logger.Trace("Unit is patrolling! Removing from rotation.");
-                    toBeRemovedFromBuilding.Add(u);
-                }
-                
-                if (toBuilding)
-                {
-					logger.Trace("Adding unit to patrol the 'to' building!");
-					u.TargetEntity = to.GetBuilding();
+                    u.targetPosition = to.position;
+                    amount--;
+
+                    if (u.isPatrolling())
+                    {
+                        logger.Trace("Unit is patrolling! Removing from rotation.");
+                        toBeRemovedFromBuilding.Add(u);
+                    }
+
+                    if (toBuilding)
+                    {
+                        logger.Trace("Adding unit to patrol the 'to' building!");
+                        u.TargetEntity = to.GetBuilding();
+                    }
                 }
             }
             
@@ -90,23 +94,31 @@ namespace Recellection.Code.Controllers
         /// <param name="amount"></param>
         public static void KillUnits(IEnumerable<Unit> units, int amount)
         {
-            logger.Info("Unit Controller has be orderd to assasinate "+amount + " units.");
-			List<Unit> toBeKilled = new List<Unit>();
+            logger.Info("Unit Controller has be ordered to assasinate "+amount + " units.");
             foreach (Unit u in units)
             {
                 if (amount > 0)
                 {
-					toBeKilled.Add(u);
+					KillUnit(u);
 					amount--;
                 }
             }
-            logger.Info("The unit Controller has " + toBeKilled.Count + " units in its list.");
-            foreach(Unit u in toBeKilled)
-            {
-				u.GetPosition();
-                u.Kill();
-			}
         }
+        
+        public static void KillUnit(Unit u)
+        {
+			toBeKilled.Add(u);
+		}
+
+		private static void RemoveDeadUnits()
+		{
+			logger.Info("The unit Controller has " + toBeKilled.Count + " units in its list.");
+			foreach (Unit u in toBeKilled)
+			{
+				u.Kill();
+			}
+			toBeKilled.Clear();
+		}
 
         /// <summary>
         /// Call the update method on each unit causing them to move towards their target.
@@ -115,12 +127,52 @@ namespace Recellection.Code.Controllers
         /// </summary>
         /// <param name="units">The set of units to be updated</param>
         /// <param name="systemTime">The time passed since something</param>
-        public static void Update(IEnumerable<Unit> units, int systemTime)
-        {
-            foreach (Unit u in units)
+        public static void Update(IEnumerable<Unit> units, int systemTime, World.Map worldMap)
+		{
+            lock (units)
             {
-                u.Update(systemTime);
+                foreach (Unit u in units)
+                {
+                    // Try to find enemies for this unit!
+                    FindEnemy(u, worldMap);
+
+                    // Update position
+                    u.Update(systemTime);
+                }
+
+				RemoveDeadUnits();
             }
+        }
+        
+        private static void FindEnemy(Unit u, World.Map worldMap)
+		{
+			if (u.TargetEntity == null
+			 || u.TargetEntity.owner != u.owner)
+			{
+				Tile t = worldMap.GetTile((int)u.position.X, (int)u.position.Y);
+				
+				// Search for units
+                lock (t.GetUnits())
+                {
+                    foreach (Unit ou in t.GetUnits())
+                    {
+                        // Is this an enemy?
+                        if (u.owner != ou.owner)
+                        {
+                            // FIGHT TO THE DEATH!
+                            u.TargetEntity = ou;
+                            return;
+                        }
+                    }
+                }
+				
+				// Is there a building to kill?
+				if (t.GetBuilding() != null && t.GetBuilding().owner != u.owner)
+				{
+					u.TargetEntity = t.GetBuilding();
+					return;
+				}
+			}
         }
     }
 }

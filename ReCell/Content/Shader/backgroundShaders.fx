@@ -22,6 +22,25 @@ float4 Grain(float2 Tex : TEXCOORD0 ) : COLOR0
 
 
 
+
+float4 DiffuseGrain(float2 Tex : TEXCOORD0 ) : COLOR0 
+{
+	float x =  Tex.x * Tex.y * 123456 * Timer;
+	x = fmod(x,13) * fmod(x,123);
+	float dx = fmod(x,0.01);
+	float dy = fmod(x,0.01);
+	float4 color = tex2D(ScreenS, Tex + float2(dx,dy));
+	float4 original = tex2D(ScreenS, Tex);
+	
+	color = color / 1.2f;					//Make the new color diffuse
+	color = (color + original) / 2;
+			
+	return color;
+} 
+
+
+
+
 float calmWave;							// pi/.75 is a good default
 float calmDistortion;					// 1 is a good default
 float2 calmCenterCoord;					// 0.5,0.5 is the screen center
@@ -79,6 +98,14 @@ technique Grain
 	pass Pass_0 
 	{ 
 		PixelShader = compile ps_2_0 Grain(); 
+	} 
+} 
+
+technique DiffuseGrain
+{ 
+	pass Pass_0 
+	{ 
+		PixelShader = compile ps_2_0 DiffuseGrain(); 
 	} 
 } 
 

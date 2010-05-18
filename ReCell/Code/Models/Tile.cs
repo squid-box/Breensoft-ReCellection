@@ -26,7 +26,10 @@ namespace Recellection.Code.Models
         private TerrainType type;
         private HashSet<Player> visibleTo;
         private Dictionary<Player, HashSet<Unit>> units;
+        private List<Unit> allUnits;
+
         private Building building;
+		public bool active {get; set;}
 
         // Events
         public event Publish<IEnumerable<Player>> visionChanged;
@@ -47,6 +50,7 @@ namespace Recellection.Code.Models
             this.type = new TerrainType();
             this.visibleTo = new HashSet<Player>();
             this.units = new Dictionary<Player, HashSet<Unit>>();
+            this.allUnits = new List<Unit>();
             this.building = null;
         }
 
@@ -61,6 +65,7 @@ namespace Recellection.Code.Models
             this.type = new TerrainType(type);
             this.visibleTo = new HashSet<Player>();
             this.units = new Dictionary<Player, HashSet<Unit>>();
+            this.allUnits = new List<Unit>();
             this.position = new Vector2(x, y);
             this.building = null;
         }
@@ -98,18 +103,22 @@ namespace Recellection.Code.Models
         {
             lock (units)
             {
-                if (!this.units.ContainsKey(p))
+                lock (allUnits)
                 {
-                    this.units.Add(p, new HashSet<Unit>());
-                }
-                foreach (Unit u in units)
-                {
-                    this.units[p].Add(u);
-                }
+                    if (!this.units.ContainsKey(p))
+                    {
+                        this.units.Add(p, new HashSet<Unit>());
+                    }
+                    foreach (Unit u in units)
+                    {
+                        this.units[p].Add(u);
+                        this.allUnits.Add(u);
+                    }
 
-                if (unitsChanged != null)
-                {
-                    unitsChanged(this, new Event<IEnumerable<Unit>>(units, EventType.ADD));
+                    if (unitsChanged != null)
+                    {
+                        unitsChanged(this, new Event<IEnumerable<Unit>>(units, EventType.ADD));
+                    }
                 }
             }
         }
@@ -121,18 +130,22 @@ namespace Recellection.Code.Models
         {
             lock (units)
             {
-                if (!this.units.ContainsKey(p))
+                lock (allUnits)
                 {
-                    this.units.Add(p, new HashSet<Unit>());
-                }
-                this.units[p].Add(u);
+                    if (!this.units.ContainsKey(p))
+                    {
+                        this.units.Add(p, new HashSet<Unit>());
+                    }
+                    this.units[p].Add(u);
+                    this.allUnits.Add(u);
 
-                if (unitsChanged != null)
-                {
-                    //I'm sorry for this ugly hax - John
-                    List<Unit> temp = new List<Unit>();
-                    temp.Add(u);
-                    unitsChanged(this, new Event<IEnumerable<Unit>>(temp, EventType.ADD));
+                    if (unitsChanged != null)
+                    {
+                        //I'm sorry for this ugly hax - John
+                        List<Unit> temp = new List<Unit>();
+                        temp.Add(u);
+                        unitsChanged(this, new Event<IEnumerable<Unit>>(temp, EventType.ADD));
+                    }
                 }
             }
         }
@@ -140,22 +153,26 @@ namespace Recellection.Code.Models
         {
             lock (units)
             {
-                HashSet<Unit> nits;
-                if (!this.units.TryGetValue(u.GetOwner(), out nits))
+                lock (allUnits)
                 {
-                    nits = new HashSet<Unit>();
-                }
+                    HashSet<Unit> nits;
+                    if (!this.units.TryGetValue(u.GetOwner(), out nits))
+                    {
+                        nits = new HashSet<Unit>();
+                    }
 
-                nits.Add(u);
+                    nits.Add(u);
 
-                this.units[u.GetOwner()] = nits;
+                    this.units[u.GetOwner()] = nits;
+                    this.allUnits.Add(u);
 
-                if (unitsChanged != null)
-                {
-                    //I'm sorry for this ugly hax - John
-                    List<Unit> temp = new List<Unit>();
-                    temp.Add(u);
-                    unitsChanged(this, new Event<IEnumerable<Unit>>(temp, EventType.ADD));
+                    if (unitsChanged != null)
+                    {
+                        //I'm sorry for this ugly hax - John
+                        List<Unit> temp = new List<Unit>();
+                        temp.Add(u);
+                        unitsChanged(this, new Event<IEnumerable<Unit>>(temp, EventType.ADD));
+                    }
                 }
             }
         }
@@ -164,14 +181,18 @@ namespace Recellection.Code.Models
         {
             lock (units)
             {
-                this.units[p].Remove(u);
-
-                if (unitsChanged != null)
+                lock (allUnits)
                 {
-                    //I'm sorry for this ugly hax - John
-                    List<Unit> temp = new List<Unit>();
-                    temp.Add(u);
-                    unitsChanged(this, new Event<IEnumerable<Unit>>(temp, EventType.REMOVE));
+                    this.units[p].Remove(u);
+                    this.allUnits.Remove(u);
+
+                    if (unitsChanged != null)
+                    {
+                        //I'm sorry for this ugly hax - John
+                        List<Unit> temp = new List<Unit>();
+                        temp.Add(u);
+                        unitsChanged(this, new Event<IEnumerable<Unit>>(temp, EventType.REMOVE));
+                    }
                 }
             }
         }
@@ -184,14 +205,18 @@ namespace Recellection.Code.Models
         {
             lock (units)
             {
-                foreach (Unit u in units)
+                lock (allUnits)
                 {
-                    this.units[p].Remove(u);
-                }
+                    foreach (Unit u in units)
+                    {
+                        this.units[p].Remove(u);
+                        this.allUnits.Remove(u);
+                    }
 
-                if (unitsChanged != null)
-                {
-                    unitsChanged(this, new Event<IEnumerable<Unit>>(units, EventType.REMOVE));
+                    if (unitsChanged != null)
+                    {
+                        unitsChanged(this, new Event<IEnumerable<Unit>>(units, EventType.REMOVE));
+                    }
                 }
             }
         }
@@ -203,14 +228,18 @@ namespace Recellection.Code.Models
         {
             lock (units)
             {
-                this.units[u.GetOwner()].Remove(u);
-
-                if (unitsChanged != null)
+                lock (allUnits)
                 {
-                    //I'm sorry for this ugly hax - John
-                    List<Unit> temp = new List<Unit>();
-                    temp.Add(u);
-                    unitsChanged(this, new Event<IEnumerable<Unit>>(temp, EventType.REMOVE));
+                    this.units[u.GetOwner()].Remove(u);
+                    this.allUnits.Remove(u);
+
+                    if (unitsChanged != null)
+                    {
+                        //I'm sorry for this ugly hax - John
+                        List<Unit> temp = new List<Unit>();
+                        temp.Add(u);
+                        unitsChanged(this, new Event<IEnumerable<Unit>>(temp, EventType.REMOVE));
+                    }
                 }
             }
         }
@@ -218,21 +247,13 @@ namespace Recellection.Code.Models
         /// <summary>
         /// Returns all units on this Tile, regardless of owner.
         /// </summary>
-        public HashSet<Unit> GetUnits()
+        public List<Unit> GetUnits()
         {
-            HashSet<Unit> ret = new HashSet<Unit>();
-            lock (units)
+            lock (allUnits)
             {
-                foreach (KeyValuePair<Player, HashSet<Unit>> pair in this.units)
-                {
-                    foreach (Unit u in pair.Value)
-                    {
-                        ret.Add(u);
-                    }
-                }
+                return this.allUnits;
 
             }
-            return ret;
         }
 
         /// <summary>
@@ -353,26 +374,26 @@ namespace Recellection.Code.Models
         /// </summary>
         /// <param name="obj">Other tile object</param>
         /// <returns>True if of the same terrain type.</returns>
-        public override bool Equals(System.Object obj)
-        {
-            Tile t = (Tile) obj;
-            return this.GetTerrainType().GetEnum().Equals(t.GetTerrainType().GetEnum());
-        }
+        //public override bool Equals(System.Object obj)
+        //{
+        //    Tile t = (Tile) obj;
+        //    return this.GetTerrainType().GetEnum().Equals(t.GetTerrainType().GetEnum());
+        //}
 
-        /// <summary>
-        /// Overrides the == operator.
-        /// </summary>
-        public static bool operator==(Tile obj1, Tile obj2)
-        {
-            return obj1.Equals(obj2);
-        }
-        /// <summary>
-        /// Overrides the != operator.
-        /// </summary>
-        public static bool operator !=(Tile obj1, Tile obj2)
-        {
-            return !obj1.Equals(obj2);
-        }
+        ///// <summary>
+        ///// Overrides the == operator.
+        ///// </summary>
+        //public static bool operator==(Tile obj1, Tile obj2)
+        //{
+        //    return obj1.Equals(obj2);
+        //}
+        ///// <summary>
+        ///// Overrides the != operator.
+        ///// </summary>
+        //public static bool operator !=(Tile obj1, Tile obj2)
+        //{
+        //    return !obj1.Equals(obj2);
+        //}
 
         /// <summary>
         /// Override that doesn't actually override things.

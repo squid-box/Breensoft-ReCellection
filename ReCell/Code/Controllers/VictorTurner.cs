@@ -47,24 +47,24 @@ namespace Recellection.Code.Controllers
         {
 
             while (!finished)
-            {	
-				logger.Debug("Victor turner is turning the page!");
+            {
                 foreach (Player player in players)
                 {
-                    //gameInitializer.suitGuys[player].ProduceUnits(); 
+                    //updateFogOfWar(player);
 
-                    if(HasLost(player))
+                    if (HasLost(player))
                     {
                         world.RemovePlayer(player);
                     }
-                    if(HasWon())
+                    if (HasWon())
                     {
-
                         finished = true;
-                        break;  
+                        break;
                     }
-                    
-                    
+                }
+				logger.Debug("Victor turner is turning the page!");
+                foreach (Player player in players)
+                {
 					if (player is AIPlayer)
 					{
 						logger.Debug(player.color + " is a AIPlayer!");
@@ -81,39 +81,75 @@ namespace Recellection.Code.Controllers
 						logger.Fatal("Could not identify "+player.color+" player!");
 					}
                 }
-
+                if (finished)
+                {
+                    break;
+                }
 				logger.Info("Weighting graphs!");
-				graphControl.CalculateWeights();
-
                 foreach (Player player in players)
                 {
                     gameInitializer.suitGuys[player].ProduceUnits();
+                }
+
+				graphControl.CalculateWeights();
+
+                foreach (Player p in players)
+                {
+                    BuildingController.AggressiveBuildingAct(p);
                 }
 
                 // This is where we start "animating" all movement
                 // FIXME: This ain't okay, hombrey
                 // Let the units move!
                 logger.Info("Moving units!");
-                
+
                 for(int i = 0; i < 200; i++)
                 {
-					Code.Models.World.Map theWholeFuckingWorld = world.GetMap();
+					/*Code.Models.World.Map theWholeFuckingWorld = world.GetMap();
 					for (int x = 0; x < theWholeFuckingWorld.width; x++)
 					{
 						for (int y = 0; y < theWholeFuckingWorld.height; y++)
 						{
-							UnitController.Update(theWholeFuckingWorld.GetTile(x, y).GetUnits(), 1);
+                            lock (theWholeFuckingWorld.GetTile(x, y).GetUnits())
+                            {
+                                UnitController.Update(theWholeFuckingWorld.GetTile(x, y).GetUnits(), 1, world.GetMap());
+                            }
 						}
-					}
+					}*/
+                    UnitController.Update(world.units, 1, world.GetMap());
 					System.Threading.Thread.Sleep(10);
 				}
 
-                foreach( Player p in players)
-                {
-                    BuildingController.AggressiveBuildingAct(p);
-                }
+                
             }
 
+        }
+
+        private void updateFogOfWar(Player player)
+        {
+            lock (world)
+            {
+                foreach (Tile t in world.GetMap().map)
+                {
+                    if (t.GetBuilding() == null)
+						continue;
+						
+                    for (int x = -2; x <= 2; x++)
+                    {
+                        for (int y = -2; y <= 2; y++)
+                        {
+                            if (! world.isWithinMap(x + (int)t.position.X, y + (int)t.position.Y))
+								continue;
+							
+                            //Get the tile and check if it is visible already else set it to visible.
+                            if (world.GetMap().GetTile(x + (int)t.position.X, y + (int)t.position.Y).IsVisible(t.GetBuilding().owner))
+								continue;
+
+                            // TODO: Do stuff.
+                        }
+                    }
+                }
+            }
         }
 
         /// <summary>
