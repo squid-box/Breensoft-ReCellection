@@ -44,6 +44,30 @@ namespace Recellection.Code.Controllers
             b.AddUnits(units);
         }
 
+        public int getUpgradeCost()
+        {
+            if (owner.powerLevel >= 0.6f)
+            {
+                return 4711;
+            }
+            return (int) ((20 * owner.powerLevel) * (20 * owner.powerLevel)) +4;//TODO change to a more sane formula.
+        }
+
+        public bool payAndUpgrade(Building building)
+        {
+            if (building.units.Count < getUpgradeCost() || owner.powerLevel >= 0.6f)
+            {
+                return false;
+            }
+            for (int i = 0; i < getUpgradeCost(); i++)
+            {
+                building.RemoveUnit(building.units[building.units.Count-1]);
+            }
+            owner.powerLevel += 0.1f;
+            return true;
+
+        }
+
         /// <summary>
         /// Quite possibly a horribly slow way of adding units.
         /// </summary>

@@ -16,7 +16,7 @@ namespace Recellection.Code.Main
     {
         public World theWorld { get; private set; }
         public Logger myLogger;
-        public Dictionary<Player,UnitAccountant> suitGuys { get; private set; }
+        //public Dictionary<Player,UnitAccountant> suitGuys { get; private set; }
 
         public GameInitializer()
         {
@@ -49,11 +49,11 @@ namespace Recellection.Code.Main
             SpawnPoints(theWorld.players, theWorld.map.width, theWorld.map.height, randomer);
 
             myLogger.Info("Spawning units.");
-            suitGuys = new Dictionary<Player, UnitAccountant>(2);
+            //suitGuys = new Dictionary<Player, UnitAccountant>(2);
             foreach(Player p in theWorld.players)
             {
-                suitGuys[p] = new UnitAccountant(p);
-                suitGuys[p].ProduceUnits();
+                //suitGuys[p] = new UnitAccountant(p);
+                p.unitAcc.ProduceUnits();
             }
             
             int xOffset = (Recellection.viewPort.Width/Globals.TILE_SIZE)/2;

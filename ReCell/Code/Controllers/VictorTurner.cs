@@ -62,6 +62,10 @@ namespace Recellection.Code.Controllers
                         break;
                     }
                 }
+                if (finished)
+                {
+                    break;
+                }
 				logger.Debug("Victor turner is turning the page!");
                 foreach (Player player in players)
                 {
@@ -81,14 +85,10 @@ namespace Recellection.Code.Controllers
 						logger.Fatal("Could not identify "+player.color+" player!");
 					}
                 }
-                if (finished)
-                {
-                    break;
-                }
 				logger.Info("Weighting graphs!");
                 foreach (Player player in players)
                 {
-                    gameInitializer.suitGuys[player].ProduceUnits();
+                    player.unitAcc.ProduceUnits();
                 }
 
 				graphControl.CalculateWeights();

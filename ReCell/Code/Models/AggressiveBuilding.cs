@@ -95,7 +95,7 @@ namespace Recellection.Code.Models
             }
             else if (ev.type == EventType.REMOVE)
             {
-                foreach (Unit u in ev.subject)
+                /*foreach (Unit u in ev.subject)
                 {
                     if (currentTargets.Count > 0 && u.GetOwner() != this.owner)
                     {
@@ -104,7 +104,7 @@ namespace Recellection.Code.Models
                             currentTargets.Remove(u);
                         }
                     }
-                }
+                }*/
             }
         }
 
