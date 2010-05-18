@@ -44,7 +44,8 @@ namespace Recellection.Code.Controllers
         }
 
         public void Run()
-        {
+		{
+			SoundsController.playSound("inGameMusic");
 
             while (!finished)
             {
@@ -105,17 +106,6 @@ namespace Recellection.Code.Controllers
 
                 for(int i = 0; i < 200; i++)
                 {
-					/*Code.Models.World.Map theWholeFuckingWorld = world.GetMap();
-					for (int x = 0; x < theWholeFuckingWorld.width; x++)
-					{
-						for (int y = 0; y < theWholeFuckingWorld.height; y++)
-						{
-                            lock (theWholeFuckingWorld.GetTile(x, y).GetUnits())
-                            {
-                                UnitController.Update(theWholeFuckingWorld.GetTile(x, y).GetUnits(), 1, world.GetMap());
-                            }
-						}
-					}*/
                     UnitController.Update(world.units, 1, world.GetMap());
 					System.Threading.Thread.Sleep(10);
 				}
