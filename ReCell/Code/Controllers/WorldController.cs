@@ -162,7 +162,8 @@ namespace Recellection.Code.Controllers
         {
             
             World.Map map = theWorld.GetMap();
-            Building building = map.GetTile(theSelection.absPoint).GetBuilding();
+            Tile seltile = map.GetTile(theSelection.absPoint);
+            Building building = seltile.GetBuilding();
             if (building == null || building.owner != playerInControll)
             {
                 return;
@@ -224,7 +225,10 @@ namespace Recellection.Code.Controllers
             }
             else if (choosenMenu.Equals(moveUnits))
             {
-                return;
+                Selection destsel = retrieveSelection();
+                Tile selectedTile = map.GetTile(destsel.absPoint);
+                UnitController.MoveUnits(building.GetUnits().Count, seltile, selectedTile);
+
             }
             else if (choosenMenu.Equals(repairCell))
             {
@@ -239,7 +243,10 @@ namespace Recellection.Code.Controllers
                 return;
             }
         }
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="previousSelection"></param>
 		private void TileMenu(Selection previousSelection)
 		{
 			MenuIcon moveUnits = new MenuIcon(Language.Instance.GetString("MoveUnits"), null, Color.Black);
