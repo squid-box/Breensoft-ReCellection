@@ -63,6 +63,7 @@ namespace Recellection.Code.Utility.Logger
 		/// <param name="level">The level of importance.</param>
 		private void Log(string message, LogLevel level)
 		{
+#if DEBUG
 			if (level < this.threshold)
 				return;
 			
@@ -72,6 +73,7 @@ namespace Recellection.Code.Utility.Logger
 			string time = DateTime.Now.ToString("HH:mm:ss");
 			
 			target.WriteLine(time+" "+name+"["+level+"]: "+message);
+#endif
 		}
 		
 		#region Logging methods

@@ -66,7 +66,6 @@ namespace Recellection.Code.Controllers
 			Selection sel = new Selection();
 			sel.state = State.NONE;
 			finished = false;
-            SoundsController.playSound("inGameMusic");
             while (!finished)
             {
 				previousSelection = sel;

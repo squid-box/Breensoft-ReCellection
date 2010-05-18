@@ -203,7 +203,7 @@ namespace Recellection.Code.Views
                     if (b != null)
                     {
                         myLogger.Info("Found a building on the tile.");
-						this.Layer = 0.0f;
+						this.Layer = 0.1f;
 						Texture2D spr = b.GetSprite();
 						int bx = (int)Math.Round((b.position.X - World.LookingAt.X) * Globals.TILE_SIZE) - spr.Width/2;
 						int by = (int)Math.Round((b.position.Y - World.LookingAt.Y) * Globals.TILE_SIZE) - spr.Height/2;
@@ -219,7 +219,7 @@ namespace Recellection.Code.Views
                         Vector2 stringSize;
                         string infosz;
 						
-						this.Layer = 0.1f;
+						this.Layer = 0.11f;
 						
                         infosz = b.GetUnits().Count.ToString();
                         stringSize = Recellection.worldFont.MeasureString(infosz);
@@ -258,8 +258,31 @@ namespace Recellection.Code.Views
                             }
                         }
                     }
+                    
+                    
 				}
             }
+            
+            // Draw scrollregions
+            Layer = 0.0f;
+            
+            this.drawTexture(spriteBatch, Recellection.textureMap.GetTexture(Globals.TextureTypes.ScrollUp),
+				new Rectangle(128, 0, Globals.VIEWPORT_WIDTH - 256, 128));
+			this.drawTexture(spriteBatch, Recellection.textureMap.GetTexture(Globals.TextureTypes.ScrollDown),
+				new Rectangle(128, Globals.VIEWPORT_HEIGHT - 128, Globals.VIEWPORT_WIDTH - 256, 128));
+			this.drawTexture(spriteBatch, Recellection.textureMap.GetTexture(Globals.TextureTypes.ScrollLeft),
+				new Rectangle(0, 128, 128, Globals.VIEWPORT_HEIGHT - 256));
+			this.drawTexture(spriteBatch, Recellection.textureMap.GetTexture(Globals.TextureTypes.ScrollRight),
+				new Rectangle(Globals.VIEWPORT_WIDTH - 128, 128, 128, Globals.VIEWPORT_HEIGHT - 256));
+
+			this.drawTexture(spriteBatch, Recellection.textureMap.GetTexture(Globals.TextureTypes.ScrollUpLeft),
+				new Rectangle(0, 0, 128, 128));
+			this.drawTexture(spriteBatch, Recellection.textureMap.GetTexture(Globals.TextureTypes.ScrollUpRight),
+				new Rectangle(Globals.VIEWPORT_WIDTH - 128, 0, 128, 128));
+			this.drawTexture(spriteBatch, Recellection.textureMap.GetTexture(Globals.TextureTypes.ScrollDownLeft),
+				new Rectangle(0, Globals.VIEWPORT_HEIGHT - 128, 128, 128));
+			this.drawTexture(spriteBatch, Recellection.textureMap.GetTexture(Globals.TextureTypes.ScrollDownRight),
+				new Rectangle(Globals.VIEWPORT_WIDTH - 128, Globals.VIEWPORT_HEIGHT - 128, 128, 128));
 		}
         override public void Update(GameTime passedTime)
         {
