@@ -105,14 +105,18 @@ namespace Recellection.Code.Controllers
 
                 for(int i = 0; i < 200; i++)
                 {
-					Code.Models.World.Map theWholeFuckingWorld = world.GetMap();
+					/*Code.Models.World.Map theWholeFuckingWorld = world.GetMap();
 					for (int x = 0; x < theWholeFuckingWorld.width; x++)
 					{
 						for (int y = 0; y < theWholeFuckingWorld.height; y++)
 						{
-							UnitController.Update(theWholeFuckingWorld.GetTile(x, y).GetUnits(), 1, world.GetMap());
+                            lock (theWholeFuckingWorld.GetTile(x, y).GetUnits())
+                            {
+                                UnitController.Update(theWholeFuckingWorld.GetTile(x, y).GetUnits(), 1, world.GetMap());
+                            }
 						}
-					}
+					}*/
+                    UnitController.Update(world.units, 1, world.GetMap());
 					System.Threading.Thread.Sleep(10);
 				}
 
@@ -127,21 +131,21 @@ namespace Recellection.Code.Controllers
             {
                 foreach (Tile t in world.GetMap().map)
                 {
-                    if (t.GetBuilding() != null)
+                    if (t.GetBuilding() == null)
+						continue;
+						
+                    for (int x = -2; x <= 2; x++)
                     {
-                        for (int x = -2; x <= 2; x++)
+                        for (int y = -2; y <= 2; y++)
                         {
-                            for (int y = -2; y <= 2; y++)
-                            {
-                                if (world.isWithinMap(x + (int)t.position.X, y + (int)t.position.Y))
-                                {
-                                    //Get the tile and check if it is visible already else set it to visible.
-                                    if (!world.GetMap().GetTile(x + (int)t.position.X, y + (int)t.position.Y).IsVisible(t.GetBuilding().owner))
-                                    {
+                            if (! world.isWithinMap(x + (int)t.position.X, y + (int)t.position.Y))
+								continue;
+							
+                            //Get the tile and check if it is visible already else set it to visible.
+                            if (world.GetMap().GetTile(x + (int)t.position.X, y + (int)t.position.Y).IsVisible(t.GetBuilding().owner))
+								continue;
 
-                                    }
-                                }
-                            }
+                            // TODO: Do stuff.
                         }
                     }
                 }
