@@ -172,7 +172,7 @@ namespace Recellection.Code.Controllers
 			}
 			#endregion
 			
-			if (doptions[selection] > 0)
+			if (doptions[selection] >= 0)
 			{
 				SetWeight(b, doptions[selection]);
 			}
