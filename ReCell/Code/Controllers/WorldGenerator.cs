@@ -73,9 +73,9 @@ namespace Recellection.Code.Controllers
             while (numberOfRandomTiles > 0)
             {
                 //Randomly choose a tile excluding all the edge tiles.
-                randomY = randomer.Next(1, map_rows - 1);
+                randomY = randomer.Next(1, map_rows - 2);
 
-                randomX = randomer.Next(1, map_cols - 1);
+                randomX = randomer.Next(1, map_cols - 2);
 
                 numberOfTilesToRandomize = randomer.Next(MINIMUM_SPREAD,
                     MAXIMUM_SPREAD);
@@ -85,8 +85,46 @@ namespace Recellection.Code.Controllers
 
                 numberOfRandomTiles -= numberOfTilesToRandomize;
             }
+            RandomPlaceResources(randomer, retur);
 
             return retur;
+        }
+
+        private static void RandomPlaceResources(Random randomer, Tile[,] retur)
+        {
+            int randomX;
+            int randomY;
+
+            int numberOfResourceTiles = 5;
+
+            //Place five randomly placed resourceTiles, then 
+            for (int i = 0; i < numberOfResourceTiles; i++)
+            {
+                //Randomly choose a tile excluding all the edge tiles.
+                randomY = randomer.Next((map_rows / 3), map_rows * 2 / 3);
+
+                randomX = randomer.Next((map_cols / 3), map_cols * 2 / 3);
+
+                retur[randomX, randomY] = new Tile(randomX, randomY, Globals.TerrainTypes.Mucus);
+            }
+
+            for (int x = 0; x < 2; x++)
+            {
+                for (int y = 0; y < 2; y++)
+                {
+                    int minY = 1 + y * (map_rows * 2 / 3);
+                    int minX = 1 + x * (map_cols * 2 / 3);
+
+                    int maxY = (map_rows / 3) + map_rows * y - 2;
+                    int maxX = (map_cols / 3) + map_cols * x - 2;
+
+                    randomY = randomer.Next(minY, maxY);
+
+                    randomX = randomer.Next(minX, maxX);
+
+                    retur[randomX, randomY] = new Tile(randomX, randomY, Globals.TerrainTypes.Mucus);
+                }
+            }
         }
 
         /// <summary>
@@ -105,8 +143,8 @@ namespace Recellection.Code.Controllers
             Tile[,] retur = new Tile[map_cols, map_rows];
 
 
-            myLogger.Info("Map consists of " + map_rows + " times "
-                + map_cols + " tiles.");
+            myLogger.Info("Map consists of " + map_cols + " times "
+                + map_rows + " tiles.");
 
             //Each row needs an array initiated each row needs to have 
             //an array of equal size.
@@ -127,15 +165,15 @@ namespace Recellection.Code.Controllers
         /// </summary>
         /// <param name="randomer">The random generator used</param>
         /// <returns></returns>
-        private static Globals.TextureTypes RandomTerrainType(Random randomer)
+        private static Globals.TerrainTypes RandomTerrainType(Random randomer)
         {
             //randomize a number which is 1 to number of terrain types - 1.
             //Ignores the default terrain type Membrane.
-            int randomType = randomer.Next(1, GetNumberOfTerrainTypes());
+            int randomType = randomer.Next(2, GetNumberOfTerrainTypes());
 
 
 
-            return (Globals.TextureTypes)randomType;
+            return (Globals.TerrainTypes)randomType;
         }
 
         /// <summary>
@@ -151,7 +189,7 @@ namespace Recellection.Code.Controllers
         /// <param name="type"></param>
         /// <param name="randomer"></param>
         private static void SpreadTiles(Tile[,] tileMatrix, int xCoord,
-            int yCoord, int numberOfTiles, Globals.TextureTypes type,
+            int yCoord, int numberOfTiles, Globals.TerrainTypes type,
             Random randomer)
         {
 
