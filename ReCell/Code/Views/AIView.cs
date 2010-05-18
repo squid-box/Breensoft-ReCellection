@@ -257,6 +257,15 @@ namespace Recellection.Code
         }
 
 
+        //############## Setter functions ##############//
 
+        /// <summary>
+        /// Adds the given point to the interrest list.
+        /// </summary>
+        /// <param name="nearby"></param>
+        internal void AddInterrestPoint(Vector2 point)
+        {
+            interrestPoints.Add(point);
+        }
     }
 }
