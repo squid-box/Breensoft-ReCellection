@@ -22,6 +22,10 @@ namespace Recellection.Code
         private Player ai;
         private Logger log;
 
+        internal List<Vector2> resourcePoints { get; private set; }
+        internal List<Vector2> friendlyPoints { get; private set; }
+
+
         internal World world { get; private set; }
         internal List<Building> myBuildings { get; private set; }
         internal List<Player> opponents { get; private set; }
@@ -29,6 +33,7 @@ namespace Recellection.Code
         internal List<Vector2> enemyPoints { get; private set; }
         internal int mapHeight { get; private set; }
         internal int mapWidth { get; private set; }
+
 
 
         //############## Construction ##############//
@@ -50,6 +55,8 @@ namespace Recellection.Code
 
             opponents = world.players; //Remove the AI player when it has called RegisterPlayer
 
+            friendlyPoints = new List<Vector2>();
+            resourcePoints = new List<Vector2>();
             interrestPoints = new List<Vector2>();
             enemyPoints = new List<Vector2>();
         }
@@ -79,20 +86,18 @@ namespace Recellection.Code
                 for (int j = 0; j < mapHeight; j++)
                 {
                     Tile temp = world.GetMap().GetTile(i,j);
-                    if (Valid(temp.GetPosition()))
+                    if (ContainsResourcePoint(temp))
                     {
-                        if (ContainsResourcePoint(temp))
-                        {
-                            interrestPoints.Add(temp.GetPosition());
-                        }
-                        if (ContainsEnemyBuilding(temp))
-                        {
-                            enemyPoints.Add(temp.GetPosition());
-                        }
-                        if (ContainsFriendlyBuilding(temp.GetPosition()))
-                        {
-                            myBuildings.Add(temp.GetBuilding());
-                        }
+                        resourcePoints.Add(temp.GetPosition());
+                    }
+                    if (ContainsEnemyBuilding(temp))
+                    {
+                        enemyPoints.Add(temp.GetPosition());
+                    }
+                    if (ContainsFriendlyBuilding(temp.GetPosition()))
+                    {
+                        myBuildings.Add(temp.GetBuilding()); //OBSOLETE
+                        friendlyPoints.Add(temp.GetPosition());
                     }
                 }
             }
@@ -122,7 +127,7 @@ namespace Recellection.Code
         /// <returns></returns>
         internal bool ContainsResourcePoint(Tile current)
         {
-            if (current.GetTerrainType().getResourceModifier() == 12)
+            if (current.GetTerrainType().GetEnum() == Globals.TerrainTypes.Mucus)
             {
                 return true;
             }
@@ -203,14 +208,6 @@ namespace Recellection.Code
         //############## Getter functions ##############//
 
 
-        /// <summary>
-        /// Returns the list of interrest points currently held.
-        /// </summary>
-        /// <returns></returns>
-        internal List<Vector2> GetInterrestPoints()
-        {
-            return interrestPoints;
-        }
 
         /// <summary>
         /// Returns the Tile located in the given coordinates provided that it is visible.
@@ -256,6 +253,14 @@ namespace Recellection.Code
             return coordinates;
         }
 
+        /// <summary>
+        /// Returns a list of all the resource locations.
+        /// </summary>
+        /// <returns></returns>
+        internal List<Vector2> GetResourceLocations()
+        {
+            throw new NotImplementedException();
+        }
 
         //############## Setter functions ##############//
 
