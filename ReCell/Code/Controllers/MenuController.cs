@@ -82,6 +82,7 @@ namespace Recellection.Code.Controllers
 		{
 			tobiiController.SetRegionsEnabled(true);
 			GUIRegion activated = tobiiController.GetActivatedRegion();
+			tobiiController.SetRegionsEnabled(false);
 
             //tobiiController.UnloadMenu(menuModel.Peek());
 

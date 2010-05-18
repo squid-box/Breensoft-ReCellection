@@ -107,7 +107,6 @@ namespace Recellection.Code.Controllers
 		{
 			myLogger.Debug("Waiting for input...");
 			MenuIcon activatedMenuIcon = MenuController.GetInput();
-			//MenuController.DisableMenuInput();
 						 
 		    int x = 0;
             int y = 0;
