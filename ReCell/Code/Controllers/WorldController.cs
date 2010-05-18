@@ -168,13 +168,14 @@ namespace Recellection.Code.Controllers
             {
                 return;
             }
-            
+            int toHeal = Math.Min(building.maxHealth - building.currentHealth, building.units.Count());
+
             MenuIcon setWeight = new MenuIcon(Language.Instance.GetString("SetWeight"));
             MenuIcon buildCell = new MenuIcon(Language.Instance.GetString("BuildCell"));
             MenuIcon removeCell = new MenuIcon(Language.Instance.GetString("RemoveCell"));
 			MenuIcon upgradeUnits = new MenuIcon(Language.Instance.GetString("UpgradeUnits") + " (" + playerInControll.unitAcc.getUpgradeCost() + ")");
             MenuIcon moveUnits = new MenuIcon(Language.Instance.GetString("MoveUnits"));
-            MenuIcon repairCell = new MenuIcon(Language.Instance.GetString("RepairCell"));
+            MenuIcon repairCell = new MenuIcon(Language.Instance.GetString("RepairCell") + " (" + toHeal + ")");
             MenuIcon Cancel = new MenuIcon(Language.Instance.GetString("Cancel"), Recellection.textureMap.GetTexture(Globals.TextureTypes.No));
             
             List<MenuIcon> menuIcons = new List<MenuIcon>();
@@ -237,7 +238,8 @@ namespace Recellection.Code.Controllers
             }
             else if (choosenMenu.Equals(repairCell))
             {
-                return;
+                UnitController.MarkUnitsAsDead(building.units, toHeal);
+                building.Repair(toHeal);
             }
             else if (choosenMenu.Equals(Cancel))
             {
