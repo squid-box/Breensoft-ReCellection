@@ -53,7 +53,7 @@ namespace Recellection.Code.Controllers
             return (int) ((20 * owner.powerLevel) * (20 * owner.powerLevel)) +4;//TODO change to a more sane formula.
         }
 
-        public bool payAndUpgrade(Building building)
+        public bool PayAndUpgrade(Building building)
         {
             if (building.units.Count < getUpgradeCost() || owner.powerLevel >= 0.6f)
             {
@@ -108,6 +108,20 @@ namespace Recellection.Code.Controllers
                 }
                 b.AddUnits(res);
             }
+        }
+
+        /// <summary>
+        /// The increese in cost is 50% extra for each building of that type built.
+        /// </summary>
+        /// <param name="type"></param>
+        /// <param name="payer">The player this building is built for</param>
+        /// <returns>The cost when considering the price inflation</returns>
+        public uint CalculateBuildingCostInflation(Globals.BuildingTypes type)
+        {
+            uint defaultCost = Building.GetBuyPrice(type);
+            uint buildingCount = owner.CountBuildingsOfType(type);
+            return (uint)(defaultCost + (buildingCount * buildingCount * defaultCost / 2));
+
         }
     }
 }
