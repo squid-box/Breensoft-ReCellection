@@ -15,7 +15,7 @@ namespace Recellection
 
 	public class Menu
 	{
-        private const int FONT_SIZE = 40;
+        private const int FONT_SIZE = 33;
         private const int FONT_WIDTH = 20;
         private const int CHARS_PER_ROW = 15;
         
@@ -156,11 +156,13 @@ namespace Recellection
                         icons[i].texture.Width,
                         icons[i].texture.Height);
                 }
+                int textWidth = 0;
                 if( icons[i].label != null)
                 {
                     icons[i].label = insertLineBreaksForString(icons[i].label);
 
-                    int textWidth = icons[i].label.Length * FONT_WIDTH;
+                    textWidth = icons[i].label.Length * FONT_WIDTH;
+
                     Vector2 temp = calculateDrawCoordinates(new Vector2(
                         i * Recellection.viewPort.Width * 3 / 5 + Recellection.viewPort.Width * 1 / 5, Recellection.viewPort.Height / 2), icons[i].label);
 
@@ -171,9 +173,13 @@ namespace Recellection
                 if (icons[i].label != null && icons[i].texture != null)
                 {
 
-                    icons[i].targetLabelRectangle = new Rectangle(
-                        icons[i].targetLabelRectangle.Location.X, icons[i].targetLabelRectangle.Location.Y + icons[i].texture.Height + 5,
+                    icons[i].targetTextureRectangle = new Rectangle(
+                        icons[i].targetTextureRectangle.Location.X, icons[i].targetTextureRectangle.Location.Y - 40,
                         icons[i].texture.Width, icons[i].texture.Height);
+
+                    icons[i].targetLabelRectangle = new Rectangle(
+                        icons[i].targetLabelRectangle.Location.X, icons[i].targetLabelRectangle.Location.Y + icons[i].texture.Height - 15,
+                        textWidth, FONT_SIZE);
 
                 }
                 
@@ -257,11 +263,12 @@ namespace Recellection
                             (icons[i].texture.Height));
 
                 }
+                int textWidth = 0;
                 if (icons[i].label != null)
                 {
                     icons[i].label = insertLineBreaksForString(icons[i].label);
 
-                    int textWidth = icons[i].label.Length * FONT_WIDTH;
+                   textWidth = icons[i].label.Length * FONT_WIDTH;
 
                     Vector2 temp = calculateDrawCoordinates(new Vector2(
                        (i % 2) * (windowWidth * 3 / 5) + (windowWidth * 1 / 5), (i / 2) * (windowHeight * 3 / 5) + (windowHeight * 1 / 5)), icons[i].label);
@@ -273,9 +280,13 @@ namespace Recellection
                 if (icons[i].label != null && icons[i].texture != null)
                 {
 
+                    icons[i].targetTextureRectangle = new Rectangle(
+                        icons[i].targetTextureRectangle.Location.X, icons[i].targetTextureRectangle.Location.Y - 40,
+                        icons[i].texture.Width, icons[i].texture.Height);
+
                     icons[i].targetLabelRectangle = new Rectangle(
-                        icons[i].targetLabelRectangle.Location.X, icons[i].targetLabelRectangle.Location.Y + icons[i].texture.Height + 5,
-                        icons[i].texture.Width,icons[i].texture.Height);
+                        icons[i].targetLabelRectangle.Location.X, icons[i].targetLabelRectangle.Location.Y + icons[i].texture.Height - 15,
+                        textWidth, FONT_SIZE);
 
                 }
                 
@@ -302,17 +313,19 @@ namespace Recellection
                 {
 					mi.targetTextureRectangle =
                         new Microsoft.Xna.Framework.Rectangle(
-							(position % 3) * iconWidth / 2 - mi.texture.Width / 2,
-							(position / 3) * iconHeight / 2 - mi.texture.Height / 2,
+							(position % 3) * iconWidth  + (iconWidth / 2)  - (mi.texture.Width / 2),
+							(position / 3) * iconHeight + (iconHeight / 2)  - (mi.texture.Height / 2),
 							(mi.texture.Width),
 							(mi.texture.Height));
 
                 }
+                int textWidth = 0;
+                
 				if (mi.label != null)
 				{
                     mi.label = insertLineBreaksForString(mi.label);
 
-					int textWidth = mi.label.Length * FONT_WIDTH;
+					textWidth = mi.label.Length * FONT_WIDTH;
 
                     Vector2 temp = calculateDrawCoordinates(new Vector2(
 					   (position % 3) * (iconWidth) + (iconWidth / 2), 
@@ -323,12 +336,16 @@ namespace Recellection
                 }
                 if (mi.label != null && mi.texture != null)
                 {
-                    mi.targetLabelRectangle = new Rectangle(
-                        mi.targetLabelRectangle.Location.X, mi.targetLabelRectangle.Location.Y + mi.texture.Height + 5,
+                    mi.targetTextureRectangle = new Rectangle(
+                        mi.targetTextureRectangle.Location.X, mi.targetTextureRectangle.Location.Y - 40,
                         mi.texture.Width, mi.texture.Height);
+
+                    mi.targetLabelRectangle = new Rectangle(
+                        mi.targetLabelRectangle.Location.X, mi.targetLabelRectangle.Location.Y + mi.texture.Height - 15,
+                        textWidth, FONT_SIZE);
                 }
 
-                icons[i].region = new GUIRegion(Recellection.windowHandle,
+                mi.region = new GUIRegion(Recellection.windowHandle,
                     new System.Windows.Rect(
                         (position % 3) * iconWidth,
                         (position / 3) * iconHeight,

@@ -17,6 +17,9 @@ BuildCell=Build a new cell.
 RemoveCell=Remove this cell.
 UpgradeUnits=Upgrade all units.
 BuildingMenu=Choose what you want to do with the cell.
+MoveUnits=Move units.
+RepairCell=Repair cell.
+Cancel=Cancel
 
 OptionsMenu1=OTest1
 OptionsMenu2=OTest2
@@ -51,6 +54,11 @@ SpecialCommandMenu8=CTest8
 Yes=Yes
 No=No
 AreYouSureYouWantToQuit=Are you sure you want to quit?
+
+[Tile options]
+TileMenu=What do you want to do with the tile?
+Cancel=Cancel
+MoveUnits=Move units
 
 [Graph]
 SetImportance=What weight do you want to set?

@@ -68,7 +68,7 @@ namespace Recellection.Code.Models
         /// <param name="baseBuilding">The Base Building this fromBuilding belongs
         /// to</param>
         public Building(String name, int posX, int posY, int maxHealth,
-            Player owner, Globals.BuildingTypes type, BaseBuilding baseBuilding) : base(new Vector2(((float)posX)+0.25f, ((float)posY)+0.25f), owner)
+            Player owner, Globals.BuildingTypes type, BaseBuilding baseBuilding) : base(new Vector2(((float)posX)+0.5f, ((float)posY)+0.5f), owner)
         {
             if (maxHealth <= 0)
             {
@@ -112,7 +112,7 @@ namespace Recellection.Code.Models
         /// to</param>
         public Building(String name, int posX, int posY, int maxHealth,
             Player owner, Globals.BuildingTypes type, BaseBuilding baseBuilding,
-            LinkedList<Tile> controlZone) : base(new Vector2(((float)posX) + 0.25f, ((float)posY) + 0.25f), owner)
+            LinkedList<Tile> controlZone) : base(new Vector2(((float)posX) + 0.5f, ((float)posY) + 0.5f), owner)
         {
             if (maxHealth <= 0)
             {
@@ -163,17 +163,12 @@ namespace Recellection.Code.Models
 
         /// <returns>Returns an IEnumerable which can iterate over the list 
         /// of units</returns>
-		public HashSet<Unit> GetUnits()
+		public List<Unit> GetUnits()
 		{
-			HashSet<Unit> ret = new HashSet<Unit>();
-			lock (units)
-			{
-				foreach (Unit u in units)
-				{
-					ret.Add(u);
-				}
-			}
-			return ret;
+            lock (this.units)
+            {
+                return this.units;
+            }
         }
 
         /// <summary>

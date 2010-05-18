@@ -43,11 +43,15 @@ namespace Recellection
         public static GraphicsDeviceManager graphics;
         public Thread LogicThread { get; set; }
 
+        //FPS
+        int frameRate;
+        int frameCounter;
+        TimeSpan elapsedTime;
         
-
         TobiiController tobiiController;
         SpriteBatch spriteBatch;
 
+		public static SpriteFont worldFont;
 
         // Current state!
         private static IView currentState;
@@ -111,6 +115,7 @@ namespace Recellection
 
             screenFont = Content.Load<SpriteFont>("Fonts/ScreenFont");
             consoleFont = Content.Load<SpriteFont>("Fonts/ConsoleFont");
+			worldFont = Content.Load<SpriteFont>("Fonts/WorldFont");
             bgShader = Content.Load<Effect>("Shader/backgroundShaders");
 
             audioPlayer = new AudioPlayer(Content);
@@ -140,6 +145,17 @@ namespace Recellection
 				currentState.Update(gameTime);
 			}
             HandleDebugInput();
+
+            #region FPS Stuff
+            elapsedTime += gameTime.ElapsedGameTime;
+            if (elapsedTime > TimeSpan.FromSeconds(1))
+            {
+                elapsedTime -= TimeSpan.FromSeconds(1);
+                frameRate = frameCounter;
+                frameCounter = 0;
+            }
+            #endregion
+
             base.Update(gameTime);
         }
 
@@ -166,6 +182,11 @@ namespace Recellection
 			if (kBState.IsKeyDown(Keys.Escape))
 			{
 				this.Exit();
+			}
+			
+			if (kBState.IsKeyDown(Keys.End))
+			{
+				WorldController.finished = true;
 			}
 			
             if (kBState.IsKeyDown(Keys.F) && lastKBState.IsKeyUp(Keys.F))
@@ -198,16 +219,22 @@ namespace Recellection
         /// </summary>
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Draw(GameTime gameTime)
-		{
-            if(currentState is WorldView)
+        {
+            if (currentState is WorldView)
                 WorldView.Instance.RenderToTex(spriteBatch, gameTime);
 
-			spriteBatch.Begin(SpriteBlendMode.AlphaBlend, SpriteSortMode.BackToFront, SaveStateMode.None);
+            spriteBatch.Begin(SpriteBlendMode.AlphaBlend, SpriteSortMode.BackToFront, SaveStateMode.None);
             if (currentState != null)
-			{
-				currentState.Draw(spriteBatch);
-			}
-			spriteBatch.End();
+            {
+                currentState.Draw(spriteBatch);
+            }
+
+            spriteBatch.DrawString(screenFont, frameRate.ToString(), Vector2.Zero, Color.Red);
+
+            spriteBatch.End();
+            // Do the FPS dance
+            frameCounter++;
+
             base.Draw(gameTime);
         }
 
