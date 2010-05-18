@@ -19,6 +19,7 @@ namespace Recellection.Code.Models
         private static AudioEngine audioEngine;
         private static SoundBank soundBank;
         private static WaveBank waveBank;
+        public bool isMuted { get; set; }
 
         public static Sounds Instance { get; private set; }
 
@@ -50,9 +51,14 @@ namespace Recellection.Code.Models
             return soundBank.GetCue(sound);
         }
 
-        public void setVolume(float volume)
+        /// <summary>
+        /// Return a specific audio category from the AudioEngine object.
+        /// </summary>
+        /// <param name="category">The Category to retrieve</param>
+        /// <returns>The AudioCategory object corresponding to that category.</returns>
+        public AudioCategory GetCategory(String category)
         {
-            
+            return audioEngine.GetCategory(category);
         }
     }
 }

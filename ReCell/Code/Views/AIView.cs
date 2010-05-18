@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using Microsoft.Xna.Framework;
 using Recellection.Code.Models;
+using Recellection.Code.Utility.Logger;
 
 /*
  * The AI View keeps track of things relevant for the AI Player.
@@ -15,13 +16,22 @@ namespace Recellection.Code
 {
     class AIView
     {
-        private Player ai;
-        internal World world;
-        internal List<Building> myBuildings { get; private set; }
-        internal List<Vector2> roamingUnits { get; private set; }
-        internal int mapHeight;
-        internal int mapWidth;
 
+        //############## Variables ##############//
+
+        private Player ai;
+        private Logger log;
+
+        internal World world { get; private set; }
+        internal List<Building> myBuildings { get; private set; }
+        internal List<Player> opponents { get; private set; }
+        internal List<Vector2> interrestPoints { get; private set; }
+        internal List<Vector2> enemyPoints { get; private set; }
+        internal int mapHeight { get; private set; }
+        internal int mapWidth { get; private set; }
+
+
+        //############## Construction ##############//
 
         /// <summary>
         /// Constructor.
@@ -29,11 +39,19 @@ namespace Recellection.Code
         /// <param name="p_world"></param>
         public AIView(World p_world)
         {
+            log = Utility.Logger.LoggerFactory.GetLogger();
+            //LoggerFactory.globalThreshold = LogLevel.FATAL;
+
             world = p_world;
-            mapHeight = world.GetMap().map.GetLength(0);
-            mapWidth = world.GetMap().map.GetLength(1);
+            mapHeight = world.GetMap().map.GetLength(1);
+            mapWidth = world.GetMap().map.GetLength(0);
+
             myBuildings = new List<Building>();
-            roamingUnits = new List<Vector2>(); //A list of all units not located at a fromBuilding.
+
+            opponents = world.players; //Remove the AI player when it has called RegisterPlayer
+
+            interrestPoints = new List<Vector2>();
+            enemyPoints = new List<Vector2>();
         }
 
         /// <summary>
@@ -41,42 +59,115 @@ namespace Recellection.Code
         /// of who it is making calls for.
         /// </summary>
         /// <param name="p"></param>
-        internal void registerPlayer(Player p)
+        internal void RegisterPlayer(Player p)
         {
             ai = p;
+            opponents.Remove(ai);
+        }
+
+
+        //############## Logic functions ##############//
+
+        /// <summary>
+        /// The AI takes a look at all the tiles it can see (everything as of2010-05-16) and
+        /// looks for enemy buildings and resource points.
+        /// </summary>
+        internal void LookAtScreen()
+        {
+            for (int i = 0; i < mapWidth; i++)
+            {
+                for (int j = 0; j < mapHeight; j++)
+                {
+                    Tile temp = world.GetMap().GetTile(i,j);
+                    if (Valid(temp.GetPosition()))
+                    {
+                        if (ContainsResourcePoint(temp))
+                        {
+                            interrestPoints.Add(temp.GetPosition());
+                        }
+                        if (ContainsEnemyBuilding(temp))
+                        {
+                            enemyPoints.Add(temp.GetPosition());
+                        }
+                        if (ContainsFriendlyBuilding(temp.GetPosition()))
+                        {
+                            myBuildings.Add(temp.GetBuilding());
+                        }
+                    }
+                }
+            }
+        }
+
+
+        //############## Utility functions ##############//
+
+
+
+        /// <summary>
+        /// Checks whether or not there is a Resource Point at the given coordinates.
+        /// Overloaded function, also works with a tile.
+        /// </summary>
+        /// <param name="current"></param>
+        /// <returns></returns>
+        internal bool ContainsResourcePoint(Vector2 current)
+        {
+            Tile tempTile = GetTileAt(current);
+            return ContainsResourcePoint(tempTile);
         }
 
         /// <summary>
-        /// Returns the Tile located in the given coordinates provided that it is visible.
-        /// If it is not visible, null is returned.
+        /// Checks whether or not there is a Resource Point on the given Tile.
         /// </summary>
-        /// <param name="coords"></param>
+        /// <param name="current"></param>
         /// <returns></returns>
-        internal Tile getTileAt(Vector2 coords)
+        internal bool ContainsResourcePoint(Tile current)
         {
-            if(valid(coords))
+            if (current.GetTerrainType().getResourceModifier() == 12)
             {
-                Tile tempTile = world.GetMap().GetTile((int)coords.X, (int)coords.Y);
-
-                ///* Uncomment when fog of war is properly implemented
-                if (tempTile.IsVisible(ai))
-                {
-                    return tempTile;
-                }
-                
-                return tempTile;
+                return true;
             }
-            //throw new NullReferenceException();
-            return null;
+            return false;
+        }
+       
+        /// <summary>
+        /// Checks whether or not the given coordinates contains a friendly building.
+        /// </summary>
+        /// <param name="point"></param>
+        /// <returns></returns>
+        internal bool ContainsFriendlyBuilding(Vector2 point)
+        {
+            Tile temp = GetTileAt(point);
+            if (temp != null && temp.GetBuilding() != null && temp.GetBuilding().GetOwner() == ai)
+            {
+                return true;
+            }
+            return false;
         }
 
+        /// <summary>
+        /// Checks whether or not the given tile contains an enemy building.
+        /// </summary>
+        /// <param name="t"></param>
+        /// <returns></returns>
+        internal bool ContainsEnemyBuilding(Tile t)
+        {
+            if (t.GetBuilding() == null)
+            {
+                return false;
+            }
+            if (t.GetBuilding().GetOwner() != ai)
+            {
+                return true;
+            }
+            return false;
+        }
 
         /// <summary>
         /// Returns true if the coordinates provided are within the maps boundaries
         /// </summary>
         /// <param name="coords"></param>
         /// <returns></returns>
-        private bool valid(Vector2 coords)
+        internal bool Valid(Vector2 coords)
         {
             if (coords.X < mapWidth && coords.Y < mapHeight)
             {
@@ -85,20 +176,60 @@ namespace Recellection.Code
             return false;
         }
 
+        /// <summary>
+        /// Returns the player who is harvesting at the given coordinates or null if noone is.
+        /// </summary>
+        /// <param name="point"></param>
+        /// <returns></returns>
+        internal Player Harvesting(Vector2 point)
+        {
+            Building tempBuilding = GetBuildingAt(point);
+
+            if (tempBuilding == null)
+                return null;
+
+            if (tempBuilding.type == Globals.BuildingTypes.Resource)
+            {
+                return tempBuilding.GetOwner();
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+
+
+        //############## Getter functions ##############//
+
 
         /// <summary>
-        /// Checks whether or not there is a Resource Point at the given coordinates.
+        /// Returns the list of interrest points currently held.
         /// </summary>
-        /// <param name="current"></param>
         /// <returns></returns>
-        internal bool ContainsResourcePoint(Vector2 current)
+        internal List<Vector2> GetInterrestPoints()
         {
-            Tile tempTile = getTileAt(current);
-            if (tempTile.GetTerrainType().getResourceModifier() > 0)
-            {
-                return true;
-            }
-            return false;
+            return interrestPoints;
+        }
+
+        /// <summary>
+        /// Returns the Tile located in the given coordinates provided that it is visible.
+        /// If it is not visible, null is returned.
+        /// </summary>
+        /// <param name="coords"></param>
+        /// <returns></returns>
+        internal Tile GetTileAt(Vector2 coords)
+        {
+            //log.Fatal("Accessing Tile at "+coords.X+","+coords.Y);
+            Tile tempTile = world.GetMap().GetTile((int)coords.X, (int)coords.Y);
+
+            ///* Uncomment when fog of war is properly implemented
+            //if (tempTile.IsVisible(ai))
+            //{
+            //    return tempTile;
+            //}
+
+            return tempTile;
         }
 
         /// <summary>
@@ -108,7 +239,7 @@ namespace Recellection.Code
         /// <returns></returns>
         internal Building GetBuildingAt(Vector2 point)
         {
-            return getTileAt(point).GetBuilding();
+            return GetTileAt(point).GetBuilding();
         }
 
         /// <summary>
@@ -118,11 +249,23 @@ namespace Recellection.Code
         internal List<Vector2> GetFriendlyBuildings()
         {
             List<Vector2> coordinates = new List<Vector2>();
-            for (int i = 0; i < coordinates.Count; i++)
+            for (int i = 0; i < myBuildings.Count; i++)
             {
                 coordinates.Add(myBuildings[i].position);
             }
             return coordinates;
+        }
+
+
+        //############## Setter functions ##############//
+
+        /// <summary>
+        /// Adds the given point to the interrest list.
+        /// </summary>
+        /// <param name="nearby"></param>
+        internal void AddInterrestPoint(Vector2 point)
+        {
+            interrestPoints.Add(point);
         }
     }
 }

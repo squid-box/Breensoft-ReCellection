@@ -163,17 +163,12 @@ namespace Recellection.Code.Models
 
         /// <returns>Returns an IEnumerable which can iterate over the list 
         /// of units</returns>
-		public HashSet<Unit> GetUnits()
+		public List<Unit> GetUnits()
 		{
-			HashSet<Unit> ret = new HashSet<Unit>();
-			lock (units)
-			{
-				foreach (Unit u in units)
-				{
-					ret.Add(u);
-				}
-			}
-			return ret;
+            lock (this.units)
+            {
+                return this.units;
+            }
         }
 
         /// <summary>

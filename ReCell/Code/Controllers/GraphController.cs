@@ -151,17 +151,12 @@ namespace Recellection.Code.Controllers
 		{
 			Dictionary<MenuIcon, int> doptions = new Dictionary<MenuIcon,int>(8);
 
-			doptions.Add(new MenuIcon("Non-vital priority", Recellection.textureMap.GetTexture(Globals.TextureTypes.Priority1)), 1);
-			doptions.Add(new MenuIcon("Low priority", Recellection.textureMap.GetTexture(Globals.TextureTypes.Priority2)), 2);
-			doptions.Add(new MenuIcon("Medium low priority", Recellection.textureMap.GetTexture(Globals.TextureTypes.Priority3)), 4);
-			doptions.Add(new MenuIcon("Medium priority", Recellection.textureMap.GetTexture(Globals.TextureTypes.Priority4)), 8);
+			doptions.Add(new MenuIcon("Non-vital priority", Recellection.textureMap.GetTexture(Globals.TextureTypes.Priority1)), 0);
+			doptions.Add(new MenuIcon("Medium priority", Recellection.textureMap.GetTexture(Globals.TextureTypes.Priority4)), 50);
+			doptions.Add(new MenuIcon("GET TO THE CHOPPAH!", Recellection.textureMap.GetTexture(Globals.TextureTypes.Priority8)), 100);
+			doptions.Add(new MenuIcon("Cancel", Recellection.textureMap.GetTexture(Globals.TextureTypes.No)), -1);
 
-			doptions.Add(new MenuIcon("Medium high priority", Recellection.textureMap.GetTexture(Globals.TextureTypes.Priority5)), 16);
-			doptions.Add(new MenuIcon("High priority", Recellection.textureMap.GetTexture(Globals.TextureTypes.Priority6)), 32);
-			doptions.Add(new MenuIcon("Very high priority", Recellection.textureMap.GetTexture(Globals.TextureTypes.Priority7)), 64);
-			doptions.Add(new MenuIcon("GET TO THE CHOPPAH!", Recellection.textureMap.GetTexture(Globals.TextureTypes.Priority8)), 128);
-
-			Menu menu = new Menu(Globals.MenuLayout.NineMatrix, 
+			Menu menu = new Menu(Globals.MenuLayout.FourMatrix, 
 							new List<MenuIcon>(doptions.Keys),
 							Language.Instance.GetString("SetImportance"));
 			
@@ -171,13 +166,17 @@ namespace Recellection.Code.Controllers
 
 			#region GET TO THE CHOPPAH!
 			MenuIcon selection = MenuController.GetInput();
-			if (128 == doptions[selection])
+			if (100 == doptions[selection])
 			{
 				Sounds.Instance.LoadSound("choppah").Play();
 			}
 			#endregion
 			
-			SetWeight(b, doptions[selection]);
+			if (doptions[selection] >= 0)
+			{
+				SetWeight(b, doptions[selection]);
+			}
+			
 			Recellection.CurrentState = WorldView.Instance;
 			MenuController.UnloadMenu();
 		}

@@ -44,7 +44,8 @@ namespace Recellection.Code.Controllers
         }
 
         public void Run()
-        {
+		{
+			SoundsController.playSound("inGameMusic");
 
             while (!finished)
             {
@@ -61,6 +62,10 @@ namespace Recellection.Code.Controllers
                         finished = true;
                         break;
                     }
+                }
+                if (finished)
+                {
+                    break;
                 }
 				logger.Debug("Victor turner is turning the page!");
                 foreach (Player player in players)
@@ -81,14 +86,10 @@ namespace Recellection.Code.Controllers
 						logger.Fatal("Could not identify "+player.color+" player!");
 					}
                 }
-                if (finished)
-                {
-                    break;
-                }
 				logger.Info("Weighting graphs!");
                 foreach (Player player in players)
                 {
-                    gameInitializer.suitGuys[player].ProduceUnits();
+                    player.unitAcc.ProduceUnits();
                 }
 
 				graphControl.CalculateWeights();
@@ -102,17 +103,10 @@ namespace Recellection.Code.Controllers
                 // FIXME: This ain't okay, hombrey
                 // Let the units move!
                 logger.Info("Moving units!");
-                
+
                 for(int i = 0; i < 200; i++)
                 {
-					Code.Models.World.Map theWholeFuckingWorld = world.GetMap();
-					for (int x = 0; x < theWholeFuckingWorld.width; x++)
-					{
-						for (int y = 0; y < theWholeFuckingWorld.height; y++)
-						{
-							UnitController.Update(theWholeFuckingWorld.GetTile(x, y).GetUnits(), 1, world.GetMap());
-						}
-					}
+                    UnitController.Update(world.units, 1, world.GetMap());
 					System.Threading.Thread.Sleep(10);
 				}
 
@@ -127,21 +121,21 @@ namespace Recellection.Code.Controllers
             {
                 foreach (Tile t in world.GetMap().map)
                 {
-                    if (t.GetBuilding() != null)
+                    if (t.GetBuilding() == null)
+						continue;
+						
+                    for (int x = -2; x <= 2; x++)
                     {
-                        for (int x = -2; x <= 2; x++)
+                        for (int y = -2; y <= 2; y++)
                         {
-                            for (int y = -2; y <= 2; y++)
-                            {
-                                if (world.isWithinMap(x + (int)t.position.X, y + (int)t.position.Y))
-                                {
-                                    //Get the tile and check if it is visible already else set it to visible.
-                                    if (!world.GetMap().GetTile(x + (int)t.position.X, y + (int)t.position.Y).IsVisible(t.GetBuilding().owner))
-                                    {
+                            if (! world.isWithinMap(x + (int)t.position.X, y + (int)t.position.Y))
+								continue;
+							
+                            //Get the tile and check if it is visible already else set it to visible.
+                            if (world.GetMap().GetTile(x + (int)t.position.X, y + (int)t.position.Y).IsVisible(t.GetBuilding().owner))
+								continue;
 
-                                    }
-                                }
-                            }
+                            // TODO: Do stuff.
                         }
                     }
                 }

@@ -20,6 +20,9 @@ namespace Recellection
         /// </summary>
         static void Main(string[] args)
 		{
+            Process p = Process.GetCurrentProcess();
+            p.PriorityClass = ProcessPriorityClass.High;
+
 			LoggerSetup.Initialize();
 
 			Language.Instance.SetLanguage("English");
