@@ -116,22 +116,28 @@ namespace Recellection.Code.Controllers
 
 
             // If we have selected a tile, and we can place a building at the selected tile...					
-
-            if (! AddBuilding(Building, sourceBuilding,
-                    constructTile.position, theWorld, player))
+            try
             {
-                Sounds.Instance.LoadSound("Denied").Play();
+                if (!AddBuilding(Building, sourceBuilding,
+                        constructTile.position, theWorld, player))
+                {
+                    Sounds.Instance.LoadSound("Denied").Play();
+                }
+            }
+            catch (BuildingOutOfRangeException bore)
+            {
+                throw bore;
             }
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="player"></param>
-        public static void RazeBuilding(Player player, Tile constructTile, Building sourceBuilding)
+        public class BuildingOutOfRangeException : Exception
         {
-            logger.Trace("Razing a building for a player");
+            private static string msg = "Your source building is out of range";
 
+            public BuildingOutOfRangeException()
+                : base(msg)
+            {
+            }
         }
 
         /// <summary>
@@ -145,6 +151,10 @@ namespace Recellection.Code.Controllers
         public static bool AddBuilding(Globals.BuildingTypes buildingType,
             Building sourceBuilding, Vector2 targetCoordinate, World world, Player owner)
         {
+            if( sourceBuilding != null && (Math.Abs(sourceBuilding.position.X - targetCoordinate.X) > 3 || (Math.Abs(sourceBuilding.position.X - targetCoordinate.X) > 3)))
+            {
+                throw new BuildingOutOfRangeException();
+            }
             uint price = CalculateBuildingCostInflation(buildingType,owner);
             if (sourceBuilding != null && (uint)sourceBuilding.CountUnits() < price)
             {
@@ -200,7 +210,7 @@ namespace Recellection.Code.Controllers
                 if (sourceBuilding != null)
                 {
                     logger.Info("The building has " + sourceBuilding.CountUnits() + " and the building costs " + price);
-                    owner.unitAcc.destroyUnits(sourceBuilding.units, (int)price);
+                    owner.unitAcc.DestroyUnits(sourceBuilding.units, (int)price);
                     logger.Info("The source building only got " + sourceBuilding.CountUnits() + " units left.");
                 }
 
