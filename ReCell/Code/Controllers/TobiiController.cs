@@ -70,7 +70,7 @@ namespace Recellection
             try
             {
                 TecClient.Init("Recellection");
-                TecClient.ClientSettings.OffWindowProcessing = true;
+                TecClient.ClientSettings.OffWindowProcessing = true;               
                 TecClient.ClientSettings.ApplySettings();
                 //TODO: more stuff?, like loading eye tracking preferences e.t.c?
             }
@@ -244,7 +244,7 @@ namespace Recellection
         {
             for (; ; )
             {
-                System.Threading.Thread.Sleep(50); // so I heard you like hogging cpu time
+                System.Threading.Thread.Sleep(200); // so I heard you like hogging cpu time
                 if (newActivatedRegion != null)
                 {
                     GUIRegion temp = newActivatedRegion;
