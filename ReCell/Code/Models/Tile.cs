@@ -60,7 +60,7 @@ namespace Recellection.Code.Models
         /// <param name="type">Enum of the terrain type.</param>
         /// <param name="x">Tile x-coordinate.</param>
         /// <param name="y">Tile y-coordinate.</param>
-        public Tile(int x, int y, Globals.TextureTypes type) : base(new Vector2(x, y), null)
+        public Tile(int x, int y, Globals.TerrainTypes type) : base(new Vector2(x, y), null)
         {
             this.type = new TerrainType(type);
             this.visibleTo = new HashSet<Player>();
@@ -78,7 +78,7 @@ namespace Recellection.Code.Models
         /// Change TerrainType of this tile.
         /// </summary>
         /// <param name="type">Enum of the terrain type.</param>
-        public void ChangeTerrainType(Globals.TextureTypes type)
+        public void ChangeTerrainType(Globals.TerrainTypes type)
         {
             if (this.type.GetEnum() != type)
             {
@@ -420,7 +420,7 @@ namespace Recellection.Code.Models
         /// <returns>Texture of this unit.</returns>
         public override Texture2D GetSprite()
         {
-            return Recellection.textureMap.GetTexture(this.GetTerrainType().GetEnum());
+            return Recellection.textureMap.GetTexture(this.GetTerrainType().GetTexture());
         }
     }
 }

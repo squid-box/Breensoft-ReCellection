@@ -61,10 +61,12 @@ namespace Recellection.Code.Models
 				logger.Debug("Can not add building to graph. The building '" + building + "' already exists.");
 				throw new ArgumentException("The building '" + building + "' already exists in a graph.");
 			}
-
-			buildings.Add(building, defaultWeight);
-			TotalWeight += defaultWeight;
-
+			
+			lock(buildings)
+			{
+				buildings.Add(building, defaultWeight);
+				TotalWeight += defaultWeight;
+			}
 			Publish(building, defaultWeight, EventType.ADD);
 		}
 
@@ -74,7 +76,10 @@ namespace Recellection.Code.Models
 		/// <param name="fromBuilding">The fromBuilding to remove.</param>
 		public void Remove(Building building)
 		{
-			buildings.Remove(building);
+			lock(buildings)
+			{
+				buildings.Remove(building);
+			}
 			
 			Publish(building, 0, EventType.REMOVE);
 		}
@@ -92,9 +97,12 @@ namespace Recellection.Code.Models
 				throw new GraphLessBuildingException();
 			}
 			
-			TotalWeight -= buildings[building];
-			buildings[building] = weight;
-			TotalWeight += weight;
+			lock(buildings)
+			{
+				TotalWeight -= buildings[building];
+				buildings[building] = weight;
+				TotalWeight += weight;
+			}
 			
 			Publish(building, weight, EventType.ALTER);
 		}
@@ -145,9 +153,12 @@ namespace Recellection.Code.Models
 		/// <returns>An enumerator for all buildings in the graph.</returns>
 		public IEnumerable<Building> GetBuildings()
 		{
-			foreach(KeyValuePair<Building,int> b in buildings)
+			lock(buildings)
 			{
-				yield return b.Key;
+				foreach(KeyValuePair<Building,int> b in buildings)
+				{
+					yield return b.Key;
+				}
 			}
 		}
 
