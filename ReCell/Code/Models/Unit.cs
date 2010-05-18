@@ -194,18 +194,11 @@ namespace Recellection.Code.Models
 			{
 				// We will wander around our rallyPoint
 				isDispersed = false;
+				
+				double angle = rand.NextDouble() * 2 * Math.PI;
+				double distance = rand.NextDouble() * (double)rallyDistance;
 
-
-				return rallyPoint.position + 
-					(new Vector2((float)rand.NextDouble() * rallyDistance * 2 - rallyDistance, 
-								 (float)rand.NextDouble() * rallyDistance * 2 - rallyDistance));
-                
-                //The Floor is to makes sure that the entity does not have an offset for its position (like buildings who have 0.25)
-                //Then add 0.5 to end up in the middle of the tile and last the random should random a number between -1.3 to 1.3
-				/*
-				return new Vector2(((float)Math.Floor(rallyPoint.position.X))+ 0.5f + ((float)rand.NextDouble() * 2.6f - 1.3f ),
-                                   ((float)Math.Floor(rallyPoint.position.Y))+ 0.5f + ((float)rand.NextDouble() * 2.6f - 1.3f));
-				*/
+				return rallyPoint.position + (new Vector2((float)(Math.Cos(angle) * distance), (float)(Math.Sin(angle) * distance)));
 			}
 			else
 			{
