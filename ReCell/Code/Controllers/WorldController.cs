@@ -168,10 +168,11 @@ namespace Recellection.Code.Controllers
             {
                 return;
             }
+            
             MenuIcon setWeight = new MenuIcon(Language.Instance.GetString("SetWeight"));
             MenuIcon buildCell = new MenuIcon(Language.Instance.GetString("BuildCell"));
             MenuIcon removeCell = new MenuIcon(Language.Instance.GetString("RemoveCell"));
-            MenuIcon upgradeUnits = new MenuIcon(Language.Instance.GetString("UpgradeUnits"));
+			MenuIcon upgradeUnits = new MenuIcon(Language.Instance.GetString("UpgradeUnits") + " (" + playerInControll.unitAcc.getUpgraradeCost() + ")");
             MenuIcon moveUnits = new MenuIcon(Language.Instance.GetString("MoveUnits"));
             MenuIcon repairCell = new MenuIcon(Language.Instance.GetString("RepairCell"));
             MenuIcon Cancel = new MenuIcon(Language.Instance.GetString("Cancel"), Recellection.textureMap.GetTexture(Globals.TextureTypes.No));
@@ -221,7 +222,10 @@ namespace Recellection.Code.Controllers
             }
             else if (choosenMenu.Equals(upgradeUnits))
             {
-                playerInControll.powerLevel += 0.1f;
+                if (!playerInControll.unitAcc.payAndUpgrade(building))
+                {
+                    Sounds.Instance.LoadSound("Denied");
+                }
             }
             else if (choosenMenu.Equals(moveUnits))
             {
