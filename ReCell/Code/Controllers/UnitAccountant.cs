@@ -104,8 +104,11 @@ namespace Recellection.Code.Controllers
                     // Places them randomly around the fromBuilding. - John
                     // No, it does not. - Martin
 
-                    res.Add(new Unit(b.owner, b.position, b));
+                    Unit temp = new Unit(b.owner, b.position, b);
+                    
+                    res.Add(temp);
                 }
+                b.owner.AddUnits(res);
                 b.AddUnits(res);
             }
         }
