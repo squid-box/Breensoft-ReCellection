@@ -12,6 +12,8 @@ namespace Recellection.Code.Controllers
 {
     class BuildingController
     {
+        private const int MAX_BUILDING_RANGE = 3;
+
         private static Logger logger = LoggerFactory.GetLogger();
         /// <summary>
         /// Let all Aggressive Buildings for the player Acquire Target(s)
@@ -56,7 +58,7 @@ namespace Recellection.Code.Controllers
             logger.Trace("Killing " + b.currentTargets.Count + " units.");
             //UnitController.MarkUnitsAsDead(b.currentTargets, b.currentTargets.Count);
             b.currentTargets.Clear();
-        }
+        }  
 
         /// <summary>
         /// 
@@ -140,6 +142,22 @@ namespace Recellection.Code.Controllers
             }
         }
 
+        public static List<Point> GetValidBuildingInterval(Vector2 sourceBuildingPosition, World world)
+        {
+            List<Point> retur = new List<Point>(2);
+            Point upperLeft = new Point(
+                (int)MathHelper.Clamp(sourceBuildingPosition.X - MAX_BUILDING_RANGE, 0, world.GetMap().width),
+                (int)MathHelper.Clamp(sourceBuildingPosition.Y - MAX_BUILDING_RANGE, 0, world.GetMap().height));
+            Point lowerRight = new Point(
+                (int)MathHelper.Clamp(sourceBuildingPosition.X + MAX_BUILDING_RANGE, 0, world.GetMap().width),
+                (int)MathHelper.Clamp(sourceBuildingPosition.Y + MAX_BUILDING_RANGE, 0, world.GetMap().height));
+
+            retur.Add(upperLeft);
+            retur.Add(lowerRight);
+
+            return retur;
+        }
+
         /// <summary>
         /// Add a fromBuilding to the source buildings owners graph, 
         /// the source fromBuilding will be used to find the correct graph.
@@ -151,7 +169,7 @@ namespace Recellection.Code.Controllers
         public static bool AddBuilding(Globals.BuildingTypes buildingType,
             Building sourceBuilding, Vector2 targetCoordinate, World world, Player owner)
         {
-            if( sourceBuilding != null && (Math.Abs(sourceBuilding.position.X - targetCoordinate.X) > 3 || (Math.Abs(sourceBuilding.position.X - targetCoordinate.X) > 3)))
+            if (sourceBuilding != null && (Math.Abs(((int)sourceBuilding.position.X) - targetCoordinate.X) > MAX_BUILDING_RANGE || (Math.Abs(((int)sourceBuilding.position.X) - targetCoordinate.X) > MAX_BUILDING_RANGE)))
             {
                 throw new BuildingOutOfRangeException();
             }

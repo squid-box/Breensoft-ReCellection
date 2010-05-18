@@ -207,7 +207,8 @@ namespace Recellection.Code.Controllers
 					return;
 				}
                 Tile selectedTile = map.GetTile(destsel.absPoint);
-				
+
+                //TODO Add a check to see if the tile is a correct one. The diffrence between the selected tiles coordinates and the source building shall not exceed 3.
 				if (selectedTile.GetBuilding() == null)
                 {
 					BuildingController.ConstructBuilding(playerInControll, selectedTile, building, theWorld);
