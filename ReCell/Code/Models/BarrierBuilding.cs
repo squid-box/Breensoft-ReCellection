@@ -66,7 +66,7 @@ namespace Recellection.Code.Models
                 {
                     if (u.GetOwner() == this.owner)
                     {
-                        u.PowerLevel += powerBonus;
+                        u.Buff = powerBonus;
                     }
                 }
             }
@@ -76,7 +76,7 @@ namespace Recellection.Code.Models
                 {
                     if (u.GetOwner() == this.owner)
                     {
-                        u.PowerLevel -= powerBonus;
+                        u.Buff = 0f;
                     }
                 }
             }
