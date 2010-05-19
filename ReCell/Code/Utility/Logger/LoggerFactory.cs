@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.IO;
 using System.Diagnostics;
+using Recellection.Code.Utility.Console;
 
 namespace Recellection.Code.Utility.Logger
 {
@@ -37,6 +38,7 @@ namespace Recellection.Code.Utility.Logger
 
 			l = new Logger(name, LogLevel.TRACE, globalTarget);
 			loggers.Add(name, l);
+			l.Active = true;
 			return l;
 		}
 
@@ -78,6 +80,45 @@ namespace Recellection.Code.Utility.Logger
 		{
 			LoggerFactory.globalThreshold = newThreshold;
 		}
-		
+
+		public static bool HasLogger(string name)
+		{
+			//System.Console.WriteLine()
+			return loggers.ContainsKey(name);
+		}
+
+		public static string ListLoggers()
+		{
+			string s = "";
+			foreach (string z in loggers.Keys)
+			{
+				Logger l = loggers[z];
+
+				s += z + " ";
+
+				if (l.Active)
+					s += "[Active]\n";
+				else
+					s += "[Disabled]\n";
+			}
+			return s;
+		}
+
+
+		internal static void SetAll(bool active)
+		{
+			foreach (Logger l in loggers.Values)
+			{
+				l.Active = active;
+			}
+		}
+
+		internal static void ToggleAll()
+		{
+			foreach (Logger l in loggers.Values)
+			{
+				l.Active = !l.Active;
+			}
+		}
 	}
 }
