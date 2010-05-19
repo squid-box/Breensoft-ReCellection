@@ -53,6 +53,10 @@ Yes=Yes
 No=No
 AreYouSureYouWantToQuit=Are you sure you want to quit?
 
+[Game menu]
+EndTurn=End Turn
+EndGame=End Game
+
 [Tile options]
 TileMenu=What do you want to do with the tile?
 Cancel=Cancel
