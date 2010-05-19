@@ -30,7 +30,6 @@ namespace Recellection.Code
 
         internal List<Vector2> resourcePoints { get; private set; }
         internal List<Vector2> friendlyPoints { get; private set; }
-        
 
         internal World world { get; private set; }
         internal List<Building> myBuildings { get; private set; }
@@ -67,6 +66,7 @@ namespace Recellection.Code
             enemyPoints = new List<Vector2>();
         }
 
+
         /// <summary>
         /// Internal function. Allows the AI Player to register itself so that this view can keep track
         /// of who it is making calls for.
@@ -87,6 +87,12 @@ namespace Recellection.Code
         /// </summary>
         internal void LookAtScreen()
         {
+            //First, clear all lists
+            enemyPoints.Clear();
+            friendlyPoints.Clear();
+            myBuildings.Clear();
+            resourcePoints.Clear();
+
             for (int i = 0; i < mapWidth; i++)
             {
                 for (int j = 0; j < mapHeight; j++)
@@ -102,7 +108,7 @@ namespace Recellection.Code
                     }
                     if (ContainsFriendlyBuilding(temp.GetPosition()))
                     {
-                        myBuildings.Add(temp.GetBuilding()); //OBSOLETE
+                        myBuildings.Add(temp.GetBuilding());
                         friendlyPoints.Add(temp.GetPosition());
                     }
                 }
