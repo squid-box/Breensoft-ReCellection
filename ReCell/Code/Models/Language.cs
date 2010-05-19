@@ -153,6 +153,7 @@ namespace Recellection.Code.Models
                     while (!sr.EndOfStream)
                     {
                         tempLine = sr.ReadLine();
+                        tempLine = tempLine.Replace("\\n","\n");
                         if (!(tempLine.StartsWith("[") || tempLine.Equals("") || tempLine.StartsWith(";")))
                         {
                             tmp = tempLine.Split('=');
