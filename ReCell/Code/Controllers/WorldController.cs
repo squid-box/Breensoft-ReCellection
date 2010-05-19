@@ -58,7 +58,11 @@ namespace Recellection.Code.Controllers
             this.theWorld = theWorld;
 
             createGUIRegionGridAndScrollZone();
-            
+        }
+        
+        public void Stop()
+        {
+			MenuController.UnloadMenu();
         }
 
         public void Run()
@@ -142,8 +146,10 @@ namespace Recellection.Code.Controllers
                     s.absPoint = absoluteCordinate;
 				}
             }
+			// If we selected a scroll zone?
             else if (activatedMenuIcon.labelColor.Equals(Color.Chocolate))
             {
+
 				theWorld.LookingAt = new Point(theWorld.LookingAt.X + x, theWorld.LookingAt.Y + y);
 				return retrieveSelection();
             }
@@ -417,6 +423,7 @@ namespace Recellection.Code.Controllers
             }
 
             MenuController.LoadMenu(new Menu(allMenuIcons));
+            MenuController.DisableMenuInput();
         }
     }
 }
