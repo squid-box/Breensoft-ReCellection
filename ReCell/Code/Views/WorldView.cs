@@ -50,7 +50,20 @@ namespace Recellection.Code.Views
 
 		public static WorldView Instance { get;	set; }
 
-        private WorldView(World world)
+		public static void Initiate(World world)
+		{
+			if (Instance == null)
+			{
+				Instance = new WorldView();
+			}
+			Instance.World = world;
+			world.lookingAtEvent += Instance.UpdateBg;
+			world.lookingAtEvent += Instance.CreateCurrentView;
+			Instance.CreateCurrentView(Instance, new Event<Point>(world.LookingAt, EventType.ALTER));
+			Instance.alignViewport();
+		}
+
+        private WorldView()
         {
             backgroundTex = Recellection.textureMap.GetTexture(Globals.TextureTypes.white);
             backgroundTarget = new RenderTarget2D(Recellection.graphics.GraphicsDevice, Recellection.viewPort.Width, Recellection.viewPort.Height, 1, Recellection.graphics.GraphicsDevice.DisplayMode.Format);
@@ -58,23 +71,17 @@ namespace Recellection.Code.Views
 
             this.bgShaders = Recellection.bgShader;
 
-            world.lookingAtEvent += UpdateBg;
-
-            this.World = world;
             myLogger = LoggerFactory.GetLogger();
             //myLogger.SetTarget(LoggerSetup.GetLogFileTarget("WorldView.log"));
             myLogger.SetThreshold(LogLevel.FATAL);
             myLogger.Info("Created a WorldView.");
 
-            //To make sure the lookingAt in world would make the world view draw tiles that does not exists align it.
-            alignViewport();
-
             tileCollection = new List<Tile>();
 
-            this.World.lookingAtEvent += CreateCurrentView;
+            
 
             //this.World.LookingAt = new Vector2(0, 0);
-            CreateCurrentView(this, new Event<Point>(this.World.LookingAt,EventType.ALTER));
+            
 
 			Instance = this;
         }
