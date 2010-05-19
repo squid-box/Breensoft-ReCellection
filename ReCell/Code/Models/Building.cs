@@ -233,23 +233,6 @@ namespace Recellection.Code.Models
         }
 
         /// <summary>
-        /// Removes one unit from the Unit list
-        /// </summary>
-        /// <param name="unit">The Unit to remove</param>
-        public void RemoveUnit(Unit unit)
-        {
-            this.units.Remove(unit);
-            if (unitsChanged != null)
-            {
-                //I'm sorry for this ugly hax - John
-                List<Unit> temp = new List<Unit>();
-                temp.Add(unit);
-                unitsChanged(this, new BuildingEvent(this, temp,
-                        EventType.REMOVE));
-            }
-        }
-
-        /// <summary>
         /// Add a collection of units to the unit List
         /// </summary>
         /// <param name="units">The collection of units to add</param>
@@ -266,7 +249,24 @@ namespace Recellection.Code.Models
                         EventType.ADD));
                 }
             }
-        }
+		}
+
+		/// <summary>
+		/// Removes one unit from the Unit list
+		/// </summary>
+		/// <param name="unit">The Unit to remove</param>
+		public void RemoveUnit(Unit unit)
+		{
+			this.units.Remove(unit);
+			if (unitsChanged != null)
+			{
+				//I'm sorry for this ugly hax - John
+				List<Unit> temp = new List<Unit>();
+				temp.Add(unit);
+				unitsChanged(this, new BuildingEvent(this, temp,
+						EventType.REMOVE));
+			}
+		}
 
         /// <summary>
         /// Removes a collection of units from the unit List,

@@ -24,7 +24,7 @@ namespace Recellection.Code.Utility.Logger
 		/// </summary>
 		/// <param name="name">The name of the logger.</param>
 		/// <param name="threshold">The threshold for the logger.</param>
-		/// <param name="target">The target to write to.</param>
+		/// <param name="baseEntity">The baseEntity to write to.</param>
 		internal Logger(string name, LogLevel threshold, TextWriter target)
 		{
 			this.name = name;
@@ -50,14 +50,14 @@ namespace Recellection.Code.Utility.Logger
 			return threshold;
 		}
 		
-		/// <param name="newTarget">The new output target for this logger.</param>
+		/// <param name="newTarget">The new output baseEntity for this logger.</param>
 		public void SetTarget(TextWriter newTarget)
 		{
 			this.target = newTarget;
 		}
 
 		/// <summary>
-		/// Logs a message to the target if it's above the threshold.
+		/// Logs a message to the baseEntity if it's above the threshold.
 		/// </summary>
 		/// <param name="message">The message to log.</param>
 		/// <param name="level">The level of importance.</param>
