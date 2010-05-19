@@ -140,8 +140,13 @@ namespace Recellection.Code.Controllers
 			Recellection.CurrentState = new EndGameView(! (winner is AIPlayer));
 			
 			MenuController.GetInput();
-			MenuController.UnloadMenu();
-		}
+
+            Recellection.CurrentState = new CreditsView();
+
+            MenuController.GetInput();
+            MenuController.UnloadMenu();
+            
+        }
 
         private void updateFogOfWar(Player player)
         {
