@@ -24,7 +24,7 @@ namespace Recellection.Code
 
         internal List<Vector2> resourcePoints { get; private set; }
         internal List<Vector2> friendlyPoints { get; private set; }
-
+        
 
         internal World world { get; private set; }
         internal List<Building> myBuildings { get; private set; }
