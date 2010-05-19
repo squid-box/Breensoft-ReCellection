@@ -449,7 +449,7 @@ namespace Recellection.Code.Views
             {
                 for (int iy = 0; iy < World.map.height; iy++)
                 {
-                   colorM[ix, iy] = Color.Lerp(c1, c2, 1.0f / rnd.Next(1, 101));
+                   colorM[ix, iy] = Color.Lerp(c1, c2, rnd.NextDouble());
                 }
             }
             return colorM;
