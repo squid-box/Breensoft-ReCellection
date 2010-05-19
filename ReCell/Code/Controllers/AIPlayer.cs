@@ -80,29 +80,33 @@ namespace Recellection.Code.Controllers
             //While we have secured less resource points than we should have, get some!
             Building sourceBuilding = m_view.myBuildings[0];
             Vector2 sourcePosition = sourceBuilding.GetPosition();
-            while (m_view.GetResourceLocations().Count < resourceThreshold && sourceBuilding.units.Count > this.unitAcc.CalculateBuildingCostInflation(Globals.BuildingTypes.Resource))
+            while (m_view.GetResourceLocations().Count < resourceThreshold)// && sourceBuilding.units.Count > this.unitAcc.CalculateBuildingCostInflation(Globals.BuildingTypes.Resource))
             {
                 Vector2 resource = getClosestResourceHotspot(sourcePosition);
 
-                if (!WithinBuildRangeOf(resource, sourcePosition))
-                { //Invalid coordinates, the resource spot is too far away.
-                    log.Fatal("Resource spot " + resource.X+","+resource.Y + " too far away.");
-                    //Generate a point closer to the resource point than the source building
+                List<Vector2> path = GenerateBuildPathBetween(sourcePosition, resource);
+                bool built = false;
 
-                    Vector2 halfway = Vector2.Add(Vector2.Divide(Vector2.Subtract(resource, sourcePosition), 2), resource);
-                    if (WithinBuildRangeOf(sourcePosition, halfway))
-                    {//We can relay with one building
-                        IssueBuildOrder(halfway, sourceBuilding, Globals.BuildingTypes.Barrier);
-                    }
-                    else
-                    {//The closest resource hotspot is further away than one relay building.
-                        IssueBuildOrder(halfway, sourceBuilding, Globals.BuildingTypes.Base);
-                    }
+                if (path.Count == 1)
+                {//The resource building is within reach of the source
+                    built = IssueBuildOrder(resource, sourceBuilding, Globals.BuildingTypes.Resource);
                 }
                 else
                 {
-                    IssueBuildOrder(resource, sourceBuilding, Globals.BuildingTypes.Resource);
+                    //Relay buildings must be placed.
+                    built = IssueBuildOrder(path[0], sourceBuilding, Globals.BuildingTypes.Barrier);
+
+                    //First step into the path
+                    //Create the path
+                    //for (int i = 1; i < path.Count-1; i++) 
+                    //{
+                    //    IssueBuildOrder(path[i], m_view.GetBuildingAt(path[i - 1]), Globals.BuildingTypes.Barrier);
+                    //}
+                    //Finally place the resource building.
+                    //    IssueBuildOrder(path[path.Count - 1], m_view.GetBuildingAt(path[path.Count - 2]), Globals.BuildingTypes.Resource);
                 }
+                if (!built) //We could not build for some reason. Stop iterating
+                    break;
             }
 
 
@@ -114,6 +118,48 @@ namespace Recellection.Code.Controllers
             //    Vector2 current = m_view.enemyPoints[i];
             //    EvaluateEnemyPoint(current);
             //}
+        }
+
+
+        /// <summary>
+        /// Generates a list of optimal building placements for connecting the two given points.
+        /// </summary>
+        /// <param name="resource"></param>
+        /// <param name="sourcePosition"></param>
+        /// <returns></returns>
+        private List<Vector2> GenerateBuildPathBetween(Vector2 p_source, Vector2 p_dest)
+        {
+            Vector2 source = p_source;
+            Vector2 dest = p_dest;
+
+            List<Vector2> path  = new List<Vector2>();
+            do
+            {
+                source = GetClosestPointFromList(dest, CreateMatrixFromInterval(BuildingController.GetValidBuildingInterval(source, m_view.world)));
+                path.Add(source);
+            } while (!WithinBuildRangeOf(source, dest));
+            if(source != dest) //safeguard for double add
+                path.Add(p_dest);
+
+            return path;
+        }
+
+
+        /// <summary>
+        /// Converts a given tile interval to a matrix of tile coordinates.
+        /// </summary>
+        /// <param name="list"></param>
+        /// <returns></returns>
+        private List<Vector2> CreateMatrixFromInterval(List<Point> list)
+        {
+            List<Vector2> result = new List<Vector2>();
+
+            for (int i = list[0].X; i <= list[1].X; i++ )
+                for (int j = list[0].Y; j <= list[1].Y; j++)
+                {
+                    result.Add(new Vector2(i,j));
+                }
+            return result;
         }
 
         /// <summary>
@@ -221,6 +267,7 @@ namespace Recellection.Code.Controllers
             }
             return best;
         }
+
 
 
         /// <summary>
