@@ -21,11 +21,16 @@ namespace Recellection.Code.Models
     public abstract class Building : Entity, IModel
     {
         protected const int AGGRESSIVE_BUILDING_HEALTH = 40;
-        protected const int BARRIER_BUILDING_HEALTH = 50;
+        protected const int BARRIER_BUILDING_HEALTH = 30;
         protected const int BASE_BUILDING_HEALTH = 100;
         protected const int RESOURCE_BUILDING_HEALTH = 20;
 
-        // Simple values
+        protected const int AGGRESSIVE_BUILDING_COST = 5;
+        protected const int BARRIER_BUILDING_COST = 1;
+        protected const int BASE_BUILDING_COST = 20;
+        protected const int RESOURCE_BUILDING_COST = 4;
+
+        // Simple valuesa
         public string name { get; protected set; }
 
         public int currentHealth { get; protected set; }
@@ -359,13 +364,13 @@ namespace Recellection.Code.Models
             switch (type)
             {
                 case Globals.BuildingTypes.Base:
-                    return BASE_BUILDING_HEALTH / 5;
+                    return BASE_BUILDING_COST;
                 case Globals.BuildingTypes.Aggressive:
-                    return AGGRESSIVE_BUILDING_HEALTH / 5;
+                    return AGGRESSIVE_BUILDING_COST;
                 case Globals.BuildingTypes.Barrier:
-                    return BARRIER_BUILDING_HEALTH / 5;
+                    return BARRIER_BUILDING_COST;
                 case Globals.BuildingTypes.Resource:
-                    return RESOURCE_BUILDING_HEALTH / 5;
+                    return RESOURCE_BUILDING_COST;
 
             }
             return 0;
