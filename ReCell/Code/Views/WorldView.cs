@@ -42,6 +42,7 @@ namespace Recellection.Code.Views
         private float crawler = 0;
         private LightParticleSystem lps;
 		private Tile active;
+        private Color[,] cMatrix;
 
 		private static int maxCols = (int)((float)Recellection.viewPort.Width / (float)Globals.TILE_SIZE);
 		private static int maxRows = (int)((float)Recellection.viewPort.Height / (float)Globals.TILE_SIZE);
@@ -77,8 +78,11 @@ namespace Recellection.Code.Views
             myLogger.Info("Created a WorldView.");
 
             tileCollection = new List<Tile>();
-
-            
+            //Color c1 = new Color(0xb2, 0xc9, 0x9f);
+            //Color c2 = new Color(0x9f, 0xc4, 0xc9);
+            Color c1 = new Color(0xac, 0x33, 0x2d);
+            Color c2 = new Color(0xea, 0xe4, 0x7c);
+            cMatrix = generateColorMatrix(c1, c2);
 
             //this.World.LookingAt = new Vector2(0, 0);
             
@@ -209,37 +213,39 @@ namespace Recellection.Code.Views
                     Building b = t.GetBuilding();
                     if (b != null)
                     {
-                        myLogger.Info("Found a building on the tile.");
-						this.Layer = 0.1f;
-						Texture2D spr = b.GetSprite();
-						int bx = (int)Math.Round((b.position.X - World.LookingAt.X) * Globals.TILE_SIZE) - spr.Width/2;
-						int by = (int)Math.Round((b.position.Y - World.LookingAt.Y) * Globals.TILE_SIZE) - spr.Height/2;
-						this.DrawTexture(spriteBatch, spr,
-							new Rectangle(bx, by, spr.Width, spr.Height),
-                            b.owner.color);
+                        lock (b)
+                        {
+                            myLogger.Info("Found a building on the tile.");
+                            this.Layer = 0.1f;
+                            Texture2D spr = b.GetSprite();
+                            int bx = (int)Math.Round((b.position.X - World.LookingAt.X) * Globals.TILE_SIZE) - spr.Width / 2;
+                            int by = (int)Math.Round((b.position.Y - World.LookingAt.Y) * Globals.TILE_SIZE) - spr.Height / 2;
+                            this.DrawTexture(spriteBatch, spr,
+                                new Rectangle(bx, by, spr.Width, spr.Height),
+                                b.owner.color);
 
-                        //Number of units drawage
-                        int x = (int)(t.position.X - (World.LookingAt.X));
-                        int y = (int)(t.position.Y - (World.LookingAt.Y));
-                        Rectangle r = new Rectangle(x * Globals.TILE_SIZE, y * Globals.TILE_SIZE, Globals.TILE_SIZE, Globals.TILE_SIZE);
-                        float fontX, fontY;
-                        Vector2 stringSize;
-                        string infosz;
-						
-						this.Layer = 0.11f;
-						
-                        infosz = b.GetUnits().Count.ToString();
-                        stringSize = Recellection.worldFont.MeasureString(infosz);
-                        fontX = (float)(r.X + r.Width / 2) - stringSize.X / 2;
-                        fontY = (float)(r.Y + r.Height / 4) - stringSize.Y;
-                        spriteBatch.DrawString(Recellection.worldFont, infosz, new Vector2(fontX, fontY), Color.White, 0, new Vector2(0f), 1.0f, SpriteEffects.None, Layer);
+                            //Number of units drawage
+                            int x = (int)(t.position.X - (World.LookingAt.X));
+                            int y = (int)(t.position.Y - (World.LookingAt.Y));
+                            Rectangle r = new Rectangle(x * Globals.TILE_SIZE, y * Globals.TILE_SIZE, Globals.TILE_SIZE, Globals.TILE_SIZE);
+                            float fontX, fontY;
+                            Vector2 stringSize;
+                            string infosz;
 
-                        infosz = GraphController.Instance.GetWeight(b).ToString();
-                        stringSize = Recellection.worldFont.MeasureString(infosz);
-                        fontX = (float)(r.X + r.Width / 2) - stringSize.X / 2;
-                        fontY = (float)(r.Y + 3 * r.Height / 4) - stringSize.Y;
-						spriteBatch.DrawString(Recellection.worldFont, infosz, new Vector2(fontX, fontY), Color.White, 0, new Vector2(0f), 1.0f, SpriteEffects.None, Layer);
+                            this.Layer = 0.11f;
 
+                            infosz = b.GetUnits().Count.ToString();
+                            stringSize = Recellection.worldFont.MeasureString(infosz);
+                            fontX = (float)(r.X + r.Width / 2) - stringSize.X / 2;
+                            fontY = (float)(r.Y + r.Height / 4) - stringSize.Y;
+                            spriteBatch.DrawString(Recellection.worldFont, infosz, new Vector2(fontX, fontY), Color.White, 0, new Vector2(0f), 1.0f, SpriteEffects.None, Layer);
+
+                            infosz = GraphController.Instance.GetWeight(b).ToString();
+                            stringSize = Recellection.worldFont.MeasureString(infosz);
+                            fontX = (float)(r.X + r.Width / 2) - stringSize.X / 2;
+                            fontY = (float)(r.Y + 3 * r.Height / 4) - stringSize.Y;
+                            spriteBatch.DrawString(Recellection.worldFont, infosz, new Vector2(fontX, fontY), Color.White, 0, new Vector2(0f), 1.0f, SpriteEffects.None, Layer);
+                        }
                     }
 
                     // Find those units!
@@ -352,7 +358,8 @@ namespace Recellection.Code.Views
 
                         Rectangle r = new Rectangle(x * Globals.TILE_SIZE, y * Globals.TILE_SIZE, Globals.TILE_SIZE, Globals.TILE_SIZE);
 
-                        spriteBatch.Draw(t.GetSprite(), r, Color.White);
+
+                        spriteBatch.Draw(t.GetSprite(), r, cMatrix[(int) t.position.X, (int)t.position.Y]); //here be dragons and (tile texture2D)
 
                         if (t.active)
                         {
@@ -424,6 +431,26 @@ namespace Recellection.Code.Views
                     doRenderThisPass = false;
                 }
             }
+        }
+
+        /// <summary>
+        /// takes two colors and blens them for each tile.
+        /// </summary>
+        /// <param name="c1"></param>
+        /// <param name="c2"></param>
+        /// <returns></returns>
+        private Color[,] generateColorMatrix(Color c1, Color c2)
+        {
+            Random rnd = new Random();
+            Color[,] colorM = new Color[World.map.width, World.map.height];
+            for (int ix = 0; ix < World.map.width; ix++)
+            {
+                for (int iy = 0; iy < World.map.height; iy++)
+                {
+                   colorM[ix, iy] = Color.Lerp(c1, c2, 1 / rnd.Next(1, 101));
+                }
+            }
+            return colorM;
         }
 	}
 }
