@@ -48,9 +48,9 @@ namespace Recellection.Code.Views
 		
         public World World { get; private set; }
 
-		public static WorldView Instance { get; set; }
+		public static WorldView Instance { get;	set; }
 
-        public WorldView(World world)
+        private WorldView(World world)
         {
             backgroundTex = Recellection.textureMap.GetTexture(Globals.TextureTypes.white);
             backgroundTarget = new RenderTarget2D(Recellection.graphics.GraphicsDevice, Recellection.viewPort.Width, Recellection.viewPort.Height, 1, Recellection.graphics.GraphicsDevice.DisplayMode.Format);

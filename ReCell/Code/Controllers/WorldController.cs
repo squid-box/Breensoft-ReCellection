@@ -140,8 +140,10 @@ namespace Recellection.Code.Controllers
                     s.absPoint = absoluteCordinate;
 				}
             }
+			// If we selected a scroll zone?
             else if (activatedMenuIcon.labelColor.Equals(Color.Chocolate))
             {
+
 				theWorld.LookingAt = new Point(theWorld.LookingAt.X + x, theWorld.LookingAt.Y + y);
 				return retrieveSelection();
             }
