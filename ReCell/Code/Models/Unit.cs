@@ -195,10 +195,18 @@ namespace Recellection.Code.Models
 				// We will wander around our rallyPoint
 				isDispersed = false;
 				
-				double angle = rand.NextDouble() * 2 * Math.PI;
-				double distance = rand.NextDouble() * (double)rallyDistance;
+				if (Vector2.Distance(rallyPoint.position, this.position) > rallyDistance)
+				{
+					TargetEntity = rallyPoint;
+					return rallyPoint.position;
+				}
+				else
+				{
+					double angle = rand.NextDouble() * 2 * Math.PI;
+					double distance = rand.NextDouble() * (double)rallyDistance;
 
-				return rallyPoint.position + (new Vector2((float)(Math.Cos(angle) * distance), (float)(Math.Sin(angle) * distance)));
+					return rallyPoint.position + (new Vector2((float)(Math.Cos(angle) * distance), (float)(Math.Sin(angle) * distance)));
+				}
 			}
 			else
 			{
