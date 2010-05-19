@@ -259,7 +259,15 @@ namespace Recellection.Code
         /// <returns></returns>
         internal List<Vector2> GetResourceLocations()
         {
-            throw new NotImplementedException();
+            List<Vector2> result = new List<Vector2>();
+            for (int i = 0; i < myBuildings.Count; i++)
+            {
+                if (myBuildings[i].type == Globals.BuildingTypes.Resource)
+                {
+                    result.Add(myBuildings[i].GetPosition());
+                }
+            } 
+            return result;
         }
 
         //############## Setter functions ##############//

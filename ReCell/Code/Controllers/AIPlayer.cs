@@ -20,7 +20,7 @@ namespace Recellection.Code.Controllers
 
 
         private int distanceThreshold;
-        private int resourceThreshold;
+        private int resourceThreshold = 3; //The least number of resource hotspots the AI should have secured
 
         private Random randomFactory;
         private Logger log;
@@ -40,8 +40,7 @@ namespace Recellection.Code.Controllers
             m_view = view;
 
             view.RegisterPlayer(this);
-            distanceThreshold = BuildingController.
-            resourceThreshold = 3; //Number of resource building that must be kept
+            distanceThreshold = BuildingController.MAX_BUILDING_RANGE;
         }
 
         /// <summary>
@@ -64,8 +63,7 @@ namespace Recellection.Code.Controllers
 
             m_view = view;
             view.RegisterPlayer(this);
-            distanceThreshold = 3; //Arbitrary distance threshold
-            resourceThreshold = 3; //Number of resource building that must be kept
+            distanceThreshold = BuildingController.MAX_BUILDING_RANGE;
         }
 
         /// <summary>
@@ -79,19 +77,31 @@ namespace Recellection.Code.Controllers
             m_view.LookAtScreen(); //Have the AI View update its local variables
 
             //First order of business: secure some income
-            if (m_view.resourcePoints.Count < resourceThreshold)
+            //While we have secured less resource points than we should have, get some!
+            Building sourceBuilding = m_view.myBuildings[0];
+            Vector2 sourcePosition = sourceBuilding.GetPosition();
+            while (m_view.GetResourceLocations().Count < resourceThreshold && sourceBuilding.units.Count > this.unitAcc.CalculateBuildingCostInflation(Globals.BuildingTypes.Resource))
             {
-                int distance = int.MaxValue;
-                Vector2 friendly = null;
-                Vector2 resource = getClosestResourceHotspot(distance, friendly);
+                Vector2 resource = getClosestResourceHotspot(sourcePosition);
 
-                if (distance < distanceThreshold)
-                {
-                    IssueBuildOrder(resource, friendly, Globals.BuildingTypes.Resource);
+                if (!WithinBuildRangeOf(resource, sourcePosition))
+                { //Invalid coordinates, the resource spot is too far away.
+                    log.Fatal("Resource spot " + resource.X+","+resource.Y + " too far away.");
+                    //Generate a point closer to the resource point than the source building
+
+                    Vector2 halfway = Vector2.Add(Vector2.Divide(Vector2.Subtract(resource, sourcePosition), 2), resource);
+                    if (WithinBuildRangeOf(sourcePosition, halfway))
+                    {//We can relay with one building
+                        IssueBuildOrder(halfway, sourceBuilding, Globals.BuildingTypes.Barrier);
+                    }
+                    else
+                    {//The closest resource hotspot is further away than one relay building.
+                        IssueBuildOrder(halfway, sourceBuilding, Globals.BuildingTypes.Base);
+                    }
                 }
-                else //Not close enough! 
+                else
                 {
-
+                    IssueBuildOrder(resource, sourceBuilding, Globals.BuildingTypes.Resource);
                 }
             }
 
@@ -106,13 +116,33 @@ namespace Recellection.Code.Controllers
             //}
         }
 
+        /// <summary>
+        /// Syntactic sugar. Checks if the given source building is within building range of dest.
+        /// </summary>
+        /// <param name="source"></param>
+        /// <param name="dest"></param>
+        /// <returns></returns>
+        private bool WithinBuildRangeOf(Vector2 source, Vector2 dest)
+        {
+            List<Point> valid = BuildingController.GetValidBuildingInterval(dest, m_view.world);
+
+            Point v1 = valid[0];
+            Point v2 = valid[1];
+
+            if ((int)source.X < v1.X || (int)source.X > v2.X || (int)source.Y < v1.Y || (int)source.Y > v2.Y)
+            {
+                return false;
+            }
+            return true;
+        }
+        
 
         /// <summary>
         /// Method for figuring out the best resource hotspot to take.
-        /// The parameter is the distance between that point and the closest friendly building.
+        /// The parameter is the closest friendly building.
         /// </summary>
         /// <returns></returns>
-        private Vector2 getClosestResourceHotspot(Vector2 friendly, int distance)
+        private Vector2 getClosestResourceHotspot(Vector2 friendly)
         {
             //Get a list of all resource hotspots
             List<Vector2> resources = m_view.resourcePoints;
@@ -134,7 +164,6 @@ namespace Recellection.Code.Controllers
                     friendly = closestFriendly;//Closest friendly building location
                 }
             }
-            distance = bestDist;
             return currentBest;
         }
 
