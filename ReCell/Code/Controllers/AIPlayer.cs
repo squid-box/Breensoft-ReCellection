@@ -364,7 +364,7 @@ namespace Recellection.Code.Controllers
             {
                 return;
             }
-            UnitController.MoveUnits(scoutSize, source, dest);
+            UnitController.MoveUnits(this, source, dest, scoutSize);
             log.Fatal("AI moved units to " + dest.GetPosition().X + "," + dest.GetPosition().Y);
         }
 

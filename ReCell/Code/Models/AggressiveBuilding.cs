@@ -25,7 +25,7 @@ namespace Recellection.Code.Models
 
         private const int MAXIMUM_NUMBER_OF_TARGETS = 5;
 
-        //Subscribe to me if you want to know about it when I change my target.
+        //Subscribe to me if you want to know about it when I change my baseEntity.
 		public event Publish<AggressiveBuilding> targetChanged;
 
         /// <summary>
@@ -112,7 +112,7 @@ namespace Recellection.Code.Models
         /// Getter for the currently targeted unit
         /// </summary>
         /// <returns>
-        /// The target of this aggressive fromBuilding, can be null
+        /// The baseEntity of this aggressive fromBuilding, can be null
         /// </returns>
         public List<Unit> GetTargets()
         {
@@ -121,7 +121,7 @@ namespace Recellection.Code.Models
 
         /// <summary>
         /// sets a new targeted unit, will overwrite any already targeted unit
-        /// null can be passed to just clear the current target
+        /// null can be passed to just clear the current baseEntity
         /// </summary>
         public void SetTargets(List<Unit> newTargets)
         {

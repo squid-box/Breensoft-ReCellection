@@ -318,7 +318,7 @@ namespace Recellection.Code.Controllers
 		/// <param name="to">Destination for the units.</param>
 		private void MoveUnits(int numberOfUnits, Building from, Building to)
 		{
-			UnitController.MoveUnits(numberOfUnits, from.controlZone.First.Value, to.controlZone.First.Value);
+			UnitController.MoveUnits(from.owner, from.controlZone.First.Value, to.controlZone.First.Value, numberOfUnits);
 		}
 	}
 
