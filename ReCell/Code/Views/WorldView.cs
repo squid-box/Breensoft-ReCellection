@@ -42,7 +42,7 @@ namespace Recellection.Code.Views
         private float crawler = 0;
         private LightParticleSystem lps;
 		private Tile active;
-        private Random rnd;
+        private Color[,] cMatrix;
 
 		private static int maxCols = (int)((float)Recellection.viewPort.Width / (float)Globals.TILE_SIZE);
 		private static int maxRows = (int)((float)Recellection.viewPort.Height / (float)Globals.TILE_SIZE);
@@ -62,6 +62,13 @@ namespace Recellection.Code.Views
 			world.lookingAtEvent += Instance.CreateCurrentView;
 			Instance.CreateCurrentView(Instance, new Event<Point>(world.LookingAt, EventType.ALTER));
 			Instance.alignViewport();
+
+
+            //Color c1 = new Color(0xb2, 0xc9, 0x9f);
+            //Color c2 = new Color(0x9f, 0xc4, 0xc9);
+            Color c1 = new Color(0xac, 0x33, 0x2d);
+            Color c2 = new Color(0xea, 0xe4, 0x7c);
+            Instance.cMatrix = Instance.generateColorMatrix(c1, c2);
 		}
 
         private WorldView()
@@ -78,8 +85,6 @@ namespace Recellection.Code.Views
             myLogger.Info("Created a WorldView.");
 
             tileCollection = new List<Tile>();
-
-            rnd = new Random();
 
             //this.World.LookingAt = new Vector2(0, 0);
             
@@ -354,10 +359,9 @@ namespace Recellection.Code.Views
                         int y = (int)(t.position.Y - (World.LookingAt.Y));
 
                         Rectangle r = new Rectangle(x * Globals.TILE_SIZE, y * Globals.TILE_SIZE, Globals.TILE_SIZE, Globals.TILE_SIZE);
-                        Color c1 = new Color(0xb2, 0xc9, 0x9f);
-                        Color c2 = new Color(0x9f, 0xc4, 0xc9);
-                        Color c = Color.Lerp(c1, c2, 1/rnd.Next(1, 101));
-                        spriteBatch.Draw(t.GetSprite(), r, c); //here be dragons and (tile texture2D)
+
+
+                        spriteBatch.Draw(t.GetSprite(), r, cMatrix[(int) t.position.X, (int)t.position.Y]); //here be dragons and (tile texture2D)
 
                         if (t.active)
                         {
@@ -429,6 +433,26 @@ namespace Recellection.Code.Views
                     doRenderThisPass = false;
                 }
             }
+        }
+
+        /// <summary>
+        /// takes two colors and blens them for each tile.
+        /// </summary>
+        /// <param name="c1"></param>
+        /// <param name="c2"></param>
+        /// <returns></returns>
+        private Color[,] generateColorMatrix(Color c1, Color c2)
+        {
+            Random rnd = new Random();
+            Color[,] colorM = new Color[World.map.width, World.map.height];
+            for (int ix = 0; ix < World.map.width; ix++)
+            {
+                for (int iy = 0; iy < World.map.height; iy++)
+                {
+                   colorM[ix, iy] = Color.Lerp(c1, c2, 1.0f / rnd.Next(1, 101));
+                }
+            }
+            return colorM;
         }
 	}
 }
