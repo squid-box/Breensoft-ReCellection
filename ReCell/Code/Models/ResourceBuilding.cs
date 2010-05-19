@@ -16,7 +16,7 @@ namespace Recellection.Code.Models
     {
         private int rateOfProduction;
         
-        private const int DEFAULT_PRODUCTION = 2;
+        private const int DEFAULT_PRODUCTION = 1;
 
         public int RateOfProduction
         {

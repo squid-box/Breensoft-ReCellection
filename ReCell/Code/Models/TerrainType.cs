@@ -101,10 +101,10 @@ namespace Recellection.Code.Models
 
         public Texture2D GetTexture()
         {
-          /*  switch (type)
+           switch (type)
             {
-                case Globals.TerrainTypes.Infected:*/
-            int random = rnd.Next(1, 3);
+                case Globals.TerrainTypes.Infected:
+            /*int random = rnd.Next(1, 4);
             if (random == 3)
                {
                   return TILE_A;
@@ -116,8 +116,8 @@ namespace Recellection.Code.Models
              else
                {
                   return TILE_C;
-               }
-               /*     return INFECTED_TEXTURE;
+               }*/
+                    return INFECTED_TEXTURE;
                 case Globals.TerrainTypes.Water:
                     return WATER_TEXTURE;
                 case Globals.TerrainTypes.Mucus:
@@ -125,8 +125,8 @@ namespace Recellection.Code.Models
                 case Globals.TerrainTypes.Slow:
                     return SLOW_TEXTURE;
                 default:
-                    return MEMBRANE_TEXTURE; */
-            //}
+                    return MEMBRANE_TEXTURE; 
+            }
         }
         /// <summary>
         /// Change the type of this TerrainType.
