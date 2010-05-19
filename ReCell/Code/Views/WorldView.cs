@@ -42,6 +42,7 @@ namespace Recellection.Code.Views
         private float crawler = 0;
         private LightParticleSystem lps;
 		private Tile active;
+        private Random rnd;
 
 		private static int maxCols = (int)((float)Recellection.viewPort.Width / (float)Globals.TILE_SIZE);
 		private static int maxRows = (int)((float)Recellection.viewPort.Height / (float)Globals.TILE_SIZE);
@@ -78,7 +79,7 @@ namespace Recellection.Code.Views
 
             tileCollection = new List<Tile>();
 
-            
+            rnd = new Random();
 
             //this.World.LookingAt = new Vector2(0, 0);
             
@@ -353,8 +354,10 @@ namespace Recellection.Code.Views
                         int y = (int)(t.position.Y - (World.LookingAt.Y));
 
                         Rectangle r = new Rectangle(x * Globals.TILE_SIZE, y * Globals.TILE_SIZE, Globals.TILE_SIZE, Globals.TILE_SIZE);
-
-                        spriteBatch.Draw(t.GetSprite(), r, Color.White);
+                        Color c1 = new Color(0xb2, 0xc9, 0x9f);
+                        Color c2 = new Color(0x9f, 0xc4, 0xc9);
+                        Color c = Color.Lerp(c1, c2, 1/rnd.Next(1, 101));
+                        spriteBatch.Draw(t.GetSprite(), r, c); //here be dragons and (tile texture2D)
 
                         if (t.active)
                         {
