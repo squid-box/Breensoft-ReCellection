@@ -104,6 +104,7 @@ namespace Recellection.Code.Models
           /*  switch (type)
             {
                 case Globals.TerrainTypes.Infected:*/
+            return TILE_A;
             int random = rnd.Next(1, 3);
             if (random == 3)
                {
