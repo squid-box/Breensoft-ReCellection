@@ -60,13 +60,13 @@ namespace Recellection.Code.Views
         override public void Draw(SpriteBatch spriteBatch)
 		{
 			this.Layer = 1.0f;
-			drawTexture(spriteBatch, back, new Rectangle(0, 0, Recellection.viewPort.Width, Recellection.viewPort.Height));
+			DrawTexture(spriteBatch, back, new Rectangle(0, 0, Recellection.viewPort.Width, Recellection.viewPort.Height));
 
 			int x = Recellection.viewPort.Width / 2 - front.Width / 2;
 			int y = Recellection.viewPort.Height / 2 - front.Height / 2;
 
 			this.Layer = 0.0f;
-			drawTexture(spriteBatch, front, new Rectangle(x, y, front.Width, front.Height), new Color(255, 255, 255, opacity));
+			DrawTexture(spriteBatch, front, new Rectangle(x, y, front.Width, front.Height), new Color(255, 255, 255, opacity));
         }
     }
 }

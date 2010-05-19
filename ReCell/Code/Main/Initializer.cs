@@ -27,7 +27,16 @@ namespace Recellection.Code.Main
 		public void Run()
 		{
 			logger.Debug("Initializer is running.");
-
+			
+			/* <temporary author="Martin"> * /
+			Recellection.CurrentState = new EndGameView(true);
+			Thread.Sleep(3000);
+			Recellection.CurrentState = new EndGameView(false);
+			Thread.Sleep(3000);
+			Recellection.CurrentState = new EndGameView(null);
+			while(true)	{ Thread.Sleep(10000);	}
+			/* </temporary> */
+			
 			#region Build main menu
 			MenuIcon newgame = new MenuIcon("New game", null, Color.Black);
 			MenuIcon options = new MenuIcon("Options", null, Color.Black);
@@ -52,25 +61,24 @@ namespace Recellection.Code.Main
             
 			Cue backgroundSound = Sounds.Instance.LoadSound("Menu");
 			backgroundSound.Play();
-			Recellection.CurrentState = view;
 			
             while(true)
-            {
+			{
+				backgroundSound.Resume();
+				Recellection.CurrentState = view;
 				logger.Info("Waiting for Tobii input...");
 				MenuIcon response = MenuController.GetInput();
 	            
 				logger.Info("Got input!");
-				backgroundSound.Pause();
 
 				if (response == newgame)
 				{	
 					// START THE GAME ALREADY!
 					GameInitializer gameInit = new GameInitializer();
+					backgroundSound.Pause();
 					Recellection.CurrentState = new WorldView(gameInit.theWorld);
 					VictorTurner vt = new VictorTurner(gameInit);
 					vt.Run();
-                    Recellection.playBeethoven();
-                    Environment.Exit(0);
 				}
 				else if (response == quit)
 				{
@@ -84,7 +92,6 @@ namespace Recellection.Code.Main
 					
 					if (MenuController.GetInput() == yes)
 					{
-						Recellection.playBeethoven();
 						Environment.Exit(0);
 					}
 					

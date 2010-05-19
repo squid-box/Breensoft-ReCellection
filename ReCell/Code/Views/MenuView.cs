@@ -61,7 +61,7 @@ namespace Recellection
 		override public void Draw(SpriteBatch spriteBatch)
 		{
 			Layer = 1.0f;
-			this.drawTexture(spriteBatch, currentMenu.GetMenuPic(), new Rectangle(0, 0, Recellection.viewPort.Width, Recellection.viewPort.Height));
+			this.DrawTexture(spriteBatch, currentMenu.GetMenuPic(), new Rectangle(0, 0, Recellection.viewPort.Width, Recellection.viewPort.Height));
 
 			Layer = 0.0f;
             spriteBatch.DrawString(Recellection.screenFont, currentMenu.explanation, currentMenu.explanationDrawPos, currentMenu.explanationColor);
@@ -71,7 +71,7 @@ namespace Recellection
 				if (mi.texture != null)
 				{
 					Layer = 0.5f;
-					this.drawTexture(spriteBatch, mi.texture, mi.targetTextureRectangle);
+					this.DrawTexture(spriteBatch, mi.texture, mi.targetTextureRectangle);
 				}
 				if (mi.label != null)
 				{
