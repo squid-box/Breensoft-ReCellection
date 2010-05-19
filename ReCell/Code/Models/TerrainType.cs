@@ -24,11 +24,11 @@ namespace Recellection.Code.Models
         private int rscMod; // Resource modifier
         private Globals.TerrainTypes type;
 
-        private readonly static Texture2D MEMBRANE_TEXTURE =    Recellection.textureMap.GetTexture(Globals.TextureTypes.Membrane);
-        private readonly static Texture2D MUCUS_TEXTURE =       Recellection.textureMap.GetTexture(Globals.TextureTypes.Mucus);
-        private readonly static Texture2D SLOW_TEXTURE =        Recellection.textureMap.GetTexture(Globals.TextureTypes.Slow);
-        private readonly static Texture2D INFECTED_TEXTURE =    Recellection.textureMap.GetTexture(Globals.TextureTypes.Infected);
-        private readonly static Texture2D WATER_TEXTURE =       Recellection.textureMap.GetTexture(Globals.TextureTypes.Water);
+        private readonly static Texture2D MEMBRANE_TEXTURE =    Recellection.textureMap.GetTexture(Globals.TextureTypes.tile2a);
+        private readonly static Texture2D MUCUS_TEXTURE = Recellection.textureMap.GetTexture(Globals.TextureTypes.tile2e); //resource
+        private readonly static Texture2D SLOW_TEXTURE = Recellection.textureMap.GetTexture(Globals.TextureTypes.tile2b);
+        private readonly static Texture2D INFECTED_TEXTURE = Recellection.textureMap.GetTexture(Globals.TextureTypes.tile2c);
+        private readonly static Texture2D WATER_TEXTURE = Recellection.textureMap.GetTexture(Globals.TextureTypes.tile2d);
         // Methods
 
         #region Constructors
