@@ -364,19 +364,19 @@ namespace Recellection
         {
             if (iconList.Count < 3)
             {
-                return new Menu(Globals.MenuLayout.Prompt, iconList, explanation);
+                new Menu(Globals.MenuLayout.Prompt, iconList, explanation);
             }
-            else if (5 > iconList.Count > 2)
+            else if (2 < iconList.Count && iconList.Count < 5)
             {
-                return new Menu(Globals.MenuLayout.FourMatrix, iconList, explanation);
+                new Menu(Globals.MenuLayout.FourMatrix, iconList, explanation);
             }
-            else if (10 > iconList.Count > 4)
+            else if (4 < iconList.Count && iconList.Count < 10)
             {
-                return new Menu(Globals.MenuLayout.NineMatrix, iconList, explanation);
+                new Menu(Globals.MenuLayout.NineMatrix, iconList, explanation);
             }
             else
             {
-                return new Menu(Globals.MenuLayout.FreeStyle, iconList, explanation);
+                new Menu(Globals.MenuLayout.FreeStyle, iconList, explanation);
             }
         }
     }
