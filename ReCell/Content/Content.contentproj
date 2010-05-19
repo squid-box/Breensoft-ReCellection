@@ -375,6 +375,23 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Graphics\tile2a.png">
+      <Name>tile2a</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="Graphics\tile2b.png">
+      <Name>tile2b</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="Graphics\tile2c.png">
+      <Name>tile2c</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
     <Folder Include="Graphics\Buildings\" />
     <Folder Include="Graphics\Terrains\" />
     <Folder Include="Graphics\Units\" />
