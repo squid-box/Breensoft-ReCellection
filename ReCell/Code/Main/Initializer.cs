@@ -102,10 +102,18 @@ namespace Recellection.Code.Main
 				{
 					Configurator.Instance.ChangeOptions();
 				}
-				else
-				{
-					Recellection.playBeethoven();
-				}
+                else if (response == help)
+                {
+                    MenuController.LoadMenu(HelpMenuFactory.GetHelpMenu(HelpMenuFactory.MenuType.Generic));
+                }
+                else if (response == HelpMenuFactory.GetHelpMenu(HelpMenuFactory.MenuType.Generic).GetIcons()[7])
+                {
+                    MenuController.UnloadMenu();
+                }
+                else
+                {
+                    Recellection.playBeethoven();
+                }
 			}
 		}
 
