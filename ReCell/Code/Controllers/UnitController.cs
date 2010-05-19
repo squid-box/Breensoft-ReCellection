@@ -116,6 +116,7 @@ namespace Recellection.Code.Controllers
 			foreach (Unit u in toBeKilled)
 			{
 				u.RemoveFromWorld();
+                u.owner.RemoveUnit(u);
 			}
 			toBeKilled.Clear();
 		}
@@ -154,7 +155,7 @@ namespace Recellection.Code.Controllers
 				// Search for units
                 lock (t.GetUnits())
                 {
-                    foreach (Unit ou in t.GetUnits())
+                    foreach (Unit ou in t.GetUnits(u.owner.Enemy))
                     {
                         // Is this an enemy?
                         if (u.owner != ou.owner && ! ou.isDead)

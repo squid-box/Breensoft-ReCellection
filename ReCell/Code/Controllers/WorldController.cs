@@ -40,7 +40,7 @@ namespace Recellection.Code.Controllers
 		private Player playerInControll;
 
         private World theWorld;
-
+        TobiiController tobii = TobiiController.GetInstance(Recellection.windowHandle);
         private MenuIcon[,] menuMatrix;
         private List<MenuIcon> scrollZone;
 		
@@ -129,12 +129,14 @@ namespace Recellection.Code.Controllers
 				if (theWorld.GetMap().GetTile(new Point(x + theWorld.LookingAt.X, y + theWorld.LookingAt.Y))
 						.GetBuilding() != null)
 				{
+                    tobii.SetFeedbackColor(Color.Blue);
 					s.state = State.BUILDING;
 					s.point = new Point(x, y);
                     s.absPoint = absoluteCordinate;
 				}
 				else
 				{
+                    tobii.SetFeedbackColor(Color.White);
 					s.state = State.TILE;
 					s.point = new Point(x, y);
                     s.absPoint = absoluteCordinate;
@@ -199,10 +201,12 @@ namespace Recellection.Code.Controllers
             }
             else if (choosenMenu.Equals(buildCell))
             {
+                tobii.SetFeedbackColor(Color.DarkGreen);
                 Selection destsel = retrieveSelection();
                 if (destsel.state != State.TILE)
 				{
 					Sounds.Instance.LoadSound("Denied");
+                    tobii.SetFeedbackColor(Color.White);
 					return;
 				}
                 Tile selectedTile = map.GetTile(destsel.absPoint);
@@ -213,6 +217,7 @@ namespace Recellection.Code.Controllers
                     try
                     {
                         BuildingController.ConstructBuilding(playerInControll, selectedTile, building, theWorld);
+                        tobii.SetFeedbackColor(Color.White);
                     }
                     catch (BuildingController.BuildingOutOfRangeException bore)
                     {
@@ -222,6 +227,7 @@ namespace Recellection.Code.Controllers
 				else
 				{
 					Sounds.Instance.LoadSound("Denied");
+                    tobii.SetFeedbackColor(Color.White);
 					return;
 				}
             }
@@ -238,9 +244,15 @@ namespace Recellection.Code.Controllers
             }
             else if (choosenMenu.Equals(moveUnits))
             {
+               
+                
+                tobii.SetFeedbackColor(Color.Red);
+                
                 Selection destsel = retrieveSelection();
                 Tile selectedTile = map.GetTile(destsel.absPoint);
                 UnitController.MoveUnits(building.GetUnits().Count, seltile, selectedTile);
+                
+                tobii.SetFeedbackColor(Color.White);
 
             }
             else if (choosenMenu.Equals(repairCell))
