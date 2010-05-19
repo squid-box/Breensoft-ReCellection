@@ -354,7 +354,7 @@ namespace Recellection.Code.Views
 
                         Rectangle r = new Rectangle(x * Globals.TILE_SIZE, y * Globals.TILE_SIZE, Globals.TILE_SIZE, Globals.TILE_SIZE);
 
-                        spriteBatch.Draw(t.GetSprite(), r, Color.White);
+                        spriteBatch.Draw(t.GetSprite(), r, Color.Red); //here be dragons and (tile texture2D)
 
                         if (t.active)
                         {
