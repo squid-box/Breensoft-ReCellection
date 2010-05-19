@@ -15,6 +15,7 @@ using Tobii.TecSDK.Core.Utilities;
 using Interaction = Tobii.TecSDK.Client.Utilities.Interaction;
 using Recellection.Code.Utility.Logger;
 using System.Drawing;
+using Microsoft.Xna.Framework.Input;
 
 namespace Recellection
 {
@@ -32,6 +33,9 @@ namespace Recellection
         private static Logger logger = LoggerFactory.GetLogger();
         private GUIRegion newActivatedRegion = null;
         private static TobiiController _instance = null;
+        private GUIRegion left = null, right = null, top = null, bot = null;       
+        
+        KeyboardState lastKBState, kBState;
 
         /// <summary>
         /// Main constructor for the controller,
@@ -73,11 +77,11 @@ namespace Recellection
                     TecClient.Init("Recellection");
 
                     #region I'm too scared to remove these comments
-                    //Tobii.TecSDK.Core.Interaction.Contracts.UserProfileProperties newProfile = new Tobii.TecSDK.Core.Interaction.Contracts.UserProfileProperties("RecellectionProfile");
-                    //Tobii.TecSDK.Client.Utilities.UserProfile.Add("RecellectionProfile", "RecellectionProfile");
-                    //Tobii.TecSDK.Client.Utilities.UserProfile.SetCurrent("RecellectionProfile");
-                    //Tobii.TecSDK.Client.Utilities.UserProfile.Current.FeedbackSettings = new Tobii.TecSDK.Core.Interaction.Contracts.FeedbackSettings();
-                    //Tobii.TecSDK.Client.Utilities.UserProfile.Current.Enabled = true;
+                    Tobii.TecSDK.Core.Interaction.Contracts.UserProfileProperties newProfile = new Tobii.TecSDK.Core.Interaction.Contracts.UserProfileProperties("RecellectionProfile");
+                    Tobii.TecSDK.Client.Utilities.UserProfile.Add("RecellectionProfile", "RecellectionProfile");
+                    Tobii.TecSDK.Client.Utilities.UserProfile.SetCurrent("RecellectionProfile");
+                    Tobii.TecSDK.Client.Utilities.UserProfile.Current.FeedbackSettings = new Tobii.TecSDK.Core.Interaction.Contracts.FeedbackSettings();
+                    Tobii.TecSDK.Client.Utilities.UserProfile.Current.Enabled = true;
 
                     #endregion
 
@@ -90,12 +94,18 @@ namespace Recellection
                         new Tobii.TecSDK.Core.Interaction.Contracts.ClientApplicationProperties
                             (TecClient.ClientSettings, Tobii.TecSDK.Client.Utilities.UserProfile.Current);
                     
-                    props.OffWindowProcessing = true;
-
+                    props.OffWindowProcessing = true;                    
+                    props.Enabled = true;
+                    
                     //we copy our newly created ClientApplicationProperties object to our CurrentApplicationProfile
                     //the change is then applies by calling UpdateApplicationProfile
-                    TecClient.CurrentApplicationProfile.CopyProperties(props);
+                    TecClient.CurrentApplicationProfile.CopyProperties(props);                    
+                    TecClient.CurrentApplicationProfile.Enabled = true;
                     TecClient.UpdateApplicationProfile();
+                    
+                    TecClient.ClientSettings.OffWindowProcessing = true;
+                    TecClient.ClientSettings.ApplySettings();
+                    TecClient.SettingsManager.ApplySettings();
 
                     SetFeedbackColor(Microsoft.Xna.Framework.Graphics.Color.White);
                 }
@@ -104,11 +114,12 @@ namespace Recellection
                     logger.Warn("The Tobii Controller did not initialize correctly");
                     return false;
                 }
+
                 #region uncomment me to test offscreen regions
-                //GUIRegion test = new GUIRegion(IntPtr.Zero, new Rect(1400, 300, 500, 500));
-                //test.Activate += new EventHandler<Tobii.TecSDK.Client.Interaction.ActivateEventArgs>(test_Activate);
-                //AddRegion(test);
-                //test.Enabled = true;
+
+                    //GUIRegion test = new GUIRegion(IntPtr.Zero, new Rect(1280, 0, 500, 1024));
+                    //AddRightOffScreen(test);
+
                 #endregion
 
                 logger.Info("Successfully initialized the Tobii Controller");
@@ -138,8 +149,33 @@ namespace Recellection
             foreach (IInteractionRegion region in Interaction.Regions.Values)
             {
                 region.Enabled = value;
-            }
-            //Interaction.InteractionMode = value == true ? InteractionMode.On : InteractionMode.Off;            
+            }        
+        }
+
+        //We'll just do them like this for now
+        public void AddLeftOffScreen(GUIRegion left)
+        {
+            this.left = left;
+            AddRegion(left);
+            this.left.Enabled = true;
+        }
+        public void AddRightOffScreen(GUIRegion right)
+        {
+            this.right = right;
+            AddRegion(this.right);
+            this.right.Enabled = true;
+        }
+        public void AddTopOffScreen(GUIRegion top)
+        {
+            this.top = top;
+            AddRegion(this.top);
+            this.top.Enabled = true;
+        }
+        public void AddBotOffScreen(GUIRegion bot)
+        {
+            this.bot = bot;
+            AddRegion(this.bot);
+            this.bot.Enabled = true;     
         }
 
         /// <summary>
@@ -222,8 +258,40 @@ namespace Recellection
         {
             for (; ; )
             {
-                System.Threading.Thread.Sleep(200); // so I heard you like hogging cpu time
-                logger.Fatal(Tobii.TecSDK.Client.Utilities.Interaction.CurrentCoordinate.ToString());
+                System.Threading.Thread.Sleep(200); // so I heard you like hogging cpu time                
+                lastKBState = kBState;
+                kBState = Recellection.publicKeyBoardState;
+#if DEBUG
+                if (kBState.IsKeyDown(Keys.W) && lastKBState.IsKeyUp(Keys.W))
+                {
+                    if (top != null)
+                    {
+                        top.Publish(top, new global::Recellection.Code.Utility.Events.EventType());
+                    }
+                }
+                else if(kBState.IsKeyDown(Keys.S) && lastKBState.IsKeyUp(Keys.S))
+                {
+                    if (bot != null)
+                    {                    
+                        bot.Publish(bot, new global::Recellection.Code.Utility.Events.EventType());
+                    }
+                }
+                else if(kBState.IsKeyDown(Keys.A) && lastKBState.IsKeyUp(Keys.A))
+                {
+                    if (left != null)
+                    {
+                        left.Publish(left, new global::Recellection.Code.Utility.Events.EventType());
+                    }
+                        
+                }
+                else if(kBState.IsKeyDown(Keys.D) && lastKBState.IsKeyUp(Keys.D))
+                {
+                    if (right != null)
+                    {
+                        right.Publish(right, new global::Recellection.Code.Utility.Events.EventType());
+                    }
+                }
+#endif
                 if (newActivatedRegion != null)
                 {
                     GUIRegion temp = newActivatedRegion;

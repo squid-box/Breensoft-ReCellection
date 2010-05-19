@@ -18,14 +18,11 @@ namespace Recellection.Code.Controllers
          */
         private AIView m_view;
 
-
-        private int distanceThreshold;
-        private int resourceThreshold = 3; //The least number of resource hotspots the AI should have secured
-
+        private int resourceThreshold = 3; //The ideal number of resource hotspots the AI should have secured
+        private int resourceCriticalThreshold = 1; //The least number of resource hotspots the AI MUST have secured
+        
         private Random randomFactory;
         private Logger log;
-
-
 
         /// <summary>
         /// Constructor. The AIPlayer requires quite alot of external controllers.
@@ -40,7 +37,6 @@ namespace Recellection.Code.Controllers
             m_view = view;
 
             view.RegisterPlayer(this);
-            distanceThreshold = BuildingController.MAX_BUILDING_RANGE;
         }
 
         /// <summary>
@@ -63,7 +59,6 @@ namespace Recellection.Code.Controllers
 
             m_view = view;
             view.RegisterPlayer(this);
-            distanceThreshold = BuildingController.MAX_BUILDING_RANGE;
         }
 
         /// <summary>
@@ -75,11 +70,76 @@ namespace Recellection.Code.Controllers
             log.Fatal("AI Making a Move.");
 
             m_view.LookAtScreen(); //Have the AI View update its local variables
+            int resourceLocations = m_view.GetResourceLocations().Count;
 
             //First order of business: secure some income
             //While we have secured less resource points than we should have, get some!
-            SecureNextResourceHotSpot();
-            
+            if(resourceLocations < resourceThreshold)
+                SecureNextResourceHotSpot();
+
+            if (resourceLocations < resourceCriticalThreshold)
+                //If we have not secured basic income, dont worry about anything else.
+                return;
+
+            List<Building> enemyFront = new List<Building>();
+            List<Building> front = GetFrontLine(enemyFront);
+            WeighFrontLine(front, enemyFront);
+        }
+
+        /// <summary>
+        /// Returns a list of all buildings that define the front line, as well
+        /// as filling the given list with their corresponding closest enemy.
+        /// </summary>
+        /// <returns></returns>
+        private List<Building> GetFrontLine(List<Building> enemyFront)
+        {
+            List<Building> buildings = m_view.myBuildings;
+            List<Building> result = new List<Building>();
+            for(int i = 0; i < buildings.Count; i++)
+            {
+                Building temp = buildings[i];
+                Building enemy = m_view.GetBuildingAt(GetClosestPointFromList(temp.GetPosition(), m_view.enemyPoints));
+                if (m_view.GetBuildingAt(GetClosestPointFromList(enemy.GetPosition(), m_view.friendlyPoints)) == temp)
+                { //There is no friendly point that's more threatened by our closest enemy point
+                    if (!enemyFront.Contains(enemy))
+                    {
+                        result.Add(temp);
+                        enemyFront.Add(enemy);
+                    }
+                }
+            }
+            return result;
+        }
+
+
+        /// <summary>
+        /// Iterates over the giving front, setting their weights according to their respective enemies.
+        /// </summary>
+        /// <param name="front"></param>
+        /// <param name="enemyFront"></param>
+        private void WeighFrontLine(List<Building> front, List<Building> enemyFront)
+        {
+            double enemySum = 0;
+            double[] ratios = new double[front.Count];
+
+            //First, check how many units are in the enemy front.
+            for (int i = 0; i < enemyFront.Count; i++)
+            {
+                enemySum += enemyFront[i].GetUnits().Count;
+            }
+            //Then see what their internal ratios are.
+            for (int i = 0; i < enemyFront.Count; i++)
+            {
+                if (enemySum != 0)
+                {
+                    ratios[i] = (double)(enemyFront[i].GetUnits().Count) / enemySum;
+                }
+            }
+            //Finally distribute that same ratio across the AI's own border.
+            for (int i = 0; i < front.Count; i++)
+            {
+                GraphController.Instance.SetWeight(front[i], (int)(ratios[i] * m_view.CRITICAL));
+            }
         }
 
 
@@ -88,26 +148,73 @@ namespace Recellection.Code.Controllers
         /// </summary>
         private void SecureNextResourceHotSpot()
         {
-            Building sourceBuilding = m_view.myBuildings[0];
+            Building sourceBuilding = SelectSourceBuilding();
             Vector2 sourcePosition = sourceBuilding.GetPosition();
-            while (m_view.GetResourceLocations().Count < resourceThreshold)
-            {
-                Vector2 resource = getClosestResourceHotspot(sourcePosition);
-                List<Vector2> path = GenerateBuildPathBetween(sourcePosition, resource);
-                bool built = false;
+            Vector2 resource = GetClosestResourceHotspot(sourcePosition);
+            List<Vector2> path = GenerateBuildPathBetween(sourcePosition, resource);
 
-                if (path.Count == 1)
-                {//The resource building is within reach of the source
-                    built = IssueBuildOrder(resource, sourceBuilding, Globals.BuildingTypes.Resource);
+            //Skip the parts of the path we have walked before
+            for (int i = 0; i < path.Count; i++)
+            {
+                Building b = m_view.GetBuildingAt(path[i]);
+                if (b != null && b.GetOwner() == this)
+                {//Already have a building here, take a shortcut
+                    sourceBuilding = b;
+                    sourcePosition = sourceBuilding.GetPosition();
                 }
-                else
-                {
-                    //Relay buildings must be placed first
-                    built = IssueBuildOrder(path[0], sourceBuilding, Globals.BuildingTypes.Barrier);
-                }
-                if (!built) //We could not build for some reason. Stop iterating
-                    break;
             }
+            bool built = false;
+
+            if (WithinBuildRangeOf(sourceBuilding.GetPosition(), resource))
+            {//The resource building is within reach of the source
+                built = IssueBuildOrder(resource, sourceBuilding, Globals.BuildingTypes.Resource);
+                if(built)
+                    ClearHotspotWeights(path);
+            }
+            else
+            {
+                //Relay buildings must be placed first
+                built = IssueBuildOrder(path[0], sourceBuilding, Globals.BuildingTypes.Barrier);
+                if (built)
+                {
+                    if (m_view.GetResourceLocations().Count < resourceThreshold)
+                    {//If the AI has not secured enough resource spots, set the priority to critical
+                        GraphController.Instance.SetWeight(m_view.GetBuildingAt(path[0]), m_view.CRITICAL);
+                    }
+                    else
+                    {
+                        GraphController.Instance.SetWeight(m_view.GetBuildingAt(path[0]), m_view.THREATENED);
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// Iterates over a given list of coordinates representing building coordinates
+        /// and sets the weights of those buildings to "SAFE".
+        /// </summary>
+        /// <param name="path"></param>
+        private void ClearHotspotWeights(List<Vector2> path)
+        {
+            for (int i = 0; i < path.Count-1; i++)
+            {
+                Building b = m_view.GetBuildingAt(path[i]);
+                if (b != null)
+                {
+                    GraphController.Instance.SetWeight(b, m_view.SAFE);
+                }
+            }
+        }
+
+
+        /// <summary>
+        /// Method for deciding where to build from. 
+        /// right now it's basically a placeholder for more advanced code later.
+        /// </summary>
+        /// <returns></returns>
+        private Building SelectSourceBuilding()
+        {
+            return this.GetGraphs()[0].baseBuilding;
         }
 
 
@@ -178,7 +285,7 @@ namespace Recellection.Code.Controllers
         /// The parameter is the closest friendly building.
         /// </summary>
         /// <returns></returns>
-        private Vector2 getClosestResourceHotspot(Vector2 friendly)
+        private Vector2 GetClosestResourceHotspot(Vector2 friendly)
         {
             //Get a list of all resource hotspots
             List<Vector2> resources = m_view.resourcePoints;
@@ -187,58 +294,32 @@ namespace Recellection.Code.Controllers
 
             int currentDist = int.MaxValue;
             int bestDist = int.MaxValue;
+
             //For every resource hotspot check the distance to the closest friendly.
             for (int i = 0; i < resources.Count; i++)
             {
-                //newBest is the friendly building closest to resources[i]. Might be useful
-                closestFriendly = GetClosestPointFromList(resources[i], m_view.friendlyPoints, currentDist);
+                Vector2 r = resources[i];
+                Building b = m_view.GetBuildingAt(r);
+                if (b != null)
+                    //There is already a building here
+                    continue;
+
+                closestFriendly = GetClosestPointFromList(r, m_view.friendlyPoints);
+                currentDist = (int)Vector2.Distance(r, closestFriendly);
                 if(currentDist < bestDist)
                 {//We have a new leader
 
                     bestDist = currentDist; //Closest distance
-                    currentBest = resources[i]; //Closest resource point
+                    currentBest = r; //Closest resource point
                     friendly = closestFriendly;//Closest friendly building location
                 }
             }
             return currentBest;
         }
 
-        /// <summary>
-        /// Takes a look at the newest revision of the interresPoints and iterates over them,
-        /// then making appropriate calls to game controllers.
-        /// </summary>
-        private void IterateInterrestPoints()
-        {
-            List<Vector2> interrestPoints = m_view.interrestPoints;
-
-            for (int i = 0; i < interrestPoints.Count; i++)
-            {
-                Vector2 current = interrestPoints[i];
-
-                //HACK! Invalid coords should not be added to the list in the first place.
-                //Suspect that LookAtScreen is incorrect.
-                if (!m_view.Valid(current))
-                {
-                    log.Fatal("erroneous point " + current.X + "," + current.Y);
-                    continue;
-                }
-
-                if (m_view.ContainsResourcePoint(current))
-                {
-                    EvaluateResourcePoint(current);
-                }
-                else
-                {
-                    CalculateWeight(m_view.GetBuildingAt(current));
-                }
-            }
-        }
-
-
 
         /// <summary>
         /// Returns the point in the given list that is closest to the given point.
-        /// Overloaded. +1 to get the distance
         /// </summary>
         /// <param name="point"></param>
         /// <param name="list"></param>
@@ -258,57 +339,6 @@ namespace Recellection.Code.Controllers
             return best;
         }
 
-
-
-        /// <summary>
-        /// Returns the point in the given list that is closest to the given point.
-        /// </summary>
-        /// <param name="point"></param>
-        /// <param name="list"></param>
-        /// <returns></returns>
-        private Vector2 GetClosestPointFromList(Vector2 point, List<Vector2> list, int dist)
-        {
-            Vector2 best = list[0];
-            Vector2 temp = best;
-            for (int i = 1; i < list.Count; i++)
-            {
-                temp = list[i];
-                float dist1 = Vector2.Distance(temp, point);
-                float dist2 = Vector2.Distance(best, point);
-                if (dist1 < dist2)
-                {
-                    best = temp;
-                    dist = (int)dist1;
-                }
-            }
-            return best;
-        }
-
-
-        /// <summary>
-        /// Decides what the weight should be at the given building
-        /// </summary>
-        /// <param name="fromBuilding"></param>
-        private void CalculateWeight(Building building)
-        {
-            if (building == null)
-            {
-                throw new NullReferenceException();
-            }
-            int friendly = unitCountAt(building.position, this);
-            int enemy = unitCountAt(GetClosestPointFromList(building.position, m_view.enemyPoints), m_view.opponents[0]);
-            int diff = enemy - friendly;
-            if (diff > 0) //more enemy units than friendly
-            {
-                int weight = GraphController.Instance.GetWeight(building);
-                GraphController.Instance.SetWeight(building, weight + (diff / 2)); //increase the weight by the difference in units / 2
-            }
-            else
-            {
-                int weight = GraphController.Instance.GetWeight(building);
-                GraphController.Instance.SetWeight(building, weight + diff); //decrease the weight by the difference in units
-            }
-        }
 
         /// <summary>
         /// Method for sending out some scouts across the map in order to find opponent locations.
@@ -433,71 +463,6 @@ namespace Recellection.Code.Controllers
             int newY = (int)(point.Y + diffY - offsetY);
 
             return new Vector2(newX, newY);
-        }
-
-        /// <summary>
-        /// Decides what to do with the given resource point
-        /// </summary>
-        /// <param name="point"></param>
-        private void EvaluateResourcePoint(Vector2 point)
-        {
-            if (m_view.Harvesting(point) == this)
-            {
-                if (CanHoldPoint(point))
-                    return;
-
-                CalculateWeight(m_view.GetBuildingAt(point));
-            }
-            Vector2 closestFriendly = GetClosestPointFromList(point, m_view.GetFriendlyBuildings());
-            if (CanHoldPoint(closestFriendly))
-            {
-                IssueBuildOrder(point, m_view.GetBuildingAt(closestFriendly), Globals.BuildingTypes.Resource);
-            }
-            else
-            {
-                CalculateWeight(m_view.GetBuildingAt(closestFriendly));
-            }
-        }
-
-
-        /// <summary>
-        /// Decides what to do with the given enemy point
-        /// </summary>
-        /// <param name="current"></param>
-        private void EvaluateEnemyPoint(Vector2 current)
-        {
-            Vector2 nearby = GetClosestPointFromList(current, m_view.GetFriendlyBuildings());
-
-            if (Vector2.Distance(current, nearby) > distanceThreshold)
-            {
-                nearby = CalculatePointNear(current); //Find a good spot to go to
-                m_view.AddInterrestPoint(nearby); //And add it to the todo-list
-            }
-            else //"nearby" is close enough.
-            {
-                if (m_view.ContainsFriendlyBuilding(nearby))
-                {
-                    CalculateWeight(m_view.GetBuildingAt(nearby));
-                }
-            }
-        }
-
-
-
-
-        /// <summary>
-        /// Evaluates whether or not the given point can be defended against a potential/ongoing attack
-        /// from nearby enemy buildings.
-        /// </summary>
-        /// <param name="point"></param>
-        /// <returns></returns>
-        private bool CanHoldPoint(Vector2 point)
-        {
-            if (unitCountAt(point, this) > (unitCountAt(point, m_view.opponents[0]) + unitCountAt(GetClosestPointFromList(point, m_view.enemyPoints), m_view.opponents[0])))
-            {
-                return true;
-            }
-            return false;
         }
 
         /// <summary>
