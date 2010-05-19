@@ -66,8 +66,8 @@ namespace Recellection.Code.Views
 
             //Color c1 = new Color(0xb2, 0xc9, 0x9f);
             //Color c2 = new Color(0x9f, 0xc4, 0xc9);
-            Color c1 = new Color(0xac, 0x33, 0x2d);
-            Color c2 = new Color(0xea, 0xe4, 0x7c);
+            Color c1 = Color.HotPink;//new Color(0xac, 0x33, 0x2d);
+            Color c2 = Color.Crimson;//new Color(0xea, 0xe4, 0x7c);
             Instance.cMatrix = Instance.generateColorMatrix(c1, c2);
 		}
 
@@ -449,7 +449,7 @@ namespace Recellection.Code.Views
             {
                 for (int iy = 0; iy < World.map.height; iy++)
                 {
-                   colorM[ix, iy] = Color.Lerp(c1, c2, 1 / rnd.Next(1, 101));
+                   colorM[ix, iy] = Color.Lerp(c1, c2, (float) rnd.NextDouble());
                 }
             }
             return colorM;
