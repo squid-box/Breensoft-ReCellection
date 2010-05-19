@@ -65,7 +65,7 @@ namespace Recellection.Code.Controllers
                     if (HasWon())
                     {
 						finished = true;
-						EndGame(player);
+						EndGame(players[0]);
                         return;
                     }
                 }
@@ -137,7 +137,7 @@ namespace Recellection.Code.Controllers
 			Menu menu = new Menu(options);
 			MenuController.LoadMenu(menu);
 			
-			Recellection.CurrentState = new EndGameView(winner is Player);
+			Recellection.CurrentState = new EndGameView(! (winner is AIPlayer));
 			
 			MenuController.GetInput();
 			MenuController.UnloadMenu();

@@ -66,3 +66,8 @@ BaseCell=Bas Cell
 DefensiveCell=Försvars Cell
 AggressiveCell=Arg Cell
 ResourceCell=Arbets Cell
+
+[End game]
+hasWon=Grattis!\n\nDu vann.
+hasLost=Du förlorade.\n\nBättre lycka nästa gång!
+isDraw=Spelet är slut.\nVann du eller förlorade du?\n\n... Jag vet inte.
