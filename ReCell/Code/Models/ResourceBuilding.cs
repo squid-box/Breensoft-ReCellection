@@ -15,6 +15,8 @@ namespace Recellection.Code.Models
     public class ResourceBuilding : Building
     {
         private int rateOfProduction;
+        
+        private const int DEFAULT_PRODUCTION = 1;
 
         public int RateOfProduction
         {
@@ -51,7 +53,7 @@ namespace Recellection.Code.Models
             Player owner, BaseBuilding baseBuilding, LinkedList<Tile> controlZone)
             : base(name, posX, posY, RESOURCE_BUILDING_HEALTH, owner, Globals.BuildingTypes.Resource, baseBuilding,controlZone)
         {
-            this.rateOfProduction = controlZone.First().GetTerrainType().getResourceModifier();
+            this.rateOfProduction = controlZone.First().GetTerrainType().getResourceModifier() + DEFAULT_PRODUCTION;
             baseBuilding.RateOfProduction += this.rateOfProduction;
         }
 

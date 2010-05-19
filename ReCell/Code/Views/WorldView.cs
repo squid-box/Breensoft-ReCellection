@@ -209,37 +209,39 @@ namespace Recellection.Code.Views
                     Building b = t.GetBuilding();
                     if (b != null)
                     {
-                        myLogger.Info("Found a building on the tile.");
-						this.Layer = 0.1f;
-						Texture2D spr = b.GetSprite();
-						int bx = (int)Math.Round((b.position.X - World.LookingAt.X) * Globals.TILE_SIZE) - spr.Width/2;
-						int by = (int)Math.Round((b.position.Y - World.LookingAt.Y) * Globals.TILE_SIZE) - spr.Height/2;
-						this.DrawTexture(spriteBatch, spr,
-							new Rectangle(bx, by, spr.Width, spr.Height),
-                            b.owner.color);
+                        lock (b)
+                        {
+                            myLogger.Info("Found a building on the tile.");
+                            this.Layer = 0.1f;
+                            Texture2D spr = b.GetSprite();
+                            int bx = (int)Math.Round((b.position.X - World.LookingAt.X) * Globals.TILE_SIZE) - spr.Width / 2;
+                            int by = (int)Math.Round((b.position.Y - World.LookingAt.Y) * Globals.TILE_SIZE) - spr.Height / 2;
+                            this.DrawTexture(spriteBatch, spr,
+                                new Rectangle(bx, by, spr.Width, spr.Height),
+                                b.owner.color);
 
-                        //Number of units drawage
-                        int x = (int)(t.position.X - (World.LookingAt.X));
-                        int y = (int)(t.position.Y - (World.LookingAt.Y));
-                        Rectangle r = new Rectangle(x * Globals.TILE_SIZE, y * Globals.TILE_SIZE, Globals.TILE_SIZE, Globals.TILE_SIZE);
-                        float fontX, fontY;
-                        Vector2 stringSize;
-                        string infosz;
-						
-						this.Layer = 0.11f;
-						
-                        infosz = b.GetUnits().Count.ToString();
-                        stringSize = Recellection.worldFont.MeasureString(infosz);
-                        fontX = (float)(r.X + r.Width / 2) - stringSize.X / 2;
-                        fontY = (float)(r.Y + r.Height / 4) - stringSize.Y;
-                        spriteBatch.DrawString(Recellection.worldFont, infosz, new Vector2(fontX, fontY), Color.White, 0, new Vector2(0f), 1.0f, SpriteEffects.None, Layer);
+                            //Number of units drawage
+                            int x = (int)(t.position.X - (World.LookingAt.X));
+                            int y = (int)(t.position.Y - (World.LookingAt.Y));
+                            Rectangle r = new Rectangle(x * Globals.TILE_SIZE, y * Globals.TILE_SIZE, Globals.TILE_SIZE, Globals.TILE_SIZE);
+                            float fontX, fontY;
+                            Vector2 stringSize;
+                            string infosz;
 
-                        infosz = GraphController.Instance.GetWeight(b).ToString();
-                        stringSize = Recellection.worldFont.MeasureString(infosz);
-                        fontX = (float)(r.X + r.Width / 2) - stringSize.X / 2;
-                        fontY = (float)(r.Y + r.Height - stringSize.Y);
-						spriteBatch.DrawString(Recellection.worldFont, infosz, new Vector2(fontX, fontY), Color.White, 0, new Vector2(0f), 1.0f, SpriteEffects.None, Layer);
+                            this.Layer = 0.11f;
 
+                            infosz = b.GetUnits().Count.ToString();
+                            stringSize = Recellection.worldFont.MeasureString(infosz);
+                            fontX = (float)(r.X + r.Width / 2) - stringSize.X / 2;
+                            fontY = (float)(r.Y + r.Height / 4) - stringSize.Y;
+                            spriteBatch.DrawString(Recellection.worldFont, infosz, new Vector2(fontX, fontY), Color.White, 0, new Vector2(0f), 1.0f, SpriteEffects.None, Layer);
+
+                            infosz = GraphController.Instance.GetWeight(b).ToString();
+                            stringSize = Recellection.worldFont.MeasureString(infosz);
+                            fontX = (float)(r.X + r.Width / 2) - stringSize.X / 2;
+                            fontY = (float)(r.Y + r.Height - stringSize.Y);
+                            spriteBatch.DrawString(Recellection.worldFont, infosz, new Vector2(fontX, fontY), Color.White, 0, new Vector2(0f), 1.0f, SpriteEffects.None, Layer);
+                        }
                     }
 
                     // Find those units!
