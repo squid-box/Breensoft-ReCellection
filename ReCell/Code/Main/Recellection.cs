@@ -259,8 +259,11 @@ namespace Recellection
 			console.Console.WriteLine(LoggerFactory.ListLoggers());
 		}
 
-		public void SetLoggers(bool active)
+		public void SetLoggers(int i)
 		{
+			bool active = false;
+			if (i != 0)
+				active = false;
 			LoggerFactory.SetAll(active);
 		}
 
