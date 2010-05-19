@@ -74,13 +74,15 @@ namespace Recellection.Code.Models
 		{
 			get
 			{
-				return powerLevel + owner.powerLevel;
+				return powerLevel + owner.powerLevel + Buff;
 			}
 			set
 			{
 				powerLevel = value;
 			}
 		}
+		
+		public float Buff { get; set; }
 		
         private readonly static Texture2D UNIT_TEXTURE = Recellection.textureMap.GetTexture(Globals.TextureTypes.Unit);
 		
