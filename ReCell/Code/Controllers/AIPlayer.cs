@@ -78,12 +78,21 @@ namespace Recellection.Code.Controllers
 
             //First order of business: secure some income
             //While we have secured less resource points than we should have, get some!
+            SecureNextResourceHotSpot();
+            
+        }
+
+
+        /// <summary>
+        /// Identifies the closest resource hotspot and expands towards it.
+        /// </summary>
+        private void SecureNextResourceHotSpot()
+        {
             Building sourceBuilding = m_view.myBuildings[0];
             Vector2 sourcePosition = sourceBuilding.GetPosition();
-            while (m_view.GetResourceLocations().Count < resourceThreshold)// && sourceBuilding.units.Count > this.unitAcc.CalculateBuildingCostInflation(Globals.BuildingTypes.Resource))
+            while (m_view.GetResourceLocations().Count < resourceThreshold)
             {
                 Vector2 resource = getClosestResourceHotspot(sourcePosition);
-
                 List<Vector2> path = GenerateBuildPathBetween(sourcePosition, resource);
                 bool built = false;
 
@@ -93,31 +102,12 @@ namespace Recellection.Code.Controllers
                 }
                 else
                 {
-                    //Relay buildings must be placed.
+                    //Relay buildings must be placed first
                     built = IssueBuildOrder(path[0], sourceBuilding, Globals.BuildingTypes.Barrier);
-
-                    //First step into the path
-                    //Create the path
-                    //for (int i = 1; i < path.Count-1; i++) 
-                    //{
-                    //    IssueBuildOrder(path[i], m_view.GetBuildingAt(path[i - 1]), Globals.BuildingTypes.Barrier);
-                    //}
-                    //Finally place the resource building.
-                    //    IssueBuildOrder(path[path.Count - 1], m_view.GetBuildingAt(path[path.Count - 2]), Globals.BuildingTypes.Resource);
                 }
                 if (!built) //We could not build for some reason. Stop iterating
                     break;
             }
-
-
-            //
-            //IterateInterrestPoints();
-
-            //for (int i = 0; i < m_view.enemyPoints.Count; i++)
-            //{
-            //    Vector2 current = m_view.enemyPoints[i];
-            //    EvaluateEnemyPoint(current);
-            //}
         }
 
 
