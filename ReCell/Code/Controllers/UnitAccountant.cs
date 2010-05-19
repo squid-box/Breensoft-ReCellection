@@ -58,7 +58,10 @@ namespace Recellection.Code.Controllers
                 return FIRST_POWER_LEVEL_COST;
             }
             float level = (owner.powerLevel * 10f);
-            return (int)(POP_CAP_PER_PLAYER * Math.Pow((level / (float)MAX_POWER_LEVEL_LEVELS), 1f / level));
+            double exp = 1f / Math.Pow((level), 1f / ((float)MAX_POWER_LEVEL_LEVELS - 1f));
+            double bas = 1f / ((float)MAX_POWER_LEVEL_LEVELS - 1f);
+            double result = Math.Pow(bas, exp);
+            return (int)(POP_CAP_PER_PLAYER * result);
         }
 
         public bool PayAndUpgrade(Building building)
@@ -136,7 +139,10 @@ namespace Recellection.Code.Controllers
             {
                 return defaultCost;
             }
-            return (uint)(POP_CAP_PER_PLAYER * Math.Pow((buildingCount / ((float)MAX_OF_EACH_BUILDING_TYPE[(int)type] - 1f)), 1f / ((float)MAX_OF_EACH_BUILDING_TYPE[(int)type] - 1f)));
+            double exp = 1f / Math.Pow((buildingCount), 1f / ((float)MAX_OF_EACH_BUILDING_TYPE[(int)type] - 1f));
+            double bas = 1f /((float)MAX_OF_EACH_BUILDING_TYPE[(int)type] - 1f);
+            double test = Math.Pow(bas, exp);
+            return (uint)(POP_CAP_PER_PLAYER * test);
         }
     }
 }
