@@ -119,20 +119,54 @@ namespace Recellection.Code.Controllers
 			
 			Menu menu = new Menu(Globals.MenuLayout.FourMatrix, options, "");
 			MenuController.LoadMenu(menu);
-			Recellection.CurrentState = MenuView.Instance;
-			MenuIcon input = MenuController.GetInput();
+			
+			bool done = false;
+			while(! done)
+			{
+				Recellection.CurrentState = MenuView.Instance;
+				MenuIcon input = MenuController.GetInput();
+				if (input == endTurn)
+				{
+					finished = true;
+					break;
+				}
+				else if (input == endGame)
+				{
+					List<MenuIcon> promptOptions = new List<MenuIcon>(2);
+					MenuIcon yes = new MenuIcon(Language.Instance.GetString("Yes"), Recellection.textureMap.GetTexture(Globals.TextureTypes.Yes));
+					MenuIcon no = new MenuIcon(Language.Instance.GetString("No"), Recellection.textureMap.GetTexture(Globals.TextureTypes.No));
+					promptOptions.Add(yes);
+					promptOptions.Add(no);
+					MenuController.LoadMenu(new Menu(Globals.MenuLayout.Prompt, promptOptions, Language.Instance.GetString("AreYouSureYouWantToEndTheGame")));
+					MenuIcon inp = MenuController.GetInput();
+					MenuController.UnloadMenu();
+					
+					if (inp == yes)
+					{
+						// This should make the player lose :D
+						List<Building> buildingsToRemove = new List<Building>();
+						foreach(Graph g in playerInControll.GetGraphs())
+						{
+							foreach(Building b in g.GetBuildings())
+							{
+								buildingsToRemove.Add(b);
+							}
+						}
+						foreach(Building b in buildingsToRemove)
+						{
+							BuildingController.RemoveBuilding(b);
+						}
+						finished = true;
+						break;
+					}
+				}
+				else if (input == cancel)
+				{
+					break;
+				}
+			}
 			Recellection.CurrentState = WorldView.Instance;
 			MenuController.UnloadMenu();
-			
-			if (input == endTurn)
-			{
-				finished = true;
-			}
-			else if (input == endGame)
-			{
-				
-				Recellection.playBeethoven();
-			}
 		}
 
 		public Selection retrieveSelection()

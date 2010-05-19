@@ -28,15 +28,6 @@ namespace Recellection.Code.Main
 		{
 			logger.Debug("Initializer is running.");
 			
-			/* <temporary author="Martin"> * /
-			Recellection.CurrentState = new EndGameView(true);
-			Thread.Sleep(3000);
-			Recellection.CurrentState = new EndGameView(false);
-			Thread.Sleep(3000);
-			Recellection.CurrentState = new EndGameView(null);
-			while(true)	{ Thread.Sleep(10000);	}
-			/* </temporary> */
-			
 			#region Build main menu
 			MenuIcon newgame = new MenuIcon("New game", null, Color.Black);
 			MenuIcon options = new MenuIcon("Options", null, Color.Black);
@@ -83,7 +74,7 @@ namespace Recellection.Code.Main
 				}
 				else if (response == quit)
 				{
-					List<MenuIcon> promptOptions = new List<MenuIcon>();
+					List<MenuIcon> promptOptions = new List<MenuIcon>(2);
 					MenuIcon yes = new MenuIcon(Language.Instance.GetString("Yes"), Recellection.textureMap.GetTexture(Globals.TextureTypes.Yes));
 					MenuIcon no = new MenuIcon(Language.Instance.GetString("No"), Recellection.textureMap.GetTexture(Globals.TextureTypes.No));
 					promptOptions.Add(yes);

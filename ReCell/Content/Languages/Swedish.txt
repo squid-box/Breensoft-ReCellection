@@ -56,6 +56,7 @@ AreYouSureYouWantToQuit=Är du säker att du vill avsluta?
 [Game menu]
 EndTurn=Avsluta turen
 EndGame=Avsluta spelomgången
+AreYouSureYouWantToEndTheGame=Är du säker på att du vill avsluta spelomgången?
 
 [Tile options]
 TileMenu=Vad vill du göra med markbiten?
