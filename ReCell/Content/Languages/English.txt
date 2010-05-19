@@ -66,3 +66,8 @@ BaseCell=Base Cell
 DefensiveCell=Defensive Cell
 AggressiveCell=Aggressive Cell
 ResourceCell=Resurce Cell
+
+[End game]
+hasWon=Congratulations!\n\nYou won the game.
+hasLost=You lost.\n\nBetter luck next time!
+isDraw=The game has ended.\nDid you win or lose?\n\n... I do not know.
