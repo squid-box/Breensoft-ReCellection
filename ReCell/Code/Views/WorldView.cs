@@ -62,6 +62,13 @@ namespace Recellection.Code.Views
 			world.lookingAtEvent += Instance.CreateCurrentView;
 			Instance.CreateCurrentView(Instance, new Event<Point>(world.LookingAt, EventType.ALTER));
 			Instance.alignViewport();
+
+
+            //Color c1 = new Color(0xb2, 0xc9, 0x9f);
+            //Color c2 = new Color(0x9f, 0xc4, 0xc9);
+            Color c1 = new Color(0xac, 0x33, 0x2d);
+            Color c2 = new Color(0xea, 0xe4, 0x7c);
+            Instance.cMatrix = Instance.generateColorMatrix(c1, c2);
 		}
 
         private WorldView()
@@ -78,11 +85,6 @@ namespace Recellection.Code.Views
             myLogger.Info("Created a WorldView.");
 
             tileCollection = new List<Tile>();
-            //Color c1 = new Color(0xb2, 0xc9, 0x9f);
-            //Color c2 = new Color(0x9f, 0xc4, 0xc9);
-            Color c1 = new Color(0xac, 0x33, 0x2d);
-            Color c2 = new Color(0xea, 0xe4, 0x7c);
-            cMatrix = generateColorMatrix(c1, c2);
 
             //this.World.LookingAt = new Vector2(0, 0);
             
