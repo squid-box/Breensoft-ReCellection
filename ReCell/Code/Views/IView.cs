@@ -10,7 +10,9 @@ using Recellection.Code.Utility.Logger;
 namespace Recellection.Code.Views
 {
 	public abstract class IView
-	{	
+	{
+		private static Texture2D pixel = Recellection.textureMap.GetTexture(Globals.TextureTypes.Pixel);
+		
 		private float currentLayer = 0;
 		public float Layer
 		{ 
@@ -18,19 +20,39 @@ namespace Recellection.Code.Views
 			set { currentLayer = value; }
 		}
 
-		private Texture2D pixel = Recellection.textureMap.GetTexture(Globals.TextureTypes.Pixel);
 		
 		public abstract void Update(GameTime passedTime);
 		public abstract void Draw(SpriteBatch spriteBatch);
 		
-		public void drawTexture(SpriteBatch spriteBatch, Texture2D t, Rectangle targetArea)
+		public void DrawTexture(SpriteBatch spriteBatch, Texture2D t, Rectangle targetArea)
 		{
 			spriteBatch.Draw(t, targetArea, null, Color.White, 0, new Vector2(0, 0), SpriteEffects.None, Layer);
 		}
 
-        public void drawTexture(SpriteBatch spriteBatch, Texture2D t, Rectangle targetArea,Color color)
+        public void DrawTexture(SpriteBatch spriteBatch, Texture2D t, Rectangle targetArea,Color color)
         {
             spriteBatch.Draw(t, targetArea, null, color, 0, new Vector2(0, 0), SpriteEffects.None, Layer);
+		}
+		
+		public void DrawCenteredString(SpriteBatch spriteBatch, string text, Vector2 position, Color color)
+		{
+			position.Y -= Recellection.screenFont.MeasureString(text).Y/2;
+			// Split up multiliners
+			char[] splits = {'\n'};
+			foreach(string line in text.Split(splits))
+			{	
+				// Measure text
+				Vector2 origin = new Vector2(Recellection.screenFont.MeasureString(line).X/2, 0);
+				
+				spriteBatch.DrawString(Recellection.screenFont, line, position, color, 0, origin, 1.0f, SpriteEffects.None, Layer);
+
+				position.Y += Recellection.screenFont.MeasureString((line == "" ? " " : line)).Y;
+			}
+		}
+		
+		public void DrawString(SpriteBatch spriteBatch, string text, Vector2 position, Color color)
+		{
+			spriteBatch.DrawString(Recellection.screenFont, text, position, color, 0, new Vector2(), 1.0f, SpriteEffects.None, Layer);
 		}
 
 		// Draws a line with specified thickness 
