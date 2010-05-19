@@ -212,19 +212,19 @@ namespace Recellection.Code.Controllers
                         case Globals.BuildingTypes.Aggressive:
                             logger.Trace("Building a new Aggressive building");
                             newBuilding = new AggressiveBuilding("Aggresive Building",
-                                (int)targetCoordinate.X, (int)targetCoordinate.Y, sourceBuilding.owner,
+                                (int)targetCoordinate.X, (int)targetCoordinate.Y, owner,
                                 GraphController.Instance.GetGraph(sourceBuilding).baseBuilding, controlZone);
                             break;
                         case Globals.BuildingTypes.Barrier:
                             logger.Trace("Building a new Barrier building");
                             newBuilding = new BarrierBuilding("Barrier Building",
-                                (int)targetCoordinate.X, (int)targetCoordinate.Y, sourceBuilding.owner,
+                                (int)targetCoordinate.X, (int)targetCoordinate.Y, owner,
                                 GraphController.Instance.GetGraph(sourceBuilding).baseBuilding, controlZone);
                             break;
                         case Globals.BuildingTypes.Resource:
                             logger.Trace("Building a new Resource building");
                             newBuilding = new ResourceBuilding("Resource Building",
-                                (int)targetCoordinate.X, (int)targetCoordinate.Y, sourceBuilding.owner,
+                                (int)targetCoordinate.X, (int)targetCoordinate.Y, owner,
                                 GraphController.Instance.GetGraph(sourceBuilding).baseBuilding, controlZone);
                             break;
                     }
