@@ -49,6 +49,7 @@ namespace Recellection
         TimeSpan elapsedTime;
         
         TobiiController tobiiController;
+        public static KeyboardState publicKeyBoardState;
         SpriteBatch spriteBatch;
 
 		public static SpriteFont worldFont;
@@ -72,6 +73,7 @@ namespace Recellection
         //Debug Input 
         KeyboardState lastKBState, kBState;
         MouseState lastMouseState, mouseState;
+       
 
         public Recellection()
         {
@@ -177,7 +179,8 @@ namespace Recellection
 
             lastKBState = kBState;
             lastMouseState = mouseState;
-            kBState = Keyboard.GetState();
+            publicKeyBoardState = Keyboard.GetState();
+            kBState = publicKeyBoardState;
             mouseState = Mouse.GetState();
 
             #endregion
