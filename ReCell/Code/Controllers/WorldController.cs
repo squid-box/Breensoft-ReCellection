@@ -58,7 +58,11 @@ namespace Recellection.Code.Controllers
             this.theWorld = theWorld;
 
             createGUIRegionGridAndScrollZone();
-            
+        }
+        
+        public void Stop()
+        {
+			MenuController.UnloadMenu();
         }
 
         public void Run()
@@ -417,6 +421,7 @@ namespace Recellection.Code.Controllers
             }
 
             MenuController.LoadMenu(new Menu(allMenuIcons));
+            MenuController.DisableMenuInput();
         }
     }
 }
