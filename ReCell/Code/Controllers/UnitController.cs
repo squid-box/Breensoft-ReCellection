@@ -26,9 +26,9 @@ namespace Recellection.Code.Controllers
         /// <param name="amount">The amount of units to be moved</param>
         /// <param name="from">The tile to move units from</param>
         /// <param name="to">Tile tile to move units to</param>
-        public static void MoveUnits(int amount, Tile from, Tile to)
+		public static void MoveUnits(Player player, Tile from, Tile to, int amount)
         {
-			logger.SetThreshold(LogLevel.DEBUG);
+			logger.SetThreshold(LogLevel.TRACE);
 			
             bool fromBuilding = (from.GetBuilding() != null);
             bool toBuilding = (to.GetBuilding() != null);
@@ -44,7 +44,7 @@ namespace Recellection.Code.Controllers
             }
             else
 			{
-                units = from.GetUnits();
+                units = new List<Unit>(from.GetUnits(player));
 				logger.Debug("Moving "+units.Count()+" from a tile!");
 			}
 
@@ -60,10 +60,11 @@ namespace Recellection.Code.Controllers
                         break;
                     }
 
-                    u.targetPosition = to.position;
+					u.TargetEntity = null;
+					u.MissionEntity = to;
                     amount--;
 
-                    if (u.isPatrolling())
+                    if (u.IsAtBase())
                     {
                         logger.Trace("Unit is patrolling! Removing from rotation.");
                         toBeRemovedFromBuilding.Add(u);
@@ -72,18 +73,19 @@ namespace Recellection.Code.Controllers
                     if (toBuilding)
                     {
                         logger.Trace("Adding unit to patrol the 'to' building!");
-                        u.TargetEntity = to.GetBuilding();
-                        u.rallyPoint = to.GetBuilding();
+                        u.TargetEntity = null;
+                        u.MissionEntity = to.GetBuilding();
                     }
                 }
             }
             
             // We don't want to remove units from a tile, as they do it themselves
-            if (fromBuilding)
-            {
-				logger.Info("Removing " + toBeRemovedFromBuilding.Count + " units from building with "+from.GetBuilding().CountUnits()+" units.");
-				from.GetBuilding().RemoveUnits(toBeRemovedFromBuilding);
-				logger.Info("There is now "+from.GetBuilding().CountUnits()+" units in the building.");
+			foreach(Unit u in toBeRemovedFromBuilding)
+			{
+				if (! (u.BaseEntity is Building))
+					continue;
+				
+				((Building)u.BaseEntity).RemoveUnit(u);
             }
         }
 
@@ -122,8 +124,8 @@ namespace Recellection.Code.Controllers
 		}
 
         /// <summary>
-        /// Call the update method on each unit causing them to move towards their target.
-        /// If the unit has arrived to its target, it will recieve new orders. If it was previously
+        /// Call the update method on each unit causing them to move towards their baseEntity.
+        /// If the unit has arrived to its baseEntity, it will recieve new orders. If it was previously
         /// travelling to a fromBuilding, it will be joined with that fromBuilding upon arrival.
         /// </summary>
         /// <param name="units">The set of units to be updated</param>
@@ -147,32 +149,28 @@ namespace Recellection.Code.Controllers
         
         private static void FindEnemy(Unit u, World.Map worldMap)
 		{
-			if (u.TargetEntity == null
-			 || u.TargetEntity.owner != u.owner)
-			{
-				Tile t = worldMap.GetTile((int)u.position.X, (int)u.position.Y);
-				
-				// Search for units
-                lock (t.GetUnits())
+			Tile t = worldMap.GetTile((int)u.position.X, (int)u.position.Y);
+			
+			// Search for units
+            lock (t.GetUnits())
+            {
+                foreach (Unit ou in t.GetUnits(u.owner.Enemy))
                 {
-                    foreach (Unit ou in t.GetUnits(u.owner.Enemy))
-                    {
-                        // Is this an enemy?
-                        if (u.owner != ou.owner && ! ou.isDead)
-                        {
-                            // FIGHT TO THE DEATH!
-                            u.TargetEntity = ou;
-                            return;
-                        }
-                    }
+                    // Is he dead already?
+                    if (ou.isDead)
+						continue;
+                    
+                    // FIGHT TO THE DEATH!
+                    u.TargetEntity = ou;
+                    return;
                 }
-				
-				// Is there a building to kill?
-				if (t.GetBuilding() != null && t.GetBuilding().owner != u.owner)
-				{
-					u.TargetEntity = t.GetBuilding();
-					return;
-				}
+            }
+			
+			// Is there a building to kill?
+			if (t.GetBuilding() != null && t.GetBuilding().owner != u.owner)
+			{
+				u.TargetEntity = t.GetBuilding();
+				return;
 			}
         }
     }

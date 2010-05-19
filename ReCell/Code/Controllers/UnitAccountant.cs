@@ -97,7 +97,6 @@ namespace Recellection.Code.Controllers
 
                 //TODO Remove when middle point position is implemented.
                 
-
                 BaseBuilding b = g.baseBuilding;
                 if (b == null)
                 {
