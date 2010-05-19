@@ -109,7 +109,7 @@ namespace Recellection.Code.Controllers
                     unitsToProduce = (int) (POP_CAP_PER_PLAYER - totalUnits);
                 }
                 logger.Debug("Producing " + unitsToProduce + " units!");
-                totalUnits += unitsToProduce;
+                totalUnits += (uint)unitsToProduce;
                 for (int i = 0; i < unitsToProduce; i++)
                 {
                     // Places them randomly around the fromBuilding. - John
