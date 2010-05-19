@@ -76,7 +76,8 @@ namespace Recellection.Code.Main
 					// START THE GAME ALREADY!
 					GameInitializer gameInit = new GameInitializer();
 					backgroundSound.Pause();
-					Recellection.CurrentState = new WorldView(gameInit.theWorld);
+					WorldView.Initiate(gameInit.theWorld);
+					Recellection.CurrentState = WorldView.Instance;// new WorldView(gameInit.theWorld);
 					VictorTurner vt = new VictorTurner(gameInit);
 					vt.Run();
 				}
