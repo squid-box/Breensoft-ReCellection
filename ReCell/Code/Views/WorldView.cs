@@ -270,6 +270,7 @@ namespace Recellection.Code.Views
                                     c = Color.Lerp(c, Color.HotPink, 0.3f + u.PowerLevel * 0.5f);
                                 }
                                 this.DrawTexture(spriteBatch, spr, new Rectangle(ux, uy, spr.Width, spr.Height), c);
+                                //powerlevel debug: this.DrawCenteredString(spriteBatch, ""+u.PowerLevel, new Vector2(ux, uy - 30), Color.White);
                             }
                         }
                     }
