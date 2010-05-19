@@ -90,7 +90,7 @@ namespace Recellection.Code.Controllers
 
 				if (sel.point.X == 1 && sel.point.Y == 1)
 				{
-					finished = true;
+					GameMenu();
 				}
 				if (sel.point.X == 2 && sel.point.Y == 1)
 				{
@@ -105,6 +105,35 @@ namespace Recellection.Code.Controllers
 				}
             }
         }
+
+		private void GameMenu()
+		{
+			MenuIcon endTurn = new MenuIcon(Language.Instance.GetString("EndTurn"));
+			MenuIcon endGame = new MenuIcon(Language.Instance.GetString("EndGame"));
+			MenuIcon cancel = new MenuIcon(Language.Instance.GetString("Cancel"), Recellection.textureMap.GetTexture(Globals.TextureTypes.No));
+			
+			List<MenuIcon> options = new List<MenuIcon>(4);
+			options.Add(endTurn);
+			options.Add(endGame);
+			options.Add(cancel);
+			
+			Menu menu = new Menu(Globals.MenuLayout.FourMatrix, options, "");
+			MenuController.LoadMenu(menu);
+			Recellection.CurrentState = MenuView.Instance;
+			MenuIcon input = MenuController.GetInput();
+			Recellection.CurrentState = WorldView.Instance;
+			MenuController.UnloadMenu();
+			
+			if (input == endTurn)
+			{
+				finished = true;
+			}
+			else if (input == endGame)
+			{
+				
+				Recellection.playBeethoven();
+			}
+		}
 
 		public Selection retrieveSelection()
 		{
