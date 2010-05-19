@@ -14,6 +14,7 @@ using Tobii.TecSDK.Core.Interaction;
 using Tobii.TecSDK.Core.Utilities;
 using Interaction = Tobii.TecSDK.Client.Utilities.Interaction;
 using Recellection.Code.Utility.Logger;
+using System.Drawing;
 
 namespace Recellection
 {
@@ -70,9 +71,20 @@ namespace Recellection
             try
             {
                 TecClient.Init("Recellection");
-                TecClient.ClientSettings.OffWindowProcessing = true;
+                TecClient.ClientSettings.OffWindowProcessing = true;               
                 TecClient.ClientSettings.ApplySettings();
-                //TODO: more stuff?, like loading eye tracking preferences e.t.c?
+                Tobii.TecSDK.Core.Interaction.Contracts.UserProfileProperties newProfile = new Tobii.TecSDK.Core.Interaction.Contracts.UserProfileProperties("RecellectionProfile");
+                Tobii.TecSDK.Client.Utilities.UserProfile.Add("RecellectionProfile", "RecellectionProfile");
+                Tobii.TecSDK.Client.Utilities.UserProfile.SetCurrent("RecellectionProfile");
+                Tobii.TecSDK.Client.Utilities.UserProfile.Current.FeedbackSettings = new Tobii.TecSDK.Core.Interaction.Contracts.FeedbackSettings();
+                Tobii.TecSDK.Client.Utilities.UserProfile.Current.Enabled = true;
+                SetFeedbackColor(Microsoft.Xna.Framework.Graphics.Color.White);
+                if (Tobii.TecSDK.Client.Utilities.UserProfile.Current.FeedbackSettings.DwellFeedbackColor == null)
+                {
+                    
+                    Environment.Exit(0);
+                }
+                    //TODO: more stuff?, like loading eye tracking preferences e.t.c?
             }
             catch (Exception)
             {
@@ -196,9 +208,9 @@ namespace Recellection
             //}
             //else
             //{
-            //    List<WindowBoundInteractionRegionIdentifier> temp = new List<WindowBoundInteractionRegionIdentifier>();
-            //    temp.Add(newRegion.RegionIdentifier);
-            //    regionCategories.Add(regionID, temp);
+            //    List<WindowBoundInteractionRegionIdentifier> human = new List<WindowBoundInteractionRegionIdentifier>();
+            //    human.Add(newRegion.RegionIdentifier);
+            //    regionCategories.Add(regionID, human);
             //}
 
             try
@@ -244,7 +256,7 @@ namespace Recellection
         {
             for (; ; )
             {
-                System.Threading.Thread.Sleep(50); // so I heard you like hogging cpu time
+                System.Threading.Thread.Sleep(200); // so I heard you like hogging cpu time
                 if (newActivatedRegion != null)
                 {
                     GUIRegion temp = newActivatedRegion;
@@ -254,6 +266,24 @@ namespace Recellection
             }
         }
 
+        public void SetFeedbackColor(Microsoft.Xna.Framework.Graphics.Color color)
+        {
+            System.Windows.Media.Color col = new System.Windows.Media.Color();
+            col.A = color.A;
+            col.B = color.B;
+            col.G = color.G;
+            col.R = color.R;
+            //Tobii.TecSDK.Core.Interaction.Contracts.FeedbackSettings.FeedbackProperty.DwellFeedbackColor
+            //Tobii.TecSDK.Core.Interaction.Contracts.FeedbackSettings settings = new Tobii.TecSDK.Core.Interaction.Contracts.FeedbackSettings();
+            //settings.DwellFeedbackColor = col;
+            //TecClient.SettingsManager.ApplySettings();
+            //TecClient.ClientSettings.ApplySettings();
+            Tobii.TecSDK.Client.Utilities.UserProfile.Current.FeedbackSettings.DwellFeedbackColor = col;
+            Tobii.TecSDK.Client.Utilities.UserProfile.Update();
+            //TecClient.SettingsManager.Containers.Add();
+            //TecClient.CurrentApplicationProfile.FeedbackSettings.StaticFeedbackColor = col;
+            //TecClient.CurrentApplicationProfile.FeedbackSettings.DwellFeedbackColor = col;
+        }
         /// <summary>
         /// different method for adding regions
         /// designed to make loading all the world regions
