@@ -180,7 +180,7 @@ namespace Recellection.Code.Controllers
             MenuIcon setWeight = new MenuIcon(Language.Instance.GetString("SetWeight"));
             MenuIcon buildCell = new MenuIcon(Language.Instance.GetString("BuildCell"));
             MenuIcon removeCell = new MenuIcon(Language.Instance.GetString("RemoveCell"));
-			MenuIcon upgradeUnits = new MenuIcon(Language.Instance.GetString("UpgradeUnits") + " (" + playerInControll.unitAcc.getUpgradeCost() + ")");
+			MenuIcon upgradeUnits = new MenuIcon(Language.Instance.GetString("UpgradeUnits") + " (" + playerInControll.unitAcc.GetUpgradeCost() + ")");
             MenuIcon moveUnits = new MenuIcon(Language.Instance.GetString("MoveUnits"));
             MenuIcon repairCell = new MenuIcon(Language.Instance.GetString("RepairCell") + " (" + toHeal + ")");
             MenuIcon Cancel = new MenuIcon(Language.Instance.GetString("Cancel"), Recellection.textureMap.GetTexture(Globals.TextureTypes.No));

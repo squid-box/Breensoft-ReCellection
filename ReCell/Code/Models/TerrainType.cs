@@ -24,15 +24,11 @@ namespace Recellection.Code.Models
         private int rscMod; // Resource modifier
         private Globals.TerrainTypes type;
 
-        private readonly static Texture2D MEMBRANE_TEXTURE =    Recellection.textureMap.GetTexture(Globals.TextureTypes.Membrane);
-        private readonly static Texture2D MUCUS_TEXTURE =       Recellection.textureMap.GetTexture(Globals.TextureTypes.Mucus);
-        private readonly static Texture2D SLOW_TEXTURE =        Recellection.textureMap.GetTexture(Globals.TextureTypes.Slow);
-        private readonly static Texture2D INFECTED_TEXTURE =    Recellection.textureMap.GetTexture(Globals.TextureTypes.Infected);
-        private readonly static Texture2D WATER_TEXTURE = Recellection.textureMap.GetTexture(Globals.TextureTypes.Water);
-        private readonly static Texture2D TILE_A = Recellection.textureMap.GetTexture(Globals.TextureTypes.tile2a);
-        private readonly static Texture2D TILE_B = Recellection.textureMap.GetTexture(Globals.TextureTypes.tile2b);
-        private readonly static Texture2D TILE_C = Recellection.textureMap.GetTexture(Globals.TextureTypes.tile2c);
-        private static Random rnd = new Random();
+        private readonly static Texture2D MEMBRANE_TEXTURE =    Recellection.textureMap.GetTexture(Globals.TextureTypes.tile2a);
+        private readonly static Texture2D MUCUS_TEXTURE = Recellection.textureMap.GetTexture(Globals.TextureTypes.tile2e); //resource
+        private readonly static Texture2D SLOW_TEXTURE = Recellection.textureMap.GetTexture(Globals.TextureTypes.tile2b);
+        private readonly static Texture2D INFECTED_TEXTURE = Recellection.textureMap.GetTexture(Globals.TextureTypes.tile2c);
+        private readonly static Texture2D WATER_TEXTURE = Recellection.textureMap.GetTexture(Globals.TextureTypes.tile2d);
         // Methods
 
         #region Constructors
@@ -101,23 +97,10 @@ namespace Recellection.Code.Models
 
         public Texture2D GetTexture()
         {
-          /*  switch (type)
+            switch (type)
             {
-                case Globals.TerrainTypes.Infected:*/
-            int random = rnd.Next(1, 3);
-            if (random == 3)
-               {
-                  return TILE_A;
-               }
-            else if (random == 2)
-               {
-                  return TILE_B;
-               }
-             else
-               {
-                  return TILE_C;
-               }
-               /*     return INFECTED_TEXTURE;
+                case Globals.TerrainTypes.Infected:
+                    return INFECTED_TEXTURE;
                 case Globals.TerrainTypes.Water:
                     return WATER_TEXTURE;
                 case Globals.TerrainTypes.Mucus:
@@ -125,8 +108,8 @@ namespace Recellection.Code.Models
                 case Globals.TerrainTypes.Slow:
                     return SLOW_TEXTURE;
                 default:
-                    return MEMBRANE_TEXTURE; */
-            //}
+                    return MEMBRANE_TEXTURE;
+            }
         }
         /// <summary>
         /// Change the type of this TerrainType.

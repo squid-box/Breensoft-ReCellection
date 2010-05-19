@@ -15,7 +15,7 @@ namespace Recellection.Code.Models
     /// </summary>
     public class BarrierBuilding : Building
     {
-        private readonly float powerBonus = 0.3f;
+        private readonly float powerBonus = 0.1f;
 
         public float PowerBonus
         {
