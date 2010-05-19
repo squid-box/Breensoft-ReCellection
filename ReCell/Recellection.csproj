@@ -146,6 +146,7 @@
     <Compile Include="Code\Models\GameOptions.cs" />
     <Compile Include="Code\Models\Graph.cs" />
     <Compile Include="Code\Models\GUIRegion.cs" />
+    <Compile Include="Code\Models\HelpMenuFactory.cs" />
     <Compile Include="Code\Models\IModel.cs" />
     <Compile Include="Code\Models\KamikazeUnit.cs" />
     <Compile Include="Code\Models\Language.cs" />

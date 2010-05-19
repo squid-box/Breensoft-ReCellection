@@ -34,10 +34,23 @@ namespace Recellection
             game.LogicThread = gameLogic;
             Recellection.textureMap = new SpriteTextureMap(game.Content);
 
-            #region let's fullscreen this bastard
+            FullScreen(game.Window.Handle);
             
-            
-            System.Windows.Forms.Form form = (System.Windows.Forms.Form)System.Windows.Forms.Control.FromHandle(game.Window.Handle);
+
+            game.Run();
+			gameLogic.Abort();
+			Environment.Exit(0);
+			// MOAR EXITS! MOAR!!! DEATH TO ALL APPLICATION!
+        }
+
+        /// <summary>
+        /// ugly way to force fullscreen
+        /// used to keep tobii feedback active
+        /// </summary>
+        static void FullScreen(IntPtr handle)
+        {
+
+            System.Windows.Forms.Form form = (System.Windows.Forms.Form)System.Windows.Forms.Control.FromHandle(handle);
             form.Location = new System.Drawing.Point(0, 0);
             form.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
             form.Focus();
@@ -48,12 +61,24 @@ namespace Recellection
             Recellection.graphics.PreferredBackBufferHeight = Globals.VIEWPORT_HEIGHT;
             Recellection.graphics.ApplyChanges();
 
-            #endregion
+        }
+        
+        /// <summary>
+        /// this does not work!
+        /// </summary>
+        [Obsolete("Do not use, it does not work, it anti-works")]
+        static void GoodFullScreen() 
+        { 
+            Recellection.graphics.ToggleFullScreen();
+            Process[] processlist = Process.GetProcesses();
 
-            game.Run();
-			gameLogic.Abort();
-			Environment.Exit(0);
-			// MOAR EXITS! MOAR!!! DEATH TO ALL APPLICATION!
+            foreach(Process theprocess in processlist){
+                if(theprocess.ProcessName == "Tobii.TecSDK.Server")
+                {
+                    System.Windows.Forms.Form form = (System.Windows.Forms.Form)System.Windows.Forms.Control.FromHandle(theprocess.MainWindowHandle);
+                    form.Focus();
+                }
+            }
         }
     }
 }
