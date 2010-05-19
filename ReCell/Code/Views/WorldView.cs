@@ -237,6 +237,8 @@ namespace Recellection.Code.Views
                             this.Layer = 0.11f;
 
                             infosz = b.GetUnits().Count.ToString();
+                            if (b.incomingUnits.Count > 0)
+								infosz +=  " ("+b.incomingUnits.Count+")";
                             stringSize = Recellection.worldFont.MeasureString(infosz);
                             fontX = (float)(r.X + r.Width / 2) - stringSize.X / 2;
                             fontY = (float)(r.Y + r.Height / 4) - stringSize.Y;
