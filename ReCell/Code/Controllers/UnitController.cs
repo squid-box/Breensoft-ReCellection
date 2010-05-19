@@ -116,6 +116,7 @@ namespace Recellection.Code.Controllers
 			foreach (Unit u in toBeKilled)
 			{
 				u.RemoveFromWorld();
+                u.owner.RemoveUnit(u);
 			}
 			toBeKilled.Clear();
 		}
