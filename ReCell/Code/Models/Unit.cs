@@ -25,7 +25,7 @@ namespace Recellection.Code.Models
 		private Entity targetEntity;     // Target entity
         public Entity rallyPoint { get; set; }		// Target to fall back to if the primary target disappears. Also acts as center of dispersion
         public float rallyDistance { get; set; }
-        private static Texture2D UNIT_TEXTURE = Recellection.textureMap.GetTexture(Globals.TextureTypes.Unit);
+        private readonly static Texture2D UNIT_TEXTURE = Recellection.textureMap.GetTexture(Globals.TextureTypes.Unit);
         public bool isDispersed { get; set; }         // Whether or not this unit should recieve a new target from the dispersion procedure
 		public bool hasArrived { get { return (targetPosition.X == NO_TARGET && targetPosition.Y == NO_TARGET); } }
         public bool isDead { get; set; }              // Status of unit
@@ -195,10 +195,18 @@ namespace Recellection.Code.Models
 				// We will wander around our rallyPoint
 				isDispersed = false;
 				
-				double angle = rand.NextDouble() * 2 * Math.PI;
-				double distance = rand.NextDouble() * (double)rallyDistance;
+				if (Vector2.Distance(rallyPoint.position, this.position) > rallyDistance)
+				{
+					TargetEntity = rallyPoint;
+					return rallyPoint.position;
+				}
+				else
+				{
+					double angle = rand.NextDouble() * 2 * Math.PI;
+					double distance = rand.NextDouble() * (double)rallyDistance;
 
-				return rallyPoint.position + (new Vector2((float)(Math.Cos(angle) * distance), (float)(Math.Sin(angle) * distance)));
+					return rallyPoint.position + (new Vector2((float)(Math.Cos(angle) * distance), (float)(Math.Sin(angle) * distance)));
+				}
 			}
 			else
 			{

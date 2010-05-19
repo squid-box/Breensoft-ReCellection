@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Microsoft.Xna.Framework.Graphics;
 
 namespace Recellection.Code.Models
 {
@@ -23,7 +24,11 @@ namespace Recellection.Code.Models
         private int rscMod; // Resource modifier
         private Globals.TerrainTypes type;
 
-
+        private readonly static Texture2D MEMBRANE_TEXTURE =    Recellection.textureMap.GetTexture(Globals.TextureTypes.Membrane);
+        private readonly static Texture2D MUCUS_TEXTURE =       Recellection.textureMap.GetTexture(Globals.TextureTypes.Mucus);
+        private readonly static Texture2D SLOW_TEXTURE =        Recellection.textureMap.GetTexture(Globals.TextureTypes.Slow);
+        private readonly static Texture2D INFECTED_TEXTURE =    Recellection.textureMap.GetTexture(Globals.TextureTypes.Infected);
+        private readonly static Texture2D WATER_TEXTURE =       Recellection.textureMap.GetTexture(Globals.TextureTypes.Water);
         // Methods
 
         #region Constructors
@@ -90,10 +95,21 @@ namespace Recellection.Code.Models
             return this.type;
         }
 
-        public Globals.TextureTypes GetTexture()
+        public Texture2D GetTexture()
         {
-            return (Globals.TextureTypes)this.type;
-
+            switch (type)
+            {
+                case Globals.TerrainTypes.Infected:
+                    return INFECTED_TEXTURE;
+                case Globals.TerrainTypes.Water:
+                    return WATER_TEXTURE;
+                case Globals.TerrainTypes.Mucus:
+                    return MUCUS_TEXTURE;
+                case Globals.TerrainTypes.Slow:
+                    return SLOW_TEXTURE;
+                default:
+                    return MEMBRANE_TEXTURE;
+            }
         }
         /// <summary>
         /// Change the type of this TerrainType.
