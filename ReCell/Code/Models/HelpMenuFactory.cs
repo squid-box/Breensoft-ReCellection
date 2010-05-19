@@ -46,14 +46,14 @@ namespace Recellection.Code.Models
             List<MenuIcon> list = new List<MenuIcon>();
 
             // Create and add all buttons for menu.
+            list.Add(new MenuIcon("This is a unit.",Recellection.textureMap.GetTexture(Globals.TextureTypes.Unit)));
+            list.Add(new MenuIcon("This is a base building, it provides new resources each turn.", Recellection.textureMap.GetTexture(Globals.TextureTypes.BaseBuilding)));
+            list.Add(new MenuIcon("This is an offensive building, it attacks enemy units and buildings within range.", Recellection.textureMap.GetTexture(Globals.TextureTypes.AggressiveBuilding)));
+            list.Add(new MenuIcon("This is a defensive building, it provides extra protection to the units within its range.", Recellection.textureMap.GetTexture(Globals.TextureTypes.BarrierBuilding)));
+            list.Add(new MenuIcon("This is a resource building, it gathers extra resources from resource hotspots.", Recellection.textureMap.GetTexture(Globals.TextureTypes.ResourceBuilding)));
             list.Add(new MenuIcon("This is a helpfull text which tells me what this button does."));
             list.Add(new MenuIcon("This is a helpfull text which tells me what this button does."));
-            list.Add(new MenuIcon("This is a helpfull text which tells me what this button does."));
-            list.Add(new MenuIcon("This is a helpfull text which tells me what this button does."));
-            list.Add(new MenuIcon("This is a helpfull text which tells me what this button does."));
-            list.Add(new MenuIcon("This is a helpfull text which tells me what this button does."));
-            list.Add(new MenuIcon("This is a helpfull text which tells me what this button does."));
-            list.Add(new MenuIcon("Go byebye!"));
+            list.Add(new MenuIcon("Back", Recellection.textureMap.GetTexture(Globals.TextureTypes.No)));
             
             
             return list;
