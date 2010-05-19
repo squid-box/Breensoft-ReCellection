@@ -354,5 +354,30 @@ namespace Recellection
             
             this.icons = icons;
         }
+
+        /// <summary>
+        /// Magic Constructor for Menu!
+        /// </summary>
+        /// <param name="iconList">A List of MenuIcons to display.</param>
+        /// <param name="explanation">A explanation for the menu to give to the user.</param>
+        public Menu(List<MenuIcon> iconList, String explanation)
+        {
+            if (iconList.Count < 3)
+            {
+                new Menu(Globals.MenuLayout.Prompt, iconList, explanation);
+            }
+            else if (2 < iconList.Count && iconList.Count < 5)
+            {
+                new Menu(Globals.MenuLayout.FourMatrix, iconList, explanation);
+            }
+            else if (4 < iconList.Count && iconList.Count < 10)
+            {
+                new Menu(Globals.MenuLayout.NineMatrix, iconList, explanation);
+            }
+            else
+            {
+                new Menu(Globals.MenuLayout.FreeStyle, iconList, explanation);
+            }
+        }
     }
 }
