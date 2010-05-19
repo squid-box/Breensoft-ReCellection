@@ -26,9 +26,9 @@ namespace Recellection.Code.Models
         protected const int RESOURCE_BUILDING_HEALTH = 20;
 
         protected const int AGGRESSIVE_BUILDING_COST = 5;
-        protected const int BARRIER_BUILDING_COST = 1;
+        protected const int BARRIER_BUILDING_COST = 5;
         protected const int BASE_BUILDING_COST = 20;
-        protected const int RESOURCE_BUILDING_COST = 4;
+        protected const int RESOURCE_BUILDING_COST = 15;
 
         // Simple valuesa
         public string name { get; protected set; }
