@@ -136,7 +136,7 @@ namespace Recellection.Code.Controllers
             {
                 return defaultCost;
             }
-            return (uint)(POP_CAP_PER_PLAYER * Math.Pow((buildingCount / ((float)MAX_OF_EACH_BUILDING_TYPE[(int)type] - 1f)), 1f / buildingCount));
+            return (uint)(POP_CAP_PER_PLAYER * Math.Pow((buildingCount / ((float)MAX_OF_EACH_BUILDING_TYPE[(int)type] - 1f)), 1f / ((float)MAX_OF_EACH_BUILDING_TYPE[(int)type] - 1f)));
         }
     }
 }
