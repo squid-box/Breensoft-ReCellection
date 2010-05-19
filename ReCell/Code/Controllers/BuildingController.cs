@@ -153,11 +153,11 @@ namespace Recellection.Code.Controllers
         {
             List<Point> retur = new List<Point>(2);
             Point upperLeft = new Point(
-                (int)MathHelper.Clamp(sourceBuildingPosition.X - MAX_BUILDING_RANGE, 0, world.GetMap().width),
-                (int)MathHelper.Clamp(sourceBuildingPosition.Y - MAX_BUILDING_RANGE, 0, world.GetMap().height));
+                (int)MathHelper.Clamp(sourceBuildingPosition.X - MAX_BUILDING_RANGE, 0, world.GetMap().width-1),
+                (int)MathHelper.Clamp(sourceBuildingPosition.Y - MAX_BUILDING_RANGE, 0, world.GetMap().height-1));
             Point lowerRight = new Point(
-                (int)MathHelper.Clamp(sourceBuildingPosition.X + MAX_BUILDING_RANGE, 0, world.GetMap().width),
-                (int)MathHelper.Clamp(sourceBuildingPosition.Y + MAX_BUILDING_RANGE, 0, world.GetMap().height));
+                (int)MathHelper.Clamp(sourceBuildingPosition.X + MAX_BUILDING_RANGE, 0, world.GetMap().width-1),
+                (int)MathHelper.Clamp(sourceBuildingPosition.Y + MAX_BUILDING_RANGE, 0, world.GetMap().height-1));
 
             retur.Add(upperLeft);
             retur.Add(lowerRight);

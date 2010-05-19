@@ -21,6 +21,9 @@ namespace Recellection.Code.Controllers
     public sealed class UnitAccountant
 	{
         private const uint POP_CAP_PER_PLAYER = 200;
+        private readonly uint[] MAX_OF_EACH_BUILDING_TYPE = { 0, 6, 10, 3, 6 };
+        private const int MAX_POWER_LEVEL_LEVELS = 4;
+        private const int FIRST_POWER_LEVEL_COST = 10;
 
 		private Logger logger = LoggerFactory.GetLogger();
         private Player owner;
@@ -44,22 +47,27 @@ namespace Recellection.Code.Controllers
             b.AddUnits(units);
         }
 
-        public int getUpgradeCost()
+        public int GetUpgradeCost()
         {
-            if (owner.powerLevel >= 0.6f)
+            if (owner.powerLevel >= 0.1f*MAX_POWER_LEVEL_LEVELS)
             {
-                return 4711;
+                return (int)0x0C00FEE;
             }
-            return (int) ((20 * owner.powerLevel) * (20 * owner.powerLevel)) +4;//TODO change to a more sane formula.
+            if (owner.powerLevel == 0.0f)
+            {
+                return FIRST_POWER_LEVEL_COST;
+            }
+            float level = (owner.powerLevel * 10f);
+            return (int)(POP_CAP_PER_PLAYER * Math.Pow((level / (float)MAX_POWER_LEVEL_LEVELS), 1f / level));
         }
 
         public bool PayAndUpgrade(Building building)
         {
-            if (building.units.Count < getUpgradeCost() || owner.powerLevel >= 0.6f)
+            if (building.units.Count < GetUpgradeCost() || owner.powerLevel >= 0.6f)
             {
                 return false;
             }
-            DestroyUnits(building.units, getUpgradeCost());
+            DestroyUnits(building.units, GetUpgradeCost());
             owner.powerLevel += 0.1f;
             return true;
 
@@ -123,8 +131,12 @@ namespace Recellection.Code.Controllers
         {
             uint defaultCost = Building.GetBuyPrice(type);
             uint buildingCount = owner.CountBuildingsOfType(type);
-            return (uint)(defaultCost + (buildingCount * buildingCount * defaultCost / 2));
-
+            //return (uint)(defaultCost + (buildingCount * buildingCount * defaultCost / 2));
+            if(buildingCount == 0)
+            {
+                return defaultCost;
+            }
+            return (uint) (POP_CAP_PER_PLAYER*(((1/MAX_OF_EACH_BUILDING_TYPE[(int)type])*buildingCount)^(1/(buildingCount))));
         }
     }
 }
