@@ -22,6 +22,12 @@ namespace Recellection.Code
         private Player ai;
         private Logger log;
 
+        //Threat levels
+        internal int THREATENED = 50;
+        internal int CRITICAL = 100;
+        internal int SAFE = 1;
+
+
         internal List<Vector2> resourcePoints { get; private set; }
         internal List<Vector2> friendlyPoints { get; private set; }
         
