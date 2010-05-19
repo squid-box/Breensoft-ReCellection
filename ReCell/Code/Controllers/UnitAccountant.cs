@@ -21,7 +21,7 @@ namespace Recellection.Code.Controllers
     public sealed class UnitAccountant
 	{
         private const uint POP_CAP_PER_PLAYER = 200;
-        private readonly uint[] MAX_OF_EACH_BUILDING_TYPE = { 0, 6, 10, 3, 6 };
+        private readonly uint[] MAX_OF_EACH_BUILDING_TYPE = { 0, 7, 11, 4, 9 };
         private const int MAX_POWER_LEVEL_LEVELS = 4;
         private const int FIRST_POWER_LEVEL_COST = 10;
 
@@ -136,7 +136,7 @@ namespace Recellection.Code.Controllers
             {
                 return defaultCost;
             }
-            return (uint) (POP_CAP_PER_PLAYER*(((1/MAX_OF_EACH_BUILDING_TYPE[(int)type])*buildingCount)^(1/(buildingCount))));
+            return (uint)(POP_CAP_PER_PLAYER * Math.Pow((buildingCount / ((float)MAX_OF_EACH_BUILDING_TYPE[(int)type] - 1f)), 1f / buildingCount));
         }
     }
 }
