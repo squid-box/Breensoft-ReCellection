@@ -87,15 +87,21 @@ namespace Recellection.Code.Controllers
                 MenuIcon activatedMenuIcon = MenuController.GetInput();
                 if (activatedMenuIcon == leftOff)
                 {
+					TobiiController.GetInstance(Recellection.windowHandle).SetRegionsEnabled(false);
                     TileMenu(previousSelection);
+					TobiiController.GetInstance(Recellection.windowHandle).SetRegionsEnabled(true);
 				}
                 else if (activatedMenuIcon == rightOff)
                 {
+					TobiiController.GetInstance(Recellection.windowHandle).SetRegionsEnabled(false);
                     BuildingMenu(previousSelection);
+					TobiiController.GetInstance(Recellection.windowHandle).SetRegionsEnabled(true);
                 }
                 else if (activatedMenuIcon == topOff)
                 {
+					TobiiController.GetInstance(Recellection.windowHandle).SetRegionsEnabled(false);
                     GameMenu();
+					TobiiController.GetInstance(Recellection.windowHandle).SetRegionsEnabled(true);
                 }
                 else if (activatedMenuIcon == botOff)
                 {
@@ -200,14 +206,19 @@ namespace Recellection.Code.Controllers
 
         public Selection getSelection()
         {
-            MenuIcon activatedMenuIcon = MenuController.GetInput();
-            return retrieveSelection(activatedMenuIcon);
+			while (true)
+			{
+				MenuIcon activatedMenuIcon = MenuController.GetInput();
+				if (activatedMenuIcon.label != null)
+				{
+					return retrieveSelection(activatedMenuIcon);
+				}
+			}
         }
 
         public Selection retrieveSelection(MenuIcon activatedMenuIcon)
 		{
-			myLogger.Debug("Waiting for input...");
-			
+			myLogger.Debug("Waiting for input...");			
 						 
 		    int x = 0;
             int y = 0;
