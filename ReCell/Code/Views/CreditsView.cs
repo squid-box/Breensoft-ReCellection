@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework;
+using Recellection.Code.Utility.Logger;
 
 namespace Recellection.Code.Views
 {
@@ -11,6 +12,7 @@ namespace Recellection.Code.Views
     {
 		private class CreditItem
 		{
+
 			internal string Text { get; set; }
 			internal float YPosition { get; set; }
 			internal bool Visible { get; set; }
@@ -23,19 +25,22 @@ namespace Recellection.Code.Views
 			}
 		}
 
+		Logger logger;
+
 		// To decide whether or not we have finished showing the credits
 		public bool Finished { get; private set; }
 
 		// The set of credit strings
         private static List<CreditItem> credits;
-
-		private CreditItem lastItem;
 		
 		// The movement speed of the text
-		private static readonly float textMovementSpeed;	
+		private static readonly float textMovementSpeed = 0.5f;	
 
         public CreditsView()
         {
+			logger = LoggerFactory.GetLogger();
+			logger.Active = true;
+
             credits = new List<CreditItem>();
 			credits.Add(new CreditItem("Produced by:\nBreensoft"));
             credits.Add(new CreditItem("Project Leader:\nMartin Nycander"));
@@ -49,9 +54,9 @@ namespace Recellection.Code.Views
             credits.Add(new CreditItem("Guy that did stuff, sometimes:\n Joel Ahlgren"));
 			credits.Add(new CreditItem("Developers: GOTO 01"));
 
-			Finished = false;
-			lastItem = null;
+			credits.First().Visible = true;
 
+			Finished = false;
         }
 		public override void Update(GameTime passedTime)
 		{
@@ -59,25 +64,66 @@ namespace Recellection.Code.Views
 			if (Finished)
 				return;
 			float passed = (float)passedTime.ElapsedRealTime.Milliseconds;
-			CreditItem temp;
-			foreach(CreditItem c in credits)
+			bool setNextToVisible = false;
+			
+			List<CreditItem> trash = new List<CreditItem>();
+			lock (credits)
 			{
-				
-				if (lastItem == null)
-					lastItem = c;
-				if (c.Visible)
+				foreach (CreditItem c in credits)
 				{
-					c.YPosition = c.YPosition - passed * textMovementSpeed;
-
+					if (setNextToVisible)
+					{
+						c.Visible = true;
+						setNextToVisible = false;
+					}
+					if (!c.Visible)
+					{
+						break;
+					}
+					else
+					{
+						
+						c.YPosition = c.YPosition - passed * textMovementSpeed;
+						Vector2 stringSize = Recellection.screenFont.MeasureString(c.Text);
+						// If there is space for another 
+						if (Globals.VIEWPORT_HEIGHT - c.YPosition >= stringSize.Y && c.YPosition >= 0)
+						{
+							setNextToVisible = true;
+						}
+						if (c.YPosition >= 0)
+						{
+							trash.Add(c);
+						}
+					}
 				}
-				temp = c;
+				foreach (CreditItem c in trash)
+				{
+					credits.Remove(c);
+				}
 			}
 		}
 		
 		public override void Draw(SpriteBatch sb)
 		{
 			sb.GraphicsDevice.Clear(Color.Black);
-            //DrawCenteredString(sb, s, new Vector2(Globals.VIEWPORT_WIDTH / 2, 10 + offset*(Recellection.viewPort.Height / credits.Count) + Recellection.screenFont.MeasureString(" ").Y), Color.White);
+			float fontX = (float)(Globals.VIEWPORT_WIDTH / 2);
+			float fontY = 300.0f;
+			sb.DrawString(Recellection.worldFont, "Tjohej", new Vector2(fontX, fontY), Color.HotPink, 0, new Vector2(0f), 1.0f, SpriteEffects.None, Layer);
+
+			lock (credits)
+			{
+				foreach (CreditItem c in credits)
+				{
+					if (c.Visible)
+					{
+						Vector2 stringSize = Recellection.screenFont.MeasureString(c.Text);
+						fontX = (float)(Globals.VIEWPORT_WIDTH / 2) - stringSize.X / 2;
+
+						sb.DrawString(Recellection.worldFont, c.Text, new Vector2(fontX, c.YPosition), Color.Red, 0, new Vector2(0f), 1.0f, SpriteEffects.None, Layer);
+					}
+				}
+			}
+			
          }	
 	}
 }
