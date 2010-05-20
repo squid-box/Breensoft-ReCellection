@@ -34,7 +34,7 @@ namespace Recellection.Code
         internal World world { get; private set; }
         internal List<Building> myBuildings { get; private set; }
         internal List<Player> opponents { get; private set; }
-        internal List<Vector2> interrestPoints { get; private set; }
+
         internal List<Vector2> enemyPoints { get; private set; }
         internal int mapHeight { get; private set; }
         internal int mapWidth { get; private set; }
@@ -62,7 +62,6 @@ namespace Recellection.Code
 
             friendlyPoints = new List<Vector2>();
             resourcePoints = new List<Vector2>();
-            interrestPoints = new List<Vector2>();
             enemyPoints = new List<Vector2>();
         }
 
@@ -282,15 +281,20 @@ namespace Recellection.Code
             return result;
         }
 
-        //############## Setter functions ##############//
 
         /// <summary>
-        /// Adds the given point to the interrest list.
+        /// Causes the AIView to add the building at the given location to the list of buildings.
+        /// 
         /// </summary>
-        /// <param name="nearby"></param>
-        internal void AddInterrestPoint(Vector2 point)
+        /// <param name="point"></param>
+        internal void BuildingAddedAt(Vector2 point)
         {
-            interrestPoints.Add(point);
+            Building b = GetBuildingAt(point);
+            if (b != null)
+            {
+                log.Info("Adding building " + b.name + " to the myBuildings list.");
+                myBuildings.Add(b);
+            }
         }
     }
 }
