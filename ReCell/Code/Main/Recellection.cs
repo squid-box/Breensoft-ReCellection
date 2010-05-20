@@ -270,6 +270,11 @@ namespace Recellection
 			LoggerFactory.SetAll(active);
 		}
 
+		public void AILogger()
+		{
+			ToggleLogger("Recellection.Code.Controllers.AIPlayer");
+		}
+
         public void Help()
         {
             console.Console.WriteLine("M: Toggle music\nI: Turn SFX off\nO: Turn SFX on\nA: Acid sound\nB: Explosion sound\nF1: Toggle Console\nF: \"full\" screen");
