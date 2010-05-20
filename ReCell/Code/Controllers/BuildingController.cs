@@ -113,9 +113,13 @@ namespace Recellection.Code.Controllers
             {
                 Building = Globals.BuildingTypes.Barrier;
             }
-            else
+            else if (choosenMenu.Equals(aggressiveCell))
             {
                 Building = Globals.BuildingTypes.Aggressive;
+            }
+            else
+            {
+                return;
             }
 
 
