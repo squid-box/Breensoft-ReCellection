@@ -125,9 +125,9 @@ namespace Recellection.Code
         /// </summary>
         /// <param name="current"></param>
         /// <returns></returns>
-        internal bool ContainsResourcePoint(Vector2 current)
+        internal bool ContainsResourcePoint(Vector2 current, World world)
         {
-            Tile tempTile = GetTileAt(current);
+            Tile tempTile = Util.GetTileAt(current, world);
             return ContainsResourcePoint(tempTile);
         }
 
@@ -152,7 +152,7 @@ namespace Recellection.Code
         /// <returns></returns>
         internal bool ContainsFriendlyBuilding(Vector2 point)
         {
-            Tile temp = GetTileAt(point);
+            Tile temp = Util.GetTileAt(point, world);
             if (temp != null && temp.GetBuilding() != null && temp.GetBuilding().GetOwner() == ai)
             {
                 return true;
@@ -199,7 +199,7 @@ namespace Recellection.Code
         /// <returns></returns>
         internal Player Harvesting(Vector2 point)
         {
-            Building tempBuilding = GetBuildingAt(point);
+            Building tempBuilding = Util.GetBuildingAt(point, world);
 
             if (tempBuilding == null)
                 return null;
@@ -258,7 +258,7 @@ namespace Recellection.Code
         /// <param name="point"></param>
         internal void BuildingAddedAt(Vector2 point)
         {
-            Building b = GetBuildingAt(point);
+            Building b = Util.GetBuildingAt(point, world);
             if (b != null)
             {
                 log.Info("Adding building " + b.name + " to the myBuildings list.");

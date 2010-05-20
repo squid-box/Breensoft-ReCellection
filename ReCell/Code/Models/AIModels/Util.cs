@@ -141,7 +141,7 @@ namespace Recellection.Code.Models
         /// <param name="coords"></param>
         /// <param name="world"></param>
         /// <returns></returns>
-        internal Tile GetTileAt(Vector2 coords, World world)
+        public static Tile GetTileAt(Vector2 coords, World world)
         {
             //log.Fatal("Accessing Tile at "+coords.X+","+coords.Y);
             Tile tempTile = world.GetMap().GetTile((int)coords.X, (int)coords.Y);
@@ -164,7 +164,7 @@ namespace Recellection.Code.Models
         /// <returns></returns>
         public static Building GetBuildingAt(Vector2 point, World world)
         {
-            return GetTileAt(point).GetBuilding();
+            return GetTileAt(point, world).GetBuilding();
         }
 
 
@@ -181,7 +181,7 @@ namespace Recellection.Code.Models
             for (int i = 0; i < list.Count; i++)
             {
                 Vector2 temp = list[i];
-                if (GetBuildingAt(temp, World) == null)
+                if (GetBuildingAt(temp, world) == null)
                 { //The spot is free!
                     valids.Add(temp);
                 }
