@@ -38,7 +38,7 @@ namespace Recellection
 		{
             this.explanation = insertLineBreaksForString(explanation);
             this.explanationColor = explanationColor;
-            this.explanationDrawPos = calculateDrawCoordinates(new Vector2(Recellection.viewPort.Width / 2, Recellection.viewPort.Height / 2),this.explanation);
+            this.explanationDrawPos = new Vector2(Recellection.viewPort.Width / 2, Recellection.viewPort.Height / 2);
 			switch (layout)
 			{
 				case Globals.MenuLayout.Prompt:
@@ -57,7 +57,7 @@ namespace Recellection
         {
             this.explanation = insertLineBreaksForString(explanation);
             this.explanationColor = explanationColor;
-            this.explanationDrawPos = calculateDrawCoordinates(new Vector2(Recellection.viewPort.Width / 2, Recellection.viewPort.Height / 2), this.explanation);
+            this.explanationDrawPos = new Vector2(Recellection.viewPort.Width / 2, Recellection.viewPort.Height / 2);
             this.leftOff = leftOff;
             this.rightOff = rightOff;
             this.topOff = topOff;
@@ -201,8 +201,8 @@ namespace Recellection
 
                     textWidth = icons[i].label.Length * FONT_WIDTH;
 
-                    Vector2 temp = calculateDrawCoordinates(new Vector2(
-                        i * Recellection.viewPort.Width * 3 / 5 + Recellection.viewPort.Width * 1 / 5, Recellection.viewPort.Height / 2), icons[i].label);
+                    Vector2 temp = new Vector2(
+                        i * Recellection.viewPort.Width * 3 / 5 + Recellection.viewPort.Width * 1 / 5, Recellection.viewPort.Height / 2);
 
                     icons[i].targetLabelRectangle =
                     new Microsoft.Xna.Framework.Rectangle((int)temp.X, (int)temp.Y, textWidth, FONT_SIZE);
@@ -222,13 +222,6 @@ namespace Recellection
                 }
                 
             }
-			
-
-			/*icons[1].region = new GUIRegion(Recellection.windowHandle, 
-                new System.Windows.Rect(, 0, Recellection.viewPort.Width, Recellection.viewPort.Height));
-            icons[1].targetRectangle =
-                new Microsoft.Xna.Framework.Rectangle(Recellection.viewPort.Width * 3 / 5, 0, Recellection.viewPort.Width, Recellection.viewPort.Height);
-            */
 			this.icons = icons;
 		}
 
@@ -252,23 +245,6 @@ namespace Recellection
             {
                 menuPic = Recellection.textureMap.GetTexture(menuTexture);
             }
-            //This will not work, waiting for better way to implement.
-            /*if (scrollZone)
-            {
-
-                for (int i = cols + 1; i < cols * rows; i++)
-                {
-                    //Hax calc, ignores the edges
-                    if (i % cols != 0 && (i+1) % cols != 0 && i < (cols - 1) * rows)
-                    {
-                        icons[i].targetRectangle = new Microsoft.Xna.Framework.Rectangle((i % cols) * iconWidth, (i / rows) * iconHeight, iconWidth, iconHeight);
-
-                        icons[i].region = new GUIRegion(Recellection.windowHandle,
-                            new System.Windows.Rect((i % cols) * iconWidth, (i / rows) * iconHeight, iconWidth, iconHeight));
-                    }
-                }
-
-            }*/
             else
             {
                 for (int i = 0; i < cols * rows; i++)
@@ -308,8 +284,8 @@ namespace Recellection
 
                    textWidth = icons[i].label.Length * FONT_WIDTH;
 
-                    Vector2 temp = calculateDrawCoordinates(new Vector2(
-                       (i % 2) * (windowWidth * 3 / 5) + (windowWidth * 1 / 5), (i / 2) * (windowHeight * 3 / 5) + (windowHeight * 1 / 5)), icons[i].label);
+                    Vector2 temp = new Vector2(
+                       (i % 2) * (windowWidth * 3 / 5) + (windowWidth * 1 / 5), (i / 2) * (windowHeight * 3 / 5) + (windowHeight * 1 / 5));
 
                     icons[i].targetLabelRectangle =
                         new Microsoft.Xna.Framework.Rectangle((int) temp.X, (int) temp.Y, (textWidth), (FONT_SIZE));
@@ -365,10 +341,9 @@ namespace Recellection
 
 					textWidth = mi.label.Length * FONT_WIDTH;
 
-                    Vector2 temp = calculateDrawCoordinates(new Vector2(
-					   (position % 3) * (iconWidth) + (iconWidth / 2), 
-					   (position / 3) * (iconHeight) + (iconHeight / 2)), 
-					   mi.label);
+                    Vector2 temp = new Vector2(
+                       (position % 3) * (iconWidth) + (iconWidth / 2),
+                       (position / 3) * (iconHeight) + (iconHeight / 2));
 
 					mi.targetLabelRectangle = new Rectangle((int)temp.X, (int)temp.Y, textWidth, FONT_SIZE);
                 }
