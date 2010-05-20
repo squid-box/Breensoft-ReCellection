@@ -112,15 +112,18 @@ namespace Recellection.Code.Controllers
             {
                 for (int y = 0; y < 2; y++)
                 {
-                    int minY = 1 + y * (map_rows * 2 / 3);
-                    int minX = 1 + x * (map_cols * 2 / 3);
+                    int minY = (map_rows / 5) + y * (map_rows * 2 / 3);
+                    int minX = (map_cols / 5) + x * (map_cols * 2 / 3);
 
-                    int maxY = (map_rows / 3) + map_rows * y - 2;
-                    int maxX = (map_cols / 3) + map_cols * x - 2;
+                    int maxY = (map_rows / 3) + map_rows * y - 2 - (map_rows / 3) * y;
+                    int maxX = (map_cols / 3) + map_cols * x - 2 - (map_cols / 3) * x;
+                    do
+                    {
+                        randomY = randomer.Next(minY, maxY);
 
-                    randomY = randomer.Next(minY, maxY);
-
-                    randomX = randomer.Next(minX, maxX);
+                        randomX = randomer.Next(minX, maxX);
+                    }//Make sure that the random coordinates are not on the base building spawn point. 
+                    while (randomX == 5 || randomX == map_cols - 5 || randomY == 5 || randomY == map_rows - 5);
 
                     retur[randomX, randomY] = new Tile(randomX, randomY, Globals.TerrainTypes.Mucus);
                 }

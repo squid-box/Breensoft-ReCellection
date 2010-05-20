@@ -62,5 +62,14 @@ namespace Recellection
             FourMatrix,
 		    FreeStyle
         };
+
+        public enum Difficulty
+        {
+            Babby,
+            Easy,
+            Normal,
+            Hard,
+            Martin
+        };
     }
 }

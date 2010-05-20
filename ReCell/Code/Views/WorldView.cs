@@ -66,8 +66,8 @@ namespace Recellection.Code.Views
 
             //Color c1 = new Color(0xb2, 0xc9, 0x9f);
             //Color c2 = new Color(0x9f, 0xc4, 0xc9);
-            Color c1 = new Color(0xac, 0x33, 0x2d);
-            Color c2 = new Color(0xea, 0xe4, 0x7c);
+            Color c1 = Color.HotPink;//new Color(0xac, 0x33, 0x2d);
+            Color c2 = Color.Crimson;//new Color(0xea, 0xe4, 0x7c);
             Instance.cMatrix = Instance.generateColorMatrix(c1, c2);
 		}
 
@@ -237,6 +237,8 @@ namespace Recellection.Code.Views
                             this.Layer = 0.11f;
 
                             infosz = b.GetUnits().Count.ToString();
+                            if (b.incomingUnits.Count > 0)
+								infosz +=  " ("+b.incomingUnits.Count+")";
                             stringSize = Recellection.worldFont.MeasureString(infosz);
                             fontX = (float)(r.X + r.Width / 2) - stringSize.X / 2;
                             fontY = (float)(r.Y + r.Height / 4) - stringSize.Y;
@@ -245,7 +247,7 @@ namespace Recellection.Code.Views
                             infosz = GraphController.Instance.GetWeight(b).ToString();
                             stringSize = Recellection.worldFont.MeasureString(infosz);
                             fontX = (float)(r.X + r.Width / 2) - stringSize.X / 2;
-                            fontY = (float)(r.Y + 3 * r.Height / 4) - stringSize.Y;
+                            fontY = (float)(r.Y + r.Height - stringSize.Y);
                             spriteBatch.DrawString(Recellection.worldFont, infosz, new Vector2(fontX, fontY), Color.White, 0, new Vector2(0f), 1.0f, SpriteEffects.None, Layer);
                         }
                     }
@@ -270,6 +272,7 @@ namespace Recellection.Code.Views
                                     c = Color.Lerp(c, Color.HotPink, 0.3f + u.PowerLevel * 0.5f);
                                 }
                                 this.DrawTexture(spriteBatch, spr, new Rectangle(ux, uy, spr.Width, spr.Height), c);
+                                //powerlevel debug: this.DrawCenteredString(spriteBatch, ""+u.PowerLevel, new Vector2(ux, uy - 30), Color.White);
                             }
                         }
                     }

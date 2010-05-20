@@ -49,6 +49,7 @@ namespace Recellection
         TimeSpan elapsedTime;
         
         TobiiController tobiiController;
+        public static KeyboardState publicKeyBoardState;
         SpriteBatch spriteBatch;
 
 		public static SpriteFont worldFont;
@@ -72,6 +73,7 @@ namespace Recellection
         //Debug Input 
         KeyboardState lastKBState, kBState;
         MouseState lastMouseState, mouseState;
+       
 
         public Recellection()
         {
@@ -177,7 +179,8 @@ namespace Recellection
 
             lastKBState = kBState;
             lastMouseState = mouseState;
-            kBState = Keyboard.GetState();
+            publicKeyBoardState = Keyboard.GetState();
+            kBState = publicKeyBoardState;
             mouseState = Mouse.GetState();
 
             #endregion
@@ -240,6 +243,32 @@ namespace Recellection
 
             base.Draw(gameTime);
         }
+
+		public void ToggleLogger(String s)
+		{
+			if (LoggerFactory.HasLogger(s))
+			{
+				LoggerFactory.GetLogger(s).Active = !LoggerFactory.GetLogger(s).Active;
+			}
+			else
+			{
+				console.Console.WriteLine("Logger does not exist");
+			}
+
+		}
+
+		public void ListLoggers()
+		{
+			console.Console.WriteLine(LoggerFactory.ListLoggers());
+		}
+
+		public void SetLoggers(int i)
+		{
+			bool active = false;
+			if (i != 0)
+				active = false;
+			LoggerFactory.SetAll(active);
+		}
 
         public void Help()
         {
