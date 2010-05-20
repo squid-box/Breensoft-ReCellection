@@ -58,21 +58,19 @@ namespace Recellection.Code.Controllers
             log.Info("AI Making a Move.");
 
             m_view.LookAtScreen(); //Have the AI View update its local variables
-            int resourceLocations = m_view.GetResourceLocations().Count;
 
-            //First order of business: secure some income
-            //While we have secured less resource points than we should have, get some!
+
+            int resourceLocations = m_view.GetResourceLocations().Count;
             if (resourceLocations < resourceThreshold)
-            {
+            {//While we have secured less resource points than we should have, get some!
                 log.Info("Not enough resource points. Need " + resourceThreshold + ", have " + resourceLocations);
                 SecureNextResourceHotSpot();
             }
 
             if (resourceLocations < resourceCriticalThreshold)
-            {
+            {//If we have not secured basic income, dont worry about anything else.
                 log.Info("Not enough resource points so nothing more to do this turn.");
                 log.Info("//Ending turn");
-                //If we have not secured basic income, dont worry about anything else.
                 return;
             }
 
@@ -80,7 +78,7 @@ namespace Recellection.Code.Controllers
             if (GetGraphs()[0].baseBuilding == null)
             { //Our base building has been destroyed! Create a new one from where we can afford it.
                 Building relay = Util.FindBuildingWithUnitCount((int)unitAcc.CalculateBuildingCostInflation(Globals.BuildingTypes.Base), m_view.myBuildings);
-                IssueBuildOrder(Util.GetRandomPointFrom(Util.CreateMatrixFromInterval(BuildingController.GetValidBuildingInterval(relay.GetPosition(), m_view.world))), relay, Globals.BuildingTypes.Base);
+                IssueBuildOrder(Util.GetRandomBuildPointFrom(Util.CreateMatrixFromInterval(BuildingController.GetValidBuildingInterval(relay.GetPosition(), m_view.world))), relay, Globals.BuildingTypes.Base);
             }
 
             //Reset all the building weights.
@@ -94,12 +92,28 @@ namespace Recellection.Code.Controllers
                 UpgradeUnits();
             }
 
+            if (ShouldAttack())
+            {
+                Attack();
+            }
+
+
             List<Building> enemyFront = new List<Building>();
             List<Building> front = GetFrontLine(enemyFront);
             log.Info("Weighing the frontline");
             WeighFrontLine(front, enemyFront);
             SetCriticalWeights();
             log.Info("//Ending turn");
+        }
+
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        private bool ShouldAttack()
+        {
+            
         }
 
 

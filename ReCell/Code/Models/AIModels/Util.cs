@@ -132,15 +132,62 @@ namespace Recellection.Code.Models
             return path;
         }
 
+
+
         /// <summary>
-        /// Does exactly as promised.
+        /// Returns the Tile located in the given coordinates provided that it is visible.
+        /// If it is not visible, null is returned.
+        /// </summary>
+        /// <param name="coords"></param>
+        /// <param name="world"></param>
+        /// <returns></returns>
+        internal Tile GetTileAt(Vector2 coords, World world)
+        {
+            //log.Fatal("Accessing Tile at "+coords.X+","+coords.Y);
+            Tile tempTile = world.GetMap().GetTile((int)coords.X, (int)coords.Y);
+
+            ///* Uncomment when fog of war is properly implemented
+            //if (tempTile.IsVisible(ai))
+            //{
+            //    return tempTile;
+            //}
+
+            return tempTile;
+        }
+
+
+        /// <summary>
+        /// Returns the fromBuilding at the given coordinates provided that it is visible.
+        /// </summary>
+        /// <param name="point"></param>
+        /// <param name="world"></param>
+        /// <returns></returns>
+        public static Building GetBuildingAt(Vector2 point, World world)
+        {
+            return GetTileAt(point).GetBuilding();
+        }
+
+
+
+        /// <summary>
+        /// Returns a valid build point randomly chosen from the given choices.
         /// </summary>
         /// <param name="list"></param>
+        /// <param name="world"></param>
         /// <returns></returns>
-        public static Vector2 GetRandomPointFrom(List<Vector2> list)
+        public static Vector2 GetRandomBuildPointFrom(List<Vector2> list, World world)
         {
+            List<Vector2> valids = new List<Vector2>();
+            for (int i = 0; i < list.Count; i++)
+            {
+                Vector2 temp = list[i];
+                if (GetBuildingAt(temp, World) == null)
+                { //The spot is free!
+                    valids.Add(temp);
+                }
+            }
             Random randomFactory = new Random();
-            return list[randomFactory.Next(list.Count)];
+            return valids[randomFactory.Next(valids.Count)];
         }
     }
 }
