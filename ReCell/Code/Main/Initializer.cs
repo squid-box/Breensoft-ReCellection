@@ -29,10 +29,10 @@ namespace Recellection.Code.Main
 			logger.Debug("Initializer is running.");
 			
 			#region Build main menu
-			MenuIcon newgame = new MenuIcon("New game", null, Color.Black);
-			MenuIcon options = new MenuIcon("Options", null, Color.Black);
-			MenuIcon help = new MenuIcon("Help", null, Color.Black);
-			MenuIcon quit = new MenuIcon("Quit", null, Color.Black);
+			MenuIcon newgame = new MenuIcon(Language.Instance.GetString("NewGame"), null, Color.Black);
+			MenuIcon options = new MenuIcon(Language.Instance.GetString("Options"), null, Color.Black);
+			MenuIcon help = new MenuIcon(Language.Instance.GetString("Help"), null, Color.Black);
+			MenuIcon quit = new MenuIcon(Language.Instance.GetString("Quit"), null, Color.Black);
 
 			List<MenuIcon> menuOptions = new List<MenuIcon>();
 			menuOptions.Add(newgame);
@@ -40,7 +40,7 @@ namespace Recellection.Code.Main
 			menuOptions.Add(help);
 			menuOptions.Add(quit);
 
-            Menu mainMenu = new Menu(Globals.MenuLayout.FourMatrix, menuOptions, "Would you like to play a game?", Color.Black);
+            Menu mainMenu = new Menu(Globals.MenuLayout.FourMatrix, menuOptions, "", Color.Black);
 
 			MenuView view = MenuView.Instance;
 

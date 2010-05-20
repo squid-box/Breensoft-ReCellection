@@ -54,7 +54,7 @@ namespace Recellection.Code.Models
         /// </summary>
         private Language()
         {
-            this.currentLanguage = "English";
+            this.currentLanguage = "Swedish";
             this.translations = new Dictionary<String, Dictionary<String, String>>();
             this.ReadLanguagesFromFile();
         }

@@ -1,0 +1,83 @@
+﻿[General]
+title=Åter:AUSWAHL
+
+[Menu]
+MainMenu1=LINKS
+MainMenu2=ZWEI
+MainMenu3=DREI
+MainMenu4=VIER
+MainMenu5=FÜNF
+MainMenu6=RECHTS
+MainMenu7=SIEBEN
+MainMenu8=ACHT
+back=ZURÜCK!
+
+ChooseBuilding=WÄHLEN SIE EIN HAUS BITTE
+SetWeight=WÄHLEN SIE EN ACHTUNG BITTE
+BuildCell=EIN CELL BAUEN
+RemoveCell=ZERSTÖREN ZERSTÖREN!
+UpgradeUnits=VERBESSERUNG
+UpgradeMenu=WÄHLEN SIE EIN VERBESSERUNG BITTE
+UpgradePower=MEHR KRAFT
+UpgradeSpeed=SCHNELL!
+BuildingMenu=BAUEN
+RepairCell=REPARIEREN
+SetAggro=ANGRIFF?
+
+OptionsMenu1=OTest1
+OptionsMenu2=OTest2
+OptionsMenu3=OTest3
+OptionsMenu4=OTest4
+OptionsMenu5=OTest5
+OptionsMenu6=OTest6
+OptionsMenu7=OTest7
+OptionsMenu8=OTest8
+
+ConfirmationMenuYes=JAWOHL
+ConfirmationMenuNo=NEIN
+
+CommandMenu1=CTest1
+CommandMenu2=CTest2
+CommandMenu3=CTest3
+CommandMenu4=CTest4
+CommandMenu5=CTest5
+CommandMenu6=CTest6
+CommandMenu7=CTest7
+CommandMenu8=CTest8
+
+SpecialCommandMenu1=CTest1
+SpecialCommandMenu2=CTest2
+SpecialCommandMenu3=CTest3
+SpecialCommandMenu4=CTest4
+SpecialCommandMenu5=CTest5
+SpecialCommandMenu6=CTest6
+SpecialCommandMenu7=CTest7
+SpecialCommandMenu8=CTest8
+
+Yes=JAWOHL
+No=NEIN
+AreYouSureYouWantToQuit=DU WIRDEST EINEN KRANKENSCHWESTER BRAUCHEN!
+
+[Game menu]
+EndTurn=ABSCHLUSS
+EndGame=ENTLÖSUNG
+AreYouSureYouWantToEndTheGame=DU WIRDEST EINEN KRANKENSCHWESTER BRAUCHEN!
+
+[Tile options]
+TileMenu=WAS MÖCHTEN SIE MIT DEN BODEN MACHEN?
+Cancel=ABBRECHEN
+MoveUnits=ZU ANGRIFF
+
+[Graph]
+SetImportance=WIE VIELE CELLE SOLL HIER BLEIBEN?
+
+[Game entities]
+BaseCell=REICH CELL
+DefensiveCell=BUNKER CELL
+AggressiveCell=WAFFEN CELL
+ResourceCell=ARBEITER CELL
+
+[End game]
+hasWon=GEWONNEN
+hasLost=DU HAST VERLOREN
+isDraw=ABERLOL
