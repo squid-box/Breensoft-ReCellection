@@ -17,7 +17,7 @@ namespace Recellection
 	{
         private const int FONT_SIZE = 33;
         private const int FONT_WIDTH = 20;
-        private const int CHARS_PER_ROW = 15;
+        private const int CHARS_PER_ROW = 20;
         
 	    private List<MenuIcon> icons;
         private Texture2D menuPic;
