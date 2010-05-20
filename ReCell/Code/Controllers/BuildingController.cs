@@ -85,13 +85,15 @@ namespace Recellection.Code.Controllers
 			MenuIcon aggressiveCell = new MenuIcon(Language.Instance.GetString("AggressiveCell") +
                     " (" + player.unitAcc.CalculateBuildingCostInflation(Globals.BuildingTypes.Aggressive) + ")", 
 					Recellection.textureMap.GetTexture(Globals.TextureTypes.AggressiveBuilding), Color.Black);
-				
+            MenuIcon cancel = new MenuIcon(Language.Instance.GetString("Cancel"),
+                    Recellection.textureMap.GetTexture(Globals.TextureTypes.No));
             List<MenuIcon> menuIcons = new List<MenuIcon>();
             menuIcons.Add(baseCell);
             menuIcons.Add(resourceCell);
             menuIcons.Add(defensiveCell);
             menuIcons.Add(aggressiveCell);
-            Menu ConstructBuildingMenu = new Menu(Globals.MenuLayout.FourMatrix, menuIcons, Language.Instance.GetString("ChooseBuilding"), Color.Black);
+            menuIcons.Add(cancel);
+            Menu ConstructBuildingMenu = new Menu(Globals.MenuLayout.NineMatrix, menuIcons, Language.Instance.GetString("ChooseBuilding"), Color.Black);
             MenuController.LoadMenu(ConstructBuildingMenu);
             Recellection.CurrentState = MenuView.Instance;
             Globals.BuildingTypes Building;
@@ -298,15 +300,18 @@ namespace Recellection.Code.Controllers
         /// <param name="b">The buiding to remove.</param>
         public static void RemoveBuilding(Building b)
         {
-            if (b is ResourceBuilding)
+            lock (b)
             {
-                GraphController.Instance.GetGraph(b).baseBuilding.RateOfProduction -= ((ResourceBuilding)b).RateOfProduction;
+                if (b is ResourceBuilding && GraphController.Instance.GetGraph(b).baseBuilding != null)
+                {
+                    GraphController.Instance.GetGraph(b).baseBuilding.RateOfProduction -= ((ResourceBuilding)b).RateOfProduction;
+                }
+                GraphController.Instance.RemoveBuilding(b);
+                lock (b.controlZone)
+                {
+                    b.controlZone.First().RemoveBuilding();
+                }
             }
-			GraphController.Instance.RemoveBuilding(b);
-			lock (b.controlZone)
-			{
-				b.controlZone.First().RemoveBuilding();
-			}
         }
 
         public static void HurtBuilding(Building toHurt)
