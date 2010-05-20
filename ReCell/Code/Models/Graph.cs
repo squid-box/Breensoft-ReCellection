@@ -51,11 +51,6 @@ namespace Recellection.Code.Models
 		/// <exception cref="ArgumentException">If the fromBuilding is a base fromBuilding.</exception>
 		public void Add(Building building)
 		{
-			if (building is BaseBuilding)
-			{
-				throw new ArgumentException("BaseBuildings can not be added to graphs.");
-			}
-			
 			if (buildings.ContainsKey(building))
 			{
 				logger.Debug("Can not add building to graph. The building '" + building + "' already exists.");

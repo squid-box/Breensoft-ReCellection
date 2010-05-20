@@ -125,15 +125,6 @@ namespace Recellection.Code.Controllers
                         constructTile.position, theWorld, player))
                 {
                     SoundsController.playSound("Denied");
-
-                    // Let's update the fog of war!
-                    for (int i = 1; i < 3; i++)
-                    {
-                        for (int j = 0; i < 3; i++)
-                        {
-                            theWorld.map.GetTile((int)constructTile.position.X - j, (int)constructTile.position.Y - i).MakeVisibleTo(player);
-                        }
-                    }
                 }
             }
             catch (BuildingOutOfRangeException bore)
@@ -257,7 +248,22 @@ namespace Recellection.Code.Controllers
                 }
 
                 SoundsController.playSound("buildingPlacement");
-            }
+			}
+
+			// Let's update the fog of war!
+			for (int i = -3; i <= 3; i++)
+			{
+				for (int j = -3; j <= 3; j++)
+				{
+					try
+					{
+						world.map.GetTile((int)targetCoordinate.X + j, (int)targetCoordinate.Y + i).MakeVisibleTo(owner);
+					}
+					catch(IndexOutOfRangeException e)
+					{
+					}
+				}
+			}
             return true;
         }
 
