@@ -408,27 +408,19 @@ namespace Recellection.Code.Controllers
             float onTileOffset = ((float)(Globals.TILE_SIZE - 1)) / ((float)(Globals.TILE_SIZE));
             float constructionAreaOffset = 6.0f;
 
-            List<Vector2> fourVector2s = new List<Vector2>(2);
+            for (int i = 0; i < 2; i++)
+            {
+                List<Vector2> tempVectors = new List<Vector2>(2);
 
-            fourVector2s.Add(new Vector2((float)tileCoords[0].X, (float)tileCoords[0].Y));
-            fourVector2s.Add(new Vector2((float)tileCoords[0].X, (float)tileCoords[0].Y + onTileOffset + constructionAreaOffset));
+                tempVectors.Add(new Vector2((float)tileCoords[i].X + onTileOffset * i, (float)tileCoords[i].Y + onTileOffset * i));
+                tempVectors.Add(new Vector2((float)tileCoords[i].X + onTileOffset * i, (float)tileCoords[i].Y + onTileOffset * ((i + 1) & 1) + constructionAreaOffset * (1 - i * 2)));
 
-            fourVector2s.Add(new Vector2((float)tileCoords[0].X, (float)tileCoords[0].Y));
-            fourVector2s.Add(new Vector2((float)tileCoords[0].X + onTileOffset + constructionAreaOffset, (float)tileCoords[0].Y));
+                tempVectors.Add(new Vector2((float)tileCoords[i].X + onTileOffset * i, (float)tileCoords[i].Y + onTileOffset * i));
+                tempVectors.Add(new Vector2((float)tileCoords[i].X + onTileOffset * ((i + 1) & 1) + constructionAreaOffset * (1 - i*2), (float)tileCoords[i].Y + onTileOffset * i));
 
-            Tile temp1 = theWorld.map.GetTile(tileCoords[0].X, tileCoords[0].Y);
-            temp1.SetDrawLine(fourVector2s);
-
-
-            List<Vector2> fourVector2s2 = new List<Vector2>(2);
-            fourVector2s2.Add(new Vector2((float)tileCoords[1].X + onTileOffset, (float)tileCoords[1].Y + onTileOffset));
-            fourVector2s2.Add(new Vector2((float)tileCoords[1].X + onTileOffset, (float)tileCoords[1].Y - constructionAreaOffset));
-
-            fourVector2s2.Add(new Vector2((float)tileCoords[1].X + onTileOffset, (float)tileCoords[1].Y + onTileOffset));
-            fourVector2s2.Add(new Vector2((float)tileCoords[1].X - constructionAreaOffset, (float)tileCoords[1].Y + onTileOffset));
-
-            Tile temp2 = theWorld.map.GetTile(tileCoords[1].X, tileCoords[1].Y);
-            temp2.SetDrawLine(fourVector2s2);
+                Tile temp = theWorld.map.GetTile(tileCoords[i].X, tileCoords[i].Y);
+                temp.SetDrawLine(tempVectors);
+            }
 
             theWorld.DrawConstructionLines = tileCoords;
 
@@ -436,9 +428,10 @@ namespace Recellection.Code.Controllers
 
         private void RemoveconstructionTileLines(List<Point> tileCoords)
         {
-            theWorld.map.GetTile(tileCoords[0].X, tileCoords[0].Y).ClearDrawLine();
-            theWorld.map.GetTile(tileCoords[1].X, tileCoords[1].Y).ClearDrawLine();
-
+            for (int i = 0; i < 2; i++)
+            {
+                theWorld.map.GetTile(tileCoords[i].X, tileCoords[i].Y).ClearDrawLine();
+            }
             theWorld.DrawConstructionLines = null;
         }
 
