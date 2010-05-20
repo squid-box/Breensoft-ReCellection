@@ -85,11 +85,26 @@ namespace Recellection.Code.Controllers
                 MenuIcon activatedMenuIcon = MenuController.GetInput();
                 if (activatedMenuIcon == leftOff)
                 {
-                    TileMenu(previousSelection);
+                    if (previousSelection.state == State.BUILDING)
+                    {
+                        TileMenu(previousSelection);
+                    }
+                    else
+                    {
+                        BuildingMenu(previousSelection);
+                    }
+
 				}
                 else if (activatedMenuIcon == rightOff)
                 {
-                    BuildingMenu(previousSelection);
+                    if (previousSelection.state == State.BUILDING)
+                    {
+                        TileMenu(previousSelection);
+                    }
+                    else
+                    {
+                        BuildingMenu(previousSelection);
+                    }
                 }
                 else if (activatedMenuIcon == topOff)
                 {
@@ -199,6 +214,7 @@ namespace Recellection.Code.Controllers
         public Selection getSelection()
         {
             MenuIcon activatedMenuIcon = MenuController.GetInput();
+            if (activatedMenuIcon == leftOff || activatedMenuIcon == rightOff || activatedMenuIcon == topOff || activatedMenuIcon == botOff)
             return retrieveSelection(activatedMenuIcon);
         }
 
