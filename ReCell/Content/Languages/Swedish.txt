@@ -10,11 +10,25 @@ MainMenu5=Test5
 MainMenu6=Test6
 MainMenu7=Test7
 MainMenu8=Test8
+
 back=Tillbaka
 NewGame=Nytt spel
 Options=Alterantiv
 Help=Hjälp
 Quit=Avsluta
+
+Mute=Tystnad
+Volume=Volym
+Difficulty=Svårighetsgrad
+Language=Språk
+ChooseLanguage=Välj Språk
+ChooseADifficulty=Välj svårighetsgrad
+
+MusicVolumeUp=Höj musikvolym
+MusicVolumeDown=Sänk musikvolym
+EffectsVolumeUp=Höj effektvolym
+EffectsVolumeDown=Sänk effektvolym
+
 
 ChooseBuilding=Välj den typ av cell du vill bygga.
 SetWeight=Välj Beredskapsnivå.
