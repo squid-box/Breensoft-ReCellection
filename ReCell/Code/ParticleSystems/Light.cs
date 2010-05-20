@@ -18,18 +18,23 @@ namespace Recellection
         public float maxTTL, TTL;
         public float yVelocity;
         public float xVelocity;
-        public float agingSwell; //whether it will swell or shrink during its lifetime, and how much/fast
+        public float curPresence, maxPresence, minPresence, presenceChangeSpeed; //whether it will swell or shrink during its lifetime, and how much/fast
         public float rotation;
         public float rotSpeed;
 
-        public Light(Vector2 p, float ttl, float yVel, float xVel, float swellDirection, float rot, float rotSpd)
+        public Light(Vector2 p, float ttl, float yVel, float xVel, float currentPresence, float presenceVariance, float changeSpeed, float rot, float rotSpd)
         {
             position = p;
             maxTTL = ttl;
             TTL = ttl;
             xVelocity = xVel;
             yVelocity = yVel;
-            agingSwell = swellDirection;
+
+            curPresence = currentPresence;
+            maxPresence = currentPresence + presenceVariance;
+            minPresence = currentPresence - presenceVariance;
+            presenceChangeSpeed = changeSpeed;
+
             rotation = rot;
             rotSpeed = rotSpd;
         }
