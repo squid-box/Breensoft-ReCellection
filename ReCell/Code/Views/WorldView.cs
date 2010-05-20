@@ -164,8 +164,6 @@ namespace Recellection.Code.Views
 		override public void Draw(SpriteBatch spriteBatch)
         {
             #region THIS IS BACKGROUNDDRAWAGE!
-
-			//Texture2D back = Recellection.textureMap.GetTexture(Globals.TextureTypes.white);
 			Layer = 1.0f;
 			DrawTexture(spriteBatch, backgroundTex, new Rectangle(0, 0, Recellection.viewPort.Width, Recellection.viewPort.Height));
             #endregion
@@ -264,7 +262,7 @@ namespace Recellection.Code.Views
                                 int ux = (int)Math.Round((u.position.X - World.LookingAt.X) * Globals.TILE_SIZE) - spr.Width / 2;
                                 int uy = (int)Math.Round((u.position.Y - World.LookingAt.Y) * Globals.TILE_SIZE) - spr.Height / 2;
 
-								float amount = 1f - (0.3f + (u.PowerLevel*0.7f));
+								float amount = (0.3f + (u.PowerLevel*0.7f));
                                 //c = Color.Lerp(c, Color.HotPink, 0.3f + u.PowerLevel * 0.5f);
 								Color c = Color.Lerp(u.GetOwner().color, Color.White, amount);
                                 
@@ -348,7 +346,7 @@ namespace Recellection.Code.Views
             if (doRenderThisPass)
             {
                 Recellection.graphics.GraphicsDevice.SetRenderTarget(0, backgroundTarget);
-                Recellection.graphics.GraphicsDevice.Clear(Color.White);
+                Recellection.graphics.GraphicsDevice.Clear(Color.Black);
 
                 spriteBatch.Begin(SpriteBlendMode.AlphaBlend, SpriteSortMode.Immediate, SaveStateMode.None);
                 lock (tileCollection)

@@ -53,7 +53,7 @@ namespace Recellection.Code.Models
             list.Add(new MenuIcon("This is a resource building.", Recellection.textureMap.GetTexture(Globals.TextureTypes.ResourceBuilding)));
             list.Add(new MenuIcon("This is a helpfull text which tells me what this button does."));
             list.Add(new MenuIcon("This is a helpfull text which tells me what this button does."));
-            list.Add(new MenuIcon("Back", Recellection.textureMap.GetTexture(Globals.TextureTypes.No)));
+            list.Add(Recellection.back);
             
             return list;
         }
