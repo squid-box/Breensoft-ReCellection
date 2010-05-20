@@ -345,9 +345,15 @@ namespace Recellection.Code.Models
 				{
 					if (BaseEntity == null)
 					{
-						// If no home exists, call current tile home.
-						DisperseDistance = 0.5f;
+						// If no home exists, call current tile home and turn passive.
 						BaseEntity = world.GetMap().GetTile(this.GetPosition());
+						IsAggressive = false; // free kills!
+					}
+					else if (BaseEntity is Building && ! ((Building)BaseEntity).IsAlive())
+					{
+						// If home just died, call the tile base of that home our home.
+						BaseEntity = world.GetMap().GetTile(BaseEntity.GetPosition());
+						IsAggressive = false; // free kills!
 					}
 					else
 					{

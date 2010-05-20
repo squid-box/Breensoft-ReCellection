@@ -306,12 +306,14 @@ namespace Recellection.Code.Controllers
                 if (b is ResourceBuilding && GraphController.Instance.GetGraph(b).baseBuilding != null)
                 {
                     GraphController.Instance.GetGraph(b).baseBuilding.RateOfProduction -= ((ResourceBuilding)b).RateOfProduction;
-                }
-                GraphController.Instance.RemoveBuilding(b);
-                lock (b.controlZone)
-                {
-                    b.controlZone.First().RemoveBuilding();
-                }
+				}
+				
+				lock (b.controlZone)
+				{
+					b.controlZone.First().RemoveBuilding();
+					GraphController.Instance.RemoveBuilding(b);
+					b.Damage(Math.Max(0, b.currentHealth)); // Kill it!
+				}
             }
         }
 
