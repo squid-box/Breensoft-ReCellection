@@ -164,8 +164,6 @@ namespace Recellection.Code.Views
 		override public void Draw(SpriteBatch spriteBatch)
         {
             #region THIS IS BACKGROUNDDRAWAGE!
-
-			//Texture2D back = Recellection.textureMap.GetTexture(Globals.TextureTypes.white);
 			Layer = 1.0f;
 			DrawTexture(spriteBatch, backgroundTex, new Rectangle(0, 0, Recellection.viewPort.Width, Recellection.viewPort.Height));
             #endregion
@@ -218,10 +216,11 @@ namespace Recellection.Code.Views
                             myLogger.Info("Found a building on the tile.");
                             this.Layer = 0.1f;
                             Texture2D spr = b.GetSprite();
-                            int bx = (int)Math.Round((b.position.X - World.LookingAt.X) * Globals.TILE_SIZE) - spr.Width / 2;
-                            int by = (int)Math.Round((b.position.Y - World.LookingAt.Y) * Globals.TILE_SIZE) - spr.Height / 2;
+                            float size = ((GraphController.Instance.GetWeight(b)*3+100)/200);
+                            int bx = (int)Math.Round((b.position.X - World.LookingAt.X) * Globals.TILE_SIZE) - (int)Math.Round(spr.Width * size) / 2;
+                            int by = (int)Math.Round((b.position.Y - World.LookingAt.Y) * Globals.TILE_SIZE) - (int)Math.Round(spr.Height * size) / 2;
                             this.DrawTexture(spriteBatch, spr,
-                                new Rectangle(bx, by, spr.Width, spr.Height),
+                                new Rectangle(bx, by, (int)Math.Round(spr.Width * size), (int)Math.Round(spr.Height * size)),
                                 b.owner.color);
 
                             //Number of units drawage
@@ -348,7 +347,7 @@ namespace Recellection.Code.Views
             if (doRenderThisPass)
             {
                 Recellection.graphics.GraphicsDevice.SetRenderTarget(0, backgroundTarget);
-                Recellection.graphics.GraphicsDevice.Clear(Color.White);
+                Recellection.graphics.GraphicsDevice.Clear(Color.Black);
 
                 spriteBatch.Begin(SpriteBlendMode.AlphaBlend, SpriteSortMode.Immediate, SaveStateMode.None);
                 lock (tileCollection)
