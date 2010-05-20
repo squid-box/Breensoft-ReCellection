@@ -85,13 +85,15 @@ namespace Recellection.Code.Controllers
 			MenuIcon aggressiveCell = new MenuIcon(Language.Instance.GetString("AggressiveCell") +
                     " (" + player.unitAcc.CalculateBuildingCostInflation(Globals.BuildingTypes.Aggressive) + ")", 
 					Recellection.textureMap.GetTexture(Globals.TextureTypes.AggressiveBuilding), Color.Black);
-				
+            MenuIcon cancel = new MenuIcon(Language.Instance.GetString("Cancel"),
+                    Recellection.textureMap.GetTexture(Globals.TextureTypes.No));
             List<MenuIcon> menuIcons = new List<MenuIcon>();
             menuIcons.Add(baseCell);
             menuIcons.Add(resourceCell);
             menuIcons.Add(defensiveCell);
             menuIcons.Add(aggressiveCell);
-            Menu ConstructBuildingMenu = new Menu(Globals.MenuLayout.FourMatrix, menuIcons, Language.Instance.GetString("ChooseBuilding"), Color.Black);
+            menuIcons.Add(cancel);
+            Menu ConstructBuildingMenu = new Menu(Globals.MenuLayout.NineMatrix, menuIcons, Language.Instance.GetString("ChooseBuilding"), Color.Black);
             MenuController.LoadMenu(ConstructBuildingMenu);
             Recellection.CurrentState = MenuView.Instance;
             Globals.BuildingTypes Building;
@@ -229,7 +231,8 @@ namespace Recellection.Code.Controllers
                             break;
                     }
 
-                    world.map.GetTile((int)targetCoordinate.X, (int)targetCoordinate.Y).SetBuilding(newBuilding);
+					world.map.GetTile((int)targetCoordinate.X, (int)targetCoordinate.Y).SetBuilding(newBuilding);
+					newBuilding.Parent = sourceBuilding;
                     GraphController.Instance.AddBuilding(sourceBuilding, newBuilding);
                 }
                 if (sourceBuilding != null && world.map.GetTile((int)targetCoordinate.X, (int)targetCoordinate.Y).GetBuilding() != null)
