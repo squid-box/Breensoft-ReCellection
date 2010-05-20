@@ -313,6 +313,7 @@ namespace Recellection.Code.Controllers
 					b.controlZone.First().RemoveBuilding();
 					GraphController.Instance.RemoveBuilding(b);
 					b.Damage(Math.Max(0, b.currentHealth)); // Kill it!
+                    SoundsController.playSound("buildingDeath",b.position);
 				}
             }
         }
