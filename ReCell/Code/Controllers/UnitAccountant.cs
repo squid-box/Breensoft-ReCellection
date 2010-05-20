@@ -107,7 +107,7 @@ namespace Recellection.Code.Controllers
 
             foreach (Graph g in owner.GetGraphs())
             {
-                if (totalUnits == POP_CAP_PER_PLAYER)
+                if (totalUnits >= POP_CAP_PER_PLAYER)
                     break;
 
 				List<Unit> res = new List<Unit>();
@@ -125,7 +125,10 @@ namespace Recellection.Code.Controllers
                     unitsToProduce = (int) (POP_CAP_PER_PLAYER - totalUnits);
                 }
                 logger.Debug("Producing " + unitsToProduce + " units!");
-                totalUnits += (uint)unitsToProduce;
+                if (unitsToProduce > 0)
+                {
+                    totalUnits += (uint)unitsToProduce;
+                }
                 for (int i = 0; i < unitsToProduce; i++)
                 {
                     // Places them randomly around the fromBuilding. - John
