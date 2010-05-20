@@ -11,7 +11,7 @@ namespace Recellection.Code.Models
     class KamikazeUnit : Unit
     {
         public KamikazeUnit(Player owner, Vector2 position, Entity target)
-            : base(owner, position, target)
+            : base(owner, position)
         {
             base.MissionEntity = target;
         }
@@ -26,7 +26,7 @@ namespace Recellection.Code.Models
 
 			Vector2.Distance(ref here, ref there, out distance);
 
-            if (distance == 0)
+            if (distance == 0.0f)
             {
                 if (MissionEntity != null)
                 {
