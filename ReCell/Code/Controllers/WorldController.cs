@@ -46,7 +46,12 @@ namespace Recellection.Code.Controllers
         private List<MenuIcon> scrollZone;
 		
 		private static Logger logger = LoggerFactory.GetLogger();
-		
+
+        //offscreenregions
+        MenuIcon topOff;
+        MenuIcon botOff;
+        MenuIcon leftOff;
+		MenuIcon rightOff;
         // Create 
         public WorldController(Player p, World theWorld)
         {
@@ -73,37 +78,58 @@ namespace Recellection.Code.Controllers
 			finished = false;
             while (!finished)
             {
-				previousSelection = sel;
+				//previousSelection = sel;
 				
                 // Generate the appropriate menu for this state.
                 // Get the active GUI Region and invoke the associated method.
-				sel = retrieveSelection();
-				
-                // They are used if the state needs true coordinates, scroll only uses deltas.
-
-				World.Map map = theWorld.GetMap();
-
-				// If this is the first time we select a tile...
-				if(selectedTile != null)
-					selectedTile.active = false;
-				selectedTile = map.GetTile(sel.absPoint);
-				selectedTile.active = true;
-
-				if (sel.point.X == 1 && sel.point.Y == 1)
-				{
-					GameMenu();
+                MenuIcon activatedMenuIcon = MenuController.GetInput();
+                if (activatedMenuIcon == leftOff)
+                {
+                    TileMenu(previousSelection);
 				}
-				if (sel.point.X == 2 && sel.point.Y == 1)
-				{
-					if (previousSelection.state == State.BUILDING)
-					{
-						BuildingMenu(previousSelection);
-					}
-					else if (previousSelection.state == State.TILE)
-					{
-						TileMenu(previousSelection);
-					}
-				}
+                else if (activatedMenuIcon == rightOff)
+                {
+                    BuildingMenu(previousSelection);
+                }
+                else if (activatedMenuIcon == topOff)
+                {
+                    GameMenu();
+                }
+                else if (activatedMenuIcon == botOff)
+                {
+
+                }
+                else
+                {
+                    sel = retrieveSelection(activatedMenuIcon);
+                    previousSelection = sel;
+                    // They are used if the state needs true coordinates, scroll only uses deltas.
+
+                    World.Map map = theWorld.GetMap();
+
+                    // If this is the first time we select a tile...
+                    if (selectedTile != null)
+                        selectedTile.active = false;
+                    selectedTile = map.GetTile(sel.absPoint);
+                    selectedTile.active = true;
+                    /*
+                    if (sel.point.X == 1 && sel.point.Y == 1)
+                    {
+                        GameMenu();
+                    }
+                    if (sel.point.X == 2 && sel.point.Y == 1)
+                    {
+                        if (previousSelection.state == State.BUILDING)
+                        {
+                            BuildingMenu(previousSelection);
+                        }
+                        else if (previousSelection.state == State.TILE)
+                        {
+                            TileMenu(previousSelection);
+                        }
+                    }
+                     * */
+                }
             }
         }
 
@@ -170,10 +196,16 @@ namespace Recellection.Code.Controllers
 			MenuController.UnloadMenu();
 		}
 
-		public Selection retrieveSelection()
+        public Selection getSelection()
+        {
+            MenuIcon activatedMenuIcon = MenuController.GetInput();
+            return retrieveSelection(activatedMenuIcon);
+        }
+
+        public Selection retrieveSelection(MenuIcon activatedMenuIcon)
 		{
 			myLogger.Debug("Waiting for input...");
-			MenuIcon activatedMenuIcon = MenuController.GetInput();
+			
 						 
 		    int x = 0;
             int y = 0;
@@ -214,7 +246,7 @@ namespace Recellection.Code.Controllers
             else if (activatedMenuIcon.labelColor.Equals(Color.Chocolate))
             {
 				theWorld.LookingAt = new Point(theWorld.LookingAt.X + x, theWorld.LookingAt.Y + y);
-				return retrieveSelection();
+				return getSelection();
             }
             else
             {
@@ -273,7 +305,7 @@ namespace Recellection.Code.Controllers
             else if (choosenMenu.Equals(buildCell))
             {
                 tobii.SetFeedbackColor(Color.DarkGreen);
-                Selection destsel = retrieveSelection();
+                Selection destsel = getSelection();
                 if (destsel.state != State.TILE)
 				{
 					Sounds.Instance.LoadSound("Denied");
@@ -317,7 +349,7 @@ namespace Recellection.Code.Controllers
             {
                 tobii.SetFeedbackColor(Color.Red);
                 
-                Selection destsel = retrieveSelection();
+                Selection destsel = getSelection();
                 Tile selectedTile = map.GetTile(destsel.absPoint);
                 UnitController.MoveUnits(playerInControll, seltile, selectedTile, building.GetUnits().Count);
                 
@@ -369,7 +401,7 @@ namespace Recellection.Code.Controllers
 			
 			if (choosenMenu == moveUnits)
 			{
-				Selection currSel = retrieveSelection();
+				Selection currSel = getSelection();
 				if (! (currSel.state == State.TILE || currSel.state == State.BUILDING))
 				{
 					return;
@@ -493,8 +525,12 @@ namespace Recellection.Code.Controllers
             {
                 allMenuIcons.Add(mi);
             }
-
-            MenuController.LoadMenu(new Menu(allMenuIcons));
+            //here be offscreen regions!
+            leftOff = new MenuIcon(new GUIRegion(IntPtr.Zero, new System.Windows.Rect(-700, 0, 700, Globals.VIEWPORT_HEIGHT)));
+            rightOff = new MenuIcon(new GUIRegion(IntPtr.Zero, new System.Windows.Rect(Globals.VIEWPORT_WIDTH, 0, 700, Globals.VIEWPORT_HEIGHT)));
+            botOff = new MenuIcon(new GUIRegion(IntPtr.Zero, new System.Windows.Rect(0, Globals.VIEWPORT_HEIGHT, Globals.VIEWPORT_WIDTH, 700)));
+            topOff = new MenuIcon(new GUIRegion(IntPtr.Zero, new System.Windows.Rect(0, -700, Globals.VIEWPORT_WIDTH, 700)));
+            MenuController.LoadMenu(new Menu(allMenuIcons, leftOff, rightOff, topOff, botOff));
             MenuController.DisableMenuInput();
         }
     }
