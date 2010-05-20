@@ -29,19 +29,13 @@ namespace Recellection.Code.Views
         private RenderTarget2D backgroundTarget;
 
         private bool doRenderThisPass = true;
-        public static bool doLights = false;
+        public static bool doLights = true;
         public static bool doGrain = true;
-        public static bool doRipples = false;
-        
-        private Effect bgShaders;
-		private Texture2D activeTile;
-        private float calmRippleLowerBound = 1.5f;
-        private float calmRippleWaveDivider;
-        private float calmRippleMovementRate = 0.01f;
-        private float calmRippleDistortion = 0.5f;
-        private float crawler = 0;
+
+        private Texture2D activeTile;
         private LightParticleSystem lps;
-		private Tile active;
+        private GrainSystem gs;
+        private Tile active;
         private Color[,] cMatrix;
 
 		private static int maxCols = (int)((float)Recellection.viewPort.Width / (float)Globals.TILE_SIZE);
@@ -76,8 +70,7 @@ namespace Recellection.Code.Views
             backgroundTex = Recellection.textureMap.GetTexture(Globals.TextureTypes.white);
             backgroundTarget = new RenderTarget2D(Recellection.graphics.GraphicsDevice, Recellection.viewPort.Width, Recellection.viewPort.Height, 1, Recellection.graphics.GraphicsDevice.DisplayMode.Format);
             lps = new LightParticleSystem(0.05f, Recellection.textureMap.GetTexture(Globals.TextureTypes.Light));
-
-            this.bgShaders = Recellection.bgShader;
+            gs = new GrainSystem(0.01f, 0.2f, 0.3f, Recellection.contentMngr);
 
             myLogger = LoggerFactory.GetLogger();
             //myLogger.SetTarget(LoggerSetup.GetLogFileTarget("WorldView.log"));
@@ -358,7 +351,7 @@ namespace Recellection.Code.Views
                 Recellection.graphics.GraphicsDevice.SetRenderTarget(0, backgroundTarget);
                 Recellection.graphics.GraphicsDevice.Clear(Color.White);
 
-                spriteBatch.Begin();
+                spriteBatch.Begin(SpriteBlendMode.AlphaBlend, SpriteSortMode.Immediate, SaveStateMode.None);
                 lock (tileCollection)
                 {
                     foreach (Tile t in tileCollection)
@@ -368,8 +361,7 @@ namespace Recellection.Code.Views
 
                         Rectangle r = new Rectangle(x * Globals.TILE_SIZE, y * Globals.TILE_SIZE, Globals.TILE_SIZE, Globals.TILE_SIZE);
 
-
-                        spriteBatch.Draw(t.GetSprite(), r, cMatrix[(int) t.position.X, (int)t.position.Y]); //here be dragons and (tile texture2D)
+                        spriteBatch.Draw(t.GetSprite(), r, cMatrix[(int)t.position.X, (int)t.position.Y]); //here be dragons and (tile texture2D)
 
                         if (t.active)
                         {
@@ -380,63 +372,13 @@ namespace Recellection.Code.Views
                     if (doLights)
                         lps.UpdateAndDraw(gameTime, spriteBatch);
 
+                    if (doGrain)
+                        gs.UpdateAndDraw(gameTime, spriteBatch);
+
                     spriteBatch.End();
 
                     Recellection.graphics.GraphicsDevice.SetRenderTarget(0, null);
                     backgroundTex = backgroundTarget.GetTexture();
-
-
-                    if (doGrain)
-                    {
-                        bgShaders.Parameters["Timer"].SetValue((float)gameTime.ElapsedRealTime.TotalSeconds + 1.23f);
-
-                        Recellection.graphics.GraphicsDevice.SetRenderTarget(0, backgroundTarget);
-                        Recellection.graphics.GraphicsDevice.Clear(Color.Black);
-
-                        spriteBatch.Begin(SpriteBlendMode.None, SpriteSortMode.Immediate, SaveStateMode.None);
-                        bgShaders.CurrentTechnique = bgShaders.Techniques["Grain"];
-                        bgShaders.Begin();
-                        bgShaders.CurrentTechnique.Passes[0].Begin();
-                        spriteBatch.Draw(backgroundTex, Vector2.Zero, Color.White);
-                        spriteBatch.End();
-                        bgShaders.CurrentTechnique.Passes[0].End();
-                        bgShaders.End();
-
-                        // Change back to the back buffer, and get our scene
-                        // as a texture.
-                        Recellection.graphics.GraphicsDevice.SetRenderTarget(0, null);
-                        backgroundTex = backgroundTarget.GetTexture();
-                    }
-
-                    if (doRipples)
-                    {
-                        crawler += calmRippleMovementRate;
-                        if (crawler > MathHelper.TwoPi)
-                            crawler = 0;
-
-                        calmRippleWaveDivider = (float)Math.Pow(Math.Sin(crawler), 2) + calmRippleLowerBound;
-
-                        bgShaders.Parameters["calmWave"].SetValue((float)Math.PI / calmRippleWaveDivider);
-                        bgShaders.Parameters["calmDistortion"].SetValue(calmRippleDistortion);
-                        bgShaders.Parameters["calmCenterCoord"].SetValue(new Vector2(0.5f, 0.5f));
-
-                        Recellection.graphics.GraphicsDevice.SetRenderTarget(0, backgroundTarget);
-                        Recellection.graphics.GraphicsDevice.Clear(Color.Black);
-
-                        spriteBatch.Begin(SpriteBlendMode.None, SpriteSortMode.Immediate, SaveStateMode.None);
-                        bgShaders.CurrentTechnique = bgShaders.Techniques["Ripple"];
-                        bgShaders.Begin();
-                        bgShaders.CurrentTechnique.Passes[0].Begin();
-                        spriteBatch.Draw(backgroundTex, Vector2.Zero, Color.White);
-                        spriteBatch.End();
-                        bgShaders.CurrentTechnique.Passes[0].End();
-                        bgShaders.End();
-
-                        // Change back to the back buffer, and get our scene
-                        // as a texture.
-                        Recellection.graphics.GraphicsDevice.SetRenderTarget(0, null);
-                        backgroundTex = backgroundTarget.GetTexture();
-                    }
 
                     doRenderThisPass = false;
                 }
