@@ -73,7 +73,7 @@ namespace Recellection.Code.Controllers
 					{
 						logger.Fatal("Could not identify "+player.color+" player!");
 					}
-                    if (CheckIfLostOrWon(player))
+                    if (CheckIfLostOrWon(players))
                     {
                         finished = true;
                         EndGame(players[0]);
@@ -200,12 +200,15 @@ namespace Recellection.Code.Controllers
             return (world.players.Count == 1);
         }
 
-        private Boolean CheckIfLostOrWon(Player player)
+        private Boolean CheckIfLostOrWon(List<Player> players)
         {
-            if (HasLost(player))
-            {
-                world.RemovePlayer(player);
-            }
+			foreach(Player p in players)
+			{
+				if (HasLost(p))
+				{
+					world.RemovePlayer(p);
+				}
+			}
             if (HasWon())
             {
                 return true;
