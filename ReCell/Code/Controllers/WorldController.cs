@@ -369,10 +369,7 @@ namespace Recellection.Code.Controllers
             }
             else if (choosenMenu.Equals(upgradeUnits))
             {
-                if (!playerInControll.unitAcc.PayAndUpgrade(building))
-                {
-                    SoundsController.playSound("Denied");
-                }
+				upgradeMenu();
             }
             else if (choosenMenu.Equals(moveUnits))
             {
@@ -407,6 +404,41 @@ namespace Recellection.Code.Controllers
             }
         }
 
+		private void upgradeMenu()
+		{
+			Building building = selectedTile.GetBuilding();
+
+			MenuIcon speed = new MenuIcon(Language.Instance.GetString("UpgradeSpeed"), null, Color.Black);
+			MenuIcon power = new MenuIcon(Language.Instance.GetString("UpgradePower"), null, Color.Black);
+			MenuIcon cancel = new MenuIcon(Language.Instance.GetString("Cancel"), Recellection.textureMap.GetTexture(Globals.TextureTypes.No), Color.Black);
+
+			List<MenuIcon> menuIcons = new List<MenuIcon>();
+			menuIcons.Add(speed);
+			menuIcons.Add(power);
+			menuIcons.Add(cancel);
+
+			Menu upgradeMenu = new Menu(Globals.MenuLayout.FourMatrix, menuIcons, Language.Instance.GetString("UpgradeMenu"), Color.Black);
+			MenuController.LoadMenu(upgradeMenu);
+			Recellection.CurrentState = MenuView.Instance;
+			MenuIcon chosenMenu = MenuController.GetInput();
+			Recellection.CurrentState = WorldView.Instance;
+			MenuController.UnloadMenu();
+
+			if (chosenMenu == speed)
+			{
+				if (!playerInControll.unitAcc.PayAndUpgradeSpeed(building))
+				{
+					SoundsController.playSound("Denied");
+				}
+			}
+			else if (chosenMenu == power)
+			{
+				if (!playerInControll.unitAcc.PayAndUpgradePower(building))
+				{
+					SoundsController.playSound("Denied");
+				}
+			}
+		}
         
 
         private void SetConstructionLines(List<Point> tileCoords)

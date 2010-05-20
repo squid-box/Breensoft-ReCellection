@@ -87,11 +87,24 @@ namespace Recellection.Code.Models
 		{
 			get
 			{
-				return powerLevel + owner.powerLevel + Buff;
+				return powerLevel + owner.PowerLevel + Buff;
 			}
 			set
 			{
 				powerLevel = value;
+			}
+		}
+
+		public float speedLevel;
+		public float SpeedLevel
+		{
+			get
+			{
+				return speedLevel;
+			}
+			set
+			{
+				speedLevel = value;
 			}
 		}
 		
@@ -285,13 +298,13 @@ namespace Recellection.Code.Models
 			{
 				float distance = this.targetPosition.X - this.position.X;
 
-				if (Math.Abs(distance) < movement_speed)
+				if (Math.Abs(distance) < (movement_speed + speedLevel))
 				{
 					position = new Vector2(targetPosition.X, position.Y);
 				}
                 else
                 {
-                    float newX = position.X + movement_speed * deltaTime * direction.X * direction.Length();
+                    float newX = position.X + (movement_speed + speedLevel) * deltaTime * direction.X * direction.Length();
                     position = new Vector2(newX, position.Y);
                 }
 			}
@@ -299,13 +312,13 @@ namespace Recellection.Code.Models
 			{
 				float distance = this.targetPosition.Y - this.position.Y;
 
-                if (Math.Abs(distance) < movement_speed)
+				if (Math.Abs(distance) < (movement_speed + (speedLevel * 0.1)))
                 {
 					position = new Vector2(position.X, targetPosition.Y);
                 }
                 else
                 {
-                    float newY = position.Y + movement_speed * deltaTime * direction.Y * direction.Length();
+					float newY = position.Y + (movement_speed + speedLevel) * deltaTime * direction.Y * direction.Length();
                     position = new Vector2(position.X, newY);
                 }
 			}
@@ -318,6 +331,17 @@ namespace Recellection.Code.Models
 			{
 				Unit.world.map.GetTile(beforeX, beforeY).RemoveUnit(this);
 				Unit.world.map.GetTile(afterX, afterY).AddUnit(this);
+                Unit.world.map.GetTile(afterX, afterY).MakeVisibleTo(this.owner);
+
+
+                // Let's update the fog of war!
+                for (int i = 1; i < 4; i++)
+                {
+                    for (int j = 0; j < 4; j++)
+                    {
+                        Unit.world.map.GetTile(afterX - j, afterY - i).MakeVisibleTo(this.owner);
+                    }
+                }
 			}
 		}
 

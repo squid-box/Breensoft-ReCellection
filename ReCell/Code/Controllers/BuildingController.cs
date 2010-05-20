@@ -91,26 +91,26 @@ namespace Recellection.Code.Controllers
             Menu ConstructBuildingMenu = new Menu(Globals.MenuLayout.NineMatrix, menuIcons, Language.Instance.GetString("ChooseBuilding"), Color.Black);
             MenuController.LoadMenu(ConstructBuildingMenu);
             Recellection.CurrentState = MenuView.Instance;
-            Globals.BuildingTypes Building;
+            Globals.BuildingTypes building;
 
             MenuIcon choosenMenu = MenuController.GetInput();
             Recellection.CurrentState = WorldView.Instance;
             MenuController.UnloadMenu();
             if (choosenMenu.Equals(baseCell))
             {
-                Building = Globals.BuildingTypes.Base;
+                building = Globals.BuildingTypes.Base;
             }
             else if (choosenMenu.Equals(resourceCell))
             {
-                Building = Globals.BuildingTypes.Resource;
+                building = Globals.BuildingTypes.Resource;
             }
             else if (choosenMenu.Equals(defensiveCell))
             {
-                Building = Globals.BuildingTypes.Barrier;
+                building = Globals.BuildingTypes.Barrier;
             }
             else if (choosenMenu.Equals(aggressiveCell))
             {
-                Building = Globals.BuildingTypes.Aggressive;
+                building = Globals.BuildingTypes.Aggressive;
             }
             else
             {
@@ -121,10 +121,19 @@ namespace Recellection.Code.Controllers
             // If we have selected a tile, and we can place a building at the selected tile...					
             try
             {
-                if (!AddBuilding(Building, sourceBuilding,
+                if (!AddBuilding(building, sourceBuilding,
                         constructTile.position, theWorld, player))
                 {
                     SoundsController.playSound("Denied");
+
+                    // Let's update the fog of war!
+                    for (int i = 1; i < 4; i++)
+                    {
+                        for (int j = 0; j < 4; j++)
+                        {
+                            theWorld.map.GetTile((int)constructTile.position.X - j, (int)constructTile.position.Y - i).MakeVisibleTo(player);
+                        }
+                    }
                 }
             }
             catch (BuildingOutOfRangeException bore)

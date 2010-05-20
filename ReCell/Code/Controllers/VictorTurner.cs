@@ -202,6 +202,7 @@ namespace Recellection.Code.Controllers
 
         private Boolean CheckIfLostOrWon(List<Player> players)
         {
+			List<Player> toBeRemoved = new List<Player>();
 			foreach(Player p in players)
 			{
 				if (HasLost(p))
