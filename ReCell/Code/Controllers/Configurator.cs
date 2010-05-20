@@ -160,7 +160,7 @@ namespace Recellection.Code.Controllers
             MenuIcon cancel = new MenuIcon(Language.Instance.GetString("Cancel"), Recellection.textureMap.GetTexture(Globals.TextureTypes.No));
             iconList.Add(cancel);
             
-            Menu diffMenu = new Menu(Globals.MenuLayout.NineMatrix, iconList, Language.Instance.GetString("ChooseADifficulty"));
+            Menu diffMenu = new Menu(Globals.MenuLayout.FourMatrix, iconList, Language.Instance.GetString("ChooseADifficulty"));
 
             MenuController.LoadMenu(diffMenu);
             Recellection.CurrentState = MenuView.Instance;
