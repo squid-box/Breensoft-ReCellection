@@ -164,8 +164,6 @@ namespace Recellection.Code.Views
 		override public void Draw(SpriteBatch spriteBatch)
         {
             #region THIS IS BACKGROUNDDRAWAGE!
-
-			//Texture2D back = Recellection.textureMap.GetTexture(Globals.TextureTypes.white);
 			Layer = 1.0f;
 			DrawTexture(spriteBatch, backgroundTex, new Rectangle(0, 0, Recellection.viewPort.Width, Recellection.viewPort.Height));
             #endregion
@@ -348,7 +346,7 @@ namespace Recellection.Code.Views
             if (doRenderThisPass)
             {
                 Recellection.graphics.GraphicsDevice.SetRenderTarget(0, backgroundTarget);
-                Recellection.graphics.GraphicsDevice.Clear(Color.White);
+                Recellection.graphics.GraphicsDevice.Clear(Color.Black);
 
                 spriteBatch.Begin(SpriteBlendMode.AlphaBlend, SpriteSortMode.Immediate, SaveStateMode.None);
                 lock (tileCollection)
