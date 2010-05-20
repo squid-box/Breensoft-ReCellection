@@ -42,7 +42,6 @@ namespace Recellection
         public static GraphicsDeviceManager graphics;
         public static ContentManager contentMngr;
         public Thread LogicThread { get; set; }
-        public static MenuIcon back = null;
 
         //FPS
         int frameRate;
@@ -128,8 +127,6 @@ namespace Recellection
             audioPlayer.PlaySong(Globals.Songs.Theme);
 
             viewPort = graphics.GraphicsDevice.Viewport;
-
-            back = new MenuIcon(Language.Instance.GetString("back"), textureMap.GetTexture(Globals.TextureTypes.No));
         }
 
         /// <summary>
