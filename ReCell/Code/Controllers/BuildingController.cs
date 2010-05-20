@@ -107,9 +107,13 @@ namespace Recellection.Code.Controllers
             {
                 Building = Globals.BuildingTypes.Barrier;
             }
-            else
+            else if (choosenMenu.Equals(aggressiveCell))
             {
                 Building = Globals.BuildingTypes.Aggressive;
+            }
+            else
+            {
+                return;
             }
 
 
@@ -119,7 +123,7 @@ namespace Recellection.Code.Controllers
                 if (!AddBuilding(Building, sourceBuilding,
                         constructTile.position, theWorld, player))
                 {
-                    Sounds.Instance.LoadSound("Denied").Play();
+                    SoundsController.playSound("Denied");
                 }
             }
             catch (BuildingOutOfRangeException bore)
@@ -240,7 +244,7 @@ namespace Recellection.Code.Controllers
                     throw new Exception("A building was not placed on the tile even though it should have been.");
                 }
 
-				Sounds.Instance.LoadSound("buildingPlacement").Play();
+                SoundsController.playSound("buildingPlacement");
             }
             return true;
         }

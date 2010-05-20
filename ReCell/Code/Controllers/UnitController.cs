@@ -149,6 +149,11 @@ namespace Recellection.Code.Controllers
         
         private static void FindEnemy(Unit u, World.Map worldMap)
 		{
+			if (! u.IsAggressive)
+			{
+				return;
+			}
+			
 			Tile t = worldMap.GetTile((int)u.position.X, (int)u.position.Y);
 			
 			// Search for units

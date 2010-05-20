@@ -22,7 +22,7 @@ namespace Recellection.Code.Main
         {
             myLogger = LoggerFactory.GetLogger();
             myLogger.Info("Beginning Game Initialization.");
-            CreateGameObjects(4711);
+            CreateGameObjects(606);
         }
 
         private bool CreateGameObjects(int seed)
@@ -43,7 +43,7 @@ namespace Recellection.Code.Main
 
             List<Player> temp2 = new List<Player>();
             temp2.Add(human);
-            AIPlayer ai = new AIPlayer(temp2, new AIView(theWorld),Color.Red);
+            AIPlayer ai = new AIPlayer(new AIView(theWorld),Color.Red);
             theWorld.AddPlayer(ai);
             
             human.Enemy = ai;
@@ -68,7 +68,6 @@ namespace Recellection.Code.Main
                 (int)(theWorld.players[0].GetGraphs()[0].baseBuilding.position.Y-yOffset));
 
             myLogger.Info("Setting lookingAt to X: " + theWorld.LookingAt.X + "  y: " + theWorld.LookingAt.Y);
-
             return true;
         }
         

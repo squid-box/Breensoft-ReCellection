@@ -80,19 +80,38 @@ namespace Recellection.Code.Controllers
 		/// <returns>An activated Region in the current menu</returns>
 		public static MenuIcon GetInput()
 		{
-			tobiiController.SetRegionsEnabled(true);
-			GUIRegion activated = tobiiController.GetActivatedRegion();
-			tobiiController.SetRegionsEnabled(false);
-
-            //tobiiController.UnloadMenu(menuModel.Peek());
-
-			List<MenuIcon> options = menuModel.Peek().GetIcons();
-			foreach(MenuIcon mi in options)
+			while (true)
 			{
-				if (mi.region.RegionIdentifier == activated.RegionIdentifier)
-					return mi;
+
+				tobiiController.SetRegionsEnabled(true);
+				GUIRegion activated = tobiiController.GetActivatedRegion();
+				tobiiController.SetRegionsEnabled(false);
+
+				//tobiiController.UnloadMenu(menuModel.Peek());
+				Menu m = menuModel.Peek();
+				List<MenuIcon> options = m.GetIcons();
+				foreach (MenuIcon mi in options)
+				{
+					if (mi.region.RegionIdentifier == activated.RegionIdentifier)
+						return mi;
+				}
+				if (m.leftOff != null && m.leftOff.region.RegionIdentifier == activated.RegionIdentifier)
+				{
+					return m.leftOff;
+				}
+				else if (m.rightOff != null && m.rightOff.region.RegionIdentifier == activated.RegionIdentifier)
+				{
+					return m.rightOff;
+				}
+				else if (m.topOff != null && m.topOff.region.RegionIdentifier == activated.RegionIdentifier)
+				{
+					return m.topOff;
+				}
+				else if (m.botOff != null && m.botOff.region.RegionIdentifier == activated.RegionIdentifier)
+				{
+					return m.botOff;
+				}
 			}
-			throw new NonExistantInputException();
 		}
 	}
 	

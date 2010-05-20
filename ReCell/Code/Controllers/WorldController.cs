@@ -9,6 +9,7 @@ using Microsoft.Xna.Framework;
 using Recellection.Code.Utility.Logger;
 using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Input;
+using Recellection.Code.Utility.Events;
 
 namespace Recellection.Code.Controllers
 {
@@ -45,7 +46,12 @@ namespace Recellection.Code.Controllers
         private List<MenuIcon> scrollZone;
 		
 		private static Logger logger = LoggerFactory.GetLogger();
-		
+
+        //offscreenregions
+        MenuIcon topOff;
+        MenuIcon botOff;
+        MenuIcon leftOff;
+		MenuIcon rightOff;
         // Create 
         public WorldController(Player p, World theWorld)
         {
@@ -68,41 +74,70 @@ namespace Recellection.Code.Controllers
         public void Run()
 		{
 			Selection sel = new Selection();
+			logger.Info("Logger started");
+
 			sel.state = State.NONE;
 			finished = false;
             while (!finished)
             {
-				previousSelection = sel;
+				//previousSelection = sel;
 				
                 // Generate the appropriate menu for this state.
                 // Get the active GUI Region and invoke the associated method.
-				sel = retrieveSelection();
-				
-                // They are used if the state needs true coordinates, scroll only uses deltas.
-
-				World.Map map = theWorld.GetMap();
-
-				// If this is the first time we select a tile...
-				if(selectedTile != null)
-					selectedTile.active = false;
-				selectedTile = map.GetTile(sel.absPoint);
-				selectedTile.active = true;
-
-				if (sel.point.X == 1 && sel.point.Y == 1)
-				{
-					GameMenu();
+                MenuIcon activatedMenuIcon = MenuController.GetInput();
+                if (activatedMenuIcon == leftOff)
+                {
+					TobiiController.GetInstance(Recellection.windowHandle).SetRegionsEnabled(false);
+                    TileMenu(previousSelection);
+					TobiiController.GetInstance(Recellection.windowHandle).SetRegionsEnabled(true);
 				}
-				if (sel.point.X == 2 && sel.point.Y == 1)
-				{
-					if (previousSelection.state == State.BUILDING)
-					{
-						BuildingMenu(previousSelection);
-					}
-					else if (previousSelection.state == State.TILE)
-					{
-						TileMenu(previousSelection);
-					}
-				}
+                else if (activatedMenuIcon == rightOff)
+                {
+					TobiiController.GetInstance(Recellection.windowHandle).SetRegionsEnabled(false);
+                    BuildingMenu(previousSelection);
+					TobiiController.GetInstance(Recellection.windowHandle).SetRegionsEnabled(true);
+                }
+                else if (activatedMenuIcon == topOff)
+                {
+					TobiiController.GetInstance(Recellection.windowHandle).SetRegionsEnabled(false);
+                    GameMenu();
+					TobiiController.GetInstance(Recellection.windowHandle).SetRegionsEnabled(true);
+                }
+                else if (activatedMenuIcon == botOff)
+                {
+
+                }
+                else
+                {
+                    sel = retrieveSelection(activatedMenuIcon);
+                    previousSelection = sel;
+                    // They are used if the state needs true coordinates, scroll only uses deltas.
+
+                    World.Map map = theWorld.GetMap();
+
+                    // If this is the first time we select a tile...
+                    if (selectedTile != null)
+                        selectedTile.active = false;
+                    selectedTile = map.GetTile(sel.absPoint);
+                    selectedTile.active = true;
+                    /*
+                    if (sel.point.X == 1 && sel.point.Y == 1)
+                    {
+                        GameMenu();
+                    }
+                    if (sel.point.X == 2 && sel.point.Y == 1)
+                    {
+                        if (previousSelection.state == State.BUILDING)
+                        {
+                            BuildingMenu(previousSelection);
+                        }
+                        else if (previousSelection.state == State.TILE)
+                        {
+                            TileMenu(previousSelection);
+                        }
+                    }
+                     * */
+                }
             }
         }
 
@@ -169,11 +204,23 @@ namespace Recellection.Code.Controllers
 			MenuController.UnloadMenu();
 		}
 
-		public Selection retrieveSelection()
+        public Selection getSelection()
+        {
+			while (true)
+			{
+				MenuIcon activatedMenuIcon = MenuController.GetInput();
+				if (activatedMenuIcon.label != null)
+				{
+					return retrieveSelection(activatedMenuIcon);
+				}
+			}
+        }
+
+        public Selection retrieveSelection(MenuIcon activatedMenuIcon)
 		{
+
 			myLogger.Debug("Waiting for input...");
-			MenuIcon activatedMenuIcon = MenuController.GetInput();
-						 
+				
 		    int x = 0;
             int y = 0;
             String[] splitted = activatedMenuIcon.label.Split(REG_EXP);
@@ -212,9 +259,8 @@ namespace Recellection.Code.Controllers
 			// If we selected a scroll zone?
             else if (activatedMenuIcon.labelColor.Equals(Color.Chocolate))
             {
-
 				theWorld.LookingAt = new Point(theWorld.LookingAt.X + x, theWorld.LookingAt.Y + y);
-				return retrieveSelection();
+				return getSelection();
             }
             else
             {
@@ -246,6 +292,7 @@ namespace Recellection.Code.Controllers
 			MenuIcon upgradeUnits = new MenuIcon(Language.Instance.GetString("UpgradeUnits") + " (" + playerInControll.unitAcc.GetUpgradeCost() + ")");
             MenuIcon moveUnits = new MenuIcon(Language.Instance.GetString("MoveUnits"));
             MenuIcon repairCell = new MenuIcon(Language.Instance.GetString("RepairCell") + " (" + toHeal + ")");
+            MenuIcon setAggro = new MenuIcon(Language.Instance.GetString("SetAggro"));
             MenuIcon Cancel = new MenuIcon(Language.Instance.GetString("Cancel"), Recellection.textureMap.GetTexture(Globals.TextureTypes.No));
             
             List<MenuIcon> menuIcons = new List<MenuIcon>();
@@ -255,6 +302,7 @@ namespace Recellection.Code.Controllers
             menuIcons.Add(upgradeUnits);
             menuIcons.Add(moveUnits);
             menuIcons.Add(repairCell);
+            menuIcons.Add(setAggro);
             menuIcons.Add(Cancel);
 
             Menu buildingMenu = new Menu(Globals.MenuLayout.NineMatrix, menuIcons, Language.Instance.GetString("BuildingMenu"), Color.Black);
@@ -271,10 +319,10 @@ namespace Recellection.Code.Controllers
             else if (choosenMenu.Equals(buildCell))
             {
                 tobii.SetFeedbackColor(Color.DarkGreen);
-                Selection destsel = retrieveSelection();
+                Selection destsel = getSelection();
                 if (destsel.state != State.TILE)
 				{
-					Sounds.Instance.LoadSound("Denied");
+					SoundsController.playSound("Denied");
                     tobii.SetFeedbackColor(Color.White);
 					return;
 				}
@@ -295,7 +343,7 @@ namespace Recellection.Code.Controllers
 				}
 				else
 				{
-					Sounds.Instance.LoadSound("Denied");
+                    SoundsController.playSound("Denied");
                     tobii.SetFeedbackColor(Color.White);
 					return;
 				}
@@ -308,16 +356,14 @@ namespace Recellection.Code.Controllers
             {
                 if (!playerInControll.unitAcc.PayAndUpgrade(building))
                 {
-                    Sounds.Instance.LoadSound("Denied");
+                    SoundsController.playSound("Denied");
                 }
             }
             else if (choosenMenu.Equals(moveUnits))
             {
-               
-                
                 tobii.SetFeedbackColor(Color.Red);
                 
-                Selection destsel = retrieveSelection();
+                Selection destsel = getSelection();
                 Tile selectedTile = map.GetTile(destsel.absPoint);
                 UnitController.MoveUnits(playerInControll, seltile, selectedTile, building.GetUnits().Count);
                 
@@ -328,6 +374,11 @@ namespace Recellection.Code.Controllers
             {
                 playerInControll.unitAcc.DestroyUnits(building.units, toHeal);
                 building.Repair(toHeal);
+            }
+            else if (choosenMenu.Equals(setAggro))
+            {
+				building.IsAggressive = !building.IsAggressive;
+				building.UpdateAggressiveness(null, new Event<IEnumerable<Unit>>(building.GetUnits(), EventType.ADD));
             }
             else if (choosenMenu.Equals(Cancel))
             {
@@ -364,7 +415,7 @@ namespace Recellection.Code.Controllers
 			
 			if (choosenMenu == moveUnits)
 			{
-				Selection currSel = retrieveSelection();
+				Selection currSel = getSelection();
 				if (! (currSel.state == State.TILE || currSel.state == State.BUILDING))
 				{
 					return;
@@ -488,8 +539,12 @@ namespace Recellection.Code.Controllers
             {
                 allMenuIcons.Add(mi);
             }
-
-            MenuController.LoadMenu(new Menu(allMenuIcons));
+            //here be offscreen regions!
+            leftOff = new MenuIcon(new GUIRegion(IntPtr.Zero, new System.Windows.Rect(-700, 0, 700, Globals.VIEWPORT_HEIGHT)));
+            rightOff = new MenuIcon(new GUIRegion(IntPtr.Zero, new System.Windows.Rect(Globals.VIEWPORT_WIDTH, 0, 700, Globals.VIEWPORT_HEIGHT)));
+            topOff = new MenuIcon(new GUIRegion(IntPtr.Zero, new System.Windows.Rect(0, Globals.VIEWPORT_HEIGHT, Globals.VIEWPORT_WIDTH, 700)));
+            botOff = new MenuIcon(new GUIRegion(IntPtr.Zero, new System.Windows.Rect(0, -700, Globals.VIEWPORT_WIDTH, 700)));
+            MenuController.LoadMenu(new Menu(allMenuIcons, leftOff, rightOff, topOff, botOff));
             MenuController.DisableMenuInput();
         }
     }

@@ -24,6 +24,10 @@ namespace Recellection
         public String explanation { get; private set; }
         public Vector2 explanationDrawPos { get; private set; }
         public Color explanationColor { get; private set; }
+        public MenuIcon leftOff { get; private set; }
+        public MenuIcon rightOff { get; private set; }
+        public MenuIcon topOff { get; private set; }
+        public MenuIcon botOff { get; private set; }
 
 		public Menu(Globals.MenuLayout layout, List<MenuIcon> icons, String explanation)
 			 : this(layout, icons, explanation, Color.Black)
@@ -49,12 +53,46 @@ namespace Recellection
 			}
 		}
 
+        public Menu(Globals.MenuLayout layout, List<MenuIcon> icons, String explanation, Color explanationColor, MenuIcon leftOff, MenuIcon rightOff, MenuIcon topOff, MenuIcon botOff)
+        {
+            this.explanation = insertLineBreaksForString(explanation);
+            this.explanationColor = explanationColor;
+            this.explanationDrawPos = calculateDrawCoordinates(new Vector2(Recellection.viewPort.Width / 2, Recellection.viewPort.Height / 2), this.explanation);
+            this.leftOff = leftOff;
+            this.rightOff = rightOff;
+            this.topOff = topOff;
+            this.botOff = botOff;
+            switch (layout)
+            {
+                case Globals.MenuLayout.Prompt:
+                    CreatePrompt(icons);
+                    break;
+                case Globals.MenuLayout.NineMatrix:
+                    CreateNineMatrix(icons);
+                    break;
+                case Globals.MenuLayout.FourMatrix:
+                    CreateFourMatrix(icons);
+                    break;
+            }
+        }
+
         public Menu(List<MenuIcon> icons)
 
 
         {
             this.icons = icons;
         }
+
+
+        public Menu(List<MenuIcon> icons, MenuIcon leftOff, MenuIcon rightOff, MenuIcon topOff, MenuIcon botOff)
+        {
+            this.leftOff = leftOff;
+            this.rightOff = rightOff;
+            this.topOff = topOff;
+            this.botOff = botOff;
+            this.icons = icons;
+        }
+
 		
 		public Menu(Texture2D menuPic, List<MenuIcon> icons)
 		{
