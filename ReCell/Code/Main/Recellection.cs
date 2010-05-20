@@ -244,6 +244,32 @@ namespace Recellection
             base.Draw(gameTime);
         }
 
+		public void ToggleLogger(String s)
+		{
+			if (LoggerFactory.HasLogger(s))
+			{
+				LoggerFactory.GetLogger(s).Active = !LoggerFactory.GetLogger(s).Active;
+			}
+			else
+			{
+				console.Console.WriteLine("Logger does not exist");
+			}
+
+		}
+
+		public void ListLoggers()
+		{
+			console.Console.WriteLine(LoggerFactory.ListLoggers());
+		}
+
+		public void SetLoggers(int i)
+		{
+			bool active = false;
+			if (i != 0)
+				active = false;
+			LoggerFactory.SetAll(active);
+		}
+
         public void Help()
         {
             console.Console.WriteLine("M: Toggle music\nI: Turn SFX off\nO: Turn SFX on\nA: Acid sound\nB: Explosion sound\nF1: Toggle Console\nF: \"full\" screen");

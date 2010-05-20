@@ -18,6 +18,7 @@ namespace Recellection.Code.Utility.Logger
 		private string name;
 		private LogLevel threshold;
 		private TextWriter target;
+		public bool Active {get; set;}
 		
 		/// <summary>
 		/// Internal constructor, use GetLogger to get an instance.
@@ -30,6 +31,7 @@ namespace Recellection.Code.Utility.Logger
 			this.name = name;
 			this.threshold = threshold;
 			this.target = target;
+			this.Active = false;
 		}
 		
 		/// <returns>The name of the logger.</returns>
@@ -64,6 +66,9 @@ namespace Recellection.Code.Utility.Logger
 		private void Log(string message, LogLevel level)
 		{
 #if DEBUG
+			if(!Active)
+				return;
+
 			if (level < this.threshold)
 				return;
 			

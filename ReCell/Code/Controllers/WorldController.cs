@@ -345,7 +345,7 @@ namespace Recellection.Code.Controllers
 		private void TileMenu(Selection previousSelection)
 		{
 			MenuIcon moveUnits = new MenuIcon(Language.Instance.GetString("MoveUnits"), null, Color.Black);
-			MenuIcon cancel = new MenuIcon(Language.Instance.GetString("Cancel"), null, Color.Black);
+			MenuIcon cancel = new MenuIcon(Language.Instance.GetString("Cancel"), Recellection.textureMap.GetTexture(Globals.TextureTypes.No), Color.Black);
 			
 			List<MenuIcon> menuIcons = new List<MenuIcon>();
 			if (theWorld.GetMap().GetTile(previousSelection.absPoint).GetUnits(playerInControll).Count > 0)
