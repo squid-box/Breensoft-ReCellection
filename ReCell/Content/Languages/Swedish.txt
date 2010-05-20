@@ -18,6 +18,7 @@ RemoveCell=Förstör denna cell.
 UpgradeUnits=Uppgradera alla små celler.
 BuildingMenu=Bygg Cell.
 RepairCell=Reparera cell.
+SetAggro=Växla aggressivitet.
 
 OptionsMenu1=OTest1
 OptionsMenu2=OTest2
