@@ -26,9 +26,18 @@ namespace Recellection.Code.Models
         private HashSet<Player> visibleTo;
         private Dictionary<Player, HashSet<Unit>> units;
         private List<Unit> allUnits;
+        private List<Vector2> lineDrawPoints;
 
         private Building building;
 		public bool active {get; set;}
+		
+		public Vector2 CenterPosition
+		{
+			get
+			{
+				return position + new Vector2(0.5f, 0.5f);
+			}
+		}
 
         // Events
         public event Publish<IEnumerable<Player>> visionChanged;
@@ -51,6 +60,7 @@ namespace Recellection.Code.Models
             this.units = new Dictionary<Player, HashSet<Unit>>();
             this.allUnits = new List<Unit>();
             this.building = null;
+            this.lineDrawPoints = new List<Vector2>();
         }
 
         /// <summary>
@@ -67,6 +77,7 @@ namespace Recellection.Code.Models
             this.allUnits = new List<Unit>();
             this.position = new Vector2(x, y);
             this.building = null;
+            this.lineDrawPoints = new List<Vector2>();
         }
 
         #endregion
@@ -421,6 +432,26 @@ namespace Recellection.Code.Models
         {
             return type.GetTexture();
 
+        }
+
+        public void SetDrawLine(List<Vector2> points)
+        {
+            if (points.Count != 4)
+            {
+                throw new ArgumentOutOfRangeException("To many points in list, it only accepts four Vector2 points.");
+            }
+            lineDrawPoints.Clear();
+            lineDrawPoints.AddRange(points);
+        }
+
+        public void ClearDrawLine()
+        {
+            lineDrawPoints.Clear();
+        }
+
+        public List<Vector2> GetDrawPoints()
+        {
+            return lineDrawPoints;
         }
     }
 }
