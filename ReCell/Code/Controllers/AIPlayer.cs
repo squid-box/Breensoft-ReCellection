@@ -24,20 +24,6 @@ namespace Recellection.Code.Controllers
         private Random randomFactory;
         private Logger log;
 
-        /// <summary>
-        /// Constructor. The AIPlayer requires quite alot of external controllers.
-        /// </summary>
-        /// <param name="opponents"></param>
-        /// <param name="view"></param>
-        [Obsolete("parameter opponents no longer needed. Overloaded constructor exists.")]
-        public AIPlayer(List<Player> opponents, AIView view, Color c)
-            : base(c, "AIPLAYER")
-        {
-            InitiateUtils();
-            m_view = view;
-
-            view.RegisterPlayer(this);
-        }
 
         /// <summary>
         /// Initiate utilities
