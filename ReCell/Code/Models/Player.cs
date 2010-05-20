@@ -155,7 +155,10 @@ namespace Recellection.Code.Models
         {
             lock (this.units)
             {
-                this.units.UnionWith(units);
+                foreach (Unit u in units)
+                {
+                    this.units.Add(u);
+                }
             }
         }
 
@@ -163,7 +166,7 @@ namespace Recellection.Code.Models
         {
             lock (units)
             {
-                units.Remove(u);
+                this.units.Remove(u);
             }
         }
 
