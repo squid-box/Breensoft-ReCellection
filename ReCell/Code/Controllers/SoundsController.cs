@@ -73,5 +73,12 @@ namespace Recellection.Code.Controllers
             Sounds.Instance.GetCategory("Effects").SetVolume(percentage);
             GameOptions.Instance.sfxVolume = percentage;
         }
+        
+        public static void Mute()
+        {
+			Sounds.Instance.GetCategory("Music").SetVolume(0.0f);
+			Sounds.Instance.GetCategory("Effects").SetVolume(0.0f);
+		}
+			
     }
 }
