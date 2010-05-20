@@ -102,7 +102,7 @@ namespace Recellection.Code.Controllers
                 // Let the units move!
                 logger.Info("Moving units!");
 
-                for(int i = 0; i < 200; i++)
+                for(int i = 0; i < 300; i++)
                 {
                     UnitController.Update(world.units, 1, world.GetMap());
 					System.Threading.Thread.Sleep(10);

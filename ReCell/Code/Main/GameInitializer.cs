@@ -22,7 +22,7 @@ namespace Recellection.Code.Main
         {
             myLogger = LoggerFactory.GetLogger();
             myLogger.Info("Beginning Game Initialization.");
-            CreateGameObjects(4711);
+            CreateGameObjects(1337);
         }
 
         private bool CreateGameObjects(int seed)
