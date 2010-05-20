@@ -218,8 +218,9 @@ namespace Recellection.Code.Controllers
 
         public Selection retrieveSelection(MenuIcon activatedMenuIcon)
 		{
-			myLogger.Debug("Waiting for input...");			
-						 
+
+			myLogger.Debug("Waiting for input...");
+				
 		    int x = 0;
             int y = 0;
             String[] splitted = activatedMenuIcon.label.Split(REG_EXP);
