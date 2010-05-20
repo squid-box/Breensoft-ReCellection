@@ -58,22 +58,27 @@ namespace Recellection.Code.Controllers
             log.Info("AI Making a Move.");
 
             m_view.LookAtScreen(); //Have the AI View update its local variables
-            int resourceLocations = m_view.GetResourceLocations().Count;
 
-            //First order of business: secure some income
-            //While we have secured less resource points than we should have, get some!
+
+            int resourceLocations = m_view.GetResourceLocations().Count;
             if (resourceLocations < resourceThreshold)
-            {
+            {//While we have secured less resource points than we should have, get some!
                 log.Info("Not enough resource points. Need " + resourceThreshold + ", have " + resourceLocations);
                 SecureNextResourceHotSpot();
             }
 
             if (resourceLocations < resourceCriticalThreshold)
-            {
+            {//If we have not secured basic income, dont worry about anything else.
                 log.Info("Not enough resource points so nothing more to do this turn.");
                 log.Info("//Ending turn");
-                //If we have not secured basic income, dont worry about anything else.
                 return;
+            }
+
+
+            if (GetGraphs()[0].baseBuilding == null)
+            { //Our base building has been destroyed! Create a new one from where we can afford it.
+                Building relay = Util.FindBuildingWithUnitCount((int)unitAcc.CalculateBuildingCostInflation(Globals.BuildingTypes.Base), m_view.myBuildings);
+                IssueBuildOrder(Util.GetRandomBuildPointFrom(Util.CreateMatrixFromInterval(BuildingController.GetValidBuildingInterval(relay.GetPosition(), m_view.world)), m_view.world), relay, Globals.BuildingTypes.Base);
             }
 
             //Reset all the building weights.
@@ -87,6 +92,12 @@ namespace Recellection.Code.Controllers
                 UpgradeUnits();
             }
 
+            if (ShouldAttack())
+            {
+                AttackWeakestFrontPoint();
+            }
+
+
             List<Building> enemyFront = new List<Building>();
             List<Building> front = GetFrontLine(enemyFront);
             log.Info("Weighing the frontline");
@@ -94,6 +105,70 @@ namespace Recellection.Code.Controllers
             SetCriticalWeights();
             log.Info("//Ending turn");
         }
+
+
+        /// <summary>
+        /// Identify the weakest enemy point at the front and send enough units there
+        /// to make a nice dent.
+        /// </summary>
+        private void AttackWeakestFrontPoint()
+        {
+            //First, find the weakest enemy point
+            Building target = GetWeakestPoint();
+            //Then find the strongest friendly point
+            Building source = GetStrongestFriendlyBuilding();
+            UnitController.MoveUnits(this, Util.GetTileAt(source.GetPosition(), m_view.world), Util.GetTileAt(target.GetPosition(), m_view.world), source.GetUnits().Count);
+        }
+
+
+        /// <summary>
+        /// Returns the friendly building with the largest amount of units in it
+        /// </summary>
+        /// <returns></returns>
+        private Building GetStrongestFriendlyBuilding()
+        {
+            List<Building> buildings = m_view.myBuildings;
+            Building strongest = buildings[0];
+            for (int i = 0; i < buildings.Count; i++)
+            {
+                if (buildings[i].GetUnits().Count > strongest.GetUnits().Count)
+                    strongest = buildings[i];
+            }
+            return strongest;
+        }
+
+        /// <summary>
+        /// Find the weakest building in the enemies defenses.
+        /// </summary>
+        /// <returns></returns>
+        private Building GetWeakestPoint()
+        {   
+            List<Building> enemies = new List<Building>();
+            GetFrontLine(enemies);
+            Building target = enemies[0];
+            //Then find the weakest one.
+            for (int i = 0; i < enemies.Count; i++)
+            {
+                if (enemies[i].GetUnits().Count < target.GetUnits().Count)
+                    target = enemies[i];
+            }
+            return target;
+        }
+
+
+        /// <summary>
+        /// Method for deciding whether or not we should attack.
+        /// </summary>
+        /// <returns></returns>
+        private bool ShouldAttack()
+        {
+            int maby = randomFactory.Next(10);
+            if (maby > 8)
+                return true;
+
+            return false;
+        }
+
 
 
         /// <summary>
@@ -155,9 +230,9 @@ namespace Recellection.Code.Controllers
             for(int i = 0; i < buildings.Count; i++)
             {
                 Building temp = buildings[i];
-                Building enemy = m_view.GetBuildingAt(Util.GetClosestPointFromList(temp.GetPosition(), m_view.enemyPoints));
-                if (m_view.GetBuildingAt(Util.GetClosestPointFromList(enemy.GetPosition(), m_view.friendlyPoints)) == temp)
-                { //There is no friendly point that's more threatened by our closest enemy point
+                Building enemy = Util.GetBuildingAt(Util.GetClosestPointFromList(temp.GetPosition(), m_view.enemyPoints), m_view.world);
+                if (Util.GetBuildingAt(Util.GetClosestPointFromList(enemy.GetPosition(), m_view.friendlyPoints), m_view.world) == temp)
+                { //The enemy of my enemy is me, and therefore I am closest to it and it is closest to me.
                     log.Info("Adding " + temp.GetPosition().X + ";" +  temp.GetPosition().Y + " to the front list.");
                     result.Add(temp);
                     enemyFront.Add(enemy);
@@ -176,8 +251,8 @@ namespace Recellection.Code.Controllers
         {
 
             //First, check how many units there are in the enemy front.
-            int enemySum = GetUnitCountFrom(enemyFront);
-            int mySum = GetUnitCountFrom(front);
+            int enemySum = Util.GetUnitCountFrom(enemyFront);
+            int mySum = Util.GetUnitCountFrom(front);
 
             float[] ratios = new float[front.Count];
             //Then see what their internal ratios are.
@@ -209,21 +284,6 @@ namespace Recellection.Code.Controllers
             }
         }
 
-        /// <summary>
-        /// Returns the total number of units in the given list of buildings
-        /// </summary>
-        /// <param name="b"></param>
-        /// <returns></returns>
-        private int GetUnitCountFrom(List<Building> b)
-        {
-            int uSum = 0;
-            for (int i = 0; i < b.Count; i++)
-            {
-                uSum += b[i].GetUnits().Count;
-            }
-            return uSum;
-        }
-
 
         /// <summary>
         /// Identifies the closest resource hotspot and expands towards it.
@@ -235,12 +295,12 @@ namespace Recellection.Code.Controllers
             Vector2 sourcePosition = sourceBuilding.GetPosition();
             Vector2 resource = GetClosestResourceHotspot(sourcePosition);
             log.Info("Next spot found at " + resource.X + ";" + resource.Y);
-            List<Vector2> path = GenerateBuildPathBetween(sourcePosition, resource);
+            List<Vector2> path = Util.GenerateBuildPathBetween(sourcePosition, resource, m_view.world);
 
             //Skip the parts of the path we have walked before
             for (int i = 0; i < path.Count; i++)
             {
-                Building b = m_view.GetBuildingAt(path[i]);
+                Building b = Util.GetBuildingAt(path[i], m_view.world);
                 if (b != null && b.GetOwner() == this)
                 {//Already have a building here, take a shortcut
                     criticalBuildings.Remove(b);
@@ -250,7 +310,7 @@ namespace Recellection.Code.Controllers
             }
             bool built = false;
 
-            if (WithinBuildRangeOf(sourceBuilding.GetPosition(), resource))
+            if (Util.WithinBuildRangeOf(sourceBuilding.GetPosition(), resource, m_view.world))
             {//The resource building is within reach of the source
                 log.Info("Spot is close enough, expanding from " + sourceBuilding.GetPosition().X + ";" + sourceBuilding.GetPosition().Y);
                 built = IssueBuildOrder(resource, sourceBuilding, Globals.BuildingTypes.Resource);
@@ -276,12 +336,12 @@ namespace Recellection.Code.Controllers
                     if (m_view.GetResourceLocations().Count < resourceThreshold)
                     {//If the AI has not secured enough resource spots, set the priority to critical
                         log.Info("Importance of this building is CRITICAL");
-                        criticalBuildings.Add(m_view.GetBuildingAt(coords));
+                        criticalBuildings.Add(Util.GetBuildingAt(coords, m_view.world));
                     }
                     else
                     {
                         log.Info("Importance of this building is THREATENED");
-                        GraphController.Instance.SetWeight(m_view.GetBuildingAt(coords), m_view.THREATENED);
+                        GraphController.Instance.SetWeight(Util.GetBuildingAt(coords, m_view.world), m_view.THREATENED);
                     }
                 }
                 else
@@ -302,7 +362,7 @@ namespace Recellection.Code.Controllers
             for (int i = 0; i < path.Count-1; i++)
             {
                 Vector2 current = path[i];
-                Building b = m_view.GetBuildingAt(current);
+                Building b = Util.GetBuildingAt(current, m_view.world);
                 if (b != null)
                 {
                     log.Info("(" + current.X + ";" + current.Y + ") set to SAFE.");
@@ -327,67 +387,6 @@ namespace Recellection.Code.Controllers
             return b;
         }
 
-
-        /// <summary>
-        /// Generates a list of optimal building placements for connecting the two given points.
-        /// </summary>
-        /// <param name="resource"></param>
-        /// <param name="sourcePosition"></param>
-        /// <returns></returns>
-        private List<Vector2> GenerateBuildPathBetween(Vector2 p_source, Vector2 p_dest)
-        {
-            Vector2 source = p_source;
-            Vector2 dest = p_dest;
-
-            List<Vector2> path  = new List<Vector2>();
-            do
-            {
-                source = Util.GetClosestPointFromList(dest, CreateMatrixFromInterval(BuildingController.GetValidBuildingInterval(source, m_view.world)));
-                path.Add(source);
-            } while (!WithinBuildRangeOf(source, dest));
-            if(source != dest) //safeguard for double add
-                path.Add(p_dest);
-
-            return path;
-        }
-
-        /// <summary>
-        /// Converts a given tile interval to a matrix of tile coordinates.
-        /// </summary>
-        /// <param name="list"></param>
-        /// <returns></returns>
-        private List<Vector2> CreateMatrixFromInterval(List<Point> list)
-        {
-            List<Vector2> result = new List<Vector2>();
-
-            for (int i = list[0].X; i <= list[1].X; i++ )
-                for (int j = list[0].Y; j <= list[1].Y; j++)
-                {
-                    result.Add(new Vector2(i,j));
-                }
-            return result;
-        }
-
-        /// <summary>
-        /// Syntactic sugar. Checks if the given source building is within building range of dest.
-        /// </summary>
-        /// <param name="source"></param>
-        /// <param name="dest"></param>
-        /// <returns></returns>
-        private bool WithinBuildRangeOf(Vector2 source, Vector2 dest)
-        {
-            List<Point> valid = BuildingController.GetValidBuildingInterval(dest, m_view.world);
-
-            Point v1 = valid[0];
-            Point v2 = valid[1];
-
-            if ((int)source.X < v1.X || (int)source.X > v2.X || (int)source.Y < v1.Y || (int)source.Y > v2.Y)
-            {
-                return false;
-            }
-            return true;
-        }
-        
         /// <summary>
         /// Method for figuring out the best resource hotspot to take.
         /// The parameter is the closest friendly building.
@@ -407,7 +406,7 @@ namespace Recellection.Code.Controllers
             for (int i = 0; i < resources.Count; i++)
             {
                 Vector2 r = resources[i];
-                Building b = m_view.GetBuildingAt(r);
+                Building b = Util.GetBuildingAt(r, m_view.world);
                 if (b != null)
                     //There is already a building here
                     continue;
@@ -468,7 +467,6 @@ namespace Recellection.Code.Controllers
                 inner = new Vector2(0, 0);
                 outer = middle;
             }
-
 
             //Finally pick a set of coordinates within the opposite quadrant.
 
