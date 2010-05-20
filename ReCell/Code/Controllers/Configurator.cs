@@ -178,7 +178,7 @@ namespace Recellection.Code.Controllers
             iconList.Add(sfxVolumeDown);
             iconList.Add(done);
 
-            Menu volumeMenu = new Menu(iconList,"");
+            Menu volumeMenu = new Menu(Globals.MenuLayout.NineMatrix, iconList, "");
 
             MenuController.LoadMenu(volumeMenu);
 
@@ -190,19 +190,25 @@ namespace Recellection.Code.Controllers
 
                 if (response == musicVolumeUp)
                 {
-                    SoundsController.changeMusicVolume(GameOptions.Instance.musicVolume + 0.05f);
+                    if (GameOptions.Instance.musicVolume <= 1.0f)
+                    {
+                        SoundsController.changeMusicVolume(GameOptions.Instance.musicVolume + 0.1f);
+                    }
                 }
                 else if (response == musicVolumeDown)
                 {
-                    SoundsController.changeMusicVolume(GameOptions.Instance.musicVolume - 0.05f);
+                    SoundsController.changeMusicVolume(GameOptions.Instance.musicVolume - 0.1f);
                 }
                 else if (response == sfxVolumeUp)
                 {
-                    SoundsController.changeEffectsVolume(GameOptions.Instance.sfxVolume + 0.05f);
+                    if (GameOptions.Instance.sfxVolume <= 1.0f)
+                    {
+                        SoundsController.changeEffectsVolume(GameOptions.Instance.sfxVolume + 0.1f);
+                    }
                 }
                 else if (response == sfxVolumeDown)
                 {
-                    SoundsController.changeEffectsVolume(GameOptions.Instance.sfxVolume - 0.05f);
+                    SoundsController.changeEffectsVolume(GameOptions.Instance.sfxVolume - 0.1f);
                 }
                 else if (response == done)
                 {
