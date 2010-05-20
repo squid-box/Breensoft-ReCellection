@@ -216,7 +216,7 @@ namespace Recellection.Code.Views
                             myLogger.Info("Found a building on the tile.");
                             this.Layer = 0.1f;
                             Texture2D spr = b.GetSprite();
-                            float size = 0.5f + 1.5f*Math.Min(100f, (float)GraphController.Instance.GetWeight(b))/100f;
+                            float size = 0.75f + 0.75f*Math.Min(100f, (float)GraphController.Instance.GetWeight(b))/100f;
                             int bx = (int)Math.Round((b.position.X - World.LookingAt.X) * Globals.TILE_SIZE) - (int)Math.Round((float)spr.Width * size) / 2;
                             int by = (int)Math.Round((b.position.Y - World.LookingAt.Y) * Globals.TILE_SIZE) - (int)Math.Round((float)spr.Height * size) / 2;
                             this.DrawTexture(spriteBatch, spr,
