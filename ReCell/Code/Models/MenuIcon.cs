@@ -38,12 +38,9 @@ namespace Recellection
             this.labelColor = color;
 		}
         //use only with offscreenregion!
-        public MenuIcon(String label, Texture2D texture, Color color, GUIRegion region)
+        public MenuIcon(GUIRegion region)
         {
             this.region = region;
-            this.label = label;
-            this.texture = texture;
-            this.labelColor = color;
         }
 
         public static bool operator ==(MenuIcon obj1, MenuIcon obj2)
