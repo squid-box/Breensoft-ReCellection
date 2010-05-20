@@ -31,7 +31,7 @@ namespace Recellection.Code.Controllers
             volume = new MenuIcon("Volume");
             difficulty = new MenuIcon("Difficulty");
             language = new MenuIcon("Language");
-            back = new MenuIcon("Back");
+            back = new MenuIcon("Cancel", Recellection.textureMap.GetTexture(Globals.TextureTypes.No));
             
             iconList = new List<MenuIcon>();
         }
@@ -168,7 +168,7 @@ namespace Recellection.Code.Controllers
             MenuIcon sfxVolumeUp = new MenuIcon("Effects Volume Up");
             MenuIcon sfxVolumeDown = new MenuIcon("Effects Volume Down");
             MenuIcon empty = new MenuIcon("");
-            MenuIcon done = new MenuIcon("Back");
+            MenuIcon done = new MenuIcon("Cancel", Recellection.textureMap.GetTexture(Globals.TextureTypes.No));
 
             List<MenuIcon> iconList = new List<MenuIcon>(); ;
             iconList.Add(musicVolumeUp);
