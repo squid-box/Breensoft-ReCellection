@@ -24,6 +24,16 @@ namespace Recellection.Code.Controllers
         }
 
         /// <summary>
+        /// Returns a Cue from the Sounds Model to comply with MVC.
+        /// </summary>
+        /// <param name="soundIdentifier">The Sound to return.</param>
+        /// <returns>A Cue object for that sound</returns>
+        public Cue GetCue(String soundIdentifier)
+        {
+            return Sounds.Instance.LoadSound(soundIdentifier);
+        }
+
+        /// <summary>
         /// Plays a sound at the normal volume.
         /// </summary>
         /// <param name="soundIdentifier">The sound to play.</param>
@@ -42,6 +52,11 @@ namespace Recellection.Code.Controllers
 			playSound(soundIdentifier, new Vector2(point.X, point.Y));
         }
 
+        /// <summary>
+        /// Plays a sound from a specific object.
+        /// </summary>
+        /// <param name="soundIdentifier">The sound to play.</param>
+        /// <param name="point">A Vector2 object describing the point where the object is located.</param>
         public static void playSound(String soundIdentifier, Vector2 point)
 		{
 			if (theWorld == null)
@@ -61,18 +76,29 @@ namespace Recellection.Code.Controllers
 			cue.Play();
         }
 
+        /// <summary>
+        /// Change the music volume.
+        /// </summary>
+        /// <param name="percentage">Ranges from 0.0 to 2.0, where 0.0 is -96db, 1.0 is 0db and 2.0 is +6db</param>
         public static void changeMusicVolume(float percentage)
         {
             Sounds.Instance.GetCategory("Music").SetVolume(percentage);
             GameOptions.Instance.musicVolume = percentage;
         }
 
+        /// <summary>
+        /// Change the effects volume.
+        /// </summary>
+        /// <param name="percentage">Ranges from 0.0 to 2.0, where 0.0 is -96db, 1.0 is 0db and 2.0 is +6db</param>
         public static void changeEffectsVolume(float percentage)
         {
             Sounds.Instance.GetCategory("Effects").SetVolume(percentage);
             GameOptions.Instance.sfxVolume = percentage;
         }
 
+        /// <summary>
+        /// Mute all sounds from the game.
+        /// </summary>
 		public static void Mute()
         {
 			Sounds.Instance.GetCategory("Music").SetVolume(0.0f);
