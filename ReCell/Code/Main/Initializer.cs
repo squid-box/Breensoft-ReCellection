@@ -96,10 +96,18 @@ namespace Recellection.Code.Main
 				}
                 else if (response == help)
                 {
-                    MenuController.LoadMenu(HelpMenuFactory.GetHelpMenu(HelpMenuFactory.MenuType.Generic));
-                }
-                else if (response == Recellection.back)
-                {
+                    List<MenuIcon> opt = new List<MenuIcon>(1);
+                    MenuIcon cancel = new MenuIcon("");
+                    cancel.region = new GUIRegion(Recellection.windowHandle,
+                        new System.Windows.Rect(0, Globals.VIEWPORT_HEIGHT - 100, Globals.VIEWPORT_WIDTH, 100));
+                    opt.Add(cancel);
+                    Menu menu = new Menu(opt);
+                    MenuController.LoadMenu(menu);
+
+                    Recellection.CurrentState = new HelpView();
+
+                    MenuController.GetInput();
+
                     MenuController.UnloadMenu();
                 }
                 else

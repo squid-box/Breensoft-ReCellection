@@ -20,7 +20,9 @@ namespace Recellection.Code.Controllers
 
         private int resourceThreshold = 2; //The ideal number of resource hotspots the AI should have secured
         private int resourceCriticalThreshold = 1; //The least number of resource hotspots the AI MUST have secured
-        
+
+        private List<Building> criticalBuildings = new List<Building>();
+
         private Random randomFactory;
         private Logger log;
 
@@ -74,11 +76,69 @@ namespace Recellection.Code.Controllers
                 return;
             }
 
+            //Reset all the building weights.
+            SetWeights(m_view.myBuildings, 0);
+
+
+            //If we are falling behind on the upgrades: catch up.
+            if (m_view.opponents[0].powerLevel > this.powerLevel)
+            {
+                log.Info("Attempting to upgrading units.");
+                UpgradeUnits();
+            }
+
             List<Building> enemyFront = new List<Building>();
             List<Building> front = GetFrontLine(enemyFront);
             log.Info("Weighing the frontline");
             WeighFrontLine(front, enemyFront);
+            SetCriticalWeights();
             log.Info("//Ending turn");
+        }
+
+
+        /// <summary>
+        /// Sets the weight of the given builings to the given number.
+        /// </summary>
+        /// <param name="list"></param>
+        /// <param name="p"></param>
+        private void SetWeights(List<Building> list, int p)
+        {
+            foreach (Building b in list) 
+            {
+                GraphController.Instance.SetWeight(b, p);
+            }
+        }
+
+        /// <summary>
+        /// Upgrade the level of the units by finding a building that can afford
+        /// to pay for the upgrade and then ordering the upgrade.
+        /// </summary>
+        private void UpgradeUnits()
+        {
+            int cost = unitAcc.GetUpgradeCost();
+            
+            List<Building> buildings = m_view.myBuildings;
+            Building b = Util.FindBuildingWithUnitCount(cost, buildings);
+            if (b != null)
+            {
+                log.Info("Found a suitable building at " + b.GetPosition().X + ";" + b.GetPosition().Y + ", upgrading units.");
+                unitAcc.PayAndUpgrade(b);
+                return;
+            }
+            log.Info("Could not afford to upgrade.");
+        }
+
+
+
+        /// <summary>
+        /// Sets the most critical building's weights. Makes sure that they are not lost.
+        /// </summary>
+        private void SetCriticalWeights()
+        {
+            foreach (Building b in criticalBuildings) 
+            {
+                GraphController.Instance.SetWeight(b, m_view.CRITICAL);
+            }
         }
 
         /// <summary>
@@ -114,24 +174,28 @@ namespace Recellection.Code.Controllers
         /// <param name="enemyFront"></param>
         private void WeighFrontLine(List<Building> front, List<Building> enemyFront)
         {
-            double enemySum = 0;
-            double[] ratios = new double[front.Count];
 
-            //First, check how many units are in the enemy front.
-            for (int i = 0; i < enemyFront.Count; i++)
-            {
-                enemySum += enemyFront[i].GetUnits().Count;
-            }
+            //First, check how many units there are in the enemy front.
+            int enemySum = GetUnitCountFrom(enemyFront);
+            int mySum = GetUnitCountFrom(front);
+
+            float[] ratios = new float[front.Count];
             //Then see what their internal ratios are.
-            for (int i = 0; i < enemyFront.Count; i++)
-            {
-                if (enemySum != 0)
-                { //If there are units at the enemy front, match the dispersion
-                    ratios[i] = (double)(enemyFront[i].GetUnits().Count) / enemySum;
-                }
-                else
-                { //Otherwise value them equally.
+
+            if (enemySum == 0)
+            { //All enemy buildings have a guaranteed equal distribution
+                for (int i = 0; i < ratios.Length; i++)
                     ratios[i] = 1 / enemyFront.Count;
+            }
+            else
+            { //Distribution might vary
+                for (int i = 0; i < enemyFront.Count; i++)
+                {
+                    int currentCount = enemyFront[i].GetUnits().Count;
+                    if (currentCount != 0)//The building actually has a ratio
+                        ratios[i] = ((float)(currentCount) / (float)enemySum);
+
+                    log.Info("Ratio at " + i + " is " + ratios[i]);
                 }
             }
             log.Info("Front line consists of: ");
@@ -143,6 +207,21 @@ namespace Recellection.Code.Controllers
                 log.Info("("+ temp.GetPosition().X + ";" + temp.GetPosition().Y + ") weight set to " + weight);
                 GraphController.Instance.SetWeight(temp, weight);
             }
+        }
+
+        /// <summary>
+        /// Returns the total number of units in the given list of buildings
+        /// </summary>
+        /// <param name="b"></param>
+        /// <returns></returns>
+        private int GetUnitCountFrom(List<Building> b)
+        {
+            int uSum = 0;
+            for (int i = 0; i < b.Count; i++)
+            {
+                uSum += b[i].GetUnits().Count;
+            }
+            return uSum;
         }
 
 
@@ -164,6 +243,7 @@ namespace Recellection.Code.Controllers
                 Building b = m_view.GetBuildingAt(path[i]);
                 if (b != null && b.GetOwner() == this)
                 {//Already have a building here, take a shortcut
+                    criticalBuildings.Remove(b);
                     sourceBuilding = b;
                     sourcePosition = sourceBuilding.GetPosition();
                 }
@@ -196,7 +276,7 @@ namespace Recellection.Code.Controllers
                     if (m_view.GetResourceLocations().Count < resourceThreshold)
                     {//If the AI has not secured enough resource spots, set the priority to critical
                         log.Info("Importance of this building is CRITICAL");
-                        GraphController.Instance.SetWeight(m_view.GetBuildingAt(coords), m_view.CRITICAL);
+                        criticalBuildings.Add(m_view.GetBuildingAt(coords));
                     }
                     else
                     {
@@ -239,7 +319,12 @@ namespace Recellection.Code.Controllers
         /// <returns></returns>
         private Building SelectSourceBuilding()
         {
-            return this.GetGraphs()[0].baseBuilding;
+            Building b = GetGraphs()[0].baseBuilding;
+            if (b == null)
+            { //Base building destroyed
+                b = GetGraphs()[0].GetBuildings().First();
+            }
+            return b;
         }
 
 
@@ -409,17 +494,6 @@ namespace Recellection.Code.Controllers
             Vector2 result = new Vector2(xVal, yVal);
 
             return result;
-        }
-
-        /// <summary>
-        /// Returns the number of units located at the given coordinates belonging to the given player.
-        /// </summary>
-        /// <param name="point"></param>
-        /// <param name="player"></param>
-        /// <returns></returns>
-        private int unitCountAt(Vector2 point, Player player)
-        {
-            return m_view.GetTileAt(point).GetUnits(player).ToArray().Length;
         }
 
         /// <summary>
