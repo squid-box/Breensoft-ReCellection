@@ -93,17 +93,12 @@ namespace Recellection.Code.Controllers
 				{
 					case State.BUILDING:
 					case State.TILE:
-						// If this is the first time we select a tile...
-						if (selectedTile != null)
-							selectedTile.active = false;
-
-						selectedTile = map.GetTile(sel.absPoint);
-						selectedTile.active = true;
+						SelectTile(map.GetTile(sel.absPoint));
 					break;
 					case State.OFFSCREEN:
 						if (sel.point.X == -1)
 						{
-							ContextMenu(previousSelection);
+							ContextMenu();
 						}
 						if (sel.point.X == 1)
 						{
@@ -114,9 +109,19 @@ namespace Recellection.Code.Controllers
             }
         }
         
-        private void ContextMenu(Selection selection)
+        private void SelectTile(Tile t)
+		{
+			// If this is the first time we select a tile...
+			if (selectedTile != null)
+				selectedTile.active = false;
+
+			selectedTile = t;
+			selectedTile.active = true;
+        }
+        
+        private void ContextMenu()
         {
-			if (selection.state == State.BUILDING)
+			if (selectedTile.GetBuilding() != null)
 			{
 				BuildingMenu();
 			}
@@ -328,7 +333,7 @@ namespace Recellection.Code.Controllers
 					return;
 				}
 				
-				selectedTile = map.GetTile(destsel.absPoint);
+				SelectTile(map.GetTile(destsel.absPoint));
 
                 //TODO Add a check to see if the tile is a correct one. The diffrence between the selected tiles coordinates and the source building shall not exceed 3.
 				if (selectedTile.GetBuilding() == null)
@@ -427,7 +432,7 @@ namespace Recellection.Code.Controllers
 				
 				
 				Tile from = theWorld.GetMap().GetTile(previousSelection.absPoint);
-				selectedTile = theWorld.GetMap().GetTile(currSel.absPoint);
+				SelectTile(theWorld.GetMap().GetTile(currSel.absPoint));
 
 				UnitController.MoveUnits(playerInControll, from, selectedTile, from.GetUnits().Count);
 			}
