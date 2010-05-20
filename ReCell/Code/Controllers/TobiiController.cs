@@ -189,7 +189,23 @@ namespace Recellection
             foreach(GUIRegion region in menu.GetRegions())
             {
                 AddRegion(region);
-            }            
+            }
+            if (menu.leftOff != null)
+            {
+                AddLeftOffScreen(menu.leftOff.region);
+            }
+            if (menu.rightOff != null)
+            {
+                AddRightOffScreen(menu.rightOff.region);
+            }
+            if (menu.botOff != null)
+            {
+                AddTopOffScreen(menu.botOff.region);
+            }
+            if (menu.topOff != null)
+            {
+                AddBotOffScreen(menu.topOff.region);
+            }
         }
 
         /// <summary>
@@ -202,6 +218,22 @@ namespace Recellection
             foreach (GUIRegion region in menu.GetRegions())
             {
                 Interaction.RemoveRegion(region.RegionIdentifier);
+            }
+            if (menu.leftOff != null)
+            {
+                Interaction.RemoveRegion(menu.leftOff.region.RegionIdentifier);
+            }
+            if (menu.rightOff != null)
+            {
+                Interaction.RemoveRegion(menu.rightOff.region.RegionIdentifier);
+            }
+            if (menu.botOff != null)
+            {
+                Interaction.RemoveRegion(menu.botOff.region.RegionIdentifier);
+            }
+            if (menu.topOff != null)
+            {
+                Interaction.RemoveRegion(menu.topOff.region.RegionIdentifier);
             }
         }       
 
