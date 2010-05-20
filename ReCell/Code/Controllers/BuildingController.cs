@@ -231,7 +231,8 @@ namespace Recellection.Code.Controllers
                             break;
                     }
 
-                    world.map.GetTile((int)targetCoordinate.X, (int)targetCoordinate.Y).SetBuilding(newBuilding);
+					world.map.GetTile((int)targetCoordinate.X, (int)targetCoordinate.Y).SetBuilding(newBuilding);
+					newBuilding.Parent = sourceBuilding;
                     GraphController.Instance.AddBuilding(sourceBuilding, newBuilding);
                 }
                 if (sourceBuilding != null && world.map.GetTile((int)targetCoordinate.X, (int)targetCoordinate.Y).GetBuilding() != null)
