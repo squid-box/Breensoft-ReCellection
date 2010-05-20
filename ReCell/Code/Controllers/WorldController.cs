@@ -338,7 +338,7 @@ namespace Recellection.Code.Controllers
                     }
                     catch (BuildingController.BuildingOutOfRangeException bore)
                     {
-                        //TODO CO DO STUFF HERE.
+						logger.Debug("Caught BuildingOutOfRangeExcpetion");
                     }
 				}
 				else
