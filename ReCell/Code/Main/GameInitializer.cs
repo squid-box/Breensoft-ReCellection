@@ -43,7 +43,7 @@ namespace Recellection.Code.Main
 
             List<Player> temp2 = new List<Player>();
             temp2.Add(human);
-            AIPlayer ai = new AIPlayer(temp2, new AIView(theWorld),Color.Red);
+            AIPlayer ai = new AIPlayer(new AIView(theWorld),Color.Red);
             theWorld.AddPlayer(ai);
             
             human.Enemy = ai;

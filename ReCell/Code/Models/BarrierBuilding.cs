@@ -39,6 +39,10 @@ namespace Recellection.Code.Models
             foreach(Tile t in controlZone)
             {
                 t.unitsChanged += BarrierBuilding_unitsChanged;
+                foreach(Unit u in t.GetUnits(owner))
+                {
+					u.Buff = powerBonus;
+                }
             }
 
         }

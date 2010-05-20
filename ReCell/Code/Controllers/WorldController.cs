@@ -308,7 +308,7 @@ namespace Recellection.Code.Controllers
                 Selection destsel = getSelection();
                 if (destsel.state != State.TILE)
 				{
-					Sounds.Instance.LoadSound("Denied");
+					SoundsController.playSound("Denied");
                     tobii.SetFeedbackColor(Color.White);
 					return;
 				}
@@ -329,7 +329,7 @@ namespace Recellection.Code.Controllers
 				}
 				else
 				{
-					Sounds.Instance.LoadSound("Denied");
+                    SoundsController.playSound("Denied");
                     tobii.SetFeedbackColor(Color.White);
 					return;
 				}
@@ -342,7 +342,7 @@ namespace Recellection.Code.Controllers
             {
                 if (!playerInControll.unitAcc.PayAndUpgrade(building))
                 {
-                    Sounds.Instance.LoadSound("Denied");
+                    SoundsController.playSound("Denied");
                 }
             }
             else if (choosenMenu.Equals(moveUnits))

@@ -60,12 +60,6 @@ namespace Recellection.Code.Controllers
             {
                 MenuIcon response = MenuController.GetInput();
 
-                //if (response == ??)
-                //{
-                // Off-screen quit option? 
-                //    MenuController.UnloadMenu();
-                //}(response == mute)
-
                 if (response == mute)
                 {
                     if (GameOptions.Instance.musicMuted)
@@ -80,11 +74,10 @@ namespace Recellection.Code.Controllers
                         SoundsController.changeEffectsVolume(0.0f);
                         SoundsController.changeMusicVolume(0.0f);
                     }
-                    MenuController.UnloadMenu();
                 }
                 else if (response == volume)
                 {
-                    // Dat volume
+                    ChangeVolumeMenu();   
                 }
                 else if (response == language)
                 {
@@ -164,6 +157,58 @@ namespace Recellection.Code.Controllers
 
             GameOptions.Instance.difficulty = (Globals.Difficulty) Enum.Parse(typeof(Globals.Difficulty), difficultyDic[choosenDiff]);
             LoggerFactory.GetLogger().Info("Difficulty set to " + difficultyDic[choosenDiff]);
+            MenuController.UnloadMenu();
+        }
+
+        private void ChangeVolumeMenu()
+        {
+
+            MenuIcon musicVolumeUp = new MenuIcon("Music Volume Up");
+            MenuIcon musicVolumeDown = new MenuIcon("Music Volume Down");
+            MenuIcon sfxVolumeUp = new MenuIcon("Effects Volume Up");
+            MenuIcon sfxVolumeDown = new MenuIcon("Effects Volume Down");
+            MenuIcon empty = new MenuIcon("");
+            MenuIcon done = new MenuIcon("Back");
+
+            List<MenuIcon> iconList = new List<MenuIcon>(); ;
+            iconList.Add(musicVolumeUp);
+            iconList.Add(empty);
+            iconList.Add(musicVolumeDown);
+            iconList.Add(sfxVolumeUp);
+            iconList.Add(sfxVolumeDown);
+            iconList.Add(done);
+
+            Menu volumeMenu = new Menu(iconList,"");
+
+            MenuController.LoadMenu(volumeMenu);
+
+            bool notFinished = true;
+
+            while (notFinished)
+            {
+                MenuIcon response = MenuController.GetInput();
+
+                if (response == musicVolumeUp)
+                {
+                    SoundsController.changeMusicVolume(GameOptions.Instance.musicVolume + 0.05f);
+                }
+                else if (response == musicVolumeDown)
+                {
+                    SoundsController.changeMusicVolume(GameOptions.Instance.musicVolume - 0.05f);
+                }
+                else if (response == sfxVolumeUp)
+                {
+                    SoundsController.changeEffectsVolume(GameOptions.Instance.sfxVolume + 0.05f);
+                }
+                else if (response == sfxVolumeDown)
+                {
+                    SoundsController.changeEffectsVolume(GameOptions.Instance.sfxVolume - 0.05f);
+                }
+                else if (response == done)
+                {
+                    notFinished = false;
+                }
+            }
             MenuController.UnloadMenu();
         }
     }
