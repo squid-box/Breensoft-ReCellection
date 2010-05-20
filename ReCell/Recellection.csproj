@@ -147,7 +147,6 @@
     <Compile Include="Code\Models\GameOptions.cs" />
     <Compile Include="Code\Models\Graph.cs" />
     <Compile Include="Code\Models\GUIRegion.cs" />
-    <Compile Include="Code\Models\HelpMenuFactory.cs" />
     <Compile Include="Code\Models\IModel.cs" />
     <Compile Include="Code\Models\KamikazeUnit.cs" />
     <Compile Include="Code\Models\Language.cs" />
@@ -183,6 +182,7 @@
     <Compile Include="Code\Views\AIView.cs" />
     <Compile Include="Code\Views\CreditsView.cs" />
     <Compile Include="Code\Views\EndGameView.cs" />
+    <Compile Include="Code\Views\HelpView.cs" />
     <Compile Include="Code\Views\IRenderable.cs" />
     <Compile Include="Code\Views\IView.cs" />
     <Compile Include="Code\Views\LoadView.cs" />

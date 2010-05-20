@@ -80,22 +80,33 @@ namespace Recellection.Code.Controllers
 			finished = false;
             while (!finished)
             {
-				//previousSelection = sel;
+				previousSelection = sel;
 				
                 // Generate the appropriate menu for this state.
                 // Get the active GUI Region and invoke the associated method.
                 MenuIcon activatedMenuIcon = MenuController.GetInput();
                 if (activatedMenuIcon == leftOff)
                 {
-					TobiiController.GetInstance(Recellection.windowHandle).SetRegionsEnabled(false);
-                    TileMenu(previousSelection);
-					TobiiController.GetInstance(Recellection.windowHandle).SetRegionsEnabled(true);
+                    if (previousSelection.state == State.BUILDING)
+                    {
+                        TileMenu(previousSelection);
+                    }
+                    else
+                    {
+                        BuildingMenu(previousSelection);
+                    }
+
 				}
                 else if (activatedMenuIcon == rightOff)
                 {
-					TobiiController.GetInstance(Recellection.windowHandle).SetRegionsEnabled(false);
-                    BuildingMenu(previousSelection);
-					TobiiController.GetInstance(Recellection.windowHandle).SetRegionsEnabled(true);
+                    if (previousSelection.state == State.BUILDING)
+                    {
+                        TileMenu(previousSelection);
+                    }
+                    else
+                    {
+                        BuildingMenu(previousSelection);
+                    }
                 }
                 else if (activatedMenuIcon == topOff)
                 {
@@ -110,7 +121,7 @@ namespace Recellection.Code.Controllers
                 else
                 {
                     sel = retrieveSelection(activatedMenuIcon);
-                    previousSelection = sel;
+                    //previousSelection = sel;
                     // They are used if the state needs true coordinates, scroll only uses deltas.
 
                     World.Map map = theWorld.GetMap();
