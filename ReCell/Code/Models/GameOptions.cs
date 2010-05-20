@@ -41,6 +41,8 @@ namespace Recellection.Code.Models
 
         public GameOptions()
         {
+            musicVolume = 1.0f;
+            sfxVolume = 1.0f;
             this.choosenLanguage = new Localizer();
         }
 
