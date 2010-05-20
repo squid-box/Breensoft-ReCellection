@@ -57,6 +57,8 @@ SpecialCommandMenu8=CTest8
 
 Yes=Yes
 No=No
+Cancel=Cancel
+
 AreYouSureYouWantToQuit=Are you sure you want to quit?
 
 [Game menu]
@@ -66,11 +68,13 @@ AreYouSureYouWantToEndTheGame=Are you sure you want to end the game?
 
 [Tile options]
 TileMenu=What do you want to do with the tile?
-Cancel=Cancel
 MoveUnits=Move units.
 
 [Graph]
 SetImportance=What weight do you want to set?
+NoPriority=No priority
+LowPriority=Low priority
+HighPriority=High priority
 
 [Game entities]
 BaseCell=Base Cell
