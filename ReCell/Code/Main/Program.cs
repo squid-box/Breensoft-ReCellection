@@ -25,7 +25,7 @@ namespace Recellection
 
 			LoggerSetup.Initialize();
 
-			Language.Instance.SetLanguage("English");
+			Language.Instance.SetLanguage("Swedish");
 
             Recellection game = new Recellection();
             Initializer logic = new Initializer(game.Window.Handle);

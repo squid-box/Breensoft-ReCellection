@@ -121,11 +121,16 @@ namespace Recellection.Code.Controllers
         
         private void ContextMenu()
         {
+			if (selectedTile == null)
+			{
+				return;
+			}
+			
 			if (selectedTile.GetBuilding() != null)
 			{
 				BuildingMenu();
 			}
-			else
+            else if (selectedTile.GetUnits(playerInControll).Count > 0)
 			{
 				TileMenu();
 			}
@@ -325,15 +330,16 @@ namespace Recellection.Code.Controllers
             else if (choosenMenu.Equals(buildCell))
             {
                 tobii.SetFeedbackColor(Color.DarkGreen);
-                SetConstructionLines(BuildingController.GetValidBuildingInterval(selectedTile.position, theWorld));
-                Selection destsel = retrieveSelection();
-				RemoveconstructionTileLines(BuildingController.GetValidBuildingInterval(selectedTile.position, theWorld));
-                if (destsel.state != State.TILE)
-				{
-					SoundsController.playSound("Denied");
-                    tobii.SetFeedbackColor(Color.White);
-					return;
+                Selection destsel;
+                do
+                {
+					SetConstructionLines(BuildingController.GetValidBuildingInterval(selectedTile.position, theWorld));
+					destsel = retrieveSelection();
+					RemoveconstructionTileLines(BuildingController.GetValidBuildingInterval(selectedTile.position, theWorld));
 				}
+				while (destsel.state != State.TILE);
+				
+				tobii.SetFeedbackColor(Color.White);
 				
 				SelectTile(map.GetTile(destsel.absPoint));
 
