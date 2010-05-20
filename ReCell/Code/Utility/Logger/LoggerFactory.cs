@@ -58,9 +58,9 @@ namespace Recellection.Code.Utility.Logger
 		}
 
 		/// <summary>
-		/// Will change target of all current and new loggers.
+		/// Will change baseEntity of all current and new loggers.
 		/// </summary>
-		/// <param name="newTarget">The new target for all loggers.</param>
+		/// <param name="newTarget">The new baseEntity for all loggers.</param>
 		public static void SetGlobalTarget(TextWriter newTarget)
 		{
 			LoggerFactory.globalTarget = newTarget;

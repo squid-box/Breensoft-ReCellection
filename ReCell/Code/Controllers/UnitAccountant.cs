@@ -21,7 +21,7 @@ namespace Recellection.Code.Controllers
     public sealed class UnitAccountant
 	{
         private const uint POP_CAP_PER_PLAYER = 200;
-        private readonly uint[] MAX_OF_EACH_BUILDING_TYPE = { 0, 7, 11, 4, 9 };
+        private readonly uint[] MAX_OF_EACH_BUILDING_TYPE = { 0, 7, 30, 4, 9 };
         private const int MAX_POWER_LEVEL_LEVELS = 4;
         private const int FIRST_POWER_LEVEL_COST = 10;
 
@@ -97,7 +97,6 @@ namespace Recellection.Code.Controllers
 
                 //TODO Remove when middle point position is implemented.
                 
-
                 BaseBuilding b = g.baseBuilding;
                 if (b == null)
                 {
@@ -125,7 +124,7 @@ namespace Recellection.Code.Controllers
         }
 
         /// <summary>
-        /// The increese in cost is 50% extra for each building of that type built.
+        /// 
         /// </summary>
         /// <param name="type"></param>
         /// <param name="payer">The player this building is built for</param>

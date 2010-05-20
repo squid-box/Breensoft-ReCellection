@@ -319,7 +319,7 @@ namespace Recellection.Code.Controllers
                 
                 Selection destsel = retrieveSelection();
                 Tile selectedTile = map.GetTile(destsel.absPoint);
-                UnitController.MoveUnits(building.GetUnits().Count, seltile, selectedTile);
+                UnitController.MoveUnits(playerInControll, seltile, selectedTile, building.GetUnits().Count);
                 
                 tobii.SetFeedbackColor(Color.White);
 
@@ -348,7 +348,11 @@ namespace Recellection.Code.Controllers
 			MenuIcon cancel = new MenuIcon(Language.Instance.GetString("Cancel"), null, Color.Black);
 			
 			List<MenuIcon> menuIcons = new List<MenuIcon>();
-			menuIcons.Add(moveUnits);
+			if (theWorld.GetMap().GetTile(previousSelection.absPoint).GetUnits(playerInControll).Count > 0)
+			{
+				// Only show this options if there are units.
+				menuIcons.Add(moveUnits);
+			}
 			menuIcons.Add(cancel);
 
 			Menu buildingMenu = new Menu(Globals.MenuLayout.FourMatrix, menuIcons, Language.Instance.GetString("TileMenu"), Color.Black);
@@ -361,7 +365,7 @@ namespace Recellection.Code.Controllers
 			if (choosenMenu == moveUnits)
 			{
 				Selection currSel = retrieveSelection();
-				if (currSel.state != State.TILE)
+				if (! (currSel.state == State.TILE || currSel.state == State.BUILDING))
 				{
 					return;
 				}
@@ -369,7 +373,7 @@ namespace Recellection.Code.Controllers
 				Tile from = theWorld.GetMap().GetTile(previousSelection.absPoint);
 				Tile to = theWorld.GetMap().GetTile(currSel.absPoint);
 
-				UnitController.MoveUnits(from.GetUnits().Count, from, to);
+				UnitController.MoveUnits(playerInControll, from, to, from.GetUnits().Count);
 			}
 		}
 

@@ -141,9 +141,6 @@ namespace Recellection.Code.Controllers
 			
 			MenuController.GetInput();
 
-            Recellection.CurrentState = new CreditsView();
-
-            MenuController.GetInput();
             MenuController.UnloadMenu();
             
         }
