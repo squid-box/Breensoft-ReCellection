@@ -149,9 +149,9 @@ namespace Recellection.Code.Controllers
 		{
 			Dictionary<MenuIcon, int> doptions = new Dictionary<MenuIcon,int>(8);
 
-			doptions.Add(new MenuIcon(Language.Instance.GetString("NoPriority"), Recellection.textureMap.GetTexture(Globals.TextureTypes.Priority1)), 0);
-			doptions.Add(new MenuIcon(Language.Instance.GetString("LowPriority"), Recellection.textureMap.GetTexture(Globals.TextureTypes.Priority4)), 50);
-			doptions.Add(new MenuIcon(Language.Instance.GetString("HighPriority"), Recellection.textureMap.GetTexture(Globals.TextureTypes.Priority8)), 100);
+			doptions.Add(new MenuIcon(Language.Instance.GetString("NoPriority"), Recellection.textureMap.GetTexture(Globals.TextureTypes.NoPriority)), 0);
+			doptions.Add(new MenuIcon(Language.Instance.GetString("LowPriority"), Recellection.textureMap.GetTexture(Globals.TextureTypes.LowPriority)), 50);
+			doptions.Add(new MenuIcon(Language.Instance.GetString("HighPriority"), Recellection.textureMap.GetTexture(Globals.TextureTypes.HighPriority)), 100);
 			doptions.Add(new MenuIcon(Language.Instance.GetString("Cancel"), Recellection.textureMap.GetTexture(Globals.TextureTypes.No)), -1);
 
 			Menu menu = new Menu(Globals.MenuLayout.FourMatrix, 
