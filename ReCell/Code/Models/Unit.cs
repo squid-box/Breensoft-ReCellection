@@ -333,15 +333,20 @@ namespace Recellection.Code.Models
 				Unit.world.map.GetTile(afterX, afterY).AddUnit(this);
                 Unit.world.map.GetTile(afterX, afterY).MakeVisibleTo(this.owner);
 
-
-                // Let's update the fog of war!
-                for (int i = 1; i < 4; i++)
-                {
-                    for (int j = 0; j < 4; j++)
-                    {
-                        Unit.world.map.GetTile(afterX - j, afterY - i).MakeVisibleTo(this.owner);
-                    }
-                }
+				// Let's update the fog of war!
+				for (int i = -3; i <= 3; i++)
+				{
+					for (int j = -3; j <= 3; j++)
+					{
+						try
+						{
+							Unit.world.map.GetTile(afterX + j, afterY + i).MakeVisibleTo(this.owner);
+						}
+						catch (IndexOutOfRangeException e)
+						{
+						}
+					}
+				}
 			}
 		}
 

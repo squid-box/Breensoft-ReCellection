@@ -207,9 +207,15 @@ namespace Recellection.Code.Controllers
 			{
 				if (HasLost(p))
 				{
-					world.RemovePlayer(p);
+					toBeRemoved.Add(p);
 				}
 			}
+			
+			foreach(Player p in toBeRemoved)
+			{
+				players.Remove(p);
+			}
+			
             if (HasWon())
             {
                 return true;
