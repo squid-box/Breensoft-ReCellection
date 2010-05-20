@@ -42,9 +42,9 @@ namespace Recellection.Code.Controllers
         public static World GenerateWorld(int mapSeed)
         {
             myLogger = LoggerFactory.GetLogger();
+			myLogger.Active = true;
 
             Tile[,] tileMatrix = GenerateTileMatrixFromSeed(mapSeed);
-
 
             //Constructs a new world using the dimensions.
             World returWorld = new World(tileMatrix, mapSeed);
@@ -59,6 +59,7 @@ namespace Recellection.Code.Controllers
         /// <returns>The tile matrix</returns>
         private static Tile[,] GenerateTileMatrixFromSeed(int mapSeed)
         {
+			myLogger.Trace("Generating tile matrix from seed " + mapSeed);
             Random randomer = new Random(mapSeed);
 
             Tile[,] retur = InitTileMatrix(randomer);
@@ -69,7 +70,7 @@ namespace Recellection.Code.Controllers
             int randomX;
             int randomY;
             int numberOfTilesToRandomize;
-
+			myLogger.Trace("Randomly placing " + numberOfRandomTiles + " tiles");
             while (numberOfRandomTiles > 0)
             {
                 //Randomly choose a tile excluding all the edge tiles.
@@ -85,6 +86,7 @@ namespace Recellection.Code.Controllers
 
                 numberOfRandomTiles -= numberOfTilesToRandomize;
             }
+			myLogger.Trace("Finished randomizing tiles");
             RandomPlaceResources(randomer, retur);
 
             return retur;
@@ -92,6 +94,7 @@ namespace Recellection.Code.Controllers
 
         private static void RandomPlaceResources(Random randomer, Tile[,] retur)
         {
+			myLogger.Trace("Randomly placing resources.");
             int randomX;
             int randomY;
 
@@ -108,6 +111,7 @@ namespace Recellection.Code.Controllers
                 retur[randomX, randomY] = new Tile(randomX, randomY, Globals.TerrainTypes.Mucus);
             }
 
+			myLogger.Trace("Doop");
             for (int x = 0; x < 2; x++)
             {
                 for (int y = 0; y < 2; y++)
@@ -123,11 +127,12 @@ namespace Recellection.Code.Controllers
 
                         randomX = randomer.Next(minX, maxX);
                     }//Make sure that the random coordinates are not on the base building spawn point. 
-                    while (randomX == 5 || randomX == map_cols - 5 || randomY == 5 || randomY == map_rows - 5);
-
+                    while ((randomX == 5 || randomX == map_cols - 5) && (randomY == 5 || randomY == map_rows - 5));
+					
                     retur[randomX, randomY] = new Tile(randomX, randomY, Globals.TerrainTypes.Mucus);
                 }
             }
+			myLogger.Trace("Finished placing resources");
         }
 
         /// <summary>
@@ -173,8 +178,6 @@ namespace Recellection.Code.Controllers
             //randomize a number which is 1 to number of terrain types - 1.
             //Ignores the default terrain type Membrane.
             int randomType = randomer.Next(2, GetNumberOfTerrainTypes());
-
-
 
             return (Globals.TerrainTypes)randomType;
         }

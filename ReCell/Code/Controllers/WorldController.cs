@@ -21,7 +21,7 @@ namespace Recellection.Code.Controllers
         /// <summary>
         /// The different states this controller will assume
         /// </summary>
-        public enum State { NONE, BUILDING, TILE, MENU };
+        public enum State { NONE, BUILDING, TILE, OFFSCREEN };
         
         public struct Selection
         {
@@ -46,7 +46,12 @@ namespace Recellection.Code.Controllers
         private List<MenuIcon> scrollZone;
 		
 		private static Logger logger = LoggerFactory.GetLogger();
-		
+
+        //offscreenregions
+        MenuIcon topOff;
+        MenuIcon botOff;
+        MenuIcon leftOff;
+		MenuIcon rightOff;
         // Create 
         public WorldController(Player p, World theWorld)
         {
@@ -69,6 +74,8 @@ namespace Recellection.Code.Controllers
         public void Run()
 		{
 			Selection sel = new Selection();
+			logger.Info("Logger started");
+
 			sel.state = State.NONE;
 			finished = false;
             while (!finished)
@@ -77,34 +84,46 @@ namespace Recellection.Code.Controllers
 				
                 // Generate the appropriate menu for this state.
                 // Get the active GUI Region and invoke the associated method.
-				sel = retrieveSelection();
-				
-                // They are used if the state needs true coordinates, scroll only uses deltas.
+                
+                sel = retrieveSelection();
 
-				World.Map map = theWorld.GetMap();
-
-				// If this is the first time we select a tile...
-				if(selectedTile != null)
-					selectedTile.active = false;
-				selectedTile = map.GetTile(sel.absPoint);
-				selectedTile.active = true;
-
-				if (sel.point.X == 1 && sel.point.Y == 1)
+                World.Map map = theWorld.GetMap();
+                
+                switch(sel.state)
 				{
-					GameMenu();
-				}
-				if (sel.point.X == 2 && sel.point.Y == 1)
-				{
-					if (previousSelection.state == State.BUILDING)
-					{
-						BuildingMenu(previousSelection);
-					}
-					else if (previousSelection.state == State.TILE)
-					{
-						TileMenu(previousSelection);
-					}
-				}
+					case State.BUILDING:
+					case State.TILE:
+						// If this is the first time we select a tile...
+						if (selectedTile != null)
+							selectedTile.active = false;
+
+						selectedTile = map.GetTile(sel.absPoint);
+						selectedTile.active = true;
+					break;
+					case State.OFFSCREEN:
+						if (sel.point.X == -1)
+						{
+							ContextMenu(previousSelection);
+						}
+						if (sel.point.X == 1)
+						{
+							GameMenu();
+						}
+					break;
+                }
             }
+        }
+        
+        private void ContextMenu(Selection selection)
+        {
+			if (selection.state == State.BUILDING)
+			{
+				BuildingMenu();
+			}
+			else
+			{
+				TileMenu();
+			}
         }
 
 		private void GameMenu()
@@ -170,28 +189,57 @@ namespace Recellection.Code.Controllers
 			MenuController.UnloadMenu();
 		}
 
-		public Selection retrieveSelection()
+        public Selection retrieveSelection()
 		{
 			myLogger.Debug("Waiting for input...");
+
 			MenuIcon activatedMenuIcon = MenuController.GetInput();
-						 
+
+			Selection s = new Selection();
+			
 		    int x = 0;
             int y = 0;
-            String[] splitted = activatedMenuIcon.label.Split(REG_EXP);
-            try
-            {
-                myLogger.Trace("Splitted string = " + splitted[0] + "\t" + splitted[1]);
-            }
-            catch (IndexOutOfRangeException)
-            {
-                throw new ArgumentException("Your argument is invalid, my beard is a windmill.");
-            }
+			if (activatedMenuIcon.label != null)
+			{
+				String[] splitted = activatedMenuIcon.label.Split(REG_EXP);
+				try
+				{
+					myLogger.Trace("Splitted string = " + splitted[0] + "\t" + splitted[1]);
+				}
+				catch (IndexOutOfRangeException)
+				{
+					throw new ArgumentException("Your argument is invalid, my beard is a windmill.");
+				}
 
-			x = Int32.Parse(splitted[0]);
-			y = Int32.Parse(splitted[1]);
+				x = Int32.Parse(splitted[0]);
+				y = Int32.Parse(splitted[1]);
+			}
+			else
+			{
+				if (activatedMenuIcon == leftOff)
+				{
+					x = -1;
+				}
+				else if (activatedMenuIcon == rightOff)
+				{
+					x = 1;
+				}
+				else if (activatedMenuIcon == topOff)
+				{
+					y = -1;
+				}
+				else if (activatedMenuIcon == botOff)
+				{
+					y = 1;
+				}
+				
+				s.state = State.OFFSCREEN;
+				s.point = new Point(x, y);
+				return s;
+			}
+			
 
             Point absoluteCordinate = new Point(x + theWorld.LookingAt.X, y + theWorld.LookingAt.Y);
-            Selection s = new Selection();
             if(activatedMenuIcon.labelColor.Equals(Color.NavajoWhite))
             {
 				if (theWorld.GetMap().GetTile(new Point(x + theWorld.LookingAt.X, y + theWorld.LookingAt.Y))
@@ -228,12 +276,11 @@ namespace Recellection.Code.Controllers
 		/// Must have building on tile.
 		/// </summary>
 		/// <param name="theSelection"></param>
-        private void BuildingMenu(Selection theSelection)
+        private void BuildingMenu()
         {
             
             World.Map map = theWorld.GetMap();
-            Tile seltile = map.GetTile(theSelection.absPoint);
-            Building building = seltile.GetBuilding();
+            Building building = selectedTile.GetBuilding();
             if (building == null || building.owner != playerInControll)
             {
                 return;
@@ -273,14 +320,15 @@ namespace Recellection.Code.Controllers
             else if (choosenMenu.Equals(buildCell))
             {
                 tobii.SetFeedbackColor(Color.DarkGreen);
-                Selection destsel = retrieveSelection();
+				Selection destsel = retrieveSelection();
                 if (destsel.state != State.TILE)
 				{
 					SoundsController.playSound("Denied");
                     tobii.SetFeedbackColor(Color.White);
 					return;
 				}
-                Tile selectedTile = map.GetTile(destsel.absPoint);
+				
+				selectedTile = map.GetTile(destsel.absPoint);
 
                 //TODO Add a check to see if the tile is a correct one. The diffrence between the selected tiles coordinates and the source building shall not exceed 3.
 				if (selectedTile.GetBuilding() == null)
@@ -292,7 +340,7 @@ namespace Recellection.Code.Controllers
                     }
                     catch (BuildingController.BuildingOutOfRangeException bore)
                     {
-                        //TODO CO DO STUFF HERE.
+						logger.Debug("Caught BuildingOutOfRangeExcpetion");
                     }
 				}
 				else
@@ -316,13 +364,15 @@ namespace Recellection.Code.Controllers
             else if (choosenMenu.Equals(moveUnits))
             {
                 tobii.SetFeedbackColor(Color.Red);
-                
-                Selection destsel = retrieveSelection();
-                Tile selectedTile = map.GetTile(destsel.absPoint);
-                UnitController.MoveUnits(playerInControll, seltile, selectedTile, building.GetUnits().Count);
-                
-                tobii.SetFeedbackColor(Color.White);
 
+				Selection destsel = retrieveSelection();
+				if (destsel.state == State.BUILDING || destsel.state == State.TILE)
+				{
+					Tile selTile = map.GetTile(destsel.absPoint);
+					UnitController.MoveUnits(playerInControll, selectedTile, selTile, building.GetUnits().Count);
+				}
+
+				tobii.SetFeedbackColor(Color.White);
             }
             else if (choosenMenu.Equals(repairCell))
             {
@@ -347,7 +397,7 @@ namespace Recellection.Code.Controllers
         /// 
         /// </summary>
         /// <param name="previousSelection"></param>
-		private void TileMenu(Selection previousSelection)
+		private void TileMenu()
 		{
 			MenuIcon moveUnits = new MenuIcon(Language.Instance.GetString("MoveUnits"), null, Color.Black);
 			MenuIcon cancel = new MenuIcon(Language.Instance.GetString("Cancel"), Recellection.textureMap.GetTexture(Globals.TextureTypes.No), Color.Black);
@@ -375,10 +425,11 @@ namespace Recellection.Code.Controllers
 					return;
 				}
 				
+				
 				Tile from = theWorld.GetMap().GetTile(previousSelection.absPoint);
-				Tile to = theWorld.GetMap().GetTile(currSel.absPoint);
+				selectedTile = theWorld.GetMap().GetTile(currSel.absPoint);
 
-				UnitController.MoveUnits(playerInControll, from, to, from.GetUnits().Count);
+				UnitController.MoveUnits(playerInControll, from, selectedTile, from.GetUnits().Count);
 			}
 		}
 
@@ -493,8 +544,12 @@ namespace Recellection.Code.Controllers
             {
                 allMenuIcons.Add(mi);
             }
-
-            MenuController.LoadMenu(new Menu(allMenuIcons));
+            //here be offscreen regions!
+            leftOff = new MenuIcon(new GUIRegion(IntPtr.Zero, new System.Windows.Rect(-700, 0, 700, Globals.VIEWPORT_HEIGHT)));
+            rightOff = new MenuIcon(new GUIRegion(IntPtr.Zero, new System.Windows.Rect(Globals.VIEWPORT_WIDTH, 0, 700, Globals.VIEWPORT_HEIGHT)));
+            topOff = new MenuIcon(new GUIRegion(IntPtr.Zero, new System.Windows.Rect(0, Globals.VIEWPORT_HEIGHT, Globals.VIEWPORT_WIDTH, 700)));
+            botOff = new MenuIcon(new GUIRegion(IntPtr.Zero, new System.Windows.Rect(0, -700, Globals.VIEWPORT_WIDTH, 700)));
+            MenuController.LoadMenu(new Menu(allMenuIcons, leftOff, rightOff, topOff, botOff));
             MenuController.DisableMenuInput();
         }
     }

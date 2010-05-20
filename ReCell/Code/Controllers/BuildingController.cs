@@ -15,6 +15,7 @@ namespace Recellection.Code.Controllers
         public const int MAX_BUILDING_RANGE = 3;
 
         private static Logger logger = LoggerFactory.GetLogger();
+
         /// <summary>
         /// Let all Aggressive Buildings for the player Acquire Target(s)
         /// </summary>
@@ -43,17 +44,11 @@ namespace Recellection.Code.Controllers
         /// <param name="b"></param>
         private static void AttackTargets(AggressiveBuilding b)
         {
-            //TODO remove when middlepoint position is implemeted.
-            Vector2 buildingOffset = new Vector2(0.125f, 0.125f);
 
             logger.Trace("Attacking targets around a aggressive building at x: "+b.position.X+" y: "+b.position.Y );
             foreach (Unit u in b.currentTargets)
             {
-                //Show kill graphix and make sound.
-
-                //Kill units here.....
-                KamikazeUnit temp = new KamikazeUnit(b.owner, Vector2.Add(b.position, buildingOffset), u);
-
+                new KamikazeUnit(b.owner, b.position, u);
             }
             logger.Trace("Killing " + b.currentTargets.Count + " units.");
             //UnitController.MarkUnitsAsDead(b.currentTargets, b.currentTargets.Count);
@@ -113,9 +108,13 @@ namespace Recellection.Code.Controllers
             {
                 Building = Globals.BuildingTypes.Barrier;
             }
-            else
+            else if (choosenMenu.Equals(aggressiveCell))
             {
                 Building = Globals.BuildingTypes.Aggressive;
+            }
+            else
+            {
+                return;
             }
 
 
@@ -178,13 +177,15 @@ namespace Recellection.Code.Controllers
         public static bool AddBuilding(Globals.BuildingTypes buildingType,
             Building sourceBuilding, Vector2 targetCoordinate, World world, Player owner)
         {
-            if (sourceBuilding != null && buildingType != Globals.BuildingTypes.Base && (Math.Abs(((int)sourceBuilding.position.X) - targetCoordinate.X) > MAX_BUILDING_RANGE || (Math.Abs(((int)sourceBuilding.position.X) - targetCoordinate.X) > MAX_BUILDING_RANGE)))
+            if (sourceBuilding != null && buildingType != Globals.BuildingTypes.Base && (Math.Abs(((int)sourceBuilding.position.X) - (int)targetCoordinate.X) > MAX_BUILDING_RANGE || (Math.Abs(((int)sourceBuilding.position.X) - (int)targetCoordinate.X) > MAX_BUILDING_RANGE)))
             {
+				logger.Debug("Building position out of range");
                 throw new BuildingOutOfRangeException();
             }
             uint price = owner.unitAcc.CalculateBuildingCostInflation(buildingType);
             if (sourceBuilding != null && (uint)sourceBuilding.CountUnits() < price)
             {
+				logger.Debug("Building too expensive");
                 return false;
             }
             
