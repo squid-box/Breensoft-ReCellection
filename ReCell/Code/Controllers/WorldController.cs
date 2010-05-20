@@ -93,17 +93,12 @@ namespace Recellection.Code.Controllers
 				{
 					case State.BUILDING:
 					case State.TILE:
-						// If this is the first time we select a tile...
-						if (selectedTile != null)
-							selectedTile.active = false;
-
-						selectedTile = map.GetTile(sel.absPoint);
-						selectedTile.active = true;
+						SelectTile(map.GetTile(sel.absPoint));
 					break;
 					case State.OFFSCREEN:
 						if (sel.point.X == -1)
 						{
-							ContextMenu(previousSelection);
+							ContextMenu();
 						}
 						if (sel.point.X == 1)
 						{
@@ -114,13 +109,28 @@ namespace Recellection.Code.Controllers
             }
         }
         
-        private void ContextMenu(Selection selection)
+        private void SelectTile(Tile t)
+		{
+			// If this is the first time we select a tile...
+			if (selectedTile != null)
+				selectedTile.active = false;
+
+			selectedTile = t;
+			selectedTile.active = true;
+        }
+        
+        private void ContextMenu()
         {
-			if (selection.state == State.BUILDING)
+			if (selectedTile == null)
+			{
+				return;
+			}
+			
+			if (selectedTile.GetBuilding() != null)
 			{
 				BuildingMenu();
 			}
-			else
+            else if (selectedTile.GetUnits(playerInControll).Count > 0)
 			{
 				TileMenu();
 			}
@@ -320,15 +330,18 @@ namespace Recellection.Code.Controllers
             else if (choosenMenu.Equals(buildCell))
             {
                 tobii.SetFeedbackColor(Color.DarkGreen);
-				Selection destsel = retrieveSelection();
-                if (destsel.state != State.TILE)
-				{
-					SoundsController.playSound("Denied");
-                    tobii.SetFeedbackColor(Color.White);
-					return;
+                Selection destsel;
+                do
+                {
+					SetConstructionLines(BuildingController.GetValidBuildingInterval(selectedTile.position, theWorld));
+					destsel = retrieveSelection();
+					RemoveconstructionTileLines(BuildingController.GetValidBuildingInterval(selectedTile.position, theWorld));
 				}
+				while (destsel.state != State.TILE);
 				
-				selectedTile = map.GetTile(destsel.absPoint);
+				tobii.SetFeedbackColor(Color.White);
+				
+				SelectTile(map.GetTile(destsel.absPoint));
 
                 //TODO Add a check to see if the tile is a correct one. The diffrence between the selected tiles coordinates and the source building shall not exceed 3.
 				if (selectedTile.GetBuilding() == null)
@@ -393,6 +406,41 @@ namespace Recellection.Code.Controllers
                 return;
             }
         }
+
+        
+
+        private void SetConstructionLines(List<Point> tileCoords)
+        {
+            float onTileOffset = ((float)(Globals.TILE_SIZE - 1)) / ((float)(Globals.TILE_SIZE));
+            float constructionAreaOffset = 6.0f;
+
+            for (int i = 0; i < 2; i++)
+            {
+                List<Vector2> tempVectors = new List<Vector2>(2);
+
+                tempVectors.Add(new Vector2((float)tileCoords[i].X + onTileOffset * i, (float)tileCoords[i].Y + onTileOffset * i));
+                tempVectors.Add(new Vector2((float)tileCoords[i].X + onTileOffset * i, (float)tileCoords[i].Y + onTileOffset * ((i + 1) & 1) + constructionAreaOffset * (1 - i * 2)));
+
+                tempVectors.Add(new Vector2((float)tileCoords[i].X + onTileOffset * i, (float)tileCoords[i].Y + onTileOffset * i));
+                tempVectors.Add(new Vector2((float)tileCoords[i].X + onTileOffset * ((i + 1) & 1) + constructionAreaOffset * (1 - i*2), (float)tileCoords[i].Y + onTileOffset * i));
+
+                Tile temp = theWorld.map.GetTile(tileCoords[i].X, tileCoords[i].Y);
+                temp.SetDrawLine(tempVectors);
+            }
+
+            theWorld.DrawConstructionLines = tileCoords;
+
+        }
+
+        private void RemoveconstructionTileLines(List<Point> tileCoords)
+        {
+            for (int i = 0; i < 2; i++)
+            {
+                theWorld.map.GetTile(tileCoords[i].X, tileCoords[i].Y).ClearDrawLine();
+            }
+            theWorld.DrawConstructionLines = null;
+        }
+
         /// <summary>
         /// 
         /// </summary>
@@ -427,7 +475,7 @@ namespace Recellection.Code.Controllers
 				
 				
 				Tile from = theWorld.GetMap().GetTile(previousSelection.absPoint);
-				selectedTile = theWorld.GetMap().GetTile(currSel.absPoint);
+				SelectTile(theWorld.GetMap().GetTile(currSel.absPoint));
 
 				UnitController.MoveUnits(playerInControll, from, selectedTile, from.GetUnits().Count);
 			}

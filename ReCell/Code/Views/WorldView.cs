@@ -216,13 +216,21 @@ namespace Recellection.Code.Views
                             myLogger.Info("Found a building on the tile.");
                             this.Layer = 0.1f;
                             Texture2D spr = b.GetSprite();
-                            float size = ((GraphController.Instance.GetWeight(b)*3+100)/200);
-                            int bx = (int)Math.Round((b.position.X - World.LookingAt.X) * Globals.TILE_SIZE) - (int)Math.Round(spr.Width * size) / 2;
-                            int by = (int)Math.Round((b.position.Y - World.LookingAt.Y) * Globals.TILE_SIZE) - (int)Math.Round(spr.Height * size) / 2;
+                            float size = 0.75f + 0.75f*Math.Min(100f, (float)GraphController.Instance.GetWeight(b))/100f;
+                            int bx = (int)Math.Round((b.position.X - World.LookingAt.X) * Globals.TILE_SIZE) - (int)Math.Round((float)spr.Width * size) / 2;
+                            int by = (int)Math.Round((b.position.Y - World.LookingAt.Y) * Globals.TILE_SIZE) - (int)Math.Round((float)spr.Height * size) / 2;
                             this.DrawTexture(spriteBatch, spr,
-                                new Rectangle(bx, by, (int)Math.Round(spr.Width * size), (int)Math.Round(spr.Height * size)),
+                                new Rectangle(bx, by, (int)Math.Round((float)spr.Width * size), (int)Math.Round((float)spr.Height * size)),
                                 b.owner.color);
 
+                            Vector2 xyhpr1 = new Vector2((float)((b.position.X - World.LookingAt.X) * Globals.TILE_SIZE) +14, (float) Math.Round((b.position.Y - World.LookingAt.Y) * Globals.TILE_SIZE) +100);
+                            Vector2 xyhpr2 = new Vector2((float)((b.position.X - World.LookingAt.X) * Globals.TILE_SIZE) + 114, (float)Math.Round((b.position.Y - World.LookingAt.Y) * Globals.TILE_SIZE) + 100);
+                            Vector2 xyhpg2 = new Vector2((float)((b.position.X - World.LookingAt.X) * Globals.TILE_SIZE) + 14 + b.GetHealthPercentage(), (float)Math.Round((b.position.Y - World.LookingAt.Y) * Globals.TILE_SIZE) + 100);
+                            DrawLine(spriteBatch, xyhpr1, xyhpr2, Color.Red, 8);
+                            Layer = 0.101f;
+                            DrawLine(spriteBatch, xyhpr1, xyhpg2, Color.Green, 8);
+                            Layer = 0.102f;
+                            DrawLine(spriteBatch, xyhpr1 - new Vector2(1, 0), xyhpg2 + new Vector2(1, 0), Color.Black, 10);
                             //Number of units drawage
                             int x = (int)(t.position.X - (World.LookingAt.X));
                             int y = (int)(t.position.Y - (World.LookingAt.Y));
@@ -240,12 +248,13 @@ namespace Recellection.Code.Views
                             fontX = (float)(r.X + r.Width / 2) - stringSize.X / 2;
                             fontY = (float)(r.Y + r.Height / 4) - stringSize.Y;
                             spriteBatch.DrawString(Recellection.worldFont, infosz, new Vector2(fontX, fontY), Color.White, 0, new Vector2(0f), 1.0f, SpriteEffects.None, Layer);
-
+#if DEBUG
                             infosz = GraphController.Instance.GetWeight(b).ToString();
                             stringSize = Recellection.worldFont.MeasureString(infosz);
                             fontX = (float)(r.X + r.Width / 2) - stringSize.X / 2;
                             fontY = (float)(r.Y + r.Height - stringSize.Y);
                             spriteBatch.DrawString(Recellection.worldFont, infosz, new Vector2(fontX, fontY), Color.White, 0, new Vector2(0f), 1.0f, SpriteEffects.None, Layer);
+#endif
                         }
                     }
 
@@ -272,9 +281,23 @@ namespace Recellection.Code.Views
                             }
                         }
                     }
-                    
-                    
 				}
+
+                if (World.DrawConstructionLines != null)
+                {
+                    foreach (Point p in World.DrawConstructionLines)
+                    {
+                         
+                        Tile tile = World.map.GetTile(p.X, p.Y);
+                        List<Vector2> points = tile.GetDrawPoints();
+                        for (int line = 0; line <= 2; line+= 2)
+                        {
+                            DrawLine(spriteBatch, TileToPixels(points[line] - lookAt), TileToPixels(points[line+1] - lookAt),
+                                                    Color.ForestGreen, 10);
+                        }
+                        
+                    }
+                }
             }
             
             // Draw scrollregions
