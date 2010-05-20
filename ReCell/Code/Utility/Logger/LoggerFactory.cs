@@ -38,7 +38,6 @@ namespace Recellection.Code.Utility.Logger
 
 			l = new Logger(name, LogLevel.TRACE, globalTarget);
 			loggers.Add(name, l);
-			l.Active = true;
 			return l;
 		}
 

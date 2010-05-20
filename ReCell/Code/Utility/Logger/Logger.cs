@@ -31,6 +31,7 @@ namespace Recellection.Code.Utility.Logger
 			this.name = name;
 			this.threshold = threshold;
 			this.target = target;
+			this.Active = false;
 		}
 		
 		/// <returns>The name of the logger.</returns>
