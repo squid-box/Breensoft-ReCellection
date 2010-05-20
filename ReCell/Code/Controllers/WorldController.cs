@@ -80,14 +80,13 @@ namespace Recellection.Code.Controllers
 			finished = false;
             while (!finished)
             {
-				//previousSelection = sel;
+				previousSelection = sel;
 				
                 // Generate the appropriate menu for this state.
                 // Get the active GUI Region and invoke the associated method.
                 MenuIcon activatedMenuIcon = MenuController.GetInput();
                 if (activatedMenuIcon == leftOff)
                 {
-<<<<<<< HEAD
                     if (previousSelection.state == State.BUILDING)
                     {
                         TileMenu(previousSelection);
@@ -108,17 +107,6 @@ namespace Recellection.Code.Controllers
                     {
                         BuildingMenu(previousSelection);
                     }
-=======
-					TobiiController.GetInstance(Recellection.windowHandle).SetRegionsEnabled(false);
-                    TileMenu(previousSelection);
-					TobiiController.GetInstance(Recellection.windowHandle).SetRegionsEnabled(true);
-				}
-                else if (activatedMenuIcon == rightOff)
-                {
-					TobiiController.GetInstance(Recellection.windowHandle).SetRegionsEnabled(false);
-                    BuildingMenu(previousSelection);
-					TobiiController.GetInstance(Recellection.windowHandle).SetRegionsEnabled(true);
->>>>>>> 643b859c4e9888ec97c67af775a7978ffa7f0c68
                 }
                 else if (activatedMenuIcon == topOff)
                 {
@@ -133,7 +121,7 @@ namespace Recellection.Code.Controllers
                 else
                 {
                     sel = retrieveSelection(activatedMenuIcon);
-                    previousSelection = sel;
+                    //previousSelection = sel;
                     // They are used if the state needs true coordinates, scroll only uses deltas.
 
                     World.Map map = theWorld.GetMap();
@@ -229,11 +217,6 @@ namespace Recellection.Code.Controllers
 
         public Selection getSelection()
         {
-<<<<<<< HEAD
-            MenuIcon activatedMenuIcon = MenuController.GetInput();
-            if (activatedMenuIcon == leftOff || activatedMenuIcon == rightOff || activatedMenuIcon == topOff || activatedMenuIcon == botOff)
-            return retrieveSelection(activatedMenuIcon);
-=======
 			while (true)
 			{
 				MenuIcon activatedMenuIcon = MenuController.GetInput();
@@ -242,7 +225,6 @@ namespace Recellection.Code.Controllers
 					return retrieveSelection(activatedMenuIcon);
 				}
 			}
->>>>>>> 643b859c4e9888ec97c67af775a7978ffa7f0c68
         }
 
         public Selection retrieveSelection(MenuIcon activatedMenuIcon)
