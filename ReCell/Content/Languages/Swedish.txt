@@ -10,6 +10,7 @@ MainMenu5=Test5
 MainMenu6=Test6
 MainMenu7=Test7
 MainMenu8=Test8
+back=Tillbaka
 
 ChooseBuilding=Välj den typ av cell du vill bygga.
 SetWeight=Välj Beredskapsnivå.
@@ -18,6 +19,7 @@ RemoveCell=Förstör denna cell.
 UpgradeUnits=Uppgradera alla små celler.
 BuildingMenu=Bygg Cell.
 RepairCell=Reparera cell.
+SetAggro=Växla aggressivitet.
 
 OptionsMenu1=OTest1
 OptionsMenu2=OTest2

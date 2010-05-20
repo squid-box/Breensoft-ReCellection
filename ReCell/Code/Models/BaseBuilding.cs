@@ -42,22 +42,6 @@ namespace Recellection.Code.Models
         /// <param name="posX"></param>
         /// <param name="posY"></param>
         /// <param name="owner"></param>
-        public BaseBuilding(String name, int posX, int posY,Player owner)
-               :base(name, posX, posY, BASE_BUILDING_HEALTH,owner,Globals.BuildingTypes.Base , null)
-        {
-            this.type = Globals.BuildingTypes.Base;
-            childBuildings = new LinkedList<Building>();
-            baseBuilding = this;
-            this.rateOfProduction = BASE_PRODUCTION;
-        }
-
-        /// <summary>
-        /// Constructs a new base fromBuilding
-        /// </summary>
-        /// <param name="name"></param>
-        /// <param name="posX"></param>
-        /// <param name="posY"></param>
-        /// <param name="owner"></param>
         public BaseBuilding(String name, int posX, int posY,Player owner,LinkedList<Tile> controlZone)
                :base(name, posX, posY, BASE_BUILDING_HEALTH,owner,Globals.BuildingTypes.Base , null,controlZone)
         {

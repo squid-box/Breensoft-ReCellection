@@ -65,6 +65,7 @@ namespace Recellection.Code.Main
 				if (response == newgame)
 				{	
 					// START THE GAME ALREADY!
+					
 					GameInitializer gameInit = new GameInitializer();
 					backgroundSound.Pause();
 					WorldView.Initiate(gameInit.theWorld);
@@ -97,7 +98,7 @@ namespace Recellection.Code.Main
                 {
                     MenuController.LoadMenu(HelpMenuFactory.GetHelpMenu(HelpMenuFactory.MenuType.Generic));
                 }
-                else if (response == HelpMenuFactory.GetHelpMenu(HelpMenuFactory.MenuType.Generic).GetIcons()[7])
+                else if (response == Recellection.back)
                 {
                     MenuController.UnloadMenu();
                 }
