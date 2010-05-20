@@ -64,8 +64,7 @@ namespace Recellection
 			this.DrawTexture(spriteBatch, currentMenu.GetMenuPic(), new Rectangle(0, 0, Recellection.viewPort.Width, Recellection.viewPort.Height));
 
 			Layer = 0.0f;
-            spriteBatch.DrawString(Recellection.screenFont, currentMenu.explanation, currentMenu.explanationDrawPos, currentMenu.explanationColor);
-
+            this.DrawCenteredString(spriteBatch, currentMenu.explanation, currentMenu.explanationDrawPos, currentMenu.explanationColor);
 			foreach (MenuIcon mi in currentMenu.GetIcons())
 			{
 				if (mi.texture != null)
@@ -76,7 +75,7 @@ namespace Recellection
 				if (mi.label != null)
 				{
 					Layer = 0.25f;
-                    spriteBatch.DrawString(Recellection.screenFont, mi.label, new Vector2(mi.targetLabelRectangle.X, mi.targetLabelRectangle.Y), mi.labelColor);
+                    this.DrawCenteredString(spriteBatch, mi.label, new Vector2(mi.targetLabelRectangle.X, mi.targetLabelRectangle.Y), mi.labelColor);
 				}
 			}
 		}
