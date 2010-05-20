@@ -9,12 +9,17 @@ namespace Recellection.Code.Views
 {
     class CreditsView : IView
     {
+		private class CreditItem
+		{
+			internal string Text { get; set; }
+			internal float YPosition { get; set; }
+		}
 
 		// To decide whether or not we have finished showing the credits
 		public bool Finished { get; private set; }
 
 		// The set of credit strings
-        private static List<String> credits;
+        private static List<CreditItem> credits;
 		
 		// The top and bottom credit string shown
 		private string topString, bottomString;
