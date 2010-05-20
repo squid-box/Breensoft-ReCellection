@@ -30,7 +30,8 @@ namespace Recellection.Code.Models
         public PlayerColour colour {get; private set;}
 
         public Color color { get; private set; }
-        public float powerLevel { get; set; }
+        public float PowerLevel { get; set; }
+		public float SpeedLevel { get; set; }
         public UnitAccountant unitAcc { get; set; }
         
         public Player Enemy { get; set; }
@@ -41,11 +42,6 @@ namespace Recellection.Code.Models
         private List<Graph> graphs;
 
         private HashSet<Unit> units;
-
-        /// <summary>
-        /// The level of upgrades of the player
-        /// </summary>
-        protected int upgradeLevel { get; private set; }
 
         /// <summary>
         /// Initializes a player with the given colour and name

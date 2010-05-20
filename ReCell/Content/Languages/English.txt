@@ -12,11 +12,15 @@ MainMenu7=Test7
 MainMenu8=Test8
 back=Back
 
-ChooseBuilding=Choose the kind of cell you want to build.
-SetWeight=Set level of protection.
-BuildCell=Build a new cell.
-RemoveCell=Remove this cell.
-UpgradeUnits=Upgrade all units.
+ChooseBuilding=Choose the kind of cell you want to build
+SetWeight=Set level of protection
+BuildCell=Build a new cell
+RemoveCell=Remove this cell
+UpgradeUnits=Upgrade all units
+UpgradeMenu=Choose the kind of upgrade you want to make
+UpgradePower=Upgrade power
+UpgradeSpeed=Upgrade speed
+
 BuildingMenu=Choose what you want to do with the cell.
 RepairCell=Repair cell.
 SetAggro=Toggle Aggressiveness.
