@@ -85,13 +85,15 @@ namespace Recellection.Code.Controllers
 			MenuIcon aggressiveCell = new MenuIcon(Language.Instance.GetString("AggressiveCell") +
                     " (" + player.unitAcc.CalculateBuildingCostInflation(Globals.BuildingTypes.Aggressive) + ")", 
 					Recellection.textureMap.GetTexture(Globals.TextureTypes.AggressiveBuilding), Color.Black);
-				
+            MenuIcon cancel = new MenuIcon(Language.Instance.GetString("Cancel"),
+                    Recellection.textureMap.GetTexture(Globals.TextureTypes.No));
             List<MenuIcon> menuIcons = new List<MenuIcon>();
             menuIcons.Add(baseCell);
             menuIcons.Add(resourceCell);
             menuIcons.Add(defensiveCell);
             menuIcons.Add(aggressiveCell);
-            Menu ConstructBuildingMenu = new Menu(Globals.MenuLayout.FourMatrix, menuIcons, Language.Instance.GetString("ChooseBuilding"), Color.Black);
+            menuIcons.Add(cancel);
+            Menu ConstructBuildingMenu = new Menu(Globals.MenuLayout.NineMatrix, menuIcons, Language.Instance.GetString("ChooseBuilding"), Color.Black);
             MenuController.LoadMenu(ConstructBuildingMenu);
             Recellection.CurrentState = MenuView.Instance;
             Globals.BuildingTypes Building;
@@ -123,7 +125,7 @@ namespace Recellection.Code.Controllers
                 if (!AddBuilding(Building, sourceBuilding,
                         constructTile.position, theWorld, player))
                 {
-                    Sounds.Instance.LoadSound("Denied").Play();
+                    SoundsController.playSound("Denied");
                 }
             }
             catch (BuildingOutOfRangeException bore)
@@ -153,11 +155,11 @@ namespace Recellection.Code.Controllers
         {
             List<Point> retur = new List<Point>(2);
             Point upperLeft = new Point(
-                (int)MathHelper.Clamp(sourceBuildingPosition.X - MAX_BUILDING_RANGE, 0, world.GetMap().width),
-                (int)MathHelper.Clamp(sourceBuildingPosition.Y - MAX_BUILDING_RANGE, 0, world.GetMap().height));
+                (int)MathHelper.Clamp(sourceBuildingPosition.X - MAX_BUILDING_RANGE, 1, world.GetMap().width-2),
+                (int)MathHelper.Clamp(sourceBuildingPosition.Y - MAX_BUILDING_RANGE, 1, world.GetMap().height-2));
             Point lowerRight = new Point(
-                (int)MathHelper.Clamp(sourceBuildingPosition.X + MAX_BUILDING_RANGE, 0, world.GetMap().width),
-                (int)MathHelper.Clamp(sourceBuildingPosition.Y + MAX_BUILDING_RANGE, 0, world.GetMap().height));
+                (int)MathHelper.Clamp(sourceBuildingPosition.X + MAX_BUILDING_RANGE, 1, world.GetMap().width-2),
+                (int)MathHelper.Clamp(sourceBuildingPosition.Y + MAX_BUILDING_RANGE, 1, world.GetMap().height-2));
 
             retur.Add(upperLeft);
             retur.Add(lowerRight);
@@ -176,7 +178,7 @@ namespace Recellection.Code.Controllers
         public static bool AddBuilding(Globals.BuildingTypes buildingType,
             Building sourceBuilding, Vector2 targetCoordinate, World world, Player owner)
         {
-            if (sourceBuilding != null && (Math.Abs(((int)sourceBuilding.position.X) - targetCoordinate.X) > MAX_BUILDING_RANGE || (Math.Abs(((int)sourceBuilding.position.X) - targetCoordinate.X) > MAX_BUILDING_RANGE)))
+            if (sourceBuilding != null && buildingType != Globals.BuildingTypes.Base && (Math.Abs(((int)sourceBuilding.position.X) - targetCoordinate.X) > MAX_BUILDING_RANGE || (Math.Abs(((int)sourceBuilding.position.X) - targetCoordinate.X) > MAX_BUILDING_RANGE)))
             {
                 throw new BuildingOutOfRangeException();
             }
@@ -212,34 +214,39 @@ namespace Recellection.Code.Controllers
                         case Globals.BuildingTypes.Aggressive:
                             logger.Trace("Building a new Aggressive building");
                             newBuilding = new AggressiveBuilding("Aggresive Building",
-                                (int)targetCoordinate.X, (int)targetCoordinate.Y, sourceBuilding.owner,
+                                (int)targetCoordinate.X, (int)targetCoordinate.Y, owner,
                                 GraphController.Instance.GetGraph(sourceBuilding).baseBuilding, controlZone);
                             break;
                         case Globals.BuildingTypes.Barrier:
                             logger.Trace("Building a new Barrier building");
                             newBuilding = new BarrierBuilding("Barrier Building",
-                                (int)targetCoordinate.X, (int)targetCoordinate.Y, sourceBuilding.owner,
+                                (int)targetCoordinate.X, (int)targetCoordinate.Y, owner,
                                 GraphController.Instance.GetGraph(sourceBuilding).baseBuilding, controlZone);
                             break;
                         case Globals.BuildingTypes.Resource:
                             logger.Trace("Building a new Resource building");
                             newBuilding = new ResourceBuilding("Resource Building",
-                                (int)targetCoordinate.X, (int)targetCoordinate.Y, sourceBuilding.owner,
+                                (int)targetCoordinate.X, (int)targetCoordinate.Y, owner,
                                 GraphController.Instance.GetGraph(sourceBuilding).baseBuilding, controlZone);
                             break;
                     }
 
-                    world.map.GetTile((int)targetCoordinate.X, (int)targetCoordinate.Y).SetBuilding(newBuilding);
+					world.map.GetTile((int)targetCoordinate.X, (int)targetCoordinate.Y).SetBuilding(newBuilding);
+					newBuilding.Parent = sourceBuilding;
                     GraphController.Instance.AddBuilding(sourceBuilding, newBuilding);
                 }
-                if (sourceBuilding != null)
+                if (sourceBuilding != null && world.map.GetTile((int)targetCoordinate.X, (int)targetCoordinate.Y).GetBuilding() != null)
                 {
                     logger.Info("The building has " + sourceBuilding.CountUnits() + " and the building costs " + price);
                     owner.unitAcc.DestroyUnits(sourceBuilding.units, (int)price);
                     logger.Info("The source building only got " + sourceBuilding.CountUnits() + " units left.");
                 }
+                else if (world.map.GetTile((int)targetCoordinate.X, (int)targetCoordinate.Y).GetBuilding() == null)
+                {
+                    throw new Exception("A building was not placed on the tile even though it should have been.");
+                }
 
-				Sounds.Instance.LoadSound("buildingPlacement").Play();
+                SoundsController.playSound("buildingPlacement");
             }
             return true;
         }
@@ -293,17 +300,20 @@ namespace Recellection.Code.Controllers
         /// <param name="b">The buiding to remove.</param>
         public static void RemoveBuilding(Building b)
         {
-			GraphController.Instance.RemoveBuilding(b);
-			lock (b.controlZone)
-			{
-				b.controlZone.First().RemoveBuilding();
-			}
+            lock (b)
+            {
+                if (b is ResourceBuilding && GraphController.Instance.GetGraph(b).baseBuilding != null)
+                {
+                    GraphController.Instance.GetGraph(b).baseBuilding.RateOfProduction -= ((ResourceBuilding)b).RateOfProduction;
+                }
+                GraphController.Instance.RemoveBuilding(b);
+                lock (b.controlZone)
+                {
+                    b.controlZone.First().RemoveBuilding();
+                }
+            }
         }
 
-        public static void HurtBuilding(Building toHurt, World theWorld)
-        {
-            HurtBuilding(toHurt);
-        }
         public static void HurtBuilding(Building toHurt)
         {
             toHurt.Damage(1);

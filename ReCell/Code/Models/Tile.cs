@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Microsoft.Xna.Framework;
 using System.Text;
 using Recellection.Code.Models;
 using Recellection.Code.Utility.Events;
@@ -420,7 +419,8 @@ namespace Recellection.Code.Models
         /// <returns>Texture of this unit.</returns>
         public override Texture2D GetSprite()
         {
-            return Recellection.textureMap.GetTexture(this.GetTerrainType().GetTexture());
+            return type.GetTexture();
+
         }
     }
 }

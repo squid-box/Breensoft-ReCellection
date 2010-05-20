@@ -21,6 +21,9 @@ namespace Recellection.Code.Controllers
     public sealed class UnitAccountant
 	{
         private const uint POP_CAP_PER_PLAYER = 200;
+        private readonly uint[] MAX_OF_EACH_BUILDING_TYPE = { 0, 7, 30, 4, 9 };
+        private const int MAX_POWER_LEVEL_LEVELS = 4;
+        private const int FIRST_POWER_LEVEL_COST = 10;
 
 		private Logger logger = LoggerFactory.GetLogger();
         private Player owner;
@@ -44,22 +47,30 @@ namespace Recellection.Code.Controllers
             b.AddUnits(units);
         }
 
-        public int getUpgradeCost()
+        public int GetUpgradeCost()
         {
-            if (owner.powerLevel >= 0.6f)
+            if (owner.powerLevel >= 0.1f*MAX_POWER_LEVEL_LEVELS)
             {
-                return 4711;
+                return (int)0x0C00FEE;
             }
-            return (int) ((20 * owner.powerLevel) * (20 * owner.powerLevel)) +4;//TODO change to a more sane formula.
+            if (owner.powerLevel == 0.0f)
+            {
+                return FIRST_POWER_LEVEL_COST;
+            }
+            float level = (owner.powerLevel * 10f);
+            double exp = 1f / Math.Pow((level), 1f / ((float)MAX_POWER_LEVEL_LEVELS - 1f));
+            double bas = 1f / ((float)MAX_POWER_LEVEL_LEVELS - 1f);
+            double result = Math.Pow(bas, exp);
+            return (int)(POP_CAP_PER_PLAYER * result);
         }
 
         public bool PayAndUpgrade(Building building)
         {
-            if (building.units.Count < getUpgradeCost() || owner.powerLevel >= 0.6f)
+            if (building.units.Count < GetUpgradeCost() || owner.powerLevel >= 0.6f)
             {
                 return false;
             }
-            DestroyUnits(building.units, getUpgradeCost());
+            DestroyUnits(building.units, GetUpgradeCost());
             owner.powerLevel += 0.1f;
             return true;
 
@@ -86,7 +97,6 @@ namespace Recellection.Code.Controllers
 
                 //TODO Remove when middle point position is implemented.
                 
-
                 BaseBuilding b = g.baseBuilding;
                 if (b == null)
                 {
@@ -98,20 +108,23 @@ namespace Recellection.Code.Controllers
                     unitsToProduce = (int) (POP_CAP_PER_PLAYER - totalUnits);
                 }
                 logger.Debug("Producing " + unitsToProduce + " units!");
-
+                totalUnits += (uint)unitsToProduce;
                 for (int i = 0; i < unitsToProduce; i++)
                 {
                     // Places them randomly around the fromBuilding. - John
                     // No, it does not. - Martin
 
-                    res.Add(new Unit(b.owner, b.position, b));
+                    Unit temp = new Unit(b.owner, b.position, b);
+                    
+                    res.Add(temp);
                 }
+                b.owner.AddUnits(res);
                 b.AddUnits(res);
             }
         }
 
         /// <summary>
-        /// The increese in cost is 50% extra for each building of that type built.
+        /// 
         /// </summary>
         /// <param name="type"></param>
         /// <param name="payer">The player this building is built for</param>
@@ -120,8 +133,15 @@ namespace Recellection.Code.Controllers
         {
             uint defaultCost = Building.GetBuyPrice(type);
             uint buildingCount = owner.CountBuildingsOfType(type);
-            return (uint)(defaultCost + (buildingCount * buildingCount * defaultCost / 2));
-
+            //return (uint)(defaultCost + (buildingCount * buildingCount * defaultCost / 2));
+            if(buildingCount == 0)
+            {
+                return defaultCost;
+            }
+            double exp = 1f / Math.Pow((buildingCount), 1f / ((float)MAX_OF_EACH_BUILDING_TYPE[(int)type] - 1f));
+            double bas = 1f /((float)MAX_OF_EACH_BUILDING_TYPE[(int)type] - 1f);
+            double test = Math.Pow(bas, exp);
+            return (uint)(POP_CAP_PER_PLAYER * test);
         }
     }
 }

@@ -14,6 +14,8 @@ using Tobii.TecSDK.Core.Interaction;
 using Tobii.TecSDK.Core.Utilities;
 using Interaction = Tobii.TecSDK.Client.Utilities.Interaction;
 using Recellection.Code.Utility.Logger;
+using System.Drawing;
+using Microsoft.Xna.Framework.Input;
 
 namespace Recellection
 {
@@ -26,35 +28,36 @@ namespace Recellection
     /// Author: Viktor Eklund
     /// </summary>
     public sealed class TobiiController
-    {        
-        //utan ett internt litet uppslagsverk så har controllern ingen aning om vad den ska kontrollera för något =(
-        private Dictionary<Globals.RegionCategories,List<WindowBoundInteractionRegionIdentifier>> regionCategories;      
+    {   
         private const int DEFAULT_TIME_SPAN = 1;
         private static Logger logger = LoggerFactory.GetLogger();
-        private IntPtr xnaHandle;
         private GUIRegion newActivatedRegion = null;
         private static TobiiController _instance = null;
+        private GUIRegion left = null, right = null, top = null, bot = null;       
+        
+        KeyboardState lastKBState, kBState;
 
         /// <summary>
         /// Main constructor for the controller,
-        /// 
-        /// Important: only instantiate it once as it uses
-        /// static classes from the tobii SDK
-        /// 
         /// Remember to call Init or the controller will not work.
         /// </summary>
-        private TobiiController(IntPtr xnaHandle)
-        {
-            this.xnaHandle = xnaHandle;
-            regionCategories = new Dictionary<Globals.RegionCategories,List<WindowBoundInteractionRegionIdentifier>>();
+        private TobiiController()
+        {       
             logger.Info("Created the Tobii Controller");
         }
 
+        /// <summary>
+        /// Provides singleton functionality
+        /// </summary>
+        /// <param name="xnaHandle"></param>
+        /// <returns></returns>
         public static TobiiController GetInstance(IntPtr xnaHandle)
         {
             if (_instance == null)
             {
-                _instance = new TobiiController(xnaHandle);
+                //the xnaHandle was not used, so it has been removed
+                //the constructor still takes it to not mess with other peoples code
+                _instance = new TobiiController();
             }
             return _instance;
         }
@@ -67,25 +70,77 @@ namespace Recellection
         ///</returns>
         public bool Init()
         {
-            try
+            if (!TecClient.IsInitialized)
             {
-                TecClient.Init("Recellection");
-                TecClient.ClientSettings.OffWindowProcessing = true;               
-                TecClient.ClientSettings.ApplySettings();
-                //TODO: more stuff?, like loading eye tracking preferences e.t.c?
+                try
+                {
+                    TecClient.Init("Recellection");
+
+                    #region I'm too scared to remove these comments
+                    Tobii.TecSDK.Core.Interaction.Contracts.UserProfileProperties newProfile = new Tobii.TecSDK.Core.Interaction.Contracts.UserProfileProperties("RecellectionProfile");
+                    Tobii.TecSDK.Client.Utilities.UserProfile.Add("RecellectionProfile", "RecellectionProfile");
+                    Tobii.TecSDK.Client.Utilities.UserProfile.SetCurrent("RecellectionProfile");
+                    Tobii.TecSDK.Client.Utilities.UserProfile.Current.FeedbackSettings = new Tobii.TecSDK.Core.Interaction.Contracts.FeedbackSettings();
+                    Tobii.TecSDK.Client.Utilities.UserProfile.Current.Enabled = true;
+
+                    #endregion
+
+                    //these lines will, it seems, create a new ClientApplicationProperties object
+                    //based on the current client settings and current user profile.
+                    //the new object sets OffWindowProcessing
+                    //**there is probably an easier way to go about this**
+                    //**have to wait and see if this will mess with the UserProfile outside of our software**
+                    Tobii.TecSDK.Core.Interaction.Contracts.ClientApplicationProperties props = 
+                        new Tobii.TecSDK.Core.Interaction.Contracts.ClientApplicationProperties
+                            (TecClient.ClientSettings, Tobii.TecSDK.Client.Utilities.UserProfile.Current);
+                    
+                    props.OffWindowProcessing = true;                    
+                    props.Enabled = true;
+                    
+                    //we copy our newly created ClientApplicationProperties object to our CurrentApplicationProfile
+                    //the change is then applies by calling UpdateApplicationProfile
+                    TecClient.CurrentApplicationProfile.CopyProperties(props);                    
+                    TecClient.CurrentApplicationProfile.Enabled = true;
+                    TecClient.UpdateApplicationProfile();
+                    
+                    TecClient.ClientSettings.OffWindowProcessing = true;
+                    TecClient.ClientSettings.ApplySettings();
+                    TecClient.SettingsManager.ApplySettings();
+
+                    SetFeedbackColor(Microsoft.Xna.Framework.Graphics.Color.White);
+                }
+                catch (Exception)
+                {
+                    logger.Warn("The Tobii Controller did not initialize correctly");
+                    return false;
+                }
+
+                #region uncomment me to test offscreen regions
+
+                    //GUIRegion test = new GUIRegion(IntPtr.Zero, new Rect(1280, 0, 500, 1024));
+                    //AddRightOffScreen(test);
+
+                #endregion
+
+                logger.Info("Successfully initialized the Tobii Controller");
+                return true;
             }
-            catch (Exception)
+            else
             {
-                logger.Warn("The Tobii Controller did not initialize correctly");
-                return false;
+                //the controller was already initialized
+                return true;
             }
-            logger.Info("Successfully initialized the Tobii Controller");
-            return true;
+        }
+
+        //keeping this function to quickly test, if needed, that off screen regions still work
+        void test_Activate(object sender, Tobii.TecSDK.Client.Interaction.ActivateEventArgs e)
+        {
+            Environment.Exit(0);
         }
 
         /// <summary>
-        /// Enable/disable a group of Regions specified by the region ID
-        /// If more region IDs are wanted just add more to Globals.RegionCategories
+        /// Enable/disable all currently loaded regions
+        /// false will disable, true will enable
         /// </summary>
         /// <param name="regionID"></param>
         /// <param name="value"></param>       
@@ -94,8 +149,33 @@ namespace Recellection
             foreach (IInteractionRegion region in Interaction.Regions.Values)
             {
                 region.Enabled = value;
-            }
-            //Interaction.InteractionMode = value == true ? InteractionMode.On : InteractionMode.Off;            
+            }        
+        }
+
+        //We'll just do them like this for now
+        public void AddLeftOffScreen(GUIRegion left)
+        {
+            this.left = left;
+            AddRegion(left);
+            this.left.Enabled = true;
+        }
+        public void AddRightOffScreen(GUIRegion right)
+        {
+            this.right = right;
+            AddRegion(this.right);
+            this.right.Enabled = true;
+        }
+        public void AddTopOffScreen(GUIRegion top)
+        {
+            this.top = top;
+            AddRegion(this.top);
+            this.top.Enabled = true;
+        }
+        public void AddBotOffScreen(GUIRegion bot)
+        {
+            this.bot = bot;
+            AddRegion(this.bot);
+            this.bot.Enabled = true;     
         }
 
         /// <summary>
@@ -109,7 +189,23 @@ namespace Recellection
             foreach(GUIRegion region in menu.GetRegions())
             {
                 AddRegion(region);
-            }            
+            }
+            if (menu.leftOff != null)
+            {
+                AddLeftOffScreen(menu.leftOff.region);
+            }
+            if (menu.rightOff != null)
+            {
+                AddRightOffScreen(menu.rightOff.region);
+            }
+            if (menu.botOff != null)
+            {
+                AddTopOffScreen(menu.botOff.region);
+            }
+            if (menu.topOff != null)
+            {
+                AddBotOffScreen(menu.topOff.region);
+            }
         }
 
         /// <summary>
@@ -123,38 +219,23 @@ namespace Recellection
             {
                 Interaction.RemoveRegion(region.RegionIdentifier);
             }
-        }       
-        /// <summary>
-        /// Will return a list of all the GUIRegions that are part of the specified category
-        /// Will implement when a GUIRegion has a getter for, instead of inheriting from, 
-        /// WindowBoundInteractionRegion derpderpderp
-        /// </summary>
-        /// <param name="regionID"></param>C:\Users\Viktor\.ssh\recellection\recellection\ReCell\Code\Controllers\BuildingController.cs
-        /// <returns>List of GUIRegion</returns>
-        [Obsolete("GUIRegion categories are no longer supported, do not use")]
-        public List<GUIRegion> GetRegionsByCategory(Globals.RegionCategories regionID)
-        {
-            List<GUIRegion> ret = new List<GUIRegion>();
-            for (int i = 0; i < regionCategories[regionID].Count; i++)
+            if (menu.leftOff != null)
             {
-                ret.Add((GUIRegion)Interaction.FindRegion(regionCategories[regionID].ElementAt(i)));
+                Interaction.RemoveRegion(menu.leftOff.region.RegionIdentifier);
             }
-            return ret;
-        }
-
-        /// <summary>
-        /// Will return a region given it's identifier        
-        /// </summary>
-        /// <param name="id"></param>
-        /// <returns>
-        /// The region asked for
-        /// </returns>
-        [Obsolete("The way things work now, you most likely won't have a correct identifier, consider not using")]
-        public GUIRegion GetRegionByIdentifier(WindowBoundInteractionRegionIdentifier id)
-        {
-            return (GUIRegion)Interaction.Regions[id];
-            //uncertain if this is castable.
-        }
+            if (menu.rightOff != null)
+            {
+                Interaction.RemoveRegion(menu.rightOff.region.RegionIdentifier);
+            }
+            if (menu.botOff != null)
+            {
+                Interaction.RemoveRegion(menu.botOff.region.RegionIdentifier);
+            }
+            if (menu.topOff != null)
+            {
+                Interaction.RemoveRegion(menu.topOff.region.RegionIdentifier);
+            }
+        }       
 
         /// <summary>
         /// Attempts to add a region
@@ -163,15 +244,8 @@ namespace Recellection
         /// <param name="newRegion"></param>
         /// <returns>
         /// will return an identifier to your newly created region
-        /// this can be used to find your region with 
-        /// "GetRegionByIdentifer"
-        /// should you want to fiddle with the GUIRegion later.
+        /// should you want to fiddle with it later
         /// </returns>
-        private WindowBoundInteractionRegionIdentifier AddRegion(Rect pos)
-        {
-            GUIRegion newRegion = new GUIRegion(xnaHandle, pos);
-            return AddRegion(newRegion);
-        }
         private WindowBoundInteractionRegionIdentifier AddRegion(GUIRegion newRegion)
         {                
                 newRegion.CanActivate = true;
@@ -185,21 +259,6 @@ namespace Recellection
                 //newRegion.AlwaysInteractive = true; 
                 //newRegion.IsActivating = true; 
                 //newRegion.UsesCoordinate = true; 
-
-            
-            /*
-             * keeping this commented stub for now because things are undecided.
-             */
-            //if(regionCategories.ContainsKey(regionID))
-            //{
-            //    regionCategories[regionID].Add(newRegion.RegionIdentifier);
-            //}
-            //else
-            //{
-            //    List<WindowBoundInteractionRegionIdentifier> human = new List<WindowBoundInteractionRegionIdentifier>();
-            //    human.Add(newRegion.RegionIdentifier);
-            //    regionCategories.Add(regionID, human);
-            //}
 
             try
             {
@@ -216,23 +275,10 @@ namespace Recellection
             return newRegion.RegionIdentifier;
         }
 
-
+        // the TobiiController subscribes to all regions Activate event
         void newRegion_regionActivated(object publisher, global::Recellection.Code.Utility.Events.Event<GUIRegion> ev)
         {
             newActivatedRegion = (GUIRegion)publisher;
-        }
-
-
-        /// <summary>
-        /// Odds are that we won't want to really remove a region (we can just disable them by category instead)
-        /// But if one need to be removed then so be it
-        /// </summary>
-        /// <param name="id"><
-        /// /param>
-        [Obsolete("You probably don't want to make this call")]
-        public bool RemoveRegionByIdentifier(WindowBoundInteractionRegionIdentifier id) {
-           return Interaction.RemoveRegion(id);//throws exceptions if id did not exist               
-            //assuming nothing funky happens if trying to remove a non existing region
         }
 
         /// <summary>
@@ -244,7 +290,40 @@ namespace Recellection
         {
             for (; ; )
             {
-                System.Threading.Thread.Sleep(200); // so I heard you like hogging cpu time
+                System.Threading.Thread.Sleep(200); // so I heard you like hogging cpu time                
+                lastKBState = kBState;
+                kBState = Recellection.publicKeyBoardState;
+#if DEBUG
+                if (kBState.IsKeyDown(Keys.W) && lastKBState.IsKeyUp(Keys.W))
+                {
+                    if (top != null)
+                    {
+                        top.Publish(top, new global::Recellection.Code.Utility.Events.EventType());
+                    }
+                }
+                else if(kBState.IsKeyDown(Keys.S) && lastKBState.IsKeyUp(Keys.S))
+                {
+                    if (bot != null)
+                    {                    
+                        bot.Publish(bot, new global::Recellection.Code.Utility.Events.EventType());
+                    }
+                }
+                else if(kBState.IsKeyDown(Keys.A) && lastKBState.IsKeyUp(Keys.A))
+                {
+                    if (left != null)
+                    {
+                        left.Publish(left, new global::Recellection.Code.Utility.Events.EventType());
+                    }
+                        
+                }
+                else if(kBState.IsKeyDown(Keys.D) && lastKBState.IsKeyUp(Keys.D))
+                {
+                    if (right != null)
+                    {
+                        right.Publish(right, new global::Recellection.Code.Utility.Events.EventType());
+                    }
+                }
+#endif
                 if (newActivatedRegion != null)
                 {
                     GUIRegion temp = newActivatedRegion;
@@ -255,40 +334,18 @@ namespace Recellection
         }
 
         /// <summary>
-        /// different method for adding regions
-        /// designed to make loading all the world regions
-        /// easier as the LoadMenu function was not appropriate
+        /// change color of the dwell indicator
         /// </summary>
-        /// <param name="menuMatrix"></param>
-        /// <param name="scrollZone"></param>
-        public void LoadWorldRegions(MenuIcon[,] menuMatrix, List<MenuIcon> scrollZone)
+        /// <param name="color">Microsoft.Xna.Framework.Graphics.Color</param>
+        public void SetFeedbackColor(Microsoft.Xna.Framework.Graphics.Color color)
         {
-            try
-            {
-                if (Interaction.Regions != null)
-                {
-                    Interaction.Regions.Clear();
-                }
-                else
-                {
-                    logger.Warn("Regions were null, so can't clear");
-                }
-            }
-            catch (Exception)
-            {
-                logger.Fatal("guess it really doesn't work then...");
-            }
-            finally
-            {
-                foreach (MenuIcon icon in menuMatrix)
-                {
-                    AddRegion(icon.region);
-                }
-                foreach (MenuIcon othericons in scrollZone)
-                {
-                    AddRegion(othericons.region);
-                }
-            }
+            System.Windows.Media.Color col = new System.Windows.Media.Color();
+            col.A = color.A;
+            col.B = color.B;
+            col.G = color.G;
+            col.R = color.R;
+            TecClient.CurrentApplicationProfile.FeedbackSettings.DwellFeedbackColor = col;
+            TecClient.UpdateApplicationProfile();
         }
     }
 }

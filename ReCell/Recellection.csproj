@@ -146,6 +146,7 @@
     <Compile Include="Code\Models\GameOptions.cs" />
     <Compile Include="Code\Models\Graph.cs" />
     <Compile Include="Code\Models\GUIRegion.cs" />
+    <Compile Include="Code\Models\HelpMenuFactory.cs" />
     <Compile Include="Code\Models\IModel.cs" />
     <Compile Include="Code\Models\KamikazeUnit.cs" />
     <Compile Include="Code\Models\Language.cs" />
@@ -160,10 +161,9 @@
     <Compile Include="Code\Models\Tile.cs" />
     <Compile Include="Code\Models\Unit.cs" />
     <Compile Include="Code\Models\World.cs" />
+    <Compile Include="Code\ParticleSystems\GrainSystem.cs" />
     <Compile Include="Code\ParticleSystems\Light.cs" />
     <Compile Include="Code\ParticleSystems\LightParticleSystem.cs" />
-    <Compile Include="Code\ParticleSystems\Ripple.cs" />
-    <Compile Include="Code\ParticleSystems\RippleHandler.cs" />
     <Compile Include="Code\Sounds\AudioPlayer.cs" />
     <Compile Include="Code\Utility\Console\KeyBindings.cs" />
     <Compile Include="Code\Utility\Console\PythonInterpreter.cs" />
@@ -180,6 +180,8 @@
     <Compile Include="Code\Utility\Logger\LoggerSetup.cs" />
     <Compile Include="Code\Utility\Logger\LogLevel.cs" />
     <Compile Include="Code\Views\AIView.cs" />
+    <Compile Include="Code\Views\CreditsView.cs" />
+    <Compile Include="Code\Views\EndGameView.cs" />
     <Compile Include="Code\Views\IRenderable.cs" />
     <Compile Include="Code\Views\IView.cs" />
     <Compile Include="Code\Views\LoadView.cs" />
@@ -235,9 +237,6 @@
       <ProductName>Microsoft XNA Framework Redistributable 3.1</ProductName>
       <Install>true</Install>
     </BootstrapperPackage>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Recellection_TemporaryKey.pfx" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\XNA Game Studio\Microsoft.Xna.GameStudio.targets" />

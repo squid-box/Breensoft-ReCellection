@@ -18,6 +18,7 @@ RemoveCell=Förstör denna cell.
 UpgradeUnits=Uppgradera alla små celler.
 BuildingMenu=Bygg Cell.
 RepairCell=Reparera cell.
+SetAggro=Växla aggressivitet.
 
 OptionsMenu1=OTest1
 OptionsMenu2=OTest2
@@ -53,6 +54,11 @@ Yes=Ja
 No=Nej
 AreYouSureYouWantToQuit=Är du säker att du vill avsluta?
 
+[Game menu]
+EndTurn=Avsluta turen
+EndGame=Avsluta spelomgången
+AreYouSureYouWantToEndTheGame=Är du säker på att du vill avsluta spelomgången?
+
 [Tile options]
 TileMenu=Vad vill du göra med markbiten?
 Cancel=Avbryt
@@ -66,3 +72,8 @@ BaseCell=Bas Cell
 DefensiveCell=Försvars Cell
 AggressiveCell=Arg Cell
 ResourceCell=Arbets Cell
+
+[End game]
+hasWon=Grattis!\n\nDu vann.
+hasLost=Du förlorade.\n\nBättre lycka nästa gång!
+isDraw=Spelet är slut.\nVann du eller förlorade du?\n\n... Jag vet inte.

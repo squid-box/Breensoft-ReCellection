@@ -24,6 +24,10 @@ namespace Recellection
         public String explanation { get; private set; }
         public Vector2 explanationDrawPos { get; private set; }
         public Color explanationColor { get; private set; }
+        public MenuIcon leftOff { get; private set; }
+        public MenuIcon rightOff { get; private set; }
+        public MenuIcon topOff { get; private set; }
+        public MenuIcon botOff { get; private set; }
 
 		public Menu(Globals.MenuLayout layout, List<MenuIcon> icons, String explanation)
 			 : this(layout, icons, explanation, Color.Black)
@@ -48,6 +52,29 @@ namespace Recellection
 					break;
 			}
 		}
+
+        public Menu(Globals.MenuLayout layout, List<MenuIcon> icons, String explanation, Color explanationColor, MenuIcon leftOff, MenuIcon rightOff, MenuIcon topOff, MenuIcon botOff)
+        {
+            this.explanation = insertLineBreaksForString(explanation);
+            this.explanationColor = explanationColor;
+            this.explanationDrawPos = calculateDrawCoordinates(new Vector2(Recellection.viewPort.Width / 2, Recellection.viewPort.Height / 2), this.explanation);
+            this.leftOff = leftOff;
+            this.rightOff = rightOff;
+            this.topOff = topOff;
+            this.botOff = botOff;
+            switch (layout)
+            {
+                case Globals.MenuLayout.Prompt:
+                    CreatePrompt(icons);
+                    break;
+                case Globals.MenuLayout.NineMatrix:
+                    CreateNineMatrix(icons);
+                    break;
+                case Globals.MenuLayout.FourMatrix:
+                    CreateFourMatrix(icons);
+                    break;
+            }
+        }
 
         public Menu(List<MenuIcon> icons)
 
@@ -353,6 +380,31 @@ namespace Recellection
             }
             
             this.icons = icons;
+        }
+
+        /// <summary>
+        /// Magic Constructor for Menu!
+        /// </summary>
+        /// <param name="iconList">A List of MenuIcons to display.</param>
+        /// <param name="explanation">A explanation for the menu to give to the user.</param>
+        public Menu(List<MenuIcon> iconList, String explanation)
+        {
+            if (iconList.Count < 3)
+            {
+                new Menu(Globals.MenuLayout.Prompt, iconList, explanation);
+            }
+            else if (2 < iconList.Count && iconList.Count < 5)
+            {
+                new Menu(Globals.MenuLayout.FourMatrix, iconList, explanation);
+            }
+            else if (4 < iconList.Count && iconList.Count < 10)
+            {
+                new Menu(Globals.MenuLayout.NineMatrix, iconList, explanation);
+            }
+            else
+            {
+                new Menu(Globals.MenuLayout.FreeStyle, iconList, explanation);
+            }
         }
     }
 }

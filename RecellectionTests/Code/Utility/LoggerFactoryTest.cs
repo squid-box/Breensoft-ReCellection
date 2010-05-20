@@ -55,7 +55,7 @@ namespace Recellection.Code.Utility.Logger
 			l.Trace("abc");
 			l2.Trace("def");
 
-			// Change target for all
+			// Change baseEntity for all
 			LoggerFactory.SetGlobalTarget(target);
 
 			l.Trace("123");

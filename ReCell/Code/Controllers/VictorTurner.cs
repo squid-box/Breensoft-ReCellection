@@ -7,6 +7,8 @@ using Recellection.Code.Models;
 using Recellection.Code.Controllers;
 using Recellection.Code.Main;
 using Recellection.Code.Utility.Logger;
+using Recellection.Code.Views;
+using Microsoft.Xna.Framework.Audio;
 
 namespace Recellection.Code.Controllers
 {
@@ -29,6 +31,9 @@ namespace Recellection.Code.Controllers
         private GraphController graphControl;
 		
         Boolean finished = false;
+
+		private Cue backgroundSound = Sounds.Instance.LoadSound("inGameMusic");
+		
         /// <summary>
         /// The constructor used to initiate the Victor Turner
         /// </summary>
@@ -45,35 +50,18 @@ namespace Recellection.Code.Controllers
 
         public void Run()
 		{
-			SoundsController.playSound("inGameMusic");
-
+			backgroundSound.Play();
+			
             while (!finished)
             {
-                foreach (Player player in players)
-                {
-                    //updateFogOfWar(player);
-
-                    if (HasLost(player))
-                    {
-                        world.RemovePlayer(player);
-                    }
-                    if (HasWon())
-                    {
-                        finished = true;
-                        break;
-                    }
-                }
-                if (finished)
-                {
-                    break;
-                }
+                
 				logger.Debug("Victor turner is turning the page!");
                 foreach (Player player in players)
                 {
 					if (player is AIPlayer)
 					{
 						logger.Debug(player.color + " is a AIPlayer!");
-						//((AIPlayer)player).MakeMove();
+						((AIPlayer)player).MakeMove();
 					}
 					else if (player is Player)
 					{
@@ -85,6 +73,16 @@ namespace Recellection.Code.Controllers
 					{
 						logger.Fatal("Could not identify "+player.color+" player!");
 					}
+                    if (CheckIfLostOrWon(player))
+                    {
+                        finished = true;
+                        EndGame(players[0]);
+                        break;
+                    }
+                }
+                if (finished)
+                {
+                    break;
                 }
 				logger.Info("Weighting graphs!");
                 foreach (Player player in players)
@@ -113,6 +111,33 @@ namespace Recellection.Code.Controllers
                 
             }
 
+        }
+
+		private void EndGame(Player winner)
+		{
+			if (backgroundSound.IsPlaying)
+			{
+				backgroundSound.Pause();
+			}
+			
+			humanControl.Stop();
+			
+			// Build menu
+			
+			List<MenuIcon> options = new List<MenuIcon>(1);
+			MenuIcon cancel = new MenuIcon("");
+			cancel.region = new GUIRegion(Recellection.windowHandle, 
+				new System.Windows.Rect(0, Globals.VIEWPORT_HEIGHT - 100, Globals.VIEWPORT_WIDTH, 100));
+			options.Add(cancel);
+			Menu menu = new Menu(options);
+			MenuController.LoadMenu(menu);
+			
+			Recellection.CurrentState = new EndGameView(! (winner is AIPlayer));
+			
+			MenuController.GetInput();
+
+            MenuController.UnloadMenu();
+            
         }
 
         private void updateFogOfWar(Player player)
@@ -172,11 +197,19 @@ namespace Recellection.Code.Controllers
         /// in the world is zero false other vice.</returns>
         private Boolean HasWon()
         {
-            if (world.players.Count == 1)
+            return (world.players.Count == 1);
+        }
+
+        private Boolean CheckIfLostOrWon(Player player)
+        {
+            if (HasLost(player))
+            {
+                world.RemovePlayer(player);
+            }
+            if (HasWon())
             {
                 return true;
             }
-
             return false;
         }
     }

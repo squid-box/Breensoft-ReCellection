@@ -22,13 +22,23 @@ namespace Recellection.Code
         private Player ai;
         private Logger log;
 
+        //Threat levels
+        internal int THREATENED = 50;
+        internal int CRITICAL = 100;
+        internal int SAFE = 1;
+
+
+        internal List<Vector2> resourcePoints { get; private set; }
+        internal List<Vector2> friendlyPoints { get; private set; }
+
         internal World world { get; private set; }
         internal List<Building> myBuildings { get; private set; }
         internal List<Player> opponents { get; private set; }
-        internal List<Vector2> interrestPoints { get; private set; }
+
         internal List<Vector2> enemyPoints { get; private set; }
         internal int mapHeight { get; private set; }
         internal int mapWidth { get; private set; }
+
 
 
         //############## Construction ##############//
@@ -50,9 +60,11 @@ namespace Recellection.Code
 
             opponents = world.players; //Remove the AI player when it has called RegisterPlayer
 
-            interrestPoints = new List<Vector2>();
+            friendlyPoints = new List<Vector2>();
+            resourcePoints = new List<Vector2>();
             enemyPoints = new List<Vector2>();
         }
+
 
         /// <summary>
         /// Internal function. Allows the AI Player to register itself so that this view can keep track
@@ -74,25 +86,29 @@ namespace Recellection.Code
         /// </summary>
         internal void LookAtScreen()
         {
+            //First, clear all lists
+            enemyPoints.Clear();
+            friendlyPoints.Clear();
+            myBuildings.Clear();
+            resourcePoints.Clear();
+
             for (int i = 0; i < mapWidth; i++)
             {
                 for (int j = 0; j < mapHeight; j++)
                 {
                     Tile temp = world.GetMap().GetTile(i,j);
-                    if (Valid(temp.GetPosition()))
+                    if (ContainsResourcePoint(temp))
                     {
-                        if (ContainsResourcePoint(temp))
-                        {
-                            interrestPoints.Add(temp.GetPosition());
-                        }
-                        if (ContainsEnemyBuilding(temp))
-                        {
-                            enemyPoints.Add(temp.GetPosition());
-                        }
-                        if (ContainsFriendlyBuilding(temp.GetPosition()))
-                        {
-                            myBuildings.Add(temp.GetBuilding());
-                        }
+                        resourcePoints.Add(temp.GetPosition());
+                    }
+                    if (ContainsEnemyBuilding(temp))
+                    {
+                        enemyPoints.Add(temp.GetPosition());
+                    }
+                    if (ContainsFriendlyBuilding(temp.GetPosition()))
+                    {
+                        myBuildings.Add(temp.GetBuilding());
+                        friendlyPoints.Add(temp.GetPosition());
                     }
                 }
             }
@@ -122,7 +138,7 @@ namespace Recellection.Code
         /// <returns></returns>
         internal bool ContainsResourcePoint(Tile current)
         {
-            if (current.GetTerrainType().getResourceModifier() == 12)
+            if (current.GetTerrainType().GetEnum() == Globals.TerrainTypes.Mucus)
             {
                 return true;
             }
@@ -203,14 +219,6 @@ namespace Recellection.Code
         //############## Getter functions ##############//
 
 
-        /// <summary>
-        /// Returns the list of interrest points currently held.
-        /// </summary>
-        /// <returns></returns>
-        internal List<Vector2> GetInterrestPoints()
-        {
-            return interrestPoints;
-        }
 
         /// <summary>
         /// Returns the Tile located in the given coordinates provided that it is visible.
@@ -256,16 +264,37 @@ namespace Recellection.Code
             return coordinates;
         }
 
+        /// <summary>
+        /// Returns a list of all the resource locations.
+        /// </summary>
+        /// <returns></returns>
+        internal List<Vector2> GetResourceLocations()
+        {
+            List<Vector2> result = new List<Vector2>();
+            for (int i = 0; i < myBuildings.Count; i++)
+            {
+                if (myBuildings[i].type == Globals.BuildingTypes.Resource)
+                {
+                    result.Add(myBuildings[i].GetPosition());
+                }
+            } 
+            return result;
+        }
 
-        //############## Setter functions ##############//
 
         /// <summary>
-        /// Adds the given point to the interrest list.
+        /// Causes the AIView to add the building at the given location to the list of buildings.
+        /// 
         /// </summary>
-        /// <param name="nearby"></param>
-        internal void AddInterrestPoint(Vector2 point)
+        /// <param name="point"></param>
+        internal void BuildingAddedAt(Vector2 point)
         {
-            interrestPoints.Add(point);
+            Building b = GetBuildingAt(point);
+            if (b != null)
+            {
+                log.Info("Adding building " + b.name + " to the myBuildings list.");
+                myBuildings.Add(b);
+            }
         }
     }
 }

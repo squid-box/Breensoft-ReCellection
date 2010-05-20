@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Microsoft.Xna.Framework.Graphics;
 
 namespace Recellection.Code.Models
 {
@@ -23,7 +24,11 @@ namespace Recellection.Code.Models
         private int rscMod; // Resource modifier
         private Globals.TerrainTypes type;
 
-
+        private readonly static Texture2D MEMBRANE_TEXTURE =    Recellection.textureMap.GetTexture(Globals.TextureTypes.tile2a);
+        private readonly static Texture2D MUCUS_TEXTURE = Recellection.textureMap.GetTexture(Globals.TextureTypes.tile2e); //resource
+        private readonly static Texture2D SLOW_TEXTURE = Recellection.textureMap.GetTexture(Globals.TextureTypes.tile2b);
+        private readonly static Texture2D INFECTED_TEXTURE = Recellection.textureMap.GetTexture(Globals.TextureTypes.tile2c);
+        private readonly static Texture2D WATER_TEXTURE = Recellection.textureMap.GetTexture(Globals.TextureTypes.tile2d);
         // Methods
 
         #region Constructors
@@ -31,13 +36,9 @@ namespace Recellection.Code.Models
         /// <summary>
         /// Creates a TerrainType of the type Membrane.
         /// </summary>
-        public TerrainType()
+        public TerrainType():this(Globals.TerrainTypes.Membrane)
         {
-            // Assume default type.
-            this.type = Globals.TerrainTypes.Membrane;
-            this.dmgMod = 0;
-            this.spdMod = 10;
-            this.rscMod = 10;
+            
         }
         /// <summary>
         /// Creates a TerrainType of the type specified in t.
@@ -90,10 +91,21 @@ namespace Recellection.Code.Models
             return this.type;
         }
 
-        public Globals.TextureTypes GetTexture()
+        public Texture2D GetTexture()
         {
-            return (Globals.TextureTypes)this.type;
-
+            switch (type)
+            {
+                case Globals.TerrainTypes.Infected:
+                    return INFECTED_TEXTURE;
+                case Globals.TerrainTypes.Water:
+                    return WATER_TEXTURE;
+                case Globals.TerrainTypes.Mucus:
+                    return MUCUS_TEXTURE;
+                case Globals.TerrainTypes.Slow:
+                    return SLOW_TEXTURE;
+                default:
+                    return MEMBRANE_TEXTURE;
+            }
         }
         /// <summary>
         /// Change the type of this TerrainType.
