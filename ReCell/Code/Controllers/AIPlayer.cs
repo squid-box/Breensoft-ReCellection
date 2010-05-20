@@ -95,8 +95,8 @@ namespace Recellection.Code.Controllers
             for(int i = 0; i < buildings.Count; i++)
             {
                 Building temp = buildings[i];
-                Building enemy = m_view.GetBuildingAt(GetClosestPointFromList(temp.GetPosition(), m_view.enemyPoints));
-                if (m_view.GetBuildingAt(GetClosestPointFromList(enemy.GetPosition(), m_view.friendlyPoints)) == temp)
+                Building enemy = m_view.GetBuildingAt(Util.GetClosestPointFromList(temp.GetPosition(), m_view.enemyPoints));
+                if (m_view.GetBuildingAt(Util.GetClosestPointFromList(enemy.GetPosition(), m_view.friendlyPoints)) == temp)
                 { //There is no friendly point that's more threatened by our closest enemy point
                     log.Info("Adding " + temp.GetPosition().X + ";" +  temp.GetPosition().Y + " to the front list.");
                     result.Add(temp);
@@ -252,7 +252,7 @@ namespace Recellection.Code.Controllers
             List<Vector2> path  = new List<Vector2>();
             do
             {
-                source = GetClosestPointFromList(dest, CreateMatrixFromInterval(BuildingController.GetValidBuildingInterval(source, m_view.world)));
+                source = Util.GetClosestPointFromList(dest, CreateMatrixFromInterval(BuildingController.GetValidBuildingInterval(source, m_view.world)));
                 path.Add(source);
             } while (!WithinBuildRangeOf(source, dest));
             if(source != dest) //safeguard for double add
@@ -321,8 +321,8 @@ namespace Recellection.Code.Controllers
                 if (b != null)
                     //There is already a building here
                     continue;
-
-                closestFriendly = GetClosestPointFromList(r, m_view.friendlyPoints);
+                
+                closestFriendly = Util.GetClosestPointFromList(r, m_view.friendlyPoints);
                 currentDist = (int)Vector2.Distance(r, closestFriendly);
                 if(currentDist < bestDist)
                 {//We have a new leader
@@ -333,27 +333,6 @@ namespace Recellection.Code.Controllers
                 }
             }
             return currentBest;
-        }
-
-        /// <summary>
-        /// Returns the point in the given list that is closest to the given point.
-        /// </summary>
-        /// <param name="point"></param>
-        /// <param name="list"></param>
-        /// <returns></returns>
-        private Vector2 GetClosestPointFromList(Vector2 point, List<Vector2> list)
-        {
-            Vector2 best = list[0];
-            Vector2 temp = best;
-            for (int i = 1; i < list.Count; i++)
-            {
-                temp = list[i];
-                if (Vector2.Distance(temp, point) < Vector2.Distance(best, point))
-                {
-                    best = temp;
-                }
-            }
-            return best;
         }
 
         /// <summary>
