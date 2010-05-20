@@ -213,7 +213,7 @@ namespace Recellection.Code.Controllers
 			
 			foreach(Player p in toBeRemoved)
 			{
-				players.Remove(p);
+                world.players.Remove(p);
 			}
 			
             if (HasWon())
