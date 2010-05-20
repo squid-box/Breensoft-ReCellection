@@ -162,13 +162,7 @@ namespace Recellection.Code.Controllers
 			
             Recellection.CurrentState = MenuView.Instance;
 
-			#region GET TO THE CHOPPAH!
 			MenuIcon selection = MenuController.GetInput();
-			if (100 == doptions[selection])
-			{
-				Sounds.Instance.LoadSound("choppah").Play();
-			}
-			#endregion
 			
 			if (doptions[selection] >= 0)
 			{
