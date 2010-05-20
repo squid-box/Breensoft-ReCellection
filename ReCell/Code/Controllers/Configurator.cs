@@ -60,12 +60,6 @@ namespace Recellection.Code.Controllers
             {
                 MenuIcon response = MenuController.GetInput();
 
-                //if (response == ??)
-                //{
-                // Off-screen quit option? 
-                //    MenuController.UnloadMenu();
-                //}(response == mute)
-
                 if (response == mute)
                 {
                     if (GameOptions.Instance.musicMuted)
@@ -80,7 +74,6 @@ namespace Recellection.Code.Controllers
                         SoundsController.changeEffectsVolume(0.0f);
                         SoundsController.changeMusicVolume(0.0f);
                     }
-                    MenuController.UnloadMenu();
                 }
                 else if (response == volume)
                 {
