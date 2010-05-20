@@ -271,9 +271,10 @@ namespace Recellection
 			LoggerFactory.SetAll(active);
 		}
 
-		public void AILogger()
+		public void LogAI()
 		{
 			ToggleLogger("Recellection.Code.Controllers.AIPlayer");
+			ToggleLogger("Recellection.Code.views.AIView");
 		}
 
         public void Help()
