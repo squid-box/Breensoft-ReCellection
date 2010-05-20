@@ -181,6 +181,7 @@ namespace Recellection.Code.Views
 			{
 				Layer = 0.75f;
 				// Go through each players graphs and draw lines between buildings.
+				Vector2 lookAt = new Vector2(World.LookingAt.X, World.LookingAt.Y);
 				foreach (Player p in World.players)
 				{
 					List<Graph> graphs = p.GetGraphs();
@@ -195,14 +196,18 @@ namespace Recellection.Code.Views
 								// Graph is broken :(
 								continue;
 							}
-							
+
 							foreach(Building b in g.GetBuildings())
 							{
 								if (b == bb)
 									continue;
-								Vector2 lookAt = new Vector2(World.LookingAt.X, World.LookingAt.Y);
+
+								Vector2 drawFrom = bb.position;
+								if (b.Parent != null)
+									drawFrom = b.Parent.position;
+								
 								myLogger.Info("Drawing line between "+bb+" and "+b+".");
-								DrawLine(spriteBatch, TileToPixels(bb.position-lookAt), TileToPixels(b.position-lookAt), 
+								DrawLine(spriteBatch, TileToPixels(drawFrom-lookAt), TileToPixels(b.position-lookAt), 
 											new Color(b.owner.color, 80), 10);
 							}
 						}
