@@ -53,11 +53,13 @@ namespace Recellection.Code.Main
             SpawnPoints(theWorld.players, theWorld.map.width, theWorld.map.height, randomer);
 
             myLogger.Info("Spawning units.");
-            //suitGuys = new Dictionary<Player, UnitAccountant>(2);
             foreach(Player p in theWorld.players)
             {
-                //suitGuys[p] = new UnitAccountant(p);
-                p.unitAcc.ProduceUnits();
+				// We want 50 units!
+                for(int i = 0; i < 10; i++)
+                {
+					p.unitAcc.ProduceUnits();
+				}
             }
             
             int xOffset = (Recellection.viewPort.Width/Globals.TILE_SIZE)/2;
