@@ -11,6 +11,10 @@ MainMenu6=Test6
 MainMenu7=Test7
 MainMenu8=Test8
 back=Tillbaka
+NewGame=Nytt spel
+Options=Alterantiv
+Help=Hjälp
+Quit=Avsluta
 
 ChooseBuilding=Välj den typ av cell du vill bygga.
 SetWeight=Välj Beredskapsnivå.
@@ -53,6 +57,8 @@ SpecialCommandMenu8=CTest8
 
 Yes=Ja
 No=Nej
+Cancel=Avbryt
+
 AreYouSureYouWantToQuit=Är du säker att du vill avsluta?
 
 [Game menu]
@@ -62,11 +68,13 @@ AreYouSureYouWantToEndTheGame=Är du säker på att du vill avsluta spelomgånge
 
 [Tile options]
 TileMenu=Vad vill du göra med markbiten?
-Cancel=Avbryt
 MoveUnits=Flytta små cellerna.
 
 [Graph]
 SetImportance=Vilken vikt vill du ha?
+NoPriority=Ingen prioritet
+LowPriority=Låg prioritet
+HighPriority=Hög prioritet
 
 [Game entities]
 BaseCell=Bas Cell
