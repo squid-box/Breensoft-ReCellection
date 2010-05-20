@@ -107,6 +107,9 @@ namespace Recellection.Code.Controllers
 
             foreach (Graph g in owner.GetGraphs())
             {
+                if (totalUnits == POP_CAP_PER_PLAYER)
+                    break;
+
 				List<Unit> res = new List<Unit>();
 
                 //TODO Remove when middle point position is implemented.
@@ -134,6 +137,9 @@ namespace Recellection.Code.Controllers
                 }
                 b.owner.AddUnits(res);
                 b.AddUnits(res);
+
+                //This should not be needed but does not hurt i hope.
+                res.Clear();
             }
         }
 
