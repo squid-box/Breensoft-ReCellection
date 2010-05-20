@@ -125,9 +125,9 @@ namespace Recellection.Code
         /// </summary>
         /// <param name="current"></param>
         /// <returns></returns>
-        internal bool ContainsResourcePoint(Vector2 current)
+        internal bool ContainsResourcePoint(Vector2 current, World world)
         {
-            Tile tempTile = GetTileAt(current);
+            Tile tempTile = Util.GetTileAt(current, world);
             return ContainsResourcePoint(tempTile);
         }
 
@@ -152,7 +152,7 @@ namespace Recellection.Code
         /// <returns></returns>
         internal bool ContainsFriendlyBuilding(Vector2 point)
         {
-            Tile temp = GetTileAt(point);
+            Tile temp = Util.GetTileAt(point, world);
             if (temp != null && temp.GetBuilding() != null && temp.GetBuilding().GetOwner() == ai)
             {
                 return true;
@@ -199,7 +199,7 @@ namespace Recellection.Code
         /// <returns></returns>
         internal Player Harvesting(Vector2 point)
         {
-            Building tempBuilding = GetBuildingAt(point);
+            Building tempBuilding = Util.GetBuildingAt(point, world);
 
             if (tempBuilding == null)
                 return null;
@@ -218,37 +218,6 @@ namespace Recellection.Code
 
         //############## Getter functions ##############//
 
-
-
-        /// <summary>
-        /// Returns the Tile located in the given coordinates provided that it is visible.
-        /// If it is not visible, null is returned.
-        /// </summary>
-        /// <param name="coords"></param>
-        /// <returns></returns>
-        internal Tile GetTileAt(Vector2 coords)
-        {
-            //log.Fatal("Accessing Tile at "+coords.X+","+coords.Y);
-            Tile tempTile = world.GetMap().GetTile((int)coords.X, (int)coords.Y);
-
-            ///* Uncomment when fog of war is properly implemented
-            //if (tempTile.IsVisible(ai))
-            //{
-            //    return tempTile;
-            //}
-
-            return tempTile;
-        }
-
-        /// <summary>
-        /// Returns the fromBuilding at the given coordinates provided that it is visible.
-        /// </summary>
-        /// <param name="point"></param>
-        /// <returns></returns>
-        internal Building GetBuildingAt(Vector2 point)
-        {
-            return GetTileAt(point).GetBuilding();
-        }
 
         /// <summary>
         /// Returns the coordinates of all the friendly buildings
@@ -289,7 +258,7 @@ namespace Recellection.Code
         /// <param name="point"></param>
         internal void BuildingAddedAt(Vector2 point)
         {
-            Building b = GetBuildingAt(point);
+            Building b = Util.GetBuildingAt(point, world);
             if (b != null)
             {
                 log.Info("Adding building " + b.name + " to the myBuildings list.");
