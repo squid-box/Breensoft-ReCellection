@@ -11,6 +11,10 @@ MainMenu6=Test6
 MainMenu7=Test7
 MainMenu8=Test8
 back=Tillbaka
+NewGame=Nytt spel
+Options=Alterantiv
+Help=Hjälp
+Quit=Avsluta
 
 ChooseBuilding=Välj den typ av cell du vill bygga.
 SetWeight=Välj Beredskapsnivå.
