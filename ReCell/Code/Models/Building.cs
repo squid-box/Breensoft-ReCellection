@@ -60,6 +60,8 @@ namespace Recellection.Code.Models
 		}
         public LinkedList<Tile> controlZone { get; protected set; }
 
+		public bool IsAggressive { get; set; }
+		
         private static Logger logger = LoggerFactory.GetLogger();
 
         //Events
@@ -70,48 +72,9 @@ namespace Recellection.Code.Models
         /// Creates an unusable fromBuilding with everything set at default values.
         /// </summary>
         public Building():this("noName",-1,-1,1,null, 
-            Globals.BuildingTypes.NoType, null)
+            Globals.BuildingTypes.NoType, null, new LinkedList<Tile>())
         {
             logger.Trace("Constructing new Building with default values");   
-        }
-
-        /// <summary>
-        /// Creates a fromBuilding with specified parameters, the unit list will
-        /// be initiated but empty and the current health will be set at maxHealth.
-        /// </summary>
-        /// <param name="name">The name for the fromBuilding TODO Decide if this is
-        /// needded</param>
-        /// <param name="posX">The x tile coordinate</param>
-        /// <param name="posY">The y tile coordinate</param>
-        /// <param name="maxHealth">The max health of this fromBuilding</param>
-        /// <param name="owner">The player that owns the fromBuilding</param>
-        /// <param name="type">The type of the fromBuilding</param>
-        /// <param name="baseBuilding">The Base Building this fromBuilding belongs
-        /// to</param>
-        public Building(String name, int posX, int posY, int maxHealth,
-            Player owner, Globals.BuildingTypes type, BaseBuilding baseBuilding) : base(new Vector2(((float)posX)+0.5f, ((float)posY)+0.5f), owner)
-        {
-            if (maxHealth <= 0)
-            {
-                throw new ArgumentOutOfRangeException("maxHealth", 
-                    "The max of health may not be zero or less");
-
-            }
-
-            logger.Trace("Constructing new Building with choosen values");
-            this.name = name;
-            this.maxHealth = maxHealth;
-            this.currentHealth = maxHealth;
-
-            this.units = new List<Unit>();
-            this.incomingUnits = new List<Unit>();
-            this.type = type;
-
-            this.baseBuilding = baseBuilding;
-            if (baseBuilding != null)
-            {
-                Accept(baseBuilding);
-            }
         }
 
         /// <summary>
@@ -150,6 +113,7 @@ namespace Recellection.Code.Models
 			this.units = new List<Unit>();
 			this.incomingUnits = new List<Unit>();
             this.type = type;
+            this.IsAggressive = true;
 
             this.baseBuilding = baseBuilding;
 
@@ -158,7 +122,26 @@ namespace Recellection.Code.Models
                 Accept(baseBuilding);
             }
 
-            this.controlZone = controlZone;
+			this.controlZone = controlZone;
+			
+			foreach (Tile t in controlZone)
+			{
+				t.unitsChanged += UpdateAggressiveness;
+			}
+        }
+
+		public void UpdateAggressiveness(object publisher, Event<IEnumerable<Unit>> ev)
+        {
+            if (ev.type == EventType.ADD)
+            {
+				foreach(Unit u in ev.subject)
+				{
+					if (u.BaseEntity == this)
+					{
+						u.IsAggressive = this.IsAggressive;
+					}
+				}
+            }
         }
 
        /// <summary>
