@@ -39,8 +39,8 @@ namespace Recellection
         public static Viewport viewPort;
         public static SpriteFont screenFont;
         public static Color breen = new Color(new Vector3(0.4f, 0.3f, 0.1f));
-        public static Effect bgShader;
         public static GraphicsDeviceManager graphics;
+        public static ContentManager contentMngr;
         public Thread LogicThread { get; set; }
 
         //FPS
@@ -81,6 +81,8 @@ namespace Recellection
             tobiiController.Init();
             graphics = new GraphicsDeviceManager(this);            
 			Content.RootDirectory = "Content";
+
+            contentMngr = Content;
         }
 
         /// <summary>
@@ -120,7 +122,6 @@ namespace Recellection
             screenFont = Content.Load<SpriteFont>("Fonts/ScreenFont");
             consoleFont = Content.Load<SpriteFont>("Fonts/ConsoleFont");
 			worldFont = Content.Load<SpriteFont>("Fonts/WorldFont");
-            bgShader = Content.Load<Effect>("Shader/backgroundShaders");
 
             audioPlayer = new AudioPlayer(Content);
             audioPlayer.PlaySong(Globals.Songs.Theme);
