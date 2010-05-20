@@ -29,6 +29,14 @@ namespace Recellection.Code.Models
 
         private Building building;
 		public bool active {get; set;}
+		
+		public Vector2 CenterPosition
+		{
+			get
+			{
+				return position + new Vector2(0.5f, 0.5f);
+			}
+		}
 
         // Events
         public event Publish<IEnumerable<Player>> visionChanged;
