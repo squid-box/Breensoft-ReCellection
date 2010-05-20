@@ -49,32 +49,46 @@ namespace Recellection.Code.Controllers
 
         public int GetUpgradeCost()
         {
-            if (owner.powerLevel >= 0.1f*MAX_POWER_LEVEL_LEVELS)
+            if (owner.PowerLevel >= 0.1f*MAX_POWER_LEVEL_LEVELS)
             {
                 return (int)0x0C00FEE;
             }
-            if (owner.powerLevel == 0.0f)
+            if (owner.PowerLevel == 0.0f)
             {
                 return FIRST_POWER_LEVEL_COST;
             }
-            float level = (owner.powerLevel * 10f);
+            float level = (owner.PowerLevel * 10f);
             double exp = 1f / Math.Pow((level), 1f / ((float)MAX_POWER_LEVEL_LEVELS - 1f));
             double bas = 1f / ((float)MAX_POWER_LEVEL_LEVELS - 1f);
             double result = Math.Pow(bas, exp);
             return (int)(POP_CAP_PER_PLAYER * result);
         }
 
-        public bool PayAndUpgrade(Building building)
+        public bool PayAndUpgradePower(Building building)
         {
-            if (building.units.Count < GetUpgradeCost() || owner.powerLevel >= 0.6f)
+			if (building.units.Count < GetUpgradeCost() || (owner.PowerLevel + owner.SpeedLevel) >= 0.6f)
             {
                 return false;
             }
             DestroyUnits(building.units, GetUpgradeCost());
-            owner.powerLevel += 0.1f;
+            owner.PowerLevel += 0.1f;
             return true;
 
         }
+
+		public bool PayAndUpgradeSpeed(Building building)
+		{
+			if (building.units.Count < GetUpgradeCost() || (owner.PowerLevel+owner.SpeedLevel) >= 0.6f)
+			{
+				return false;
+			}
+			DestroyUnits(building.units, GetUpgradeCost());
+			owner.SpeedLevel += 0.1f;
+			return true;
+		}
+
+		
+
         public void DestroyUnits(List<Unit> u, int n)
         {
             UnitController.MarkUnitsAsDead(u, n);
