@@ -223,9 +223,9 @@ namespace Recellection.Code.Views
                                 new Rectangle(bx, by, (int)Math.Round((float)spr.Width * size), (int)Math.Round((float)spr.Height * size)),
                                 b.owner.color);
 
-                            Vector2 xyhpr1 = new Vector2((float)((b.position.X -64 - World.LookingAt.X) * Globals.TILE_SIZE) +14, (float) Math.Round((b.position.Y - World.LookingAt.Y) * Globals.TILE_SIZE) +100);
-                            Vector2 xyhpr2 = new Vector2((float)((b.position.X -64 - World.LookingAt.X) * Globals.TILE_SIZE) + 114, (float)Math.Round((b.position.Y - World.LookingAt.Y) * Globals.TILE_SIZE) + 100);
-                            Vector2 xyhpg2 = new Vector2((float)((b.position.X -64 - World.LookingAt.X) * Globals.TILE_SIZE) + 14 + b.GetHealthPercentage(), (float)Math.Round((b.position.Y - World.LookingAt.Y) * Globals.TILE_SIZE) + 100);
+                            Vector2 xyhpr1 = new Vector2((float)((b.position.X - World.LookingAt.X) * Globals.TILE_SIZE) +14 -64, (float) Math.Round((b.position.Y - World.LookingAt.Y) * Globals.TILE_SIZE) +100);
+                            Vector2 xyhpr2 = new Vector2((float)((b.position.X - World.LookingAt.X) * Globals.TILE_SIZE) + 114-64, (float)Math.Round((b.position.Y - World.LookingAt.Y) * Globals.TILE_SIZE) + 100);
+                            Vector2 xyhpg2 = new Vector2((float)((b.position.X - World.LookingAt.X) * Globals.TILE_SIZE) + 14 + b.GetHealthPercentage() -64, (float)Math.Round((b.position.Y - World.LookingAt.Y) * Globals.TILE_SIZE) + 100-64);
                             Layer = 0.102f;
                             DrawLine(spriteBatch, xyhpr1, xyhpr2, Color.Red, 8);
                             Layer = 0.101f;
