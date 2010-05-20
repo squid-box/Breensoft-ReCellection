@@ -25,7 +25,7 @@ namespace Recellection.Code.Controllers
         public void init()
         {
             this.p = new Player();
-            this.bb = new BaseBuilding("FuckOff",0,0,p);
+			this.bb = new BaseBuilding("test", 0, 0, new Player(), new LinkedList<Tile>());
             this.g = new Graph(bb);
             this.ua = new UnitAccountant(p);
             this.p.AddGraph(g);

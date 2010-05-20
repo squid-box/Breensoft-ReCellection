@@ -15,28 +15,13 @@ namespace Recellection.Code.Models
     /// </summary>
     public class BarrierBuilding : Building
     {
-        private readonly float powerBonus = 0.3f;
+        private readonly float powerBonus = 0.1f;
 
         public float PowerBonus
         {
             get { return powerBonus; }
         }
         
-        /// <summary>
-        /// Constructs a new BarrierBuilding
-        /// </summary>
-        /// <param name="name"></param>
-        /// <param name="posX"></param>
-        /// <param name="posY"></param>
-        /// <param name="owner"></param>
-        /// <param name="baseBuilding"></param>
-        public BarrierBuilding(String name, int posX, int posY,
-            Player owner, BaseBuilding baseBuilding)
-            : base(name, posX, posY, BARRIER_BUILDING_HEALTH, owner, Globals.BuildingTypes.Barrier, baseBuilding)
-        {
-
-        }
-
         /// <summary>
         /// Constructs a new BarrierBuilding
         /// </summary>
@@ -54,6 +39,10 @@ namespace Recellection.Code.Models
             foreach(Tile t in controlZone)
             {
                 t.unitsChanged += BarrierBuilding_unitsChanged;
+                foreach(Unit u in t.GetUnits(owner))
+                {
+					u.Buff = powerBonus;
+                }
             }
 
         }
@@ -66,7 +55,7 @@ namespace Recellection.Code.Models
                 {
                     if (u.GetOwner() == this.owner)
                     {
-                        u.PowerLevel += powerBonus;
+                        u.Buff = powerBonus;
                     }
                 }
             }
@@ -76,7 +65,7 @@ namespace Recellection.Code.Models
                 {
                     if (u.GetOwner() == this.owner)
                     {
-                        u.PowerLevel -= powerBonus;
+                        u.Buff = 0f;
                     }
                 }
             }

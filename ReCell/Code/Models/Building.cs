@@ -21,11 +21,16 @@ namespace Recellection.Code.Models
     public abstract class Building : Entity, IModel
     {
         protected const int AGGRESSIVE_BUILDING_HEALTH = 40;
-        protected const int BARRIER_BUILDING_HEALTH = 50;
+        protected const int BARRIER_BUILDING_HEALTH = 30;
         protected const int BASE_BUILDING_HEALTH = 100;
         protected const int RESOURCE_BUILDING_HEALTH = 20;
 
-        // Simple values
+        protected const int AGGRESSIVE_BUILDING_COST = 5;
+        protected const int BARRIER_BUILDING_COST = 5;
+        protected const int BASE_BUILDING_COST = 20;
+        protected const int RESOURCE_BUILDING_COST = 15;
+
+        // Simple valuesa
         public string name { get; protected set; }
 
         public int currentHealth { get; protected set; }
@@ -37,8 +42,26 @@ namespace Recellection.Code.Models
         
         public Globals.BuildingTypes type { get; protected set; }
         public BaseBuilding baseBuilding { get; protected set; }
+        private Building parent = null;
+        public Building Parent
+        {
+			get
+			{
+				while (parent != null && ! parent.IsAlive())
+				{
+					parent = parent.Parent;
+				}
+				return parent;
+			}
+			set
+			{
+				parent = value;
+			}
+		}
         public LinkedList<Tile> controlZone { get; protected set; }
 
+		public bool IsAggressive { get; set; }
+		
         private static Logger logger = LoggerFactory.GetLogger();
 
         //Events
@@ -49,48 +72,9 @@ namespace Recellection.Code.Models
         /// Creates an unusable fromBuilding with everything set at default values.
         /// </summary>
         public Building():this("noName",-1,-1,1,null, 
-            Globals.BuildingTypes.NoType, null)
+            Globals.BuildingTypes.NoType, null, new LinkedList<Tile>())
         {
             logger.Trace("Constructing new Building with default values");   
-        }
-
-        /// <summary>
-        /// Creates a fromBuilding with specified parameters, the unit list will
-        /// be initiated but empty and the current health will be set at maxHealth.
-        /// </summary>
-        /// <param name="name">The name for the fromBuilding TODO Decide if this is
-        /// needded</param>
-        /// <param name="posX">The x tile coordinate</param>
-        /// <param name="posY">The y tile coordinate</param>
-        /// <param name="maxHealth">The max health of this fromBuilding</param>
-        /// <param name="owner">The player that owns the fromBuilding</param>
-        /// <param name="type">The type of the fromBuilding</param>
-        /// <param name="baseBuilding">The Base Building this fromBuilding belongs
-        /// to</param>
-        public Building(String name, int posX, int posY, int maxHealth,
-            Player owner, Globals.BuildingTypes type, BaseBuilding baseBuilding) : base(new Vector2(((float)posX)+0.5f, ((float)posY)+0.5f), owner)
-        {
-            if (maxHealth <= 0)
-            {
-                throw new ArgumentOutOfRangeException("maxHealth", 
-                    "The max of health may not be zero or less");
-
-            }
-
-            logger.Trace("Constructing new Building with choosen values");
-            this.name = name;
-            this.maxHealth = maxHealth;
-            this.currentHealth = maxHealth;
-
-            this.units = new List<Unit>();
-            this.incomingUnits = new List<Unit>();
-            this.type = type;
-
-            this.baseBuilding = baseBuilding;
-            if (baseBuilding != null)
-            {
-                Accept(baseBuilding);
-            }
         }
 
         /// <summary>
@@ -129,6 +113,7 @@ namespace Recellection.Code.Models
 			this.units = new List<Unit>();
 			this.incomingUnits = new List<Unit>();
             this.type = type;
+            this.IsAggressive = true;
 
             this.baseBuilding = baseBuilding;
 
@@ -137,7 +122,26 @@ namespace Recellection.Code.Models
                 Accept(baseBuilding);
             }
 
-            this.controlZone = controlZone;
+			this.controlZone = controlZone;
+			
+			foreach (Tile t in controlZone)
+			{
+				t.unitsChanged += UpdateAggressiveness;
+			}
+        }
+
+		public void UpdateAggressiveness(object publisher, Event<IEnumerable<Unit>> ev)
+        {
+            if (ev.type == EventType.ADD)
+            {
+				foreach(Unit u in ev.subject)
+				{
+					if (u.BaseEntity == this)
+					{
+						u.IsAggressive = this.IsAggressive;
+					}
+				}
+            }
         }
 
        /// <summary>
@@ -228,23 +232,6 @@ namespace Recellection.Code.Models
         }
 
         /// <summary>
-        /// Removes one unit from the Unit list
-        /// </summary>
-        /// <param name="unit">The Unit to remove</param>
-        public void RemoveUnit(Unit unit)
-        {
-            this.units.Remove(unit);
-            if (unitsChanged != null)
-            {
-                //I'm sorry for this ugly hax - John
-                List<Unit> temp = new List<Unit>();
-                temp.Add(unit);
-                unitsChanged(this, new BuildingEvent(this, temp,
-                        EventType.REMOVE));
-            }
-        }
-
-        /// <summary>
         /// Add a collection of units to the unit List
         /// </summary>
         /// <param name="units">The collection of units to add</param>
@@ -261,7 +248,24 @@ namespace Recellection.Code.Models
                         EventType.ADD));
                 }
             }
-        }
+		}
+
+		/// <summary>
+		/// Removes one unit from the Unit list
+		/// </summary>
+		/// <param name="unit">The Unit to remove</param>
+		public void RemoveUnit(Unit unit)
+		{
+			this.units.Remove(unit);
+			if (unitsChanged != null)
+			{
+				//I'm sorry for this ugly hax - John
+				List<Unit> temp = new List<Unit>();
+				temp.Add(unit);
+				unitsChanged(this, new BuildingEvent(this, temp,
+						EventType.REMOVE));
+			}
+		}
 
         /// <summary>
         /// Removes a collection of units from the unit List,
@@ -359,13 +363,13 @@ namespace Recellection.Code.Models
             switch (type)
             {
                 case Globals.BuildingTypes.Base:
-                    return BASE_BUILDING_HEALTH / 5;
+                    return BASE_BUILDING_COST;
                 case Globals.BuildingTypes.Aggressive:
-                    return AGGRESSIVE_BUILDING_HEALTH / 5;
+                    return AGGRESSIVE_BUILDING_COST;
                 case Globals.BuildingTypes.Barrier:
-                    return BARRIER_BUILDING_HEALTH / 5;
+                    return BARRIER_BUILDING_COST;
                 case Globals.BuildingTypes.Resource:
-                    return RESOURCE_BUILDING_HEALTH / 5;
+                    return RESOURCE_BUILDING_COST;
 
             }
             return 0;

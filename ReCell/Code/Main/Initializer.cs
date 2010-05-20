@@ -27,7 +27,7 @@ namespace Recellection.Code.Main
 		public void Run()
 		{
 			logger.Debug("Initializer is running.");
-
+			
 			#region Build main menu
 			MenuIcon newgame = new MenuIcon("New game", null, Color.Black);
 			MenuIcon options = new MenuIcon("Options", null, Color.Black);
@@ -52,29 +52,29 @@ namespace Recellection.Code.Main
             
 			Cue backgroundSound = Sounds.Instance.LoadSound("Menu");
 			backgroundSound.Play();
-			Recellection.CurrentState = view;
 			
             while(true)
-            {
+			{
+				backgroundSound.Resume();
+				Recellection.CurrentState = view;
 				logger.Info("Waiting for Tobii input...");
 				MenuIcon response = MenuController.GetInput();
 	            
 				logger.Info("Got input!");
-				backgroundSound.Pause();
 
 				if (response == newgame)
 				{	
 					// START THE GAME ALREADY!
 					GameInitializer gameInit = new GameInitializer();
-					Recellection.CurrentState = new WorldView(gameInit.theWorld);
+					backgroundSound.Pause();
+					WorldView.Initiate(gameInit.theWorld);
+					Recellection.CurrentState = WorldView.Instance;// new WorldView(gameInit.theWorld);
 					VictorTurner vt = new VictorTurner(gameInit);
 					vt.Run();
-                    Recellection.playBeethoven();
-                    Environment.Exit(0);
 				}
 				else if (response == quit)
 				{
-					List<MenuIcon> promptOptions = new List<MenuIcon>();
+					List<MenuIcon> promptOptions = new List<MenuIcon>(2);
 					MenuIcon yes = new MenuIcon(Language.Instance.GetString("Yes"), Recellection.textureMap.GetTexture(Globals.TextureTypes.Yes));
 					MenuIcon no = new MenuIcon(Language.Instance.GetString("No"), Recellection.textureMap.GetTexture(Globals.TextureTypes.No));
 					promptOptions.Add(yes);
@@ -84,7 +84,6 @@ namespace Recellection.Code.Main
 					
 					if (MenuController.GetInput() == yes)
 					{
-						Recellection.playBeethoven();
 						Environment.Exit(0);
 					}
 					
@@ -94,10 +93,18 @@ namespace Recellection.Code.Main
 				{
 					Configurator.Instance.ChangeOptions();
 				}
-				else
-				{
-					Recellection.playBeethoven();
-				}
+                else if (response == help)
+                {
+                    MenuController.LoadMenu(HelpMenuFactory.GetHelpMenu(HelpMenuFactory.MenuType.Generic));
+                }
+                else if (response == HelpMenuFactory.GetHelpMenu(HelpMenuFactory.MenuType.Generic).GetIcons()[7])
+                {
+                    MenuController.UnloadMenu();
+                }
+                else
+                {
+                    Recellection.playBeethoven();
+                }
 			}
 		}
 

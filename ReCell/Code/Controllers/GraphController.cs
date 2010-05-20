@@ -68,20 +68,18 @@ namespace Recellection.Code.Controllers
 		public void RemoveBuilding(Building building)
 		{
 			logger.Info("Removed building "+building+".");
-            Graph temp = GetGraph(building);
+            Graph graph = GetGraph(building);
             if (building is BaseBuilding)
             {
-                temp.baseBuilding = null;
+                graph.baseBuilding = null;
             }
             
-            
-			GetGraph(building).Remove(building);
+			graph.Remove(building);
 
-            
-            if (temp.CountBuildings() == 0)
+            if (graph.CountBuildings() == 0)
             {
-                building.owner.GetGraphs().Remove(temp);
-                components.Remove(temp);
+                building.owner.GetGraphs().Remove(graph);
+                components.Remove(graph);
             }
 		}
 		
@@ -199,9 +197,15 @@ namespace Recellection.Code.Controllers
 		/// </summary>
 		public void CalculateWeights()
 		{
-			logger.Info("Calculating weights for all graphs.");
+			logger.Info("\nCalculating weights for all graphs.");
 			foreach(Graph g in components)
 			{
+				if (g.TotalWeight == 0)
+				{
+					logger.Info("Ignoring graph, since there are no weights.");
+					continue;
+				}
+				
 				logger.Debug("Calculating weights for graph "+g+".");
 				int totalUnits = SumUnitsInGraph(g);
 
@@ -213,7 +217,7 @@ namespace Recellection.Code.Controllers
 				{
 					float factor = (float)g.GetWeight(b) / (float)g.TotalWeight;
 					int unitGoal = (int)(((float)totalUnits) * factor);
-					int unitBalance = b.CountTotalUnits() - unitGoal;
+					int unitBalance = b.CountUnits() - unitGoal;
 
 					logger.Trace("Unit goal for " + b + " ((" + g.GetWeight(b) + " / " + g.TotalWeight + ") * " + totalUnits + ") is " + unitGoal + " which has " + b.CountTotalUnits() + " ("+b.CountUnits()+" here) units. Balance = " + unitBalance + ".");
 					if (unitBalance > 0)
@@ -253,8 +257,8 @@ namespace Recellection.Code.Controllers
 
 				// Try to even out the unit count in every fromBuilding
 				logger.Debug("Trying to even out the unit count in every building.");
-				bool balancingIsPossible = inNeed.Count > 0 && withExcess.Count > 0;
-				while (balancingIsPossible)
+				
+				while (inNeed.Count > 0 && withExcess.Count > 0)
 				{
 					BuildingBalance want = inNeed.Peek();
 					BuildingBalance has = withExcess.Peek();
@@ -278,9 +282,6 @@ namespace Recellection.Code.Controllers
 						logger.Trace("Wanting building "+want.building + " is now satisfied. Removing from balancing.");
 						inNeed.Dequeue();
 					}
-					
-					
-					balancingIsPossible = (inNeed.Count > 0 && withExcess.Count > 0);
 				}
 				logger.Trace("Done calculating weights for graph "+g+".");
 			}
@@ -320,7 +321,7 @@ namespace Recellection.Code.Controllers
 		/// <param name="to">Destination for the units.</param>
 		private void MoveUnits(int numberOfUnits, Building from, Building to)
 		{
-			UnitController.MoveUnits(numberOfUnits, from.controlZone.First.Value, to.controlZone.First.Value);
+			UnitController.MoveUnits(from.owner, from.controlZone.First.Value, to.controlZone.First.Value, numberOfUnits);
 		}
 	}
 

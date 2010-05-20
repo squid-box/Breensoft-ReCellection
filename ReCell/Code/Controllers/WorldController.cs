@@ -9,6 +9,7 @@ using Microsoft.Xna.Framework;
 using Recellection.Code.Utility.Logger;
 using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Input;
+using Recellection.Code.Utility.Events;
 
 namespace Recellection.Code.Controllers
 {
@@ -40,7 +41,7 @@ namespace Recellection.Code.Controllers
 		private Player playerInControll;
 
         private World theWorld;
-
+        TobiiController tobii = TobiiController.GetInstance(Recellection.windowHandle);
         private MenuIcon[,] menuMatrix;
         private List<MenuIcon> scrollZone;
 		
@@ -58,7 +59,11 @@ namespace Recellection.Code.Controllers
             this.theWorld = theWorld;
 
             createGUIRegionGridAndScrollZone();
-            
+        }
+        
+        public void Stop()
+        {
+			MenuController.UnloadMenu();
         }
 
         public void Run()
@@ -86,7 +91,7 @@ namespace Recellection.Code.Controllers
 
 				if (sel.point.X == 1 && sel.point.Y == 1)
 				{
-					finished = true;
+					GameMenu();
 				}
 				if (sel.point.X == 2 && sel.point.Y == 1)
 				{
@@ -101,6 +106,69 @@ namespace Recellection.Code.Controllers
 				}
             }
         }
+
+		private void GameMenu()
+		{
+			MenuIcon endTurn = new MenuIcon(Language.Instance.GetString("EndTurn"));
+			MenuIcon endGame = new MenuIcon(Language.Instance.GetString("EndGame"));
+			MenuIcon cancel = new MenuIcon(Language.Instance.GetString("Cancel"), Recellection.textureMap.GetTexture(Globals.TextureTypes.No));
+			
+			List<MenuIcon> options = new List<MenuIcon>(4);
+			options.Add(endTurn);
+			options.Add(endGame);
+			options.Add(cancel);
+			
+			Menu menu = new Menu(Globals.MenuLayout.FourMatrix, options, "");
+			MenuController.LoadMenu(menu);
+			
+			bool done = false;
+			while(! done)
+			{
+				Recellection.CurrentState = MenuView.Instance;
+				MenuIcon input = MenuController.GetInput();
+				if (input == endTurn)
+				{
+					finished = true;
+					break;
+				}
+				else if (input == endGame)
+				{
+					List<MenuIcon> promptOptions = new List<MenuIcon>(2);
+					MenuIcon yes = new MenuIcon(Language.Instance.GetString("Yes"), Recellection.textureMap.GetTexture(Globals.TextureTypes.Yes));
+					MenuIcon no = new MenuIcon(Language.Instance.GetString("No"), Recellection.textureMap.GetTexture(Globals.TextureTypes.No));
+					promptOptions.Add(yes);
+					promptOptions.Add(no);
+					MenuController.LoadMenu(new Menu(Globals.MenuLayout.Prompt, promptOptions, Language.Instance.GetString("AreYouSureYouWantToEndTheGame")));
+					MenuIcon inp = MenuController.GetInput();
+					MenuController.UnloadMenu();
+					
+					if (inp == yes)
+					{
+						// This should make the player lose :D
+						List<Building> buildingsToRemove = new List<Building>();
+						foreach(Graph g in playerInControll.GetGraphs())
+						{
+							foreach(Building b in g.GetBuildings())
+							{
+								buildingsToRemove.Add(b);
+							}
+						}
+						foreach(Building b in buildingsToRemove)
+						{
+							BuildingController.RemoveBuilding(b);
+						}
+						finished = true;
+						break;
+					}
+				}
+				else if (input == cancel)
+				{
+					break;
+				}
+			}
+			Recellection.CurrentState = WorldView.Instance;
+			MenuController.UnloadMenu();
+		}
 
 		public Selection retrieveSelection()
 		{
@@ -129,17 +197,20 @@ namespace Recellection.Code.Controllers
 				if (theWorld.GetMap().GetTile(new Point(x + theWorld.LookingAt.X, y + theWorld.LookingAt.Y))
 						.GetBuilding() != null)
 				{
+                    tobii.SetFeedbackColor(Color.Blue);
 					s.state = State.BUILDING;
 					s.point = new Point(x, y);
                     s.absPoint = absoluteCordinate;
 				}
 				else
 				{
+                    tobii.SetFeedbackColor(Color.White);
 					s.state = State.TILE;
 					s.point = new Point(x, y);
                     s.absPoint = absoluteCordinate;
 				}
             }
+			// If we selected a scroll zone?
             else if (activatedMenuIcon.labelColor.Equals(Color.Chocolate))
             {
 				theWorld.LookingAt = new Point(theWorld.LookingAt.X + x, theWorld.LookingAt.Y + y);
@@ -172,9 +243,10 @@ namespace Recellection.Code.Controllers
             MenuIcon setWeight = new MenuIcon(Language.Instance.GetString("SetWeight"));
             MenuIcon buildCell = new MenuIcon(Language.Instance.GetString("BuildCell"));
             MenuIcon removeCell = new MenuIcon(Language.Instance.GetString("RemoveCell"));
-			MenuIcon upgradeUnits = new MenuIcon(Language.Instance.GetString("UpgradeUnits") + " (" + playerInControll.unitAcc.getUpgradeCost() + ")");
+			MenuIcon upgradeUnits = new MenuIcon(Language.Instance.GetString("UpgradeUnits") + " (" + playerInControll.unitAcc.GetUpgradeCost() + ")");
             MenuIcon moveUnits = new MenuIcon(Language.Instance.GetString("MoveUnits"));
             MenuIcon repairCell = new MenuIcon(Language.Instance.GetString("RepairCell") + " (" + toHeal + ")");
+            MenuIcon setAggro = new MenuIcon(Language.Instance.GetString("SetAggro"));
             MenuIcon Cancel = new MenuIcon(Language.Instance.GetString("Cancel"), Recellection.textureMap.GetTexture(Globals.TextureTypes.No));
             
             List<MenuIcon> menuIcons = new List<MenuIcon>();
@@ -184,6 +256,7 @@ namespace Recellection.Code.Controllers
             menuIcons.Add(upgradeUnits);
             menuIcons.Add(moveUnits);
             menuIcons.Add(repairCell);
+            menuIcons.Add(setAggro);
             menuIcons.Add(Cancel);
 
             Menu buildingMenu = new Menu(Globals.MenuLayout.NineMatrix, menuIcons, Language.Instance.GetString("BuildingMenu"), Color.Black);
@@ -199,10 +272,12 @@ namespace Recellection.Code.Controllers
             }
             else if (choosenMenu.Equals(buildCell))
             {
+                tobii.SetFeedbackColor(Color.DarkGreen);
                 Selection destsel = retrieveSelection();
                 if (destsel.state != State.TILE)
 				{
-					Sounds.Instance.LoadSound("Denied");
+					SoundsController.playSound("Denied");
+                    tobii.SetFeedbackColor(Color.White);
 					return;
 				}
                 Tile selectedTile = map.GetTile(destsel.absPoint);
@@ -213,6 +288,7 @@ namespace Recellection.Code.Controllers
                     try
                     {
                         BuildingController.ConstructBuilding(playerInControll, selectedTile, building, theWorld);
+                        tobii.SetFeedbackColor(Color.White);
                     }
                     catch (BuildingController.BuildingOutOfRangeException bore)
                     {
@@ -221,7 +297,8 @@ namespace Recellection.Code.Controllers
 				}
 				else
 				{
-					Sounds.Instance.LoadSound("Denied");
+                    SoundsController.playSound("Denied");
+                    tobii.SetFeedbackColor(Color.White);
 					return;
 				}
             }
@@ -233,20 +310,29 @@ namespace Recellection.Code.Controllers
             {
                 if (!playerInControll.unitAcc.PayAndUpgrade(building))
                 {
-                    Sounds.Instance.LoadSound("Denied");
+                    SoundsController.playSound("Denied");
                 }
             }
             else if (choosenMenu.Equals(moveUnits))
             {
+                tobii.SetFeedbackColor(Color.Red);
+                
                 Selection destsel = retrieveSelection();
                 Tile selectedTile = map.GetTile(destsel.absPoint);
-                UnitController.MoveUnits(building.GetUnits().Count, seltile, selectedTile);
+                UnitController.MoveUnits(playerInControll, seltile, selectedTile, building.GetUnits().Count);
+                
+                tobii.SetFeedbackColor(Color.White);
 
             }
             else if (choosenMenu.Equals(repairCell))
             {
                 playerInControll.unitAcc.DestroyUnits(building.units, toHeal);
                 building.Repair(toHeal);
+            }
+            else if (choosenMenu.Equals(setAggro))
+            {
+				building.IsAggressive = !building.IsAggressive;
+				building.UpdateAggressiveness(null, new Event<IEnumerable<Unit>>(building.GetUnits(), EventType.ADD));
             }
             else if (choosenMenu.Equals(Cancel))
             {
@@ -264,10 +350,14 @@ namespace Recellection.Code.Controllers
 		private void TileMenu(Selection previousSelection)
 		{
 			MenuIcon moveUnits = new MenuIcon(Language.Instance.GetString("MoveUnits"), null, Color.Black);
-			MenuIcon cancel = new MenuIcon(Language.Instance.GetString("Cancel"), null, Color.Black);
+			MenuIcon cancel = new MenuIcon(Language.Instance.GetString("Cancel"), Recellection.textureMap.GetTexture(Globals.TextureTypes.No), Color.Black);
 			
 			List<MenuIcon> menuIcons = new List<MenuIcon>();
-			menuIcons.Add(moveUnits);
+			if (theWorld.GetMap().GetTile(previousSelection.absPoint).GetUnits(playerInControll).Count > 0)
+			{
+				// Only show this options if there are units.
+				menuIcons.Add(moveUnits);
+			}
 			menuIcons.Add(cancel);
 
 			Menu buildingMenu = new Menu(Globals.MenuLayout.FourMatrix, menuIcons, Language.Instance.GetString("TileMenu"), Color.Black);
@@ -280,7 +370,7 @@ namespace Recellection.Code.Controllers
 			if (choosenMenu == moveUnits)
 			{
 				Selection currSel = retrieveSelection();
-				if (currSel.state != State.TILE)
+				if (! (currSel.state == State.TILE || currSel.state == State.BUILDING))
 				{
 					return;
 				}
@@ -288,7 +378,7 @@ namespace Recellection.Code.Controllers
 				Tile from = theWorld.GetMap().GetTile(previousSelection.absPoint);
 				Tile to = theWorld.GetMap().GetTile(currSel.absPoint);
 
-				UnitController.MoveUnits(from.GetUnits().Count, from, to);
+				UnitController.MoveUnits(playerInControll, from, to, from.GetUnits().Count);
 			}
 		}
 
@@ -405,6 +495,7 @@ namespace Recellection.Code.Controllers
             }
 
             MenuController.LoadMenu(new Menu(allMenuIcons));
+            MenuController.DisableMenuInput();
         }
     }
 }

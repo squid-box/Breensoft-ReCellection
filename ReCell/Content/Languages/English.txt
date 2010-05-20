@@ -18,6 +18,7 @@ RemoveCell=Remove this cell.
 UpgradeUnits=Upgrade all units.
 BuildingMenu=Choose what you want to do with the cell.
 RepairCell=Repair cell.
+SetAggro=Toggle Aggressiveness.
 
 OptionsMenu1=OTest1
 OptionsMenu2=OTest2
@@ -53,6 +54,11 @@ Yes=Yes
 No=No
 AreYouSureYouWantToQuit=Are you sure you want to quit?
 
+[Game menu]
+EndTurn=End Turn
+EndGame=End Game
+AreYouSureYouWantToEndTheGame=Are you sure you want to end the game?
+
 [Tile options]
 TileMenu=What do you want to do with the tile?
 Cancel=Cancel
@@ -66,3 +72,8 @@ BaseCell=Base Cell
 DefensiveCell=Defensive Cell
 AggressiveCell=Aggressive Cell
 ResourceCell=Resurce Cell
+
+[End game]
+hasWon=Congratulations!\n\nYou won the game.
+hasLost=You lost.\n\nBetter luck next time!
+isDraw=The game has ended.\nDid you win or lose?\n\n... I do not know.

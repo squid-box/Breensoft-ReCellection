@@ -48,6 +48,7 @@ namespace Recellection.Code.Models
 
         #endregion
 
+        public Globals.Difficulty difficulty { get; set; }
         public float musicVolume { get; set; }
         public bool musicMuted { get; set; }
 

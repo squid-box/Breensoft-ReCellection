@@ -15,6 +15,8 @@ namespace Recellection.Code.Models
     public class ResourceBuilding : Building
     {
         private int rateOfProduction;
+        
+        private const int DEFAULT_PRODUCTION = 1;
 
         public int RateOfProduction
         {
@@ -32,26 +34,10 @@ namespace Recellection.Code.Models
         /// <param name="owner"></param>
         /// <param name="baseBuilding"></param>
         public ResourceBuilding(String name, int posX, int posY,
-            Player owner, BaseBuilding baseBuilding)
-            : base(name, posX, posY, RESOURCE_BUILDING_HEALTH, owner, Globals.BuildingTypes.Resource, baseBuilding)
-        {
-
-        }
-
-        /// <summary>
-        /// Constructs a new ResourceBuilding
-        /// </summary>
-        /// <param name="name"></param>
-        /// <param name="posX"></param>
-        /// <param name="posY"></param>
-        /// <param name="maxHealth"></param>
-        /// <param name="owner"></param>
-        /// <param name="baseBuilding"></param>
-        public ResourceBuilding(String name, int posX, int posY,
             Player owner, BaseBuilding baseBuilding, LinkedList<Tile> controlZone)
             : base(name, posX, posY, RESOURCE_BUILDING_HEALTH, owner, Globals.BuildingTypes.Resource, baseBuilding,controlZone)
         {
-            this.rateOfProduction = controlZone.First().GetTerrainType().getResourceModifier();
+            this.rateOfProduction = controlZone.First().GetTerrainType().getResourceModifier() + DEFAULT_PRODUCTION;
             baseBuilding.RateOfProduction += this.rateOfProduction;
         }
 

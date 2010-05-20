@@ -39,8 +39,8 @@ namespace Recellection
         public static Viewport viewPort;
         public static SpriteFont screenFont;
         public static Color breen = new Color(new Vector3(0.4f, 0.3f, 0.1f));
-        public static Effect bgShader;
         public static GraphicsDeviceManager graphics;
+        public static ContentManager contentMngr;
         public Thread LogicThread { get; set; }
 
         //FPS
@@ -49,6 +49,7 @@ namespace Recellection
         TimeSpan elapsedTime;
         
         TobiiController tobiiController;
+        public static KeyboardState publicKeyBoardState;
         SpriteBatch spriteBatch;
 
 		public static SpriteFont worldFont;
@@ -72,6 +73,7 @@ namespace Recellection
         //Debug Input 
         KeyboardState lastKBState, kBState;
         MouseState lastMouseState, mouseState;
+       
 
         public Recellection()
         {
@@ -79,6 +81,8 @@ namespace Recellection
             tobiiController.Init();
             graphics = new GraphicsDeviceManager(this);            
 			Content.RootDirectory = "Content";
+
+            contentMngr = Content;
         }
 
         /// <summary>
@@ -118,7 +122,6 @@ namespace Recellection
             screenFont = Content.Load<SpriteFont>("Fonts/ScreenFont");
             consoleFont = Content.Load<SpriteFont>("Fonts/ConsoleFont");
 			worldFont = Content.Load<SpriteFont>("Fonts/WorldFont");
-            bgShader = Content.Load<Effect>("Shader/backgroundShaders");
 
             audioPlayer = new AudioPlayer(Content);
             audioPlayer.PlaySong(Globals.Songs.Theme);
@@ -177,7 +180,8 @@ namespace Recellection
 
             lastKBState = kBState;
             lastMouseState = mouseState;
-            kBState = Keyboard.GetState();
+            publicKeyBoardState = Keyboard.GetState();
+            kBState = publicKeyBoardState;
             mouseState = Mouse.GetState();
 
             #endregion
@@ -240,6 +244,38 @@ namespace Recellection
 
             base.Draw(gameTime);
         }
+
+		public void ToggleLogger(String s)
+		{
+			if (LoggerFactory.HasLogger(s))
+			{
+				LoggerFactory.GetLogger(s).Active = !LoggerFactory.GetLogger(s).Active;
+			}
+			else
+			{
+				console.Console.WriteLine("Logger does not exist");
+			}
+
+		}
+
+		public void ListLoggers()
+		{
+			console.Console.WriteLine(LoggerFactory.ListLoggers());
+		}
+
+		public void SetLoggers(int i)
+		{
+			bool active = false;
+			if (i != 0)
+				active = false;
+			LoggerFactory.SetAll(active);
+		}
+
+		public void LogAI()
+		{
+			ToggleLogger("Recellection.Code.Controllers.AIPlayer");
+			ToggleLogger("Recellection.Code.AIView");
+		}
 
         public void Help()
         {

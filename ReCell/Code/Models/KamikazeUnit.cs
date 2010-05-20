@@ -13,36 +13,38 @@ namespace Recellection.Code.Models
         public KamikazeUnit(Player owner, Vector2 position, Entity target)
             : base(owner, position, target)
         {
-            base.TargetEntity = target;
+            base.MissionEntity = target;
         }
 
         override protected bool stopMovingIfGoalIsReached()
         {
 
-            // If we are reasonably close to target.
-			float dx = this.position.X - this.targetPosition.X;
-			float dy = this.position.Y - this.targetPosition.Y;
-			double distance = Math.Sqrt(dx*dx + dy*dy);
+			// If we are reasonably close to baseEntity.
+			float distance = float.MaxValue;
+			Vector2 here = position;
+			Vector2 there = targetPosition;
+
+			Vector2.Distance(ref here, ref there, out distance);
 
             if (distance == 0)
             {
-                if (TargetEntity != null)
+                if (MissionEntity != null)
                 {
                     // If this is an enemy! KILL IT! OMG
-                    if (TargetEntity.owner != this.owner)
+                    if (MissionEntity.owner != this.owner)
                     {
-                        if (TargetEntity is Unit && !((Unit)TargetEntity).isDead)
+                        if (MissionEntity is Unit && !((Unit)MissionEntity).isDead)
 						{
 							this.Kill();
-							((Unit)TargetEntity).Kill();
+							((Unit)MissionEntity).Kill();
                             SoundsController.playSound("Celldeath", this.position);
                         }
                     }
 
-                    TargetEntity = null;
+                    MissionEntity = null;
                 }
             }
-            if(TargetEntity == null || TargetEntity is Unit && ((Unit)TargetEntity).isDead)
+            if(MissionEntity == null || MissionEntity is Unit && ((Unit)MissionEntity).isDead)
 			{
 				this.Kill();
                 SoundsController.playSound("Celldeath", this.position);

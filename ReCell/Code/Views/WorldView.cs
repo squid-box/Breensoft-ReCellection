@@ -29,52 +29,58 @@ namespace Recellection.Code.Views
         private RenderTarget2D backgroundTarget;
 
         private bool doRenderThisPass = true;
-        public static bool doLights = false;
+        public static bool doLights = true;
         public static bool doGrain = true;
-        public static bool doRipples = false;
-        
-        private Effect bgShaders;
-		private Texture2D activeTile;
-        private float calmRippleLowerBound = 1.5f;
-        private float calmRippleWaveDivider;
-        private float calmRippleMovementRate = 0.01f;
-        private float calmRippleDistortion = 0.5f;
-        private float crawler = 0;
+
+        private Texture2D activeTile;
         private LightParticleSystem lps;
-		private Tile active;
+        private GrainSystem gs;
+        private Tile active;
+        private Color[,] cMatrix;
 
 		private static int maxCols = (int)((float)Recellection.viewPort.Width / (float)Globals.TILE_SIZE);
 		private static int maxRows = (int)((float)Recellection.viewPort.Height / (float)Globals.TILE_SIZE);
 		
         public World World { get; private set; }
 
-		public static WorldView Instance { get; set; }
+		public static WorldView Instance { get;	set; }
 
-        public WorldView(World world)
+		public static void Initiate(World world)
+		{
+			if (Instance == null)
+			{
+				Instance = new WorldView();
+			}
+			Instance.World = world;
+			world.lookingAtEvent += Instance.UpdateBg;
+			world.lookingAtEvent += Instance.CreateCurrentView;
+			Instance.CreateCurrentView(Instance, new Event<Point>(world.LookingAt, EventType.ALTER));
+			Instance.alignViewport();
+
+
+            //Color c1 = new Color(0xb2, 0xc9, 0x9f);
+            //Color c2 = new Color(0x9f, 0xc4, 0xc9);
+            Color c1 = Color.HotPink;//new Color(0xac, 0x33, 0x2d);
+            Color c2 = Color.Crimson;//new Color(0xea, 0xe4, 0x7c);
+            Instance.cMatrix = Instance.generateColorMatrix(c1, c2);
+		}
+
+        private WorldView()
         {
             backgroundTex = Recellection.textureMap.GetTexture(Globals.TextureTypes.white);
             backgroundTarget = new RenderTarget2D(Recellection.graphics.GraphicsDevice, Recellection.viewPort.Width, Recellection.viewPort.Height, 1, Recellection.graphics.GraphicsDevice.DisplayMode.Format);
             lps = new LightParticleSystem(0.05f, Recellection.textureMap.GetTexture(Globals.TextureTypes.Light));
+            gs = new GrainSystem(0.01f, 0.2f, 0.3f, Recellection.contentMngr);
 
-            this.bgShaders = Recellection.bgShader;
-
-            world.lookingAtEvent += UpdateBg;
-
-            this.World = world;
             myLogger = LoggerFactory.GetLogger();
             //myLogger.SetTarget(LoggerSetup.GetLogFileTarget("WorldView.log"));
             myLogger.SetThreshold(LogLevel.FATAL);
             myLogger.Info("Created a WorldView.");
 
-            //To make sure the lookingAt in world would make the world view draw tiles that does not exists align it.
-            alignViewport();
-
             tileCollection = new List<Tile>();
 
-            this.World.lookingAtEvent += CreateCurrentView;
-
             //this.World.LookingAt = new Vector2(0, 0);
-            CreateCurrentView(this, new Event<Point>(this.World.LookingAt,EventType.ALTER));
+            
 
 			Instance = this;
         }
@@ -161,13 +167,14 @@ namespace Recellection.Code.Views
 
 			//Texture2D back = Recellection.textureMap.GetTexture(Globals.TextureTypes.white);
 			Layer = 1.0f;
-			drawTexture(spriteBatch, backgroundTex, new Rectangle(0, 0, Recellection.viewPort.Width, Recellection.viewPort.Height));
+			DrawTexture(spriteBatch, backgroundTex, new Rectangle(0, 0, Recellection.viewPort.Width, Recellection.viewPort.Height));
             #endregion
 			
             lock (tileCollection)
 			{
 				Layer = 0.75f;
 				// Go through each players graphs and draw lines between buildings.
+				Vector2 lookAt = new Vector2(World.LookingAt.X, World.LookingAt.Y);
 				foreach (Player p in World.players)
 				{
 					List<Graph> graphs = p.GetGraphs();
@@ -182,14 +189,18 @@ namespace Recellection.Code.Views
 								// Graph is broken :(
 								continue;
 							}
-							
+
 							foreach(Building b in g.GetBuildings())
 							{
 								if (b == bb)
 									continue;
-								Vector2 lookAt = new Vector2(World.LookingAt.X, World.LookingAt.Y);
+
+								Vector2 drawFrom = bb.position;
+								if (b.Parent != null)
+									drawFrom = b.Parent.position;
+								
 								myLogger.Info("Drawing line between "+bb+" and "+b+".");
-								DrawLine(spriteBatch, TileToPixels(bb.position-lookAt), TileToPixels(b.position-lookAt), 
+								DrawLine(spriteBatch, TileToPixels(drawFrom-lookAt), TileToPixels(b.position-lookAt), 
 											new Color(b.owner.color, 80), 10);
 							}
 						}
@@ -202,37 +213,41 @@ namespace Recellection.Code.Views
                     Building b = t.GetBuilding();
                     if (b != null)
                     {
-                        myLogger.Info("Found a building on the tile.");
-						this.Layer = 0.1f;
-						Texture2D spr = b.GetSprite();
-						int bx = (int)Math.Round((b.position.X - World.LookingAt.X) * Globals.TILE_SIZE) - spr.Width/2;
-						int by = (int)Math.Round((b.position.Y - World.LookingAt.Y) * Globals.TILE_SIZE) - spr.Height/2;
-						this.drawTexture(spriteBatch, spr,
-							new Rectangle(bx, by, spr.Width, spr.Height),
-                            b.owner.color);
+                        lock (b)
+                        {
+                            myLogger.Info("Found a building on the tile.");
+                            this.Layer = 0.1f;
+                            Texture2D spr = b.GetSprite();
+                            int bx = (int)Math.Round((b.position.X - World.LookingAt.X) * Globals.TILE_SIZE) - spr.Width / 2;
+                            int by = (int)Math.Round((b.position.Y - World.LookingAt.Y) * Globals.TILE_SIZE) - spr.Height / 2;
+                            this.DrawTexture(spriteBatch, spr,
+                                new Rectangle(bx, by, spr.Width, spr.Height),
+                                b.owner.color);
 
-                        //Number of units drawage
-                        int x = (int)(t.position.X - (World.LookingAt.X));
-                        int y = (int)(t.position.Y - (World.LookingAt.Y));
-                        Rectangle r = new Rectangle(x * Globals.TILE_SIZE, y * Globals.TILE_SIZE, Globals.TILE_SIZE, Globals.TILE_SIZE);
-                        float fontX, fontY;
-                        Vector2 stringSize;
-                        string infosz;
-						
-						this.Layer = 0.11f;
-						
-                        infosz = b.GetUnits().Count.ToString();
-                        stringSize = Recellection.worldFont.MeasureString(infosz);
-                        fontX = (float)(r.X + r.Width / 2) - stringSize.X / 2;
-                        fontY = (float)(r.Y + r.Height / 4) - stringSize.Y;
-                        spriteBatch.DrawString(Recellection.worldFont, infosz, new Vector2(fontX, fontY), Color.White, 0, new Vector2(0f), 1.0f, SpriteEffects.None, Layer);
+                            //Number of units drawage
+                            int x = (int)(t.position.X - (World.LookingAt.X));
+                            int y = (int)(t.position.Y - (World.LookingAt.Y));
+                            Rectangle r = new Rectangle(x * Globals.TILE_SIZE, y * Globals.TILE_SIZE, Globals.TILE_SIZE, Globals.TILE_SIZE);
+                            float fontX, fontY;
+                            Vector2 stringSize;
+                            string infosz;
 
-                        infosz = GraphController.Instance.GetWeight(b).ToString();
-                        stringSize = Recellection.worldFont.MeasureString(infosz);
-                        fontX = (float)(r.X + r.Width / 2) - stringSize.X / 2;
-                        fontY = (float)(r.Y + 3 * r.Height / 4) - stringSize.Y;
-						spriteBatch.DrawString(Recellection.worldFont, infosz, new Vector2(fontX, fontY), Color.White, 0, new Vector2(0f), 1.0f, SpriteEffects.None, Layer);
+                            this.Layer = 0.11f;
 
+                            infosz = b.GetUnits().Count.ToString();
+                            if (b.incomingUnits.Count > 0)
+								infosz +=  " ("+b.incomingUnits.Count+")";
+                            stringSize = Recellection.worldFont.MeasureString(infosz);
+                            fontX = (float)(r.X + r.Width / 2) - stringSize.X / 2;
+                            fontY = (float)(r.Y + r.Height / 4) - stringSize.Y;
+                            spriteBatch.DrawString(Recellection.worldFont, infosz, new Vector2(fontX, fontY), Color.White, 0, new Vector2(0f), 1.0f, SpriteEffects.None, Layer);
+
+                            infosz = GraphController.Instance.GetWeight(b).ToString();
+                            stringSize = Recellection.worldFont.MeasureString(infosz);
+                            fontX = (float)(r.X + r.Width / 2) - stringSize.X / 2;
+                            fontY = (float)(r.Y + r.Height - stringSize.Y);
+                            spriteBatch.DrawString(Recellection.worldFont, infosz, new Vector2(fontX, fontY), Color.White, 0, new Vector2(0f), 1.0f, SpriteEffects.None, Layer);
+                        }
                     }
 
                     // Find those units!
@@ -249,12 +264,12 @@ namespace Recellection.Code.Views
                                 int ux = (int)Math.Round((u.position.X - World.LookingAt.X) * Globals.TILE_SIZE) - spr.Width / 2;
                                 int uy = (int)Math.Round((u.position.Y - World.LookingAt.Y) * Globals.TILE_SIZE) - spr.Height / 2;
 
-                                Color c = u.GetOwner().color;
-                                if (u.PowerLevel > 0f)
-                                {
-                                    c = Color.Lerp(c, Color.HotPink, 0.3f + u.PowerLevel * 0.5f);
-                                }
-                                this.drawTexture(spriteBatch, spr, new Rectangle(ux, uy, spr.Width, spr.Height), c);
+								float amount = 1f - (0.3f + (u.PowerLevel*0.7f));
+                                //c = Color.Lerp(c, Color.HotPink, 0.3f + u.PowerLevel * 0.5f);
+								Color c = Color.Lerp(u.GetOwner().color, Color.White, amount);
+                                
+                                this.DrawTexture(spriteBatch, spr, new Rectangle(ux, uy, spr.Width, spr.Height), c);
+                                //powerlevel debug: this.DrawCenteredString(spriteBatch, ""+u.PowerLevel, new Vector2(ux, uy - 30), Color.White);
                             }
                         }
                     }
@@ -266,22 +281,22 @@ namespace Recellection.Code.Views
             // Draw scrollregions
             Layer = 0.0f;
             
-            this.drawTexture(spriteBatch, Recellection.textureMap.GetTexture(Globals.TextureTypes.ScrollUp),
+            this.DrawTexture(spriteBatch, Recellection.textureMap.GetTexture(Globals.TextureTypes.ScrollUp),
 				new Rectangle(128, 0, Globals.VIEWPORT_WIDTH - 256, 128));
-			this.drawTexture(spriteBatch, Recellection.textureMap.GetTexture(Globals.TextureTypes.ScrollDown),
+			this.DrawTexture(spriteBatch, Recellection.textureMap.GetTexture(Globals.TextureTypes.ScrollDown),
 				new Rectangle(128, Globals.VIEWPORT_HEIGHT - 128, Globals.VIEWPORT_WIDTH - 256, 128));
-			this.drawTexture(spriteBatch, Recellection.textureMap.GetTexture(Globals.TextureTypes.ScrollLeft),
+			this.DrawTexture(spriteBatch, Recellection.textureMap.GetTexture(Globals.TextureTypes.ScrollLeft),
 				new Rectangle(0, 128, 128, Globals.VIEWPORT_HEIGHT - 256));
-			this.drawTexture(spriteBatch, Recellection.textureMap.GetTexture(Globals.TextureTypes.ScrollRight),
+			this.DrawTexture(spriteBatch, Recellection.textureMap.GetTexture(Globals.TextureTypes.ScrollRight),
 				new Rectangle(Globals.VIEWPORT_WIDTH - 128, 128, 128, Globals.VIEWPORT_HEIGHT - 256));
 
-			this.drawTexture(spriteBatch, Recellection.textureMap.GetTexture(Globals.TextureTypes.ScrollUpLeft),
+			this.DrawTexture(spriteBatch, Recellection.textureMap.GetTexture(Globals.TextureTypes.ScrollUpLeft),
 				new Rectangle(0, 0, 128, 128));
-			this.drawTexture(spriteBatch, Recellection.textureMap.GetTexture(Globals.TextureTypes.ScrollUpRight),
+			this.DrawTexture(spriteBatch, Recellection.textureMap.GetTexture(Globals.TextureTypes.ScrollUpRight),
 				new Rectangle(Globals.VIEWPORT_WIDTH - 128, 0, 128, 128));
-			this.drawTexture(spriteBatch, Recellection.textureMap.GetTexture(Globals.TextureTypes.ScrollDownLeft),
+			this.DrawTexture(spriteBatch, Recellection.textureMap.GetTexture(Globals.TextureTypes.ScrollDownLeft),
 				new Rectangle(0, Globals.VIEWPORT_HEIGHT - 128, 128, 128));
-			this.drawTexture(spriteBatch, Recellection.textureMap.GetTexture(Globals.TextureTypes.ScrollDownRight),
+			this.DrawTexture(spriteBatch, Recellection.textureMap.GetTexture(Globals.TextureTypes.ScrollDownRight),
 				new Rectangle(Globals.VIEWPORT_WIDTH - 128, Globals.VIEWPORT_HEIGHT - 128, 128, 128));
 		}
         override public void Update(GameTime passedTime)
@@ -335,7 +350,7 @@ namespace Recellection.Code.Views
                 Recellection.graphics.GraphicsDevice.SetRenderTarget(0, backgroundTarget);
                 Recellection.graphics.GraphicsDevice.Clear(Color.White);
 
-                spriteBatch.Begin();
+                spriteBatch.Begin(SpriteBlendMode.AlphaBlend, SpriteSortMode.Immediate, SaveStateMode.None);
                 lock (tileCollection)
                 {
                     foreach (Tile t in tileCollection)
@@ -345,7 +360,7 @@ namespace Recellection.Code.Views
 
                         Rectangle r = new Rectangle(x * Globals.TILE_SIZE, y * Globals.TILE_SIZE, Globals.TILE_SIZE, Globals.TILE_SIZE);
 
-                        spriteBatch.Draw(t.GetSprite(), r, Color.White);
+                        spriteBatch.Draw(t.GetSprite(), r, cMatrix[(int)t.position.X, (int)t.position.Y]); //here be dragons and (tile texture2D)
 
                         if (t.active)
                         {
@@ -356,67 +371,37 @@ namespace Recellection.Code.Views
                     if (doLights)
                         lps.UpdateAndDraw(gameTime, spriteBatch);
 
+                    if (doGrain)
+                        gs.UpdateAndDraw(gameTime, spriteBatch);
+
                     spriteBatch.End();
 
                     Recellection.graphics.GraphicsDevice.SetRenderTarget(0, null);
                     backgroundTex = backgroundTarget.GetTexture();
 
-
-                    if (doGrain)
-                    {
-                        bgShaders.Parameters["Timer"].SetValue((float)gameTime.ElapsedRealTime.TotalSeconds + 1.23f);
-
-                        Recellection.graphics.GraphicsDevice.SetRenderTarget(0, backgroundTarget);
-                        Recellection.graphics.GraphicsDevice.Clear(Color.Black);
-
-                        spriteBatch.Begin(SpriteBlendMode.None, SpriteSortMode.Immediate, SaveStateMode.None);
-                        bgShaders.CurrentTechnique = bgShaders.Techniques["Grain"];
-                        bgShaders.Begin();
-                        bgShaders.CurrentTechnique.Passes[0].Begin();
-                        spriteBatch.Draw(backgroundTex, Vector2.Zero, Color.White);
-                        spriteBatch.End();
-                        bgShaders.CurrentTechnique.Passes[0].End();
-                        bgShaders.End();
-
-                        // Change back to the back buffer, and get our scene
-                        // as a texture.
-                        Recellection.graphics.GraphicsDevice.SetRenderTarget(0, null);
-                        backgroundTex = backgroundTarget.GetTexture();
-                    }
-
-                    if (doRipples)
-                    {
-                        crawler += calmRippleMovementRate;
-                        if (crawler > MathHelper.TwoPi)
-                            crawler = 0;
-
-                        calmRippleWaveDivider = (float)Math.Pow(Math.Sin(crawler), 2) + calmRippleLowerBound;
-
-                        bgShaders.Parameters["calmWave"].SetValue((float)Math.PI / calmRippleWaveDivider);
-                        bgShaders.Parameters["calmDistortion"].SetValue(calmRippleDistortion);
-                        bgShaders.Parameters["calmCenterCoord"].SetValue(new Vector2(0.5f, 0.5f));
-
-                        Recellection.graphics.GraphicsDevice.SetRenderTarget(0, backgroundTarget);
-                        Recellection.graphics.GraphicsDevice.Clear(Color.Black);
-
-                        spriteBatch.Begin(SpriteBlendMode.None, SpriteSortMode.Immediate, SaveStateMode.None);
-                        bgShaders.CurrentTechnique = bgShaders.Techniques["Ripple"];
-                        bgShaders.Begin();
-                        bgShaders.CurrentTechnique.Passes[0].Begin();
-                        spriteBatch.Draw(backgroundTex, Vector2.Zero, Color.White);
-                        spriteBatch.End();
-                        bgShaders.CurrentTechnique.Passes[0].End();
-                        bgShaders.End();
-
-                        // Change back to the back buffer, and get our scene
-                        // as a texture.
-                        Recellection.graphics.GraphicsDevice.SetRenderTarget(0, null);
-                        backgroundTex = backgroundTarget.GetTexture();
-                    }
-
                     doRenderThisPass = false;
                 }
             }
+        }
+
+        /// <summary>
+        /// takes two colors and blens them for each tile.
+        /// </summary>
+        /// <param name="c1"></param>
+        /// <param name="c2"></param>
+        /// <returns></returns>
+        private Color[,] generateColorMatrix(Color c1, Color c2)
+        {
+            Random rnd = new Random();
+            Color[,] colorM = new Color[World.map.width, World.map.height];
+            for (int ix = 0; ix < World.map.width; ix++)
+            {
+                for (int iy = 0; iy < World.map.height; iy++)
+                {
+                   colorM[ix, iy] = Color.Lerp(c1, c2, (float) rnd.NextDouble());
+                }
+            }
+            return colorM;
         }
 	}
 }
