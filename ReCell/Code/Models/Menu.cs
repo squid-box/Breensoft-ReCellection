@@ -393,6 +393,7 @@ namespace Recellection
             this.icons = icons;
         }
 
+        [Obsolete("Generates null-references currently")]
         /// <summary>
         /// Magic Constructor for Menu!
         /// </summary>

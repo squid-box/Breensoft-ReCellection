@@ -121,11 +121,16 @@ namespace Recellection.Code.Controllers
         
         private void ContextMenu()
         {
+			if (selectedTile == null)
+			{
+				return;
+			}
+			
 			if (selectedTile.GetBuilding() != null)
 			{
 				BuildingMenu();
 			}
-			else
+            else if (selectedTile.GetUnits(playerInControll).Count > 0)
 			{
 				TileMenu();
 			}
@@ -325,7 +330,9 @@ namespace Recellection.Code.Controllers
             else if (choosenMenu.Equals(buildCell))
             {
                 tobii.SetFeedbackColor(Color.DarkGreen);
-				Selection destsel = retrieveSelection();
+                SetConstructionLines(BuildingController.GetValidBuildingInterval(selectedTile.position, theWorld));
+                Selection destsel = retrieveSelection();
+				RemoveconstructionTileLines(BuildingController.GetValidBuildingInterval(selectedTile.position, theWorld));
                 if (destsel.state != State.TILE)
 				{
 					SoundsController.playSound("Denied");
@@ -398,6 +405,41 @@ namespace Recellection.Code.Controllers
                 return;
             }
         }
+
+        
+
+        private void SetConstructionLines(List<Point> tileCoords)
+        {
+            float onTileOffset = ((float)(Globals.TILE_SIZE - 1)) / ((float)(Globals.TILE_SIZE));
+            float constructionAreaOffset = 6.0f;
+
+            for (int i = 0; i < 2; i++)
+            {
+                List<Vector2> tempVectors = new List<Vector2>(2);
+
+                tempVectors.Add(new Vector2((float)tileCoords[i].X + onTileOffset * i, (float)tileCoords[i].Y + onTileOffset * i));
+                tempVectors.Add(new Vector2((float)tileCoords[i].X + onTileOffset * i, (float)tileCoords[i].Y + onTileOffset * ((i + 1) & 1) + constructionAreaOffset * (1 - i * 2)));
+
+                tempVectors.Add(new Vector2((float)tileCoords[i].X + onTileOffset * i, (float)tileCoords[i].Y + onTileOffset * i));
+                tempVectors.Add(new Vector2((float)tileCoords[i].X + onTileOffset * ((i + 1) & 1) + constructionAreaOffset * (1 - i*2), (float)tileCoords[i].Y + onTileOffset * i));
+
+                Tile temp = theWorld.map.GetTile(tileCoords[i].X, tileCoords[i].Y);
+                temp.SetDrawLine(tempVectors);
+            }
+
+            theWorld.DrawConstructionLines = tileCoords;
+
+        }
+
+        private void RemoveconstructionTileLines(List<Point> tileCoords)
+        {
+            for (int i = 0; i < 2; i++)
+            {
+                theWorld.map.GetTile(tileCoords[i].X, tileCoords[i].Y).ClearDrawLine();
+            }
+            theWorld.DrawConstructionLines = null;
+        }
+
         /// <summary>
         /// 
         /// </summary>

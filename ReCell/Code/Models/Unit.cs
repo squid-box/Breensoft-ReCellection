@@ -226,6 +226,7 @@ namespace Recellection.Code.Models
             if (! this.isDead)
             {
 				targetPosition = CalculateTargetPosition();
+				
 				this.Move(systemTime);
 				stopMovingIfGoalIsReached();
             }
@@ -239,6 +240,7 @@ namespace Recellection.Code.Models
 			}
 			else if (MissionEntity != null)
 			{
+				// If we target a tile, we want to be in the middle of it.
 				return MissionEntity.position;
 			}
 			else if (BaseEntity != null && returnToBase)
@@ -266,7 +268,7 @@ namespace Recellection.Code.Models
 				return targetPosition;
 			}
 		}
-
+		
 		/// <summary>
 		/// Internal move logic. Uses targetPosition.
 		/// </summary>

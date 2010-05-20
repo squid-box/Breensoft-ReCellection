@@ -141,6 +141,8 @@ namespace Recellection.Code.Models
 
         public HashSet<Unit> units { get; private set; }
 
+        public List<Point> DrawConstructionLines { get; set; }
+
         /// <summary>
         /// Constructor of the game world. Creates an empty list of players
         /// as well as an empty matrix of the given dimensions.
