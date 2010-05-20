@@ -64,8 +64,21 @@ namespace Recellection.Code.Models
 			{
 				baseEntity = value;
 			}
-		}	
-        public float disperseDistance { get; set; }
+		}
+		
+		private float disperseDistance = 1.5f;
+        public float DisperseDistance
+        { 
+			get
+			{
+				return (IsAggressive ? disperseDistance : 0.5f);
+			}
+			set
+			{
+				disperseDistance = value;
+			}
+        }
+        
 		public bool returnToBase { get; set; }         // Whether or not this unit should recieve a new baseEntity from the dispersion procedure
 
 		public bool isDead { get; set; }              // Status of unit
@@ -83,6 +96,8 @@ namespace Recellection.Code.Models
 		}
 		
 		public float Buff { get; set; }
+		
+		public bool IsAggressive { get; set; }
 		
         private readonly static Texture2D UNIT_TEXTURE = Recellection.textureMap.GetTexture(Globals.TextureTypes.Unit);
 		
@@ -144,12 +159,15 @@ namespace Recellection.Code.Models
 			this.BaseEntity = baseEntity;
 			this.returnToBase = (baseEntity != null);
 			
-			this.disperseDistance = 1.5f;
+			this.DisperseDistance = 1.5f;
             this.position = position;
             this.angle = 0;
             this.isDead = false;
             this.owner = owner;
             this.rand = new Random(id++);
+            
+            this.IsAggressive = true;
+            
             world.GetMap().GetTile((int)position.X, (int)position.Y).AddUnit(this);
             world.AddUnit(this);
         }
@@ -227,7 +245,7 @@ namespace Recellection.Code.Models
 			{
 				returnToBase = false;
 				
-				if (Vector2.Distance(BaseEntity.position, this.position) > disperseDistance)
+				if (Vector2.Distance(BaseEntity.position, this.position) > DisperseDistance)
 				{
 					// We are to far away from base! Return to base origo!
 					MissionEntity = BaseEntity;
@@ -235,9 +253,9 @@ namespace Recellection.Code.Models
 				}
 				else
 				{
-					// Pick random point around base within disperseDistance
+					// Pick random point around base within DisperseDistance
 					double angle = rand.NextDouble() * 2 * Math.PI;
-					double distance = rand.NextDouble() * (double)disperseDistance;
+					double distance = rand.NextDouble() * (double)DisperseDistance;
 
 					return BaseEntity.position + (new Vector2((float)(Math.Cos(angle) * distance), 
 															  (float)(Math.Sin(angle) * distance)));
@@ -328,12 +346,12 @@ namespace Recellection.Code.Models
 					if (BaseEntity == null)
 					{
 						// If no home exists, call current tile home.
-						disperseDistance = 0.5f;
+						DisperseDistance = 0.5f;
 						BaseEntity = world.GetMap().GetTile(this.GetPosition());
 					}
 					else
 					{
-						disperseDistance = 1.5f;
+						DisperseDistance = 1.5f;
 					}
 
 					returnToBase = true;
@@ -407,7 +425,7 @@ namespace Recellection.Code.Models
 			{
 				return false;
 			}
-			return Vector2.Distance(BaseEntity.position, this.position) <= disperseDistance;
+			return Vector2.Distance(BaseEntity.position, this.position) <= DisperseDistance;
         }
     }
 }

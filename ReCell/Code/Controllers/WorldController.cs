@@ -9,6 +9,7 @@ using Microsoft.Xna.Framework;
 using Recellection.Code.Utility.Logger;
 using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Input;
+using Recellection.Code.Utility.Events;
 
 namespace Recellection.Code.Controllers
 {
@@ -212,7 +213,6 @@ namespace Recellection.Code.Controllers
 			// If we selected a scroll zone?
             else if (activatedMenuIcon.labelColor.Equals(Color.Chocolate))
             {
-
 				theWorld.LookingAt = new Point(theWorld.LookingAt.X + x, theWorld.LookingAt.Y + y);
 				return retrieveSelection();
             }
@@ -246,6 +246,7 @@ namespace Recellection.Code.Controllers
 			MenuIcon upgradeUnits = new MenuIcon(Language.Instance.GetString("UpgradeUnits") + " (" + playerInControll.unitAcc.GetUpgradeCost() + ")");
             MenuIcon moveUnits = new MenuIcon(Language.Instance.GetString("MoveUnits"));
             MenuIcon repairCell = new MenuIcon(Language.Instance.GetString("RepairCell") + " (" + toHeal + ")");
+            MenuIcon setAggro = new MenuIcon(Language.Instance.GetString("SetAggro"));
             MenuIcon Cancel = new MenuIcon(Language.Instance.GetString("Cancel"), Recellection.textureMap.GetTexture(Globals.TextureTypes.No));
             
             List<MenuIcon> menuIcons = new List<MenuIcon>();
@@ -255,6 +256,7 @@ namespace Recellection.Code.Controllers
             menuIcons.Add(upgradeUnits);
             menuIcons.Add(moveUnits);
             menuIcons.Add(repairCell);
+            menuIcons.Add(setAggro);
             menuIcons.Add(Cancel);
 
             Menu buildingMenu = new Menu(Globals.MenuLayout.NineMatrix, menuIcons, Language.Instance.GetString("BuildingMenu"), Color.Black);
@@ -313,8 +315,6 @@ namespace Recellection.Code.Controllers
             }
             else if (choosenMenu.Equals(moveUnits))
             {
-               
-                
                 tobii.SetFeedbackColor(Color.Red);
                 
                 Selection destsel = retrieveSelection();
@@ -328,6 +328,11 @@ namespace Recellection.Code.Controllers
             {
                 playerInControll.unitAcc.DestroyUnits(building.units, toHeal);
                 building.Repair(toHeal);
+            }
+            else if (choosenMenu.Equals(setAggro))
+            {
+				building.IsAggressive = !building.IsAggressive;
+				building.UpdateAggressiveness(null, new Event<IEnumerable<Unit>>(building.GetUnits(), EventType.ADD));
             }
             else if (choosenMenu.Equals(Cancel))
             {
@@ -345,7 +350,7 @@ namespace Recellection.Code.Controllers
 		private void TileMenu(Selection previousSelection)
 		{
 			MenuIcon moveUnits = new MenuIcon(Language.Instance.GetString("MoveUnits"), null, Color.Black);
-			MenuIcon cancel = new MenuIcon(Language.Instance.GetString("Cancel"), null, Color.Black);
+			MenuIcon cancel = new MenuIcon(Language.Instance.GetString("Cancel"), Recellection.textureMap.GetTexture(Globals.TextureTypes.No), Color.Black);
 			
 			List<MenuIcon> menuIcons = new List<MenuIcon>();
 			if (theWorld.GetMap().GetTile(previousSelection.absPoint).GetUnits(playerInControll).Count > 0)
