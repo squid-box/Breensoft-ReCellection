@@ -92,20 +92,23 @@ namespace Recellection.Code.Controllers
 
 				graphControl.CalculateWeights();
 
-                foreach (Player p in players)
-                {
-                    BuildingController.AggressiveBuildingAct(p);
-                }
-
                 // This is where we start "animating" all movement
                 // FIXME: This ain't okay, hombrey
                 // Let the units move!
                 logger.Info("Moving units!");
-
-                for(int i = 0; i < 300; i++)
-                {
-                    UnitController.Update(world.units, 1, world.GetMap());
-					System.Threading.Thread.Sleep(10);
+				
+				for(int u = 0; u < 5; u++)
+				{
+					foreach (Player p in players)
+					{
+						BuildingController.AggressiveBuildingAct(p);
+					}
+					
+					for(int i = 0; i < 100; i++)
+					{
+						UnitController.Update(world.units, 1, world.GetMap());
+						System.Threading.Thread.Sleep(10);
+					}
 				}
 
                 
