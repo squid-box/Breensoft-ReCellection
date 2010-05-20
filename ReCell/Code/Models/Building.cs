@@ -47,9 +47,9 @@ namespace Recellection.Code.Models
         {
 			get
 			{
-				if (parent != null && ! parent.IsAlive())
+				while (parent != null && ! parent.IsAlive())
 				{
-					parent = null;
+					parent = parent.Parent;
 				}
 				return parent;
 			}
