@@ -91,7 +91,7 @@ namespace Recellection.Code.Controllers
             log.Info("Finding the front line.");
             List<Building> buildings = m_view.myBuildings;
             List<Building> result = new List<Building>();
-            log.Info("Iterating over " + result.Count + " buildings");
+            log.Info("Iterating over " + buildings.Count + " buildings");
             for(int i = 0; i < buildings.Count; i++)
             {
                 Building temp = buildings[i];
@@ -126,17 +126,22 @@ namespace Recellection.Code.Controllers
             for (int i = 0; i < enemyFront.Count; i++)
             {
                 if (enemySum != 0)
-                {
+                { //If there are units at the enemy front, match the dispersion
                     ratios[i] = (double)(enemyFront[i].GetUnits().Count) / enemySum;
+                }
+                else
+                { //Otherwise value them equally.
+                    ratios[i] = 1 / enemyFront.Count;
                 }
             }
             log.Info("Front line consists of: ");
             //Finally distribute that same ratio across the AI's own border.
             for (int i = 0; i < front.Count; i++)
             {
+                int weight = (int)(ratios[i] * m_view.CRITICAL);
                 Building temp = front[i];
-                log.Info("("+ temp.GetPosition().X + ";" + temp.GetPosition().Y + ") weight set to CRITICAL");
-                GraphController.Instance.SetWeight(temp, (int)(ratios[i] * m_view.CRITICAL));
+                log.Info("("+ temp.GetPosition().X + ";" + temp.GetPosition().Y + ") weight set to " + weight);
+                GraphController.Instance.SetWeight(temp, weight);
             }
         }
 
