@@ -12,7 +12,7 @@ MainMenu7=Test7
 MainMenu8=Test8
 back=Tillbaka
 NewGame=Nytt spel
-Options=Alterantiv
+Options=Alternativ
 Help=Hjälp
 Quit=Avsluta
 

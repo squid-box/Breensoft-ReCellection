@@ -118,15 +118,21 @@ namespace Recellection.Code.Controllers
                 languageDic.Add(aLanguage, lang);
             }
 
-            List<MenuIcon> iconList = new List<MenuIcon>(languageDic.Keys);
+			List<MenuIcon> iconList = new List<MenuIcon>(languageDic.Keys);
+			
+			MenuIcon cancel = new MenuIcon(Language.Instance.GetString("Cancel"), Recellection.textureMap.GetTexture(Globals.TextureTypes.No));
+			iconList.Add(cancel);
+			
             Menu langMenu = new Menu(Globals.MenuLayout.NineMatrix, iconList, "Choose Language");
             MenuController.LoadMenu(langMenu);
             Recellection.CurrentState = MenuView.Instance;
 
             MenuIcon choosenLang = MenuController.GetInput();
-
-            Language.Instance.SetLanguage(languageDic[choosenLang]);
-            LoggerFactory.GetLogger().Info("Language set to " + languageDic[choosenLang]);
+			if (choosenLang != cancel)
+			{
+				Language.Instance.SetLanguage(languageDic[choosenLang]);
+				LoggerFactory.GetLogger().Info("Language set to " + languageDic[choosenLang]);
+			}
             MenuController.UnloadMenu();
         }
 
@@ -149,14 +155,21 @@ namespace Recellection.Code.Controllers
             }
 
             List<MenuIcon> iconList = new List<MenuIcon>(difficultyDic.Keys);
-            Menu diffMenu = new Menu(Globals.MenuLayout.NineMatrix, iconList, "Choose a Difficulty.");
+            
+            MenuIcon cancel = new MenuIcon(Language.Instance.GetString("Cancel"), Recellection.textureMap.GetTexture(Globals.TextureTypes.No));
+            iconList.Add(cancel);
+            
+            Menu diffMenu = new Menu(Globals.MenuLayout.FourMatrix, iconList, "Choose a Difficulty.");
             MenuController.LoadMenu(diffMenu);
             Recellection.CurrentState = MenuView.Instance;
 
             MenuIcon choosenDiff = MenuController.GetInput();
-
-            GameOptions.Instance.difficulty = (Globals.Difficulty) Enum.Parse(typeof(Globals.Difficulty), difficultyDic[choosenDiff]);
-            LoggerFactory.GetLogger().Info("Difficulty set to " + difficultyDic[choosenDiff]);
+			
+			if (choosenDiff != cancel)
+			{
+				GameOptions.Instance.difficulty = (Globals.Difficulty) Enum.Parse(typeof(Globals.Difficulty), difficultyDic[choosenDiff]);
+				LoggerFactory.GetLogger().Info("Difficulty set to " + difficultyDic[choosenDiff]);
+			}
             MenuController.UnloadMenu();
         }
 

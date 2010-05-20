@@ -65,11 +65,9 @@ namespace Recellection
 
         public enum Difficulty
         {
-            Babby,
             Easy,
             Normal,
-            Hard,
-            Martin
+            Hard
         };
     }
 }
