@@ -58,7 +58,7 @@ namespace Recellection.Code.Controllers
             log.Info("AI Making a Move.");
 
             m_view.LookAtScreen(); //Have the AI View update its local variables
-
+            resourceThreshold = GetResourceThreshold();
 
             int resourceLocations = m_view.GetResourceLocations().Count;
             if (resourceLocations < resourceThreshold)
@@ -78,6 +78,8 @@ namespace Recellection.Code.Controllers
             if (GetGraphs()[0].baseBuilding == null)
             { //Our base building has been destroyed! Create a new one from where we can afford it.
                 Building relay = Util.FindBuildingWithUnitCount((int)unitAcc.CalculateBuildingCostInflation(Globals.BuildingTypes.Base), m_view.myBuildings);
+                if (relay == null)
+                    return;
                 IssueBuildOrder(Util.GetRandomBuildPointFrom(Util.CreateMatrixFromInterval(BuildingController.GetValidBuildingInterval(relay.GetPosition(), m_view.world)), m_view.world), relay, Globals.BuildingTypes.Base);
             }
 
@@ -104,6 +106,16 @@ namespace Recellection.Code.Controllers
             WeighFrontLine(front, enemyFront);
             SetCriticalWeights();
             log.Info("//Ending turn");
+        }
+
+
+        /// <summary>
+        /// Decides how many resource buildings the AI should have
+        /// </summary>
+        /// <returns></returns>
+        private int GetResourceThreshold()
+        {
+            return (int)m_view.opponents[0].CountBuildingsOfType(Globals.BuildingTypes.Resource);
         }
 
 
@@ -219,6 +231,7 @@ namespace Recellection.Code.Controllers
         /// <summary>
         /// Returns a list of all buildings that define the front line, as well
         /// as filling the given list with their corresponding closest enemy.
+        /// Overloaded. +1 decides on a distance tolerance.
         /// </summary>
         /// <returns></returns>
         private List<Building> GetFrontLine(List<Building> enemyFront)
@@ -242,6 +255,43 @@ namespace Recellection.Code.Controllers
         }
 
 
+        /// <summary>
+        /// Returns a list of all the enemy buildings situated close to
+        /// our own.
+        /// </summary>
+        /// <param name="enemyFront"></param>
+        /// <param name="tolerance"></param>
+        /// <returns></returns>
+        private List<Building> GetFrontLine(List<Building> enemyFront, int tolerance)
+        {
+            log.Info("Finding the front line.");
+            List<Vector2> positions = m_view.friendlyPoints;
+            for (int i = 0; i < m_view.friendlyPoints.Count; i++)
+            {
+                List<Point> interval = new List<Point>();
+                interval[0] = new Point((int)m_view.friendlyPoints[i].X - (tolerance/2), (int)m_view.friendlyPoints[i].Y - (tolerance/2));
+                interval[1] = new Point((int)m_view.friendlyPoints[i].X + (tolerance/2), (int)m_view.friendlyPoints[i].Y + (tolerance/2));
+                List<Vector2> vecs = Util.CreateMatrixFromInterval(interval);
+                foreach (Vector2 vec in vecs)
+                    positions.Add(vec);
+            }
+
+            List<Building> result = new List<Building>();
+            log.Info("Iterating over " + positions.Count + " buildings");
+            for (int i = 0; i < positions.Count; i++)
+            {
+                Vector2 temp = positions[i];
+                Building enemy = Util.GetBuildingAt(Util.GetClosestPointFromList(temp, m_view.enemyPoints), m_view.world);
+                if (Util.GetBuildingAt(Util.GetClosestPointFromList(enemy.GetPosition(), m_view.friendlyPoints), m_view.world) == Util.GetBuildingAt(temp, m_view.world))
+                { //The enemy of my enemy is me, and therefore I am closest to it and it is closest to me.
+                    log.Info("Adding " + temp.X + ";" + temp.Y + " to the front list.");
+                    result.Add(Util.GetBuildingAt(temp, m_view.world));
+                    enemyFront.Add(enemy);
+                }
+            }
+            return result;
+        }
+        
         /// <summary>
         /// Iterates over the giving front, setting their weights according to their respective enemies.
         /// </summary>
