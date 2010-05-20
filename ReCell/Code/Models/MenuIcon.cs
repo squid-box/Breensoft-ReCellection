@@ -45,28 +45,5 @@ namespace Recellection
             this.texture = texture;
             this.labelColor = color;
         }
-
-        public static bool operator ==(MenuIcon obj1, MenuIcon obj2)
-        {
-            if (obj1.label.Equals(obj2.label))
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
-        }
-        public static bool operator !=(MenuIcon obj1, MenuIcon obj2)
-        {
-            if (obj1.label.Equals(obj2.label))
-            {
-                return false;
-            }
-            else
-            {
-                return true;
-            }
-        }
 	}
 }
