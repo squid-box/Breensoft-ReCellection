@@ -106,8 +106,8 @@ namespace Recellection.Code.Views
                 {
                     for (int y = currentY; y < currentY + maxRows; y++)
                     {
-						if (! tiles[x, y].IsVisible(this.World.players[0]))
-							continue;
+						//if (! tiles[x, y].IsVisible(this.World.players[0]))
+						//	continue;
                         try
                         {
                             tileCollection.Add(tiles[x, y]);
