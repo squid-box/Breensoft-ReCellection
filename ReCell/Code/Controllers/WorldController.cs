@@ -325,9 +325,9 @@ namespace Recellection.Code.Controllers
             else if (choosenMenu.Equals(buildCell))
             {
                 tobii.SetFeedbackColor(Color.DarkGreen);
-                SetConstructionLines(BuildingController.GetValidBuildingInterval(seltile.position, theWorld));
-                Selection destsel = getSelection();
-                RemoveconstructionTileLines(BuildingController.GetValidBuildingInterval(seltile.position, theWorld));
+                SetConstructionLines(BuildingController.GetValidBuildingInterval(selectedTile.position, theWorld));
+                Selection destsel = retrieveSelection();
+				RemoveconstructionTileLines(BuildingController.GetValidBuildingInterval(selectedTile.position, theWorld));
                 if (destsel.state != State.TILE)
 				{
 					SoundsController.playSound("Denied");
