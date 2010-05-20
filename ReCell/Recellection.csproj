@@ -161,10 +161,9 @@
     <Compile Include="Code\Models\Tile.cs" />
     <Compile Include="Code\Models\Unit.cs" />
     <Compile Include="Code\Models\World.cs" />
+    <Compile Include="Code\ParticleSystems\GrainSystem.cs" />
     <Compile Include="Code\ParticleSystems\Light.cs" />
     <Compile Include="Code\ParticleSystems\LightParticleSystem.cs" />
-    <Compile Include="Code\ParticleSystems\Ripple.cs" />
-    <Compile Include="Code\ParticleSystems\RippleHandler.cs" />
     <Compile Include="Code\Sounds\AudioPlayer.cs" />
     <Compile Include="Code\Utility\Console\KeyBindings.cs" />
     <Compile Include="Code\Utility\Console\PythonInterpreter.cs" />
