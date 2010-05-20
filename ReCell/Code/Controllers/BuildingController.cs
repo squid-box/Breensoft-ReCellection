@@ -127,9 +127,9 @@ namespace Recellection.Code.Controllers
                     SoundsController.playSound("Denied");
 
                     // Let's update the fog of war!
-                    for (int i = 1; i < 3; i++)
+                    for (int i = 1; i < 4; i++)
                     {
-                        for (int j = 0; i < 3; i++)
+                        for (int j = 0; j < 4; j++)
                         {
                             theWorld.map.GetTile((int)constructTile.position.X - j, (int)constructTile.position.Y - i).MakeVisibleTo(player);
                         }
