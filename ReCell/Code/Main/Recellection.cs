@@ -274,7 +274,7 @@ namespace Recellection
 		public void LogAI()
 		{
 			ToggleLogger("Recellection.Code.Controllers.AIPlayer");
-			ToggleLogger("Recellection.Code.views.AIView");
+			ToggleLogger("Recellection.Code.AIView");
 		}
 
         public void Help()
