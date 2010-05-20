@@ -36,7 +36,7 @@ namespace Recellection
             Membrane, Mucus, Water, Slow, Infected, BaseBuilding, tile2a, tile2b, tile2c, tile2d, tile2e,
             BarrierBuilding, AggressiveBuilding, ResourceBuilding, Unit, Kamikaze, white, logo,
 
-            MainMenu, OptionsMenu, Help, PromptMenu, GetIntMenu,
+            MainMenu, OptionsMenu, Help, PromptMenu, GetIntMenu, HelpViewEN, HelpViewSV, 
             CommandMenu, SpecialCommandMenu, ThreeByThree, TwoByTwo, NoTexture, Yes, No, Light, Pixel,
 
 			Priority1, Priority2, Priority3, Priority4, Priority5, Priority6, Priority7, Priority8,
