@@ -130,7 +130,7 @@ namespace Recellection.Code.Controllers
 			{
 				BuildingMenu();
 			}
-			else
+            else if (selectedTile.GetUnits(playerInControll).Count > 0)
 			{
 				TileMenu();
 			}
