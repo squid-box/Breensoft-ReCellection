@@ -83,14 +83,14 @@ namespace Recellection.Code.Controllers
             if (resourceLocations < resourceCriticalThreshold)
             {
                 log.Info("Not enough resource points so nothing more to do this turn.");
-                log.Info("/Ending turn");
+                log.Info("//Ending turn");
                 //If we have not secured basic income, dont worry about anything else.
                 return;
             }
 
             List<Building> enemyFront = new List<Building>();
             List<Building> front = GetFrontLine(enemyFront);
-            log.Info("Weighing the frontline.");
+            log.Info("Weighing the frontline");
             WeighFrontLine(front, enemyFront);
             log.Info("//Ending turn");
         }
@@ -102,19 +102,19 @@ namespace Recellection.Code.Controllers
         /// <returns></returns>
         private List<Building> GetFrontLine(List<Building> enemyFront)
         {
+            log.Info("Finding the front line.");
             List<Building> buildings = m_view.myBuildings;
             List<Building> result = new List<Building>();
+            log.Info("Iterating over " + result.Count + " buildings");
             for(int i = 0; i < buildings.Count; i++)
             {
                 Building temp = buildings[i];
                 Building enemy = m_view.GetBuildingAt(GetClosestPointFromList(temp.GetPosition(), m_view.enemyPoints));
                 if (m_view.GetBuildingAt(GetClosestPointFromList(enemy.GetPosition(), m_view.friendlyPoints)) == temp)
                 { //There is no friendly point that's more threatened by our closest enemy point
-                    if (!enemyFront.Contains(enemy))
-                    {
-                        result.Add(temp);
-                        enemyFront.Add(enemy);
-                    }
+                    log.Info("Adding " + temp.GetPosition().X + ";" +  temp.GetPosition().Y + " to the front list.");
+                    result.Add(temp);
+                    enemyFront.Add(enemy);
                 }
             }
             return result;
