@@ -42,6 +42,22 @@ namespace Recellection.Code.Models
         
         public Globals.BuildingTypes type { get; protected set; }
         public BaseBuilding baseBuilding { get; protected set; }
+        private Building parent = null;
+        public Building Parent
+        {
+			get
+			{
+				if (parent != null && ! parent.IsAlive())
+				{
+					parent = null;
+				}
+				return parent;
+			}
+			set
+			{
+				parent = value;
+			}
+		}
         public LinkedList<Tile> controlZone { get; protected set; }
 
         private static Logger logger = LoggerFactory.GetLogger();
