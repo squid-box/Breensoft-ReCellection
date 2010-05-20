@@ -103,3 +103,4 @@ ResourceCell=Arbetscell
 hasWon=Grattis!\n\nDu vann.
 hasLost=Du förlorade.\n\nBättre lycka nästa gång!
 isDraw=Spelet är slut.\nVann du eller förlorade du?\n\n... Jag vet inte.
+BackToMain=Gå tillbaks till huvudmenyn.

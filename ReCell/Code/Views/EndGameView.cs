@@ -38,7 +38,7 @@ namespace Recellection.Code.Views
 			}
 			
 
-			DrawCenteredString(sb, "Go back to main menu.", new Vector2(Globals.VIEWPORT_WIDTH / 2, Globals.VIEWPORT_HEIGHT - Recellection.screenFont.MeasureString(" ").Y), Color.HotPink);
+			DrawCenteredString(sb, Language.Instance.GetString("BackToMain"), new Vector2(Globals.VIEWPORT_WIDTH / 2, Globals.VIEWPORT_HEIGHT - Recellection.screenFont.MeasureString(" ").Y), Color.HotPink);
 		}	
 	}
 }
