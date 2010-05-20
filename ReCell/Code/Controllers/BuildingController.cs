@@ -212,19 +212,19 @@ namespace Recellection.Code.Controllers
                         case Globals.BuildingTypes.Aggressive:
                             logger.Trace("Building a new Aggressive building");
                             newBuilding = new AggressiveBuilding("Aggresive Building",
-                                (int)targetCoordinate.X, (int)targetCoordinate.Y, sourceBuilding.owner,
+                                (int)targetCoordinate.X, (int)targetCoordinate.Y, owner,
                                 GraphController.Instance.GetGraph(sourceBuilding).baseBuilding, controlZone);
                             break;
                         case Globals.BuildingTypes.Barrier:
                             logger.Trace("Building a new Barrier building");
                             newBuilding = new BarrierBuilding("Barrier Building",
-                                (int)targetCoordinate.X, (int)targetCoordinate.Y, sourceBuilding.owner,
+                                (int)targetCoordinate.X, (int)targetCoordinate.Y, owner,
                                 GraphController.Instance.GetGraph(sourceBuilding).baseBuilding, controlZone);
                             break;
                         case Globals.BuildingTypes.Resource:
                             logger.Trace("Building a new Resource building");
                             newBuilding = new ResourceBuilding("Resource Building",
-                                (int)targetCoordinate.X, (int)targetCoordinate.Y, sourceBuilding.owner,
+                                (int)targetCoordinate.X, (int)targetCoordinate.Y, owner,
                                 GraphController.Instance.GetGraph(sourceBuilding).baseBuilding, controlZone);
                             break;
                     }
@@ -232,11 +232,15 @@ namespace Recellection.Code.Controllers
                     world.map.GetTile((int)targetCoordinate.X, (int)targetCoordinate.Y).SetBuilding(newBuilding);
                     GraphController.Instance.AddBuilding(sourceBuilding, newBuilding);
                 }
-                if (sourceBuilding != null)
+                if (sourceBuilding != null && world.map.GetTile((int)targetCoordinate.X, (int)targetCoordinate.Y).GetBuilding() != null)
                 {
                     logger.Info("The building has " + sourceBuilding.CountUnits() + " and the building costs " + price);
                     owner.unitAcc.DestroyUnits(sourceBuilding.units, (int)price);
                     logger.Info("The source building only got " + sourceBuilding.CountUnits() + " units left.");
+                }
+                else if (world.map.GetTile((int)targetCoordinate.X, (int)targetCoordinate.Y).GetBuilding() == null)
+                {
+                    throw new Exception("A building was not placed on the tile even though it should have been.");
                 }
 
 				Sounds.Instance.LoadSound("buildingPlacement").Play();
@@ -304,10 +308,6 @@ namespace Recellection.Code.Controllers
 			}
         }
 
-        public static void HurtBuilding(Building toHurt, World theWorld)
-        {
-            HurtBuilding(toHurt);
-        }
         public static void HurtBuilding(Building toHurt)
         {
             toHurt.Damage(1);

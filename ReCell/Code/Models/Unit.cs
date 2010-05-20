@@ -17,32 +17,88 @@ namespace Recellection.Code.Models
     public class Unit : Entity, IModel
     {
         private const long TID_MARCO_SPELAR_STARCRAFT_2 = 15125161231512L;
-
 		private static Logger logger = LoggerFactory.GetLogger();
-		private static int id = 0; // Used for random
+		private static int id = 0; // Used for randomness
+		
+		protected Vector2 targetPosition = new Vector2(NO_TARGET, NO_TARGET);
+		
         // DATA
-        public Vector2 targetPosition { get; set; }   // Target coordinate
-		private Entity targetEntity;     // Target entity
-        public Entity rallyPoint { get; set; }		// Target to fall back to if the primary target disappears. Also acts as center of dispersion
-        public float rallyDistance { get; set; }
-        private readonly static Texture2D UNIT_TEXTURE = Recellection.textureMap.GetTexture(Globals.TextureTypes.Unit);
-        public bool isDispersed { get; set; }         // Whether or not this unit should recieve a new target from the dispersion procedure
-		public bool hasArrived { get { return (targetPosition.X == NO_TARGET && targetPosition.Y == NO_TARGET); } }
-        public bool isDead { get; set; }              // Status of unit
-        public float powerLevel;
-        public float PowerLevel
+		private Entity targetEntity = null;   // Target entity
+        public Entity TargetEntity
         {
-            get
-            {
-                return powerLevel + owner.powerLevel;
-            }
-            set
-            {
-                powerLevel = value;
-            }
+			get
+			{
+				return targetEntity;
+			}
+			set
+			{
+				targetEntity = value;
+			}
         }
+		private Entity missionEntity = null;     // Mission entity
+		public Entity MissionEntity
+		{
+			get
+			{
+				return missionEntity;
+			}
+			set
+			{
+				callRainCheckOnTarget();
+				missionEntity = value;
+				if (missionEntity is Building && missionEntity.owner == this.owner)
+				{
+					((Building)missionEntity).incomingUnits.Add(this);
+				}
+			}
+		}
+		// Target to fall back to if the primary baseEntity disappears. Also acts as center of dispersion
+		private Entity baseEntity = null;
+        public Entity BaseEntity
+        {
+			get
+			{
+				return baseEntity;
+			}
+			set
+			{
+				baseEntity = value;
+			}
+		}	
+        public float disperseDistance { get; set; }
+		public bool returnToBase { get; set; }         // Whether or not this unit should recieve a new baseEntity from the dispersion procedure
+
+		public bool isDead { get; set; }              // Status of unit
+		public float powerLevel;
+		public float PowerLevel
+		{
+			get
+			{
+				return powerLevel + owner.powerLevel + Buff;
+			}
+			set
+			{
+				powerLevel = value;
+			}
+		}
+		
+		public float Buff { get; set; }
+		
+        private readonly static Texture2D UNIT_TEXTURE = Recellection.textureMap.GetTexture(Globals.TextureTypes.Unit);
+		
         private static World world;
 
+		/// <summary>
+		/// Should be called when the course has been changed and the unit will not be able to reach a friendly building.
+		/// </summary>
+		private void callRainCheckOnTarget()
+		{
+			if (missionEntity is Building && missionEntity.owner == this.owner)
+			{
+				((Building)missionEntity).incomingUnits.Remove(this);
+			}
+		}
+		
 		private Random rand;
 
 		// Did I mention that I hate floats? // Martin
@@ -83,14 +139,14 @@ namespace Recellection.Code.Models
         /// </summary>
         /// <param name="position">Position of unit.</param>
         /// <param name="owner">Owner of this unit.</param>
-        public Unit(Player owner, Vector2 position, Entity target) : base(position, owner)
+        public Unit(Player owner, Vector2 position, Entity baseEntity) : base(position, owner)
         {
-			this.rallyPoint = target;
-			this.rallyDistance = 1.5f;
+			this.BaseEntity = baseEntity;
+			this.returnToBase = (baseEntity != null);
+			
+			this.disperseDistance = 1.5f;
             this.position = position;
-            this.targetPosition = new Vector2(NO_TARGET, NO_TARGET);
             this.angle = 0;
-            this.isDispersed = (target != null);
             this.isDead = false;
             this.owner = owner;
             this.rand = new Random(id++);
@@ -106,27 +162,6 @@ namespace Recellection.Code.Models
             Unit.world = w;
         }
 
-        // Properites
-
-		public Entity TargetEntity
-		{
-			get
-			{
-				return targetEntity;
-			}
-			
-			set
-			{
-				callRainCheckOnTarget();
-				
-				targetEntity = value;
-
-				if (targetEntity is Building && targetEntity.owner == this.owner)
-				{
-					((Building)targetEntity).incomingUnits.Add(this);
-				}
-			}
-		}
 
         // Graphical representation
 
@@ -146,8 +181,10 @@ namespace Recellection.Code.Models
 				// We survive! WOO!
 				return;
 			}
-			
-            this.isDead = true;
+
+			// We die! NOO!
+			this.isDead = true;
+			SoundsController.playSound("Celldeath", this.position);
             UnitController.MarkUnitAsDead(this);
         }
         
@@ -156,17 +193,9 @@ namespace Recellection.Code.Models
 			world.GetMap().GetTile((int)position.X, (int)position.Y).RemoveUnit(owner, this);
 			world.RemoveUnit(this);
 			callRainCheckOnTarget();
-			if (rallyPoint != null && rallyPoint is Building)
+			if (BaseEntity != null && BaseEntity is Building)
 			{
-				((Building)rallyPoint).RemoveUnit(this);
-			}
-        }
-        
-        private void callRainCheckOnTarget()
-        {
-			if (targetEntity is Building && targetEntity.owner == this.owner)
-			{
-				((Building)targetEntity).incomingUnits.Remove(this);
+				((Building)BaseEntity).RemoveUnit(this);
 			}
         }
 
@@ -178,34 +207,40 @@ namespace Recellection.Code.Models
         {
             if (! this.isDead)
             {
-				targetPosition = calculateTargetPosition();
+				targetPosition = CalculateTargetPosition();
 				this.Move(systemTime);
 				stopMovingIfGoalIsReached();
             }
 		}
 
-		private Vector2 calculateTargetPosition()
+		private Vector2 CalculateTargetPosition()
 		{
 			if (TargetEntity != null)
 			{
 				return TargetEntity.position;
 			}
-			else if (this.isDispersed && rallyPoint != null)
+			else if (MissionEntity != null)
 			{
-				// We will wander around our rallyPoint
-				isDispersed = false;
+				return MissionEntity.position;
+			}
+			else if (BaseEntity != null && returnToBase)
+			{
+				returnToBase = false;
 				
-				if (Vector2.Distance(rallyPoint.position, this.position) > rallyDistance)
+				if (Vector2.Distance(BaseEntity.position, this.position) > disperseDistance)
 				{
-					TargetEntity = rallyPoint;
-					return rallyPoint.position;
+					// We are to far away from base! Return to base origo!
+					MissionEntity = BaseEntity;
+					return CalculateTargetPosition();
 				}
 				else
 				{
+					// Pick random point around base within disperseDistance
 					double angle = rand.NextDouble() * 2 * Math.PI;
-					double distance = rand.NextDouble() * (double)rallyDistance;
+					double distance = rand.NextDouble() * (double)disperseDistance;
 
-					return rallyPoint.position + (new Vector2((float)(Math.Cos(angle) * distance), (float)(Math.Sin(angle) * distance)));
+					return BaseEntity.position + (new Vector2((float)(Math.Cos(angle) * distance), 
+															  (float)(Math.Sin(angle) * distance)));
 				}
 			}
 			else
@@ -215,7 +250,7 @@ namespace Recellection.Code.Models
 		}
 
 		/// <summary>
-		/// Internal move logic.
+		/// Internal move logic. Uses targetPosition.
 		/// </summary>
 		private void Move(float deltaTime)
 		{
@@ -225,8 +260,7 @@ namespace Recellection.Code.Models
             Vector2 direction = Vector2.Subtract(this.targetPosition, this.position);
             direction.Normalize();
 
-
-			// Move unit towards target.
+			// Move unit towards baseEntity.
 			if (this.targetPosition.X != NO_TARGET)
 			{
 				float distance = this.targetPosition.X - this.position.X;
@@ -247,7 +281,7 @@ namespace Recellection.Code.Models
 
                 if (Math.Abs(distance) < MOVEMENT_SPEED)
                 {
-                    position = new Vector2(position.X, targetPosition.Y);
+					position = new Vector2(position.X, targetPosition.Y);
                 }
                 else
                 {
@@ -269,27 +303,41 @@ namespace Recellection.Code.Models
 
 		virtual protected bool stopMovingIfGoalIsReached()
 		{
-			// If we are reasonably close to target.
-			float dx = this.position.X - this.targetPosition.X;
-			float dy = this.position.Y - this.targetPosition.Y;
-			double distance = Math.Sqrt(dx*dx + dy*dy);
+			float distance = float.MaxValue;
+			Vector2 here = position;
+			Vector2 there = targetPosition;
+			
+			Vector2.Distance(ref here, ref there, out distance);
 			
 			if (distance == 0)
 			{
 				if (TargetEntity != null)
 				{
-					ActOnTargetEntity();
+					ActOnEntity(TargetEntity);
 					TargetEntity = null;
 				}
-				
-				if (rallyPoint != null)
+				else if (MissionEntity != null)
 				{
-					isDispersed = true;
+					ActOnEntity(MissionEntity);
+					MissionEntity = null;
 				}
-				
-				// Set no target, we are here.
-				this.targetPosition = new Vector2(NO_TARGET, NO_TARGET);
-				
+
+				// We neither have a target or a mission, return to base!
+				if (TargetEntity == null && MissionEntity == null)
+				{
+					if (BaseEntity == null)
+					{
+						// If no home exists, call current tile home.
+						disperseDistance = 0.5f;
+						BaseEntity = world.GetMap().GetTile(this.GetPosition());
+					}
+					else
+					{
+						disperseDistance = 1.5f;
+					}
+
+					returnToBase = true;
+				}
 				return true;
 			}
 			else
@@ -298,40 +346,64 @@ namespace Recellection.Code.Models
 			}
 		}
         
-        private void ActOnTargetEntity()
+        /// <summary>
+        /// Should run when we have reached a target.
+		/// This method decides what to do with the target.
+        /// </summary>
+        private void ActOnEntity(Entity ent)
         {
-			if (TargetEntity.owner == this.owner)
+			if (ent is Tile)
 			{
-				// If it's a home-fromBuilding, we disperse around it :)
-				if (TargetEntity is Building && ((Building)TargetEntity).IsAlive())
+				return;
+			}
+
+			if (ent.owner == this.owner)
+			{
+				#region Friendly actions!
+				if (ent is Building)
 				{
-					// We will now recieve new positions within a radius of our secondary target.
-					rallyPoint = TargetEntity;
-					rallyDistance = 1.5f;
-					((Building)targetEntity).AddUnit(this);
-					isDispersed = true;
+					Building targetBuilding = (Building)ent;
+					
+					if (targetBuilding.IsAlive())
+					{
+						BaseEntity = targetBuilding;
+						
+						targetBuilding.AddUnit(this);
+						targetBuilding.incomingUnits.Remove(this);
+						// We will now recieve new positions within a radius of our secondary baseEntity.
+					}
 				}
+				#endregion
 			}
 			else // If this is an enemy! KILL IT! OMG				
 			{
-				if (TargetEntity is Unit && !((Unit)TargetEntity).isDead)
+				#region Try to kill enemies!
+				if (ent is Unit && !((Unit)ent).isDead)
 				{
-					this.Kill();
-					((Unit)TargetEntity).Kill();
-					SoundsController.playSound("Celldeath", this.position);
+					Unit targetUnit = (Unit)ent;
+					if (! targetUnit.isDead)
+					{
+						this.Kill();
+						((Unit)ent).Kill();
+					}
 				}
-				else if (TargetEntity is Building && ((Building)TargetEntity).IsAlive())
+				else if (ent is Building)
 				{
-					this.Kill();
-					BuildingController.HurtBuilding((Building)TargetEntity);
-					SoundsController.playSound("Celldeath", this.position);
+					Building targetBuilding = (Building)ent;
+					
+					if (targetBuilding.IsAlive())
+					{
+						this.Kill();
+						BuildingController.HurtBuilding((Building)ent);
+					}
 				}
+				#endregion
 			}
         }
         
-        public bool isPatrolling()
-        {
-			return this.rallyPoint != null;
+        public bool IsAtBase()
+		{
+			return Vector2.Distance(BaseEntity.position, this.position) <= disperseDistance;
         }
     }
 }

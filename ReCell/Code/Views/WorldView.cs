@@ -237,6 +237,8 @@ namespace Recellection.Code.Views
                             this.Layer = 0.11f;
 
                             infosz = b.GetUnits().Count.ToString();
+                            if (b.incomingUnits.Count > 0)
+								infosz +=  " ("+b.incomingUnits.Count+")";
                             stringSize = Recellection.worldFont.MeasureString(infosz);
                             fontX = (float)(r.X + r.Width / 2) - stringSize.X / 2;
                             fontY = (float)(r.Y + r.Height / 4) - stringSize.Y;
@@ -270,6 +272,7 @@ namespace Recellection.Code.Views
                                     c = Color.Lerp(c, Color.HotPink, 0.3f + u.PowerLevel * 0.5f);
                                 }
                                 this.DrawTexture(spriteBatch, spr, new Rectangle(ux, uy, spr.Width, spr.Height), c);
+                                //powerlevel debug: this.DrawCenteredString(spriteBatch, ""+u.PowerLevel, new Vector2(ux, uy - 30), Color.White);
                             }
                         }
                     }
