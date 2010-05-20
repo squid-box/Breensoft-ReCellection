@@ -36,13 +36,9 @@ namespace Recellection.Code.Models
         /// <summary>
         /// Creates a TerrainType of the type Membrane.
         /// </summary>
-        public TerrainType()
+        public TerrainType():this(Globals.TerrainTypes.Membrane)
         {
-            // Assume default type.
-            this.type = Globals.TerrainTypes.Membrane;
-            this.dmgMod = 0;
-            this.spdMod = 10;
-            this.rscMod = 10;
+            
         }
         /// <summary>
         /// Creates a TerrainType of the type specified in t.

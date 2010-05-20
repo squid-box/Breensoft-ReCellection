@@ -90,7 +90,7 @@ namespace Recellection.Code.Controllers
 
 				if (sel.point.X == 1 && sel.point.Y == 1)
 				{
-					finished = true;
+					GameMenu();
 				}
 				if (sel.point.X == 2 && sel.point.Y == 1)
 				{
@@ -105,6 +105,69 @@ namespace Recellection.Code.Controllers
 				}
             }
         }
+
+		private void GameMenu()
+		{
+			MenuIcon endTurn = new MenuIcon(Language.Instance.GetString("EndTurn"));
+			MenuIcon endGame = new MenuIcon(Language.Instance.GetString("EndGame"));
+			MenuIcon cancel = new MenuIcon(Language.Instance.GetString("Cancel"), Recellection.textureMap.GetTexture(Globals.TextureTypes.No));
+			
+			List<MenuIcon> options = new List<MenuIcon>(4);
+			options.Add(endTurn);
+			options.Add(endGame);
+			options.Add(cancel);
+			
+			Menu menu = new Menu(Globals.MenuLayout.FourMatrix, options, "");
+			MenuController.LoadMenu(menu);
+			
+			bool done = false;
+			while(! done)
+			{
+				Recellection.CurrentState = MenuView.Instance;
+				MenuIcon input = MenuController.GetInput();
+				if (input == endTurn)
+				{
+					finished = true;
+					break;
+				}
+				else if (input == endGame)
+				{
+					List<MenuIcon> promptOptions = new List<MenuIcon>(2);
+					MenuIcon yes = new MenuIcon(Language.Instance.GetString("Yes"), Recellection.textureMap.GetTexture(Globals.TextureTypes.Yes));
+					MenuIcon no = new MenuIcon(Language.Instance.GetString("No"), Recellection.textureMap.GetTexture(Globals.TextureTypes.No));
+					promptOptions.Add(yes);
+					promptOptions.Add(no);
+					MenuController.LoadMenu(new Menu(Globals.MenuLayout.Prompt, promptOptions, Language.Instance.GetString("AreYouSureYouWantToEndTheGame")));
+					MenuIcon inp = MenuController.GetInput();
+					MenuController.UnloadMenu();
+					
+					if (inp == yes)
+					{
+						// This should make the player lose :D
+						List<Building> buildingsToRemove = new List<Building>();
+						foreach(Graph g in playerInControll.GetGraphs())
+						{
+							foreach(Building b in g.GetBuildings())
+							{
+								buildingsToRemove.Add(b);
+							}
+						}
+						foreach(Building b in buildingsToRemove)
+						{
+							BuildingController.RemoveBuilding(b);
+						}
+						finished = true;
+						break;
+					}
+				}
+				else if (input == cancel)
+				{
+					break;
+				}
+			}
+			Recellection.CurrentState = WorldView.Instance;
+			MenuController.UnloadMenu();
+		}
 
 		public Selection retrieveSelection()
 		{
@@ -256,7 +319,7 @@ namespace Recellection.Code.Controllers
                 
                 Selection destsel = retrieveSelection();
                 Tile selectedTile = map.GetTile(destsel.absPoint);
-                UnitController.MoveUnits(building.GetUnits().Count, seltile, selectedTile);
+                UnitController.MoveUnits(playerInControll, seltile, selectedTile, building.GetUnits().Count);
                 
                 tobii.SetFeedbackColor(Color.White);
 
@@ -285,7 +348,11 @@ namespace Recellection.Code.Controllers
 			MenuIcon cancel = new MenuIcon(Language.Instance.GetString("Cancel"), null, Color.Black);
 			
 			List<MenuIcon> menuIcons = new List<MenuIcon>();
-			menuIcons.Add(moveUnits);
+			if (theWorld.GetMap().GetTile(previousSelection.absPoint).GetUnits(playerInControll).Count > 0)
+			{
+				// Only show this options if there are units.
+				menuIcons.Add(moveUnits);
+			}
 			menuIcons.Add(cancel);
 
 			Menu buildingMenu = new Menu(Globals.MenuLayout.FourMatrix, menuIcons, Language.Instance.GetString("TileMenu"), Color.Black);
@@ -298,7 +365,7 @@ namespace Recellection.Code.Controllers
 			if (choosenMenu == moveUnits)
 			{
 				Selection currSel = retrieveSelection();
-				if (currSel.state != State.TILE)
+				if (! (currSel.state == State.TILE || currSel.state == State.BUILDING))
 				{
 					return;
 				}
@@ -306,7 +373,7 @@ namespace Recellection.Code.Controllers
 				Tile from = theWorld.GetMap().GetTile(previousSelection.absPoint);
 				Tile to = theWorld.GetMap().GetTile(currSel.absPoint);
 
-				UnitController.MoveUnits(from.GetUnits().Count, from, to);
+				UnitController.MoveUnits(playerInControll, from, to, from.GetUnits().Count);
 			}
 		}
 

@@ -181,6 +181,7 @@
     <Compile Include="Code\Utility\Logger\LoggerSetup.cs" />
     <Compile Include="Code\Utility\Logger\LogLevel.cs" />
     <Compile Include="Code\Views\AIView.cs" />
+    <Compile Include="Code\Views\CreditsView.cs" />
     <Compile Include="Code\Views\EndGameView.cs" />
     <Compile Include="Code\Views\IRenderable.cs" />
     <Compile Include="Code\Views\IView.cs" />
