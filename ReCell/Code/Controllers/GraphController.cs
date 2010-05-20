@@ -161,7 +161,9 @@ namespace Recellection.Code.Controllers
 			MenuController.LoadMenu(menu);
 			
             Recellection.CurrentState = MenuView.Instance;
-            
+
+			MenuIcon selection = MenuController.GetInput();
+			
 			if (doptions[selection] >= 0)
 			{
 				SetWeight(b, doptions[selection]);
