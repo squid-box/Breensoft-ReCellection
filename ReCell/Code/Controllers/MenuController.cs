@@ -85,13 +85,29 @@ namespace Recellection.Code.Controllers
 			tobiiController.SetRegionsEnabled(false);
 
             //tobiiController.UnloadMenu(menuModel.Peek());
-
-			List<MenuIcon> options = menuModel.Peek().GetIcons();
+            Menu m = menuModel.Peek();
+            List<MenuIcon> options = m.GetIcons();
 			foreach(MenuIcon mi in options)
 			{
 				if (mi.region.RegionIdentifier == activated.RegionIdentifier)
 					return mi;
 			}
+            if (m.leftOff.region.RegionIdentifier == activated.RegionIdentifier)
+            {
+                return m.leftOff;
+            }
+            else if (m.rightOff.region.RegionIdentifier == activated.RegionIdentifier)
+            {
+                return m.rightOff;
+            }
+            else if (m.topOff.region.RegionIdentifier == activated.RegionIdentifier)
+            {
+                return m.topOff;
+            }
+            else if (m.botOff.region.RegionIdentifier == activated.RegionIdentifier)
+            {
+                return m.botOff;
+            }
 			throw new NonExistantInputException();
 		}
 	}
