@@ -223,6 +223,12 @@ namespace Recellection.Code.Views
                                 new Rectangle(bx, by, (int)Math.Round((float)spr.Width * size), (int)Math.Round((float)spr.Height * size)),
                                 b.owner.color);
 
+                            Vector2 xyhpr1 = new Vector2((float)((b.position.X - World.LookingAt.X) * Globals.TILE_SIZE) +14, (float) Math.Round((b.position.Y - World.LookingAt.Y) * Globals.TILE_SIZE) +100);
+                            Vector2 xyhpr2 = new Vector2((float)((b.position.X - World.LookingAt.X) * Globals.TILE_SIZE) + 114, (float)Math.Round((b.position.Y - World.LookingAt.Y) * Globals.TILE_SIZE) + 100);
+                            Vector2 xyhpg2 = new Vector2((float)((b.position.X - World.LookingAt.X) * Globals.TILE_SIZE) + 14 + b.GetHealthPercentage(), (float)Math.Round((b.position.Y - World.LookingAt.Y) * Globals.TILE_SIZE) + 100);
+                            DrawLine(spriteBatch, xyhpr1, xyhpr2, Color.Red, 8);
+                            DrawLine(spriteBatch, xyhpr1, xyhpg2, Color.Green, 8);
+                            
                             //Number of units drawage
                             int x = (int)(t.position.X - (World.LookingAt.X));
                             int y = (int)(t.position.Y - (World.LookingAt.Y));
@@ -273,9 +279,23 @@ namespace Recellection.Code.Views
                             }
                         }
                     }
-                    
-                    
 				}
+
+                if (World.DrawConstructionLines != null)
+                {
+                    foreach (Point p in World.DrawConstructionLines)
+                    {
+                         
+                        Tile tile = World.map.GetTile(p.X, p.Y);
+                        List<Vector2> points = tile.GetDrawPoints();
+                        for (int line = 0; line <= 2; line+= 2)
+                        {
+                            DrawLine(spriteBatch, TileToPixels(points[line] - lookAt), TileToPixels(points[line+1] - lookAt),
+                                                    Color.ForestGreen, 10);
+                        }
+                        
+                    }
+                }
             }
             
             // Draw scrollregions

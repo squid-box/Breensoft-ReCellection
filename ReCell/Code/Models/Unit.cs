@@ -239,6 +239,7 @@ namespace Recellection.Code.Models
             if (! this.isDead)
             {
 				targetPosition = CalculateTargetPosition();
+				
 				this.Move(systemTime);
 				stopMovingIfGoalIsReached();
             }
@@ -252,6 +253,7 @@ namespace Recellection.Code.Models
 			}
 			else if (MissionEntity != null)
 			{
+				// If we target a tile, we want to be in the middle of it.
 				return MissionEntity.position;
 			}
 			else if (BaseEntity != null && returnToBase)
@@ -279,7 +281,7 @@ namespace Recellection.Code.Models
 				return targetPosition;
 			}
 		}
-
+		
 		/// <summary>
 		/// Internal move logic. Uses targetPosition.
 		/// </summary>
@@ -358,9 +360,15 @@ namespace Recellection.Code.Models
 				{
 					if (BaseEntity == null)
 					{
-						// If no home exists, call current tile home.
-						DisperseDistance = 0.5f;
+						// If no home exists, call current tile home and turn passive.
 						BaseEntity = world.GetMap().GetTile(this.GetPosition());
+						IsAggressive = false; // free kills!
+					}
+					else if (BaseEntity is Building && ! ((Building)BaseEntity).IsAlive())
+					{
+						// If home just died, call the tile base of that home our home.
+						BaseEntity = world.GetMap().GetTile(BaseEntity.GetPosition());
+						IsAggressive = false; // free kills!
 					}
 					else
 					{

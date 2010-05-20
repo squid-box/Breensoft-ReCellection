@@ -177,7 +177,7 @@ namespace Recellection.Code.Controllers
         public static bool AddBuilding(Globals.BuildingTypes buildingType,
             Building sourceBuilding, Vector2 targetCoordinate, World world, Player owner)
         {
-            if (sourceBuilding != null && buildingType != Globals.BuildingTypes.Base && (Math.Abs(((int)sourceBuilding.position.X) - (int)targetCoordinate.X) > MAX_BUILDING_RANGE || (Math.Abs(((int)sourceBuilding.position.X) - (int)targetCoordinate.X) > MAX_BUILDING_RANGE)))
+            if (sourceBuilding != null && buildingType != Globals.BuildingTypes.Base && (Math.Abs(((int)sourceBuilding.position.X) - (int)targetCoordinate.X) > MAX_BUILDING_RANGE || (Math.Abs(((int)sourceBuilding.position.Y) - (int)targetCoordinate.Y) > MAX_BUILDING_RANGE)))
             {
 				logger.Debug("Building position out of range");
                 throw new BuildingOutOfRangeException();
@@ -306,12 +306,15 @@ namespace Recellection.Code.Controllers
                 if (b is ResourceBuilding && GraphController.Instance.GetGraph(b).baseBuilding != null)
                 {
                     GraphController.Instance.GetGraph(b).baseBuilding.RateOfProduction -= ((ResourceBuilding)b).RateOfProduction;
-                }
-                GraphController.Instance.RemoveBuilding(b);
-                lock (b.controlZone)
-                {
-                    b.controlZone.First().RemoveBuilding();
-                }
+				}
+				
+				lock (b.controlZone)
+				{
+					b.controlZone.First().RemoveBuilding();
+					GraphController.Instance.RemoveBuilding(b);
+					b.Damage(Math.Max(0, b.currentHealth)); // Kill it!
+                    SoundsController.playSound("buildingDeath",b.position);
+				}
             }
         }
 
