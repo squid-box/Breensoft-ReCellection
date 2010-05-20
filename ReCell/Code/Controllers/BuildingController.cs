@@ -297,15 +297,18 @@ namespace Recellection.Code.Controllers
         /// <param name="b">The buiding to remove.</param>
         public static void RemoveBuilding(Building b)
         {
-            if (b is ResourceBuilding)
+            lock (b)
             {
-                GraphController.Instance.GetGraph(b).baseBuilding.RateOfProduction -= ((ResourceBuilding)b).RateOfProduction;
+                if (b is ResourceBuilding && GraphController.Instance.GetGraph(b).baseBuilding != null)
+                {
+                    GraphController.Instance.GetGraph(b).baseBuilding.RateOfProduction -= ((ResourceBuilding)b).RateOfProduction;
+                }
+                GraphController.Instance.RemoveBuilding(b);
+                lock (b.controlZone)
+                {
+                    b.controlZone.First().RemoveBuilding();
+                }
             }
-			GraphController.Instance.RemoveBuilding(b);
-			lock (b.controlZone)
-			{
-				b.controlZone.First().RemoveBuilding();
-			}
         }
 
         public static void HurtBuilding(Building toHurt)

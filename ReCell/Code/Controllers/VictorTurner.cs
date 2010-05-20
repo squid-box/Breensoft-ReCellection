@@ -54,21 +54,6 @@ namespace Recellection.Code.Controllers
 			
             while (!finished)
             {
-                foreach (Player player in players)
-                {
-                    //updateFogOfWar(player);
-
-                    if (HasLost(player))
-                    {
-                        world.RemovePlayer(player);
-                    }
-                    if (HasWon())
-                    {
-						finished = true;
-						EndGame(players[0]);
-                        return;
-                    }
-                }
                 
 				logger.Debug("Victor turner is turning the page!");
                 foreach (Player player in players)
@@ -88,6 +73,16 @@ namespace Recellection.Code.Controllers
 					{
 						logger.Fatal("Could not identify "+player.color+" player!");
 					}
+                    if (CheckIfLostOrWon(player))
+                    {
+                        finished = true;
+                        EndGame(players[0]);
+                        break;
+                    }
+                }
+                if (finished)
+                {
+                    break;
                 }
 				logger.Info("Weighting graphs!");
                 foreach (Player player in players)
@@ -203,6 +198,19 @@ namespace Recellection.Code.Controllers
         private Boolean HasWon()
         {
             return (world.players.Count == 1);
+        }
+
+        private Boolean CheckIfLostOrWon(Player player)
+        {
+            if (HasLost(player))
+            {
+                world.RemovePlayer(player);
+            }
+            if (HasWon())
+            {
+                return true;
+            }
+            return false;
         }
     }
 }
