@@ -149,10 +149,10 @@ namespace Recellection.Code.Controllers
 		{
 			Dictionary<MenuIcon, int> doptions = new Dictionary<MenuIcon,int>(8);
 
-			doptions.Add(new MenuIcon("Non-vital priority", Recellection.textureMap.GetTexture(Globals.TextureTypes.Priority1)), 0);
-			doptions.Add(new MenuIcon("Medium priority", Recellection.textureMap.GetTexture(Globals.TextureTypes.Priority4)), 50);
-			doptions.Add(new MenuIcon("GET TO THE CHOPPAH!", Recellection.textureMap.GetTexture(Globals.TextureTypes.Priority8)), 100);
-			doptions.Add(new MenuIcon("Cancel", Recellection.textureMap.GetTexture(Globals.TextureTypes.No)), -1);
+			doptions.Add(new MenuIcon(Language.Instance.GetString("NoPriority"), Recellection.textureMap.GetTexture(Globals.TextureTypes.Priority1)), 0);
+			doptions.Add(new MenuIcon(Language.Instance.GetString("LowPriority"), Recellection.textureMap.GetTexture(Globals.TextureTypes.Priority4)), 50);
+			doptions.Add(new MenuIcon(Language.Instance.GetString("HighPriority"), Recellection.textureMap.GetTexture(Globals.TextureTypes.Priority8)), 100);
+			doptions.Add(new MenuIcon(Language.Instance.GetString("Cancel"), Recellection.textureMap.GetTexture(Globals.TextureTypes.No)), -1);
 
 			Menu menu = new Menu(Globals.MenuLayout.FourMatrix, 
 							new List<MenuIcon>(doptions.Keys),
@@ -162,13 +162,7 @@ namespace Recellection.Code.Controllers
 			
             Recellection.CurrentState = MenuView.Instance;
 
-			#region GET TO THE CHOPPAH!
 			MenuIcon selection = MenuController.GetInput();
-			if (100 == doptions[selection])
-			{
-				Sounds.Instance.LoadSound("choppah").Play();
-			}
-			#endregion
 			
 			if (doptions[selection] >= 0)
 			{
