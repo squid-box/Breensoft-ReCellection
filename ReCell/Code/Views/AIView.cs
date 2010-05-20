@@ -294,6 +294,7 @@ namespace Recellection.Code
             {
                 log.Info("Adding building " + b.name + " to the myBuildings list.");
                 myBuildings.Add(b);
+                friendlyPoints.Add(b.GetPosition());
             }
         }
     }

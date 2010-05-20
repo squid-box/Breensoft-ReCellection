@@ -65,6 +65,7 @@ namespace Recellection.Code.Main
 				if (response == newgame)
 				{	
 					// START THE GAME ALREADY!
+					
 					GameInitializer gameInit = new GameInitializer();
 					backgroundSound.Pause();
 					WorldView.Initiate(gameInit.theWorld);

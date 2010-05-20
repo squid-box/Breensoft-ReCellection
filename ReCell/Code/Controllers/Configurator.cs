@@ -71,8 +71,7 @@ namespace Recellection.Code.Controllers
                     else
                     {
                         GameOptions.Instance.musicMuted = true;
-                        SoundsController.changeEffectsVolume(0.0f);
-                        SoundsController.changeMusicVolume(0.0f);
+                        SoundsController.Mute();
                     }
                 }
                 else if (response == volume)
@@ -167,20 +166,20 @@ namespace Recellection.Code.Controllers
             MenuIcon musicVolumeDown = new MenuIcon("Music Volume Down");
             MenuIcon sfxVolumeUp = new MenuIcon("Effects Volume Up");
             MenuIcon sfxVolumeDown = new MenuIcon("Effects Volume Down");
-            MenuIcon empty = new MenuIcon("");
+
             MenuIcon done = new MenuIcon("Back");
 
-            List<MenuIcon> iconList = new List<MenuIcon>(); ;
+            List<MenuIcon> iconList = new List<MenuIcon>();
             iconList.Add(musicVolumeUp);
-            iconList.Add(empty);
             iconList.Add(musicVolumeDown);
             iconList.Add(sfxVolumeUp);
             iconList.Add(sfxVolumeDown);
             iconList.Add(done);
 
-            Menu volumeMenu = new Menu(iconList,"");
+            Menu volumeMenu = new Menu(Globals.MenuLayout.NineMatrix,iconList,"");
 
             MenuController.LoadMenu(volumeMenu);
+            Recellection.CurrentState = MenuView.Instance;
 
             bool notFinished = true;
 
@@ -190,19 +189,19 @@ namespace Recellection.Code.Controllers
 
                 if (response == musicVolumeUp)
                 {
-                    SoundsController.changeMusicVolume(GameOptions.Instance.musicVolume + 0.05f);
+                    SoundsController.changeMusicVolume(GameOptions.Instance.musicVolume + 0.1f);
                 }
                 else if (response == musicVolumeDown)
                 {
-                    SoundsController.changeMusicVolume(GameOptions.Instance.musicVolume - 0.05f);
+                    SoundsController.changeMusicVolume(GameOptions.Instance.musicVolume - 0.1f);
                 }
                 else if (response == sfxVolumeUp)
                 {
-                    SoundsController.changeEffectsVolume(GameOptions.Instance.sfxVolume + 0.05f);
+                    SoundsController.changeEffectsVolume(GameOptions.Instance.sfxVolume + 0.1f);
                 }
                 else if (response == sfxVolumeDown)
                 {
-                    SoundsController.changeEffectsVolume(GameOptions.Instance.sfxVolume - 0.05f);
+                    SoundsController.changeEffectsVolume(GameOptions.Instance.sfxVolume - 0.1f);
                 }
                 else if (response == done)
                 {

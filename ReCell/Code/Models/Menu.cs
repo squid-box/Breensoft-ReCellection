@@ -82,6 +82,17 @@ namespace Recellection
         {
             this.icons = icons;
         }
+
+
+        public Menu(List<MenuIcon> icons, MenuIcon leftOff, MenuIcon rightOff, MenuIcon topOff, MenuIcon botOff)
+        {
+            this.leftOff = leftOff;
+            this.rightOff = rightOff;
+            this.topOff = topOff;
+            this.botOff = botOff;
+            this.icons = icons;
+        }
+
 		
 		public Menu(Texture2D menuPic, List<MenuIcon> icons)
 		{
