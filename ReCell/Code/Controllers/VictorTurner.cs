@@ -202,13 +202,20 @@ namespace Recellection.Code.Controllers
 
         private Boolean CheckIfLostOrWon(List<Player> players)
         {
+			List<Player> toBeRemoved = new List<Player>();
 			foreach(Player p in players)
 			{
 				if (HasLost(p))
 				{
-					world.RemovePlayer(p);
+					toBeRemoved.Add(p);
 				}
 			}
+			
+			foreach(Player p in toBeRemoved)
+			{
+				players.Remove(p);
+			}
+			
             if (HasWon())
             {
                 return true;
