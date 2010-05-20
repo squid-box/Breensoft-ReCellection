@@ -30,17 +30,17 @@ EffectsVolumeUp=Höj effektvolym
 EffectsVolumeDown=Sänk effektvolym
 
 
-ChooseBuilding=Välj den typ av cell du vill bygga.
-SetWeight=Välj Beredskapsnivå.
-BuildCell=Bygg Cell.
-RemoveCell=Förstör denna cell.
-UpgradeUnits=Uppgradera alla små celler.
-UpgradeMenu=Välj vilken uppgradering du vill ha
+ChooseBuilding=Välj den typ av cell du vill bygga
+SetWeight=Välj Prioritet
+BuildCell=Bygg Cell
+RemoveCell=Förstör denna cell
+UpgradeUnits=Uppgradera alla små celler
+UpgradeMenu=Välj önskad uppgradering
 UpgradePower=Uppgradera styrka
 UpgradeSpeed=Uppgradera snabbhet
-BuildingMenu=Bygg Cell.
-RepairCell=Reparera cell.
-SetAggro=Växla aggressivitet.
+BuildingMenu=Byggnadsmeny
+RepairCell=Reparera cell
+SetAggro=Växla aggressivitet
 
 OptionsMenu1=OTest1
 OptionsMenu2=OTest2
@@ -85,7 +85,7 @@ AreYouSureYouWantToEndTheGame=Är du säker på att du vill avsluta spelomgånge
 
 [Tile options]
 TileMenu=Vad vill du göra med markbiten?
-MoveUnits=Flytta små cellerna.
+MoveUnits=Flytta små cellerna
 
 [Graph]
 SetImportance=Vilken vikt vill du ha?
@@ -94,10 +94,10 @@ LowPriority=Låg prioritet
 HighPriority=Hög prioritet
 
 [Game entities]
-BaseCell=Bas Cell
-DefensiveCell=Försvars Cell
+BaseCell=Bascell
+DefensiveCell=Försvarscell
 AggressiveCell=Arg Cell
-ResourceCell=Arbets Cell
+ResourceCell=Arbetscell
 
 [End game]
 hasWon=Grattis!\n\nDu vann.
