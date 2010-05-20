@@ -65,11 +65,13 @@ namespace Recellection.Code.Controllers
         public static void changeMusicVolume(float percentage)
         {
             Sounds.Instance.GetCategory("Music").SetVolume(percentage);
+            GameOptions.Instance.musicVolume = percentage;
         }
 
         public static void changeEffectsVolume(float percentage)
         {
             Sounds.Instance.GetCategory("Effects").SetVolume(percentage);
+            GameOptions.Instance.sfxVolume = percentage;
         }
     }
 }
