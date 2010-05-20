@@ -18,7 +18,7 @@ namespace Recellection.Code.Controllers
          */
         private AIView m_view;
 
-        private int resourceThreshold = 3; //The ideal number of resource hotspots the AI should have secured
+        private int resourceThreshold = 2; //The ideal number of resource hotspots the AI should have secured
         private int resourceCriticalThreshold = 1; //The least number of resource hotspots the AI MUST have secured
         
         private Random randomFactory;
@@ -67,22 +67,29 @@ namespace Recellection.Code.Controllers
         /// </summary>
         public void MakeMove()
         {
-            log.Fatal("AI Making a Move.");
+            log.Info("AI Making a Move.");
 
             m_view.LookAtScreen(); //Have the AI View update its local variables
             int resourceLocations = m_view.GetResourceLocations().Count;
 
             //First order of business: secure some income
             //While we have secured less resource points than we should have, get some!
-            if(resourceLocations < resourceThreshold)
+            if (resourceLocations < resourceThreshold)
+            {
+                log.Info("Not enough resource points. Need " + resourceThreshold + ", have " + resourceLocations);
                 SecureNextResourceHotSpot();
+            }
 
             if (resourceLocations < resourceCriticalThreshold)
+            {
+                log.Info("Not enough resource points so nothing more to do this turn.");
                 //If we have not secured basic income, dont worry about anything else.
                 return;
+            }
 
             List<Building> enemyFront = new List<Building>();
             List<Building> front = GetFrontLine(enemyFront);
+            log.Info("Weighing the frontline.");
             WeighFrontLine(front, enemyFront);
         }
 
@@ -135,10 +142,13 @@ namespace Recellection.Code.Controllers
                     ratios[i] = (double)(enemyFront[i].GetUnits().Count) / enemySum;
                 }
             }
+            log.Info("Front line consists of: ");
             //Finally distribute that same ratio across the AI's own border.
             for (int i = 0; i < front.Count; i++)
             {
-                GraphController.Instance.SetWeight(front[i], (int)(ratios[i] * m_view.CRITICAL));
+                Building temp = front[i];
+                log.Info("("+ temp.GetPosition().X + "," + temp.GetPosition().Y + ")");
+                GraphController.Instance.SetWeight(temp, (int)(ratios[i] * m_view.CRITICAL));
             }
         }
 
@@ -148,9 +158,11 @@ namespace Recellection.Code.Controllers
         /// </summary>
         private void SecureNextResourceHotSpot()
         {
+            log.Info("Securing next hotspot.");
             Building sourceBuilding = SelectSourceBuilding();
             Vector2 sourcePosition = sourceBuilding.GetPosition();
             Vector2 resource = GetClosestResourceHotspot(sourcePosition);
+            log.Info("Next spot found at " + resource.X + "," + resource.Y);
             List<Vector2> path = GenerateBuildPathBetween(sourcePosition, resource);
 
             //Skip the parts of the path we have walked before
@@ -167,22 +179,26 @@ namespace Recellection.Code.Controllers
 
             if (WithinBuildRangeOf(sourceBuilding.GetPosition(), resource))
             {//The resource building is within reach of the source
+                log.Info("Spot is close enough, expanding from " + sourceBuilding.GetPosition().X + "," + sourceBuilding.GetPosition().Y);
                 built = IssueBuildOrder(resource, sourceBuilding, Globals.BuildingTypes.Resource);
                 if(built)
                     ClearHotspotWeights(path);
             }
             else
             {
+                log.Info("Spot is too far away, relaying building at " + path[0].X + "," + path[0].Y);
                 //Relay buildings must be placed first
                 built = IssueBuildOrder(path[0], sourceBuilding, Globals.BuildingTypes.Barrier);
                 if (built)
                 {
                     if (m_view.GetResourceLocations().Count < resourceThreshold)
                     {//If the AI has not secured enough resource spots, set the priority to critical
+                        log.Info("Importance of this building is CRITICAL");
                         GraphController.Instance.SetWeight(m_view.GetBuildingAt(path[0]), m_view.CRITICAL);
                     }
                     else
                     {
+                        log.Info("Importance of this building is THREATENED");
                         GraphController.Instance.SetWeight(m_view.GetBuildingAt(path[0]), m_view.THREATENED);
                     }
                 }
@@ -196,6 +212,7 @@ namespace Recellection.Code.Controllers
         /// <param name="path"></param>
         private void ClearHotspotWeights(List<Vector2> path)
         {
+            log.Info("Clearing all latent path weights.");
             for (int i = 0; i < path.Count-1; i++)
             {
                 Building b = m_view.GetBuildingAt(path[i]);
