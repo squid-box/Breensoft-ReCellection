@@ -35,5 +35,25 @@ namespace Recellection.Code.Models
             return best;
         }
 
+
+        /// <summary>
+        /// Reuturns the first building from the given list tha has the given amount of
+        /// units or more. If none was found null is returned.
+        /// </summary>
+        /// <param name="units"></param>
+        /// <param name="buildings"></param>
+        public static Building FindBuildingWithUnitCount(int units, List<Building> buildings)
+        {
+            for (int i = 0; i < buildings.Count; i++)
+            {
+                Building b = buildings[i];
+                if (b.GetUnits().Count > units)
+                {
+                    return b;
+                }
+            }
+            return null;
+        }
+
     }
 }
