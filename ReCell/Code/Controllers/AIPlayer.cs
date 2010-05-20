@@ -58,6 +58,10 @@ namespace Recellection.Code.Controllers
             log.Info("AI Making a Move.");
 
             m_view.LookAtScreen(); //Have the AI View update its local variables
+            if (m_view.myBuildings.Count == 0)
+            {
+                return;
+            }
             resourceThreshold = GetResourceThreshold();
 
             int resourceLocations = m_view.GetResourceLocations().Count;
@@ -156,7 +160,7 @@ namespace Recellection.Code.Controllers
         private Building GetWeakestPoint()
         {   
             List<Building> enemies = new List<Building>();
-            GetFrontLine(enemies);
+            GetFrontLine(enemies, 2);
             Building target = enemies[0];
             //Then find the weakest one.
             for (int i = 0; i < enemies.Count; i++)
@@ -192,7 +196,8 @@ namespace Recellection.Code.Controllers
         {
             foreach (Building b in list) 
             {
-                GraphController.Instance.SetWeight(b, p);
+                if(b != null)
+                    GraphController.Instance.SetWeight(b, p);
             }
         }
 
@@ -224,7 +229,8 @@ namespace Recellection.Code.Controllers
         {
             foreach (Building b in criticalBuildings) 
             {
-                GraphController.Instance.SetWeight(b, m_view.CRITICAL);
+                if(b != null)
+                    GraphController.Instance.SetWeight(b, m_view.CRITICAL);
             }
         }
 
@@ -265,12 +271,16 @@ namespace Recellection.Code.Controllers
         private List<Building> GetFrontLine(List<Building> enemyFront, int tolerance)
         {
             log.Info("Finding the front line.");
-            List<Vector2> positions = m_view.friendlyPoints;
+            List<Vector2> positions = new List<Vector2>();
+            foreach (Vector2 vec in m_view.friendlyPoints)
+            {
+                positions.Add(vec);
+            }
             for (int i = 0; i < m_view.friendlyPoints.Count; i++)
             {
                 List<Point> interval = new List<Point>();
-                interval[0] = new Point((int)m_view.friendlyPoints[i].X - (tolerance/2), (int)m_view.friendlyPoints[i].Y - (tolerance/2));
-                interval[1] = new Point((int)m_view.friendlyPoints[i].X + (tolerance/2), (int)m_view.friendlyPoints[i].Y + (tolerance/2));
+                interval.Add(new Point((int)m_view.friendlyPoints[i].X - (tolerance/2), (int)m_view.friendlyPoints[i].Y - (tolerance/2)));
+                interval.Add(new Point((int)m_view.friendlyPoints[i].X + (tolerance/2), (int)m_view.friendlyPoints[i].Y + (tolerance/2)));
                 List<Vector2> vecs = Util.CreateMatrixFromInterval(interval);
                 foreach (Vector2 vec in vecs)
                     positions.Add(vec);
