@@ -15,6 +15,7 @@ namespace Recellection.Code.Controllers
         public const int MAX_BUILDING_RANGE = 3;
 
         private static Logger logger = LoggerFactory.GetLogger();
+
         /// <summary>
         /// Let all Aggressive Buildings for the player Acquire Target(s)
         /// </summary>
@@ -178,11 +179,13 @@ namespace Recellection.Code.Controllers
         {
             if (sourceBuilding != null && buildingType != Globals.BuildingTypes.Base && (Math.Abs(((int)sourceBuilding.position.X) - (int)targetCoordinate.X) > MAX_BUILDING_RANGE || (Math.Abs(((int)sourceBuilding.position.Y) - (int)targetCoordinate.Y) > MAX_BUILDING_RANGE)))
             {
+				logger.Debug("Building position out of range");
                 throw new BuildingOutOfRangeException();
             }
             uint price = owner.unitAcc.CalculateBuildingCostInflation(buildingType);
             if (sourceBuilding != null && (uint)sourceBuilding.CountUnits() < price)
             {
+				logger.Debug("Building too expensive");
                 return false;
             }
             
