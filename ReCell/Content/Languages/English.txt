@@ -10,7 +10,24 @@ MainMenu5=Test5
 MainMenu6=Test6
 MainMenu7=Test7
 MainMenu8=Test8
+
 back=Back
+NewGame=New Game
+Options=Options
+Help=Help
+Quit=Quit
+
+Mute=Mute
+Volume=Volume
+Difficulty=Difficulty
+Language=Language
+ChooseLanguage=Choose Language
+ChooseADifficulty=Choose a difficulty
+
+MusicVolumeUp=Music volume up
+MusicVolumeDown=Music volume down
+EffectsVolumeUp=Effects volume up
+EffectsVolumeDown=Effects volume down
 
 ChooseBuilding=Choose the kind of cell you want to build
 SetWeight=Set level of protection
