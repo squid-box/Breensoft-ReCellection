@@ -528,8 +528,8 @@ namespace Recellection.Code.Controllers
             //here be offscreen regions!
             leftOff = new MenuIcon(new GUIRegion(IntPtr.Zero, new System.Windows.Rect(-700, 0, 700, Globals.VIEWPORT_HEIGHT)));
             rightOff = new MenuIcon(new GUIRegion(IntPtr.Zero, new System.Windows.Rect(Globals.VIEWPORT_WIDTH, 0, 700, Globals.VIEWPORT_HEIGHT)));
-            botOff = new MenuIcon(new GUIRegion(IntPtr.Zero, new System.Windows.Rect(0, Globals.VIEWPORT_HEIGHT, Globals.VIEWPORT_WIDTH, 700)));
-            topOff = new MenuIcon(new GUIRegion(IntPtr.Zero, new System.Windows.Rect(0, -700, Globals.VIEWPORT_WIDTH, 700)));
+            topOff = new MenuIcon(new GUIRegion(IntPtr.Zero, new System.Windows.Rect(0, Globals.VIEWPORT_HEIGHT, Globals.VIEWPORT_WIDTH, 700)));
+            botOff = new MenuIcon(new GUIRegion(IntPtr.Zero, new System.Windows.Rect(0, -700, Globals.VIEWPORT_WIDTH, 700)));
             MenuController.LoadMenu(new Menu(allMenuIcons, leftOff, rightOff, topOff, botOff));
             MenuController.DisableMenuInput();
         }
