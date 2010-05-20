@@ -76,6 +76,17 @@ namespace Recellection.Code.Controllers
                 return;
             }
 
+            //Reset all the building weights.
+            SetWeights(m_view.myBuildings, 0);
+
+
+            //If we are falling behind on the upgrades: catch up.
+            if (m_view.opponents[0].powerLevel > this.powerLevel)
+            {
+                log.Info("Attempting to upgrading units.");
+                UpgradeUnits();
+            }
+
             List<Building> enemyFront = new List<Building>();
             List<Building> front = GetFrontLine(enemyFront);
             log.Info("Weighing the frontline");
@@ -83,6 +94,40 @@ namespace Recellection.Code.Controllers
             SetCriticalWeights();
             log.Info("//Ending turn");
         }
+
+
+        /// <summary>
+        /// Sets the weight of the given builings to the given number.
+        /// </summary>
+        /// <param name="list"></param>
+        /// <param name="p"></param>
+        private void SetWeights(List<Building> list, int p)
+        {
+            foreach (Building b in list) 
+            {
+                GraphController.Instance.SetWeight(b, p);
+            }
+        }
+
+        /// <summary>
+        /// Upgrade the level of the units by finding a building that can afford
+        /// to pay for the upgrade and then ordering the upgrade.
+        /// </summary>
+        private void UpgradeUnits()
+        {
+            int cost = unitAcc.GetUpgradeCost();
+            
+            List<Building> buildings = m_view.myBuildings;
+            Building b = Util.FindBuildingWithUnitCount(cost, buildings);
+            if (b != null)
+            {
+                log.Info("Found a suitable building at " + b.GetPosition().X + ";" + b.GetPosition().Y + ", upgrading units.");
+                unitAcc.PayAndUpgrade(b);
+                return;
+            }
+            log.Info("Could not afford to upgrade.");
+        }
+
 
 
         /// <summary>
@@ -274,7 +319,12 @@ namespace Recellection.Code.Controllers
         /// <returns></returns>
         private Building SelectSourceBuilding()
         {
-            return this.GetGraphs()[0].baseBuilding;
+            Building b = GetGraphs()[0].baseBuilding;
+            if (b == null)
+            { //Base building destroyed
+                b = GetGraphs()[0].GetBuildings().First();
+            }
+            return b;
         }
 
 
