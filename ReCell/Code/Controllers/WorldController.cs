@@ -121,6 +121,11 @@ namespace Recellection.Code.Controllers
         
         private void ContextMenu()
         {
+			if (selectedTile == null)
+			{
+				return;
+			}
+			
 			if (selectedTile.GetBuilding() != null)
 			{
 				BuildingMenu();
