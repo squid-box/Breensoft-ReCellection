@@ -153,25 +153,6 @@ namespace Recellection
             }
             return buffer.ToString();
         }
-
-        private Vector2 calculateDrawCoordinates(Vector2 middlePointOfString, String text)
-        {
-            int textWidth = 0;
-
-            if (text.IndexOf('\n') != -1)
-            {
-                textWidth = text.IndexOf('\n') * FONT_WIDTH;
-            }
-            else
-            {
-                textWidth = text.Length * FONT_WIDTH;
-            }
-
-            float x = middlePointOfString.X - textWidth / 2;
-            float y = middlePointOfString.Y - (FONT_SIZE / 2 * (text.Split('\n').Length+1));
-
-            return new Vector2(x, y);
-        }
 		
 		private void CreatePrompt(List<MenuIcon> icons)
 		{
