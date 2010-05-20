@@ -74,6 +74,8 @@ namespace Recellection.Code.Controllers
         public void Run()
 		{
 			Selection sel = new Selection();
+			logger.Info("Logger started");
+
 			sel.state = State.NONE;
 			finished = false;
             while (!finished)
