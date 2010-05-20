@@ -103,7 +103,7 @@ namespace Recellection.Code.Controllers
 					case State.OFFSCREEN:
 						if (sel.point.X == -1)
 						{
-							ContextMenu(previousSelection);
+							ContextMenu();
 						}
 						if (sel.point.X == 1)
 						{
@@ -114,9 +114,9 @@ namespace Recellection.Code.Controllers
             }
         }
         
-        private void ContextMenu(Selection selection)
+        private void ContextMenu()
         {
-			if (selection.state == State.BUILDING)
+			if (selectedTile.GetBuilding() != null)
 			{
 				BuildingMenu();
 			}
