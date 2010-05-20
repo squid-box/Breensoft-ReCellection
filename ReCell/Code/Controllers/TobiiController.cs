@@ -172,7 +172,7 @@ namespace Recellection
         }
         void FocusEnter(object sender, RegionFocusEventArgs e)
         {
-
+            newActivatedRegion = (GUIRegion)sender;
         }
 
         /// <summary>
