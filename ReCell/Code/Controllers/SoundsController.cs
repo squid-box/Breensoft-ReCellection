@@ -16,8 +16,8 @@ namespace Recellection.Code.Controllers
     class SoundsController
     {
         private static World theWorld;
- 
-        /// <param name="worldInstance">A World instance used to calculate distance to objects</param>
+
+		/// <param name="worldInstance">A World instance used to calculate distance to objects</param>
         public SoundsController(World worldInstance)
         {
             theWorld = worldInstance;
@@ -50,7 +50,6 @@ namespace Recellection.Code.Controllers
 			}
 			Point lookingAt = theWorld.LookingAt;
 
-            
 			float length = (new Vector2((lookingAt.X + ((Globals.VIEWPORT_WIDTH/Globals.TILE_SIZE) / 2)), (lookingAt.Y + ((Globals.VIEWPORT_HEIGHT/Globals.TILE_SIZE) / 2))) - point).Length();
 
 			float newVolume = GameOptions.Instance.sfxVolume*(80.0f * (float) Math.Log10(-0.05f * length + 1.0f));
@@ -73,5 +72,11 @@ namespace Recellection.Code.Controllers
             Sounds.Instance.GetCategory("Effects").SetVolume(percentage);
             GameOptions.Instance.sfxVolume = percentage;
         }
+
+		public static void Mute()
+        {
+			Sounds.Instance.GetCategory("Music").SetVolume(0.0f);
+			Sounds.Instance.GetCategory("Effects").SetVolume(0.0f);
+		}
     }
 }
