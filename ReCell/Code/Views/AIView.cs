@@ -219,37 +219,6 @@ namespace Recellection.Code
         //############## Getter functions ##############//
 
 
-
-        /// <summary>
-        /// Returns the Tile located in the given coordinates provided that it is visible.
-        /// If it is not visible, null is returned.
-        /// </summary>
-        /// <param name="coords"></param>
-        /// <returns></returns>
-        internal Tile GetTileAt(Vector2 coords)
-        {
-            //log.Fatal("Accessing Tile at "+coords.X+","+coords.Y);
-            Tile tempTile = world.GetMap().GetTile((int)coords.X, (int)coords.Y);
-
-            ///* Uncomment when fog of war is properly implemented
-            //if (tempTile.IsVisible(ai))
-            //{
-            //    return tempTile;
-            //}
-
-            return tempTile;
-        }
-
-        /// <summary>
-        /// Returns the fromBuilding at the given coordinates provided that it is visible.
-        /// </summary>
-        /// <param name="point"></param>
-        /// <returns></returns>
-        internal Building GetBuildingAt(Vector2 point)
-        {
-            return GetTileAt(point).GetBuilding();
-        }
-
         /// <summary>
         /// Returns the coordinates of all the friendly buildings
         /// </summary>
