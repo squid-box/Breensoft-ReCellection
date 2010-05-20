@@ -21,7 +21,7 @@ namespace Recellection.Code.Controllers
         /// <summary>
         /// The different states this controller will assume
         /// </summary>
-        public enum State { NONE, BUILDING, TILE, MENU };
+        public enum State { NONE, BUILDING, TILE, OFFSCREEN };
         
         public struct Selection
         {
@@ -84,72 +84,46 @@ namespace Recellection.Code.Controllers
 				
                 // Generate the appropriate menu for this state.
                 // Get the active GUI Region and invoke the associated method.
-                MenuIcon activatedMenuIcon = MenuController.GetInput();
-                if (activatedMenuIcon == leftOff)
-                {
-                    if (previousSelection.state == State.BUILDING)
-                    {
-                        TileMenu(previousSelection);
-                    }
-                    else
-                    {
-                        BuildingMenu(previousSelection);
-                    }
+                
+                sel = retrieveSelection();
 
-				}
-                else if (activatedMenuIcon == rightOff)
-                {
-                    if (previousSelection.state == State.BUILDING)
-                    {
-                        TileMenu(previousSelection);
-                    }
-                    else
-                    {
-                        BuildingMenu(previousSelection);
-                    }
-                }
-                else if (activatedMenuIcon == topOff)
-                {
-					TobiiController.GetInstance(Recellection.windowHandle).SetRegionsEnabled(false);
-                    GameMenu();
-					TobiiController.GetInstance(Recellection.windowHandle).SetRegionsEnabled(true);
-                }
-                else if (activatedMenuIcon == botOff)
-                {
+                World.Map map = theWorld.GetMap();
+                
+                switch(sel.state)
+				{
+					case State.BUILDING:
+					case State.TILE:
+						// If this is the first time we select a tile...
+						if (selectedTile != null)
+							selectedTile.active = false;
 
-                }
-                else
-                {
-                    sel = retrieveSelection(activatedMenuIcon);
-                    //previousSelection = sel;
-                    // They are used if the state needs true coordinates, scroll only uses deltas.
-
-                    World.Map map = theWorld.GetMap();
-
-                    // If this is the first time we select a tile...
-                    if (selectedTile != null)
-                        selectedTile.active = false;
-                    selectedTile = map.GetTile(sel.absPoint);
-                    selectedTile.active = true;
-                    /*
-                    if (sel.point.X == 1 && sel.point.Y == 1)
-                    {
-                        GameMenu();
-                    }
-                    if (sel.point.X == 2 && sel.point.Y == 1)
-                    {
-                        if (previousSelection.state == State.BUILDING)
-                        {
-                            BuildingMenu(previousSelection);
-                        }
-                        else if (previousSelection.state == State.TILE)
-                        {
-                            TileMenu(previousSelection);
-                        }
-                    }
-                     * */
+						selectedTile = map.GetTile(sel.absPoint);
+						selectedTile.active = true;
+					break;
+					case State.OFFSCREEN:
+						if (sel.point.X == -1)
+						{
+							ContextMenu(previousSelection);
+						}
+						if (sel.point.X == 1)
+						{
+							GameMenu();
+						}
+					break;
                 }
             }
+        }
+        
+        private void ContextMenu(Selection selection)
+        {
+			if (selection.state == State.BUILDING)
+			{
+				BuildingMenu(selection);
+			}
+			else
+			{
+				TileMenu(selection);
+			}
         }
 
 		private void GameMenu()
@@ -215,40 +189,57 @@ namespace Recellection.Code.Controllers
 			MenuController.UnloadMenu();
 		}
 
-        public Selection getSelection()
-        {
-			while (true)
-			{
-				MenuIcon activatedMenuIcon = MenuController.GetInput();
-				if (activatedMenuIcon.label != null)
-				{
-					return retrieveSelection(activatedMenuIcon);
-				}
-			}
-        }
-
-        public Selection retrieveSelection(MenuIcon activatedMenuIcon)
+        public Selection retrieveSelection()
 		{
-
 			myLogger.Debug("Waiting for input...");
-				
+
+			MenuIcon activatedMenuIcon = MenuController.GetInput();
+
+			Selection s = new Selection();
+			
 		    int x = 0;
             int y = 0;
-            String[] splitted = activatedMenuIcon.label.Split(REG_EXP);
-            try
-            {
-                myLogger.Trace("Splitted string = " + splitted[0] + "\t" + splitted[1]);
-            }
-            catch (IndexOutOfRangeException)
-            {
-                throw new ArgumentException("Your argument is invalid, my beard is a windmill.");
-            }
+			if (activatedMenuIcon.label != null)
+			{
+				String[] splitted = activatedMenuIcon.label.Split(REG_EXP);
+				try
+				{
+					myLogger.Trace("Splitted string = " + splitted[0] + "\t" + splitted[1]);
+				}
+				catch (IndexOutOfRangeException)
+				{
+					throw new ArgumentException("Your argument is invalid, my beard is a windmill.");
+				}
 
-			x = Int32.Parse(splitted[0]);
-			y = Int32.Parse(splitted[1]);
+				x = Int32.Parse(splitted[0]);
+				y = Int32.Parse(splitted[1]);
+			}
+			else
+			{
+				if (activatedMenuIcon == leftOff)
+				{
+					x = -1;
+				}
+				else if (activatedMenuIcon == rightOff)
+				{
+					x = 1;
+				}
+				else if (activatedMenuIcon == topOff)
+				{
+					y = -1;
+				}
+				else if (activatedMenuIcon == botOff)
+				{
+					y = 1;
+				}
+				
+				s.state = State.OFFSCREEN;
+				s.point = new Point(x, y);
+				return s;
+			}
+			
 
             Point absoluteCordinate = new Point(x + theWorld.LookingAt.X, y + theWorld.LookingAt.Y);
-            Selection s = new Selection();
             if(activatedMenuIcon.labelColor.Equals(Color.NavajoWhite))
             {
 				if (theWorld.GetMap().GetTile(new Point(x + theWorld.LookingAt.X, y + theWorld.LookingAt.Y))
@@ -271,7 +262,7 @@ namespace Recellection.Code.Controllers
             else if (activatedMenuIcon.labelColor.Equals(Color.Chocolate))
             {
 				theWorld.LookingAt = new Point(theWorld.LookingAt.X + x, theWorld.LookingAt.Y + y);
-				return getSelection();
+				return retrieveSelection();
             }
             else
             {
@@ -330,7 +321,7 @@ namespace Recellection.Code.Controllers
             else if (choosenMenu.Equals(buildCell))
             {
                 tobii.SetFeedbackColor(Color.DarkGreen);
-                Selection destsel = getSelection();
+				Selection destsel = retrieveSelection();
                 if (destsel.state != State.TILE)
 				{
 					SoundsController.playSound("Denied");
@@ -373,13 +364,15 @@ namespace Recellection.Code.Controllers
             else if (choosenMenu.Equals(moveUnits))
             {
                 tobii.SetFeedbackColor(Color.Red);
-                
-                Selection destsel = getSelection();
-                Tile selectedTile = map.GetTile(destsel.absPoint);
-                UnitController.MoveUnits(playerInControll, seltile, selectedTile, building.GetUnits().Count);
-                
-                tobii.SetFeedbackColor(Color.White);
 
+				Selection destsel = retrieveSelection();
+				if (destsel.state == State.BUILDING || destsel.state == State.TILE)
+				{
+					Tile selectedTile = map.GetTile(destsel.absPoint);
+					UnitController.MoveUnits(playerInControll, seltile, selectedTile, building.GetUnits().Count);
+				}
+
+				tobii.SetFeedbackColor(Color.White);
             }
             else if (choosenMenu.Equals(repairCell))
             {
@@ -426,7 +419,7 @@ namespace Recellection.Code.Controllers
 			
 			if (choosenMenu == moveUnits)
 			{
-				Selection currSel = getSelection();
+				Selection currSel = retrieveSelection();
 				if (! (currSel.state == State.TILE || currSel.state == State.BUILDING))
 				{
 					return;
