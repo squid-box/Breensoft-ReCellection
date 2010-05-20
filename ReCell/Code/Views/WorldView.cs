@@ -264,7 +264,7 @@ namespace Recellection.Code.Views
                                 int ux = (int)Math.Round((u.position.X - World.LookingAt.X) * Globals.TILE_SIZE) - spr.Width / 2;
                                 int uy = (int)Math.Round((u.position.Y - World.LookingAt.Y) * Globals.TILE_SIZE) - spr.Height / 2;
 
-								float amount = 1f - (0.3f + (u.PowerLevel*0.7f));
+								float amount = (0.3f + (u.PowerLevel*0.7f));
                                 //c = Color.Lerp(c, Color.HotPink, 0.3f + u.PowerLevel * 0.5f);
 								Color c = Color.Lerp(u.GetOwner().color, Color.White, amount);
                                 
