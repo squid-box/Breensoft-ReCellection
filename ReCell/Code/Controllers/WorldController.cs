@@ -74,6 +74,8 @@ namespace Recellection.Code.Controllers
         public void Run()
 		{
 			Selection sel = new Selection();
+			logger.Info("Logger started");
+
 			sel.state = State.NONE;
 			finished = false;
             while (!finished)
@@ -85,6 +87,7 @@ namespace Recellection.Code.Controllers
                 MenuIcon activatedMenuIcon = MenuController.GetInput();
                 if (activatedMenuIcon == leftOff)
                 {
+<<<<<<< HEAD
                     if (previousSelection.state == State.BUILDING)
                     {
                         TileMenu(previousSelection);
@@ -105,10 +108,23 @@ namespace Recellection.Code.Controllers
                     {
                         BuildingMenu(previousSelection);
                     }
+=======
+					TobiiController.GetInstance(Recellection.windowHandle).SetRegionsEnabled(false);
+                    TileMenu(previousSelection);
+					TobiiController.GetInstance(Recellection.windowHandle).SetRegionsEnabled(true);
+				}
+                else if (activatedMenuIcon == rightOff)
+                {
+					TobiiController.GetInstance(Recellection.windowHandle).SetRegionsEnabled(false);
+                    BuildingMenu(previousSelection);
+					TobiiController.GetInstance(Recellection.windowHandle).SetRegionsEnabled(true);
+>>>>>>> 643b859c4e9888ec97c67af775a7978ffa7f0c68
                 }
                 else if (activatedMenuIcon == topOff)
                 {
+					TobiiController.GetInstance(Recellection.windowHandle).SetRegionsEnabled(false);
                     GameMenu();
+					TobiiController.GetInstance(Recellection.windowHandle).SetRegionsEnabled(true);
                 }
                 else if (activatedMenuIcon == botOff)
                 {
@@ -213,16 +229,27 @@ namespace Recellection.Code.Controllers
 
         public Selection getSelection()
         {
+<<<<<<< HEAD
             MenuIcon activatedMenuIcon = MenuController.GetInput();
             if (activatedMenuIcon == leftOff || activatedMenuIcon == rightOff || activatedMenuIcon == topOff || activatedMenuIcon == botOff)
             return retrieveSelection(activatedMenuIcon);
+=======
+			while (true)
+			{
+				MenuIcon activatedMenuIcon = MenuController.GetInput();
+				if (activatedMenuIcon.label != null)
+				{
+					return retrieveSelection(activatedMenuIcon);
+				}
+			}
+>>>>>>> 643b859c4e9888ec97c67af775a7978ffa7f0c68
         }
 
         public Selection retrieveSelection(MenuIcon activatedMenuIcon)
 		{
+
 			myLogger.Debug("Waiting for input...");
-			
-						 
+				
 		    int x = 0;
             int y = 0;
             String[] splitted = activatedMenuIcon.label.Split(REG_EXP);
