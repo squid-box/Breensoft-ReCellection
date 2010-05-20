@@ -403,6 +403,10 @@ namespace Recellection.Code.Models
         
         public bool IsAtBase()
 		{
+			if (BaseEntity is Building && ! ((Building)BaseEntity).units.Contains(this))
+			{
+				return false;
+			}
 			return Vector2.Distance(BaseEntity.position, this.position) <= disperseDistance;
         }
     }
