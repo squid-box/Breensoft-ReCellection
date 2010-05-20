@@ -147,7 +147,8 @@ namespace Recellection
 
                     i++;
                 }
-                
+                if (i == words.Length)
+                    break;
                 buffer.Append('\n');
                 lineBreaksToAdd--;
             }
