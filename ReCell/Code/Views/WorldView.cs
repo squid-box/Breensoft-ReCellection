@@ -264,11 +264,10 @@ namespace Recellection.Code.Views
                                 int ux = (int)Math.Round((u.position.X - World.LookingAt.X) * Globals.TILE_SIZE) - spr.Width / 2;
                                 int uy = (int)Math.Round((u.position.Y - World.LookingAt.Y) * Globals.TILE_SIZE) - spr.Height / 2;
 
-                                Color c = u.GetOwner().color;
-                                if (u.PowerLevel > 0f)
-                                {
-                                    c = Color.Lerp(c, Color.HotPink, 0.3f + u.PowerLevel * 0.5f);
-                                }
+								float amount = (0.3f + (u.PowerLevel*0.7f));
+                                //c = Color.Lerp(c, Color.HotPink, 0.3f + u.PowerLevel * 0.5f);
+								Color c = Color.Lerp(u.GetOwner().color, Color.White, amount);
+                                
                                 this.DrawTexture(spriteBatch, spr, new Rectangle(ux, uy, spr.Width, spr.Height), c);
                                 //powerlevel debug: this.DrawCenteredString(spriteBatch, ""+u.PowerLevel, new Vector2(ux, uy - 30), Color.White);
                             }
