@@ -118,11 +118,11 @@ namespace Recellection.Code.Controllers
         {
 			if (selection.state == State.BUILDING)
 			{
-				BuildingMenu(selection);
+				BuildingMenu();
 			}
 			else
 			{
-				TileMenu(selection);
+				TileMenu();
 			}
         }
 
@@ -276,12 +276,11 @@ namespace Recellection.Code.Controllers
 		/// Must have building on tile.
 		/// </summary>
 		/// <param name="theSelection"></param>
-        private void BuildingMenu(Selection theSelection)
+        private void BuildingMenu()
         {
             
             World.Map map = theWorld.GetMap();
-            Tile seltile = map.GetTile(theSelection.absPoint);
-            Building building = seltile.GetBuilding();
+            Building building = selectedTile.GetBuilding();
             if (building == null || building.owner != playerInControll)
             {
                 return;
@@ -328,7 +327,8 @@ namespace Recellection.Code.Controllers
                     tobii.SetFeedbackColor(Color.White);
 					return;
 				}
-                Tile selectedTile = map.GetTile(destsel.absPoint);
+				
+				selectedTile = map.GetTile(destsel.absPoint);
 
                 //TODO Add a check to see if the tile is a correct one. The diffrence between the selected tiles coordinates and the source building shall not exceed 3.
 				if (selectedTile.GetBuilding() == null)
@@ -368,8 +368,8 @@ namespace Recellection.Code.Controllers
 				Selection destsel = retrieveSelection();
 				if (destsel.state == State.BUILDING || destsel.state == State.TILE)
 				{
-					Tile selectedTile = map.GetTile(destsel.absPoint);
-					UnitController.MoveUnits(playerInControll, seltile, selectedTile, building.GetUnits().Count);
+					Tile selTile = map.GetTile(destsel.absPoint);
+					UnitController.MoveUnits(playerInControll, selectedTile, selTile, building.GetUnits().Count);
 				}
 
 				tobii.SetFeedbackColor(Color.White);
@@ -397,7 +397,7 @@ namespace Recellection.Code.Controllers
         /// 
         /// </summary>
         /// <param name="previousSelection"></param>
-		private void TileMenu(Selection previousSelection)
+		private void TileMenu()
 		{
 			MenuIcon moveUnits = new MenuIcon(Language.Instance.GetString("MoveUnits"), null, Color.Black);
 			MenuIcon cancel = new MenuIcon(Language.Instance.GetString("Cancel"), Recellection.textureMap.GetTexture(Globals.TextureTypes.No), Color.Black);
@@ -425,10 +425,11 @@ namespace Recellection.Code.Controllers
 					return;
 				}
 				
+				
 				Tile from = theWorld.GetMap().GetTile(previousSelection.absPoint);
-				Tile to = theWorld.GetMap().GetTile(currSel.absPoint);
+				selectedTile = theWorld.GetMap().GetTile(currSel.absPoint);
 
-				UnitController.MoveUnits(playerInControll, from, to, from.GetUnits().Count);
+				UnitController.MoveUnits(playerInControll, from, selectedTile, from.GetUnits().Count);
 			}
 		}
 
