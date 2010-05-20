@@ -81,7 +81,7 @@ namespace Recellection.Code.Controllers
 
 
             //If we are falling behind on the upgrades: catch up.
-            if (m_view.opponents[0].powerLevel > this.powerLevel)
+            if (m_view.opponents[0].PowerLevel > this.PowerLevel)
             {
                 log.Info("Attempting to upgrading units.");
                 UpgradeUnits();
@@ -122,7 +122,7 @@ namespace Recellection.Code.Controllers
             if (b != null)
             {
                 log.Info("Found a suitable building at " + b.GetPosition().X + ";" + b.GetPosition().Y + ", upgrading units.");
-                unitAcc.PayAndUpgrade(b);
+                unitAcc.PayAndUpgradePower(b);
                 return;
             }
             log.Info("Could not afford to upgrade.");

@@ -411,6 +411,12 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <None Include="Languages\DEUTSCH.TXT">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Name>DEUTSCH</Name>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
     <Folder Include="Graphics\Buildings\" />
     <Folder Include="Graphics\Terrains\" />
     <Folder Include="Graphics\Units\" />
