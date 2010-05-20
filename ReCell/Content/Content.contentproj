@@ -399,6 +399,18 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Graphics\HelpViewEN.png">
+      <Name>HelpViewEN</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="Graphics\HelpViewSV.png">
+      <Name>HelpViewSV</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
     <Folder Include="Graphics\Buildings\" />
     <Folder Include="Graphics\Terrains\" />
     <Folder Include="Graphics\Units\" />
