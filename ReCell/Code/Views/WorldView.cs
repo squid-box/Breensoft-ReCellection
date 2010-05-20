@@ -273,9 +273,23 @@ namespace Recellection.Code.Views
                             }
                         }
                     }
-                    
-                    
 				}
+
+                if (World.DrawConstructionLines != null)
+                {
+                    foreach (Point p in World.DrawConstructionLines)
+                    {
+                         
+                        Tile tile = World.map.GetTile(p.X, p.Y);
+                        List<Vector2> points = tile.GetDrawPoints();
+                        for (int line = 0; line <= 2; line+= 2)
+                        {
+                            DrawLine(spriteBatch, TileToPixels(points[line] - lookAt), TileToPixels(points[line+1] - lookAt),
+                                                    Color.ForestGreen, 10);
+                        }
+                        
+                    }
+                }
             }
             
             // Draw scrollregions

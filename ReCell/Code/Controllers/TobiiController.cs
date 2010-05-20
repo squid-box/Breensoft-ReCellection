@@ -76,14 +76,14 @@ namespace Recellection
                 {
                     TecClient.Init("Recellection");
 
-                    #region I'm too scared to remove these comments
+                    #region I think it works.. don't touch it...
+
                     Tobii.TecSDK.Core.Interaction.Contracts.UserProfileProperties newProfile = new Tobii.TecSDK.Core.Interaction.Contracts.UserProfileProperties("RecellectionProfile");
                     Tobii.TecSDK.Client.Utilities.UserProfile.Add("RecellectionProfile", "RecellectionProfile");
                     Tobii.TecSDK.Client.Utilities.UserProfile.SetCurrent("RecellectionProfile");
                     Tobii.TecSDK.Client.Utilities.UserProfile.Current.FeedbackSettings = new Tobii.TecSDK.Core.Interaction.Contracts.FeedbackSettings();
                     Tobii.TecSDK.Client.Utilities.UserProfile.Current.Enabled = true;
 
-                    #endregion
 
                     //these lines will, it seems, create a new ClientApplicationProperties object
                     //based on the current client settings and current user profile.
@@ -108,20 +108,15 @@ namespace Recellection
                     TecClient.SettingsManager.ApplySettings();
 
                     SetFeedbackColor(Microsoft.Xna.Framework.Graphics.Color.White);
+
+                    #endregion
                 }
                 catch (Exception)
                 {
                     logger.Warn("The Tobii Controller did not initialize correctly");
                     return false;
                 }
-
-                #region uncomment me to test offscreen regions
-
-                    //GUIRegion test = new GUIRegion(IntPtr.Zero, new Rect(1280, 0, 500, 1024));
-                    //AddRightOffScreen(test);
-
-                #endregion
-
+    
                 logger.Info("Successfully initialized the Tobii Controller");
                 return true;
             }
@@ -130,13 +125,7 @@ namespace Recellection
                 //the controller was already initialized
                 return true;
             }
-        }
-
-        //keeping this function to quickly test, if needed, that off screen regions still work
-        void test_Activate(object sender, Tobii.TecSDK.Client.Interaction.ActivateEventArgs e)
-        {
-            Environment.Exit(0);
-        }
+        }  
 
         /// <summary>
         /// Enable/disable all currently loaded regions
@@ -153,29 +142,37 @@ namespace Recellection
         }
 
         //We'll just do them like this for now
-        public void AddLeftOffScreen(GUIRegion left)
+        private void AddLeftOffScreen(GUIRegion left)
         {
-            this.left = left;
+            this.left = left;            
             AddRegion(left);
             this.left.Enabled = true;
-        }
-        public void AddRightOffScreen(GUIRegion right)
+            this.left.FocusEnter += new EventHandler<RegionFocusEventArgs>(FocusEnter);
+        }       
+        private void AddRightOffScreen(GUIRegion right)
         {
             this.right = right;
             AddRegion(this.right);
             this.right.Enabled = true;
+            this.right.FocusEnter += new EventHandler<RegionFocusEventArgs>(FocusEnter);
         }
-        public void AddTopOffScreen(GUIRegion top)
+        private void AddTopOffScreen(GUIRegion top)
         {
             this.top = top;
             AddRegion(this.top);
             this.top.Enabled = true;
+            this.top.FocusEnter += new EventHandler<RegionFocusEventArgs>(FocusEnter);
         }
-        public void AddBotOffScreen(GUIRegion bot)
+        private void AddBotOffScreen(GUIRegion bot)
         {
             this.bot = bot;
             AddRegion(this.bot);
-            this.bot.Enabled = true;     
+            this.bot.Enabled = true;
+            this.bot.FocusEnter += new EventHandler<RegionFocusEventArgs>(FocusEnter);
+        }
+        void FocusEnter(object sender, RegionFocusEventArgs e)
+        {
+            newActivatedRegion = (GUIRegion)sender;
         }
 
         /// <summary>

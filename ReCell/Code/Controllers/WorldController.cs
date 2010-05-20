@@ -325,7 +325,9 @@ namespace Recellection.Code.Controllers
             else if (choosenMenu.Equals(buildCell))
             {
                 tobii.SetFeedbackColor(Color.DarkGreen);
-				Selection destsel = retrieveSelection();
+                SetConstructionLines(BuildingController.GetValidBuildingInterval(seltile.position, theWorld));
+                Selection destsel = getSelection();
+                RemoveconstructionTileLines(BuildingController.GetValidBuildingInterval(seltile.position, theWorld));
                 if (destsel.state != State.TILE)
 				{
 					SoundsController.playSound("Denied");
@@ -398,6 +400,48 @@ namespace Recellection.Code.Controllers
                 return;
             }
         }
+
+        
+
+        private void SetConstructionLines(List<Point> tileCoords)
+        {
+            float onTileOffset = ((float)(Globals.TILE_SIZE - 1)) / ((float)(Globals.TILE_SIZE));
+            float constructionAreaOffset = 6.0f;
+
+            List<Vector2> fourVector2s = new List<Vector2>(2);
+
+            fourVector2s.Add(new Vector2((float)tileCoords[0].X, (float)tileCoords[0].Y));
+            fourVector2s.Add(new Vector2((float)tileCoords[0].X, (float)tileCoords[0].Y + onTileOffset + constructionAreaOffset));
+
+            fourVector2s.Add(new Vector2((float)tileCoords[0].X, (float)tileCoords[0].Y));
+            fourVector2s.Add(new Vector2((float)tileCoords[0].X + onTileOffset + constructionAreaOffset, (float)tileCoords[0].Y));
+
+            Tile temp1 = theWorld.map.GetTile(tileCoords[0].X, tileCoords[0].Y);
+            temp1.SetDrawLine(fourVector2s);
+
+
+            List<Vector2> fourVector2s2 = new List<Vector2>(2);
+            fourVector2s2.Add(new Vector2((float)tileCoords[1].X + onTileOffset, (float)tileCoords[1].Y + onTileOffset));
+            fourVector2s2.Add(new Vector2((float)tileCoords[1].X + onTileOffset, (float)tileCoords[1].Y - constructionAreaOffset));
+
+            fourVector2s2.Add(new Vector2((float)tileCoords[1].X + onTileOffset, (float)tileCoords[1].Y + onTileOffset));
+            fourVector2s2.Add(new Vector2((float)tileCoords[1].X - constructionAreaOffset, (float)tileCoords[1].Y + onTileOffset));
+
+            Tile temp2 = theWorld.map.GetTile(tileCoords[1].X, tileCoords[1].Y);
+            temp2.SetDrawLine(fourVector2s2);
+
+            theWorld.DrawConstructionLines = tileCoords;
+
+        }
+
+        private void RemoveconstructionTileLines(List<Point> tileCoords)
+        {
+            theWorld.map.GetTile(tileCoords[0].X, tileCoords[0].Y).ClearDrawLine();
+            theWorld.map.GetTile(tileCoords[1].X, tileCoords[1].Y).ClearDrawLine();
+
+            theWorld.DrawConstructionLines = null;
+        }
+
         /// <summary>
         /// 
         /// </summary>
