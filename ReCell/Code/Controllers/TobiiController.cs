@@ -153,25 +153,25 @@ namespace Recellection
         }
 
         //We'll just do them like this for now
-        public void AddLeftOffScreen(GUIRegion left)
+        private void AddLeftOffScreen(GUIRegion left)
         {
             this.left = left;
             AddRegion(left);
             this.left.Enabled = true;
         }
-        public void AddRightOffScreen(GUIRegion right)
+        private void AddRightOffScreen(GUIRegion right)
         {
             this.right = right;
             AddRegion(this.right);
             this.right.Enabled = true;
         }
-        public void AddTopOffScreen(GUIRegion top)
+        private void AddTopOffScreen(GUIRegion top)
         {
             this.top = top;
             AddRegion(this.top);
             this.top.Enabled = true;
         }
-        public void AddBotOffScreen(GUIRegion bot)
+        private void AddBotOffScreen(GUIRegion bot)
         {
             this.bot = bot;
             AddRegion(this.bot);
