@@ -78,6 +78,7 @@ namespace Recellection.Code.Models
 		{
 			lock(buildings)
 			{
+				TotalWeight -= buildings[building];
 				buildings.Remove(building);
 			}
 			
