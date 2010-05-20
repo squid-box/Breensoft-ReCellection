@@ -68,7 +68,6 @@ namespace Recellection.Code.Main
                 (int)(theWorld.players[0].GetGraphs()[0].baseBuilding.position.Y-yOffset));
 
             myLogger.Info("Setting lookingAt to X: " + theWorld.LookingAt.X + "  y: " + theWorld.LookingAt.Y);
-
             return true;
         }
         
