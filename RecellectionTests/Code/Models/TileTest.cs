@@ -30,8 +30,8 @@ namespace Recellection.Code.Models
             u1 = new Unit(p, Vector2.Zero);
             u2 = new Unit(p, Vector2.Zero);
             u3 = new Unit(p, Vector2.Zero);
-            b1 = new BaseBuilding("TestBase", 0, 0, p);
-            b2 = new BarrierBuilding("TestBuilding1", 1, 1, p, b1);
+			b1 = new BaseBuilding("test", 0, 0, new Player(), new LinkedList<Tile>());
+            b2 = new BarrierBuilding("TestBuilding1", 1, 1, p, b1, new LinkedList<Tile>());
             
         }
 

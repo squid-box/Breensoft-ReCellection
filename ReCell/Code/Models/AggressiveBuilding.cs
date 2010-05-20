@@ -28,21 +28,6 @@ namespace Recellection.Code.Models
         //Subscribe to me if you want to know about it when I change my baseEntity.
 		public event Publish<AggressiveBuilding> targetChanged;
 
-        /// <summary>
-        /// Constructs a new AgressiveBuilding
-        /// </summary>
-        /// <param name="name"></param>
-        /// <param name="posX"></param>
-        /// <param name="posY"></param>
-        /// <param name="maxHealth"></param>
-        /// <param name="owner"></param>
-        /// <param name="baseBuilding"></param>
-        public AggressiveBuilding(String name, int posX, int posY, Player owner,BaseBuilding baseBuilding)
-               :base(name, posX, posY, AGGRESSIVE_BUILDING_HEALTH, owner, Globals.BuildingTypes.Aggressive, baseBuilding)
-        {
-            currentTargets = new List<Unit>();
-
-        }
 
         /// <summary>
         /// Constructs a new AgressiveBuilding
