@@ -9,44 +9,48 @@ namespace Recellection.Code.Views
 {
     class CreditsView : IView
     {
+		private class CreditItem
+		{
+			internal string Text { get; set; }
+			internal float YPosition { get; set; }
+			internal bool Visible { get; set; }
+
+			internal CreditItem(string text)
+			{
+				this.Text = text;
+				this.YPosition = Globals.VIEWPORT_HEIGHT;
+				this.Visible = false;
+			}
+		}
 
 		// To decide whether or not we have finished showing the credits
 		public bool Finished { get; private set; }
 
 		// The set of credit strings
-        private static List<String> credits;
+        private static List<CreditItem> credits;
+
+		private CreditItem lastItem;
 		
-		// The top and bottom credit string shown
-		private string topString, bottomString;
-		// The index of the top and bottom strings;
-		private int topStringIndex, bottomStringIndex;
-
-		//The y position of the top and bottom strings
-		private float topStringY, bottomStringY;
-
 		// The movement speed of the text
-		private static readonly float textMovementSpeed;
-
-		// The time to show each credit string
-		private static int timeToShow;
-		
+		private static readonly float textMovementSpeed;	
 
         public CreditsView()
         {
-            credits = new List<string>(9);
-			credits.Add("Produced by:\nBreensoft");
-            credits.Add("Project Leader:\nMartin Nycander");
-            credits.Add("Lead Designer:\nJohn Forsberg");
-            credits.Add("Dungeon Master:\nMattias Mikkola");
-            credits.Add("Captain of Test fleet:\nLukas Mattsson");
-            credits.Add("GUI Designer:\nCarl-Oscar Erneholm");
-            credits.Add("Tracker of Eyes:\nViktor Eklund");
-            credits.Add("Master of XNA:\nFredrik Lindh");
-            credits.Add("Chief Programmer:\nMarco Ahumada Juntunen");
-            credits.Add("Guy that did stuff, sometimes:\n Joel Ahlgren");
-			credits.Add("Developers: GOTO 01");
+            credits = new List<CreditItem>();
+			credits.Add(new CreditItem("Produced by:\nBreensoft"));
+            credits.Add(new CreditItem("Project Leader:\nMartin Nycander"));
+            credits.Add(new CreditItem("Lead Designer:\nJohn Forsberg"));
+            credits.Add(new CreditItem("Dungeon Master:\nMattias Mikkola"));
+            credits.Add(new CreditItem("Captain of Test fleet:\nLukas Mattsson"));
+            credits.Add(new CreditItem("GUI Designer:\nCarl-Oscar Erneholm"));
+            credits.Add(new CreditItem("Tracker of Eyes:\nViktor Eklund"));
+            credits.Add(new CreditItem("Master of XNA:\nFredrik Lindh"));
+            credits.Add(new CreditItem("Chief Programmer:\nMarco Ahumada Juntunen"));
+            credits.Add(new CreditItem("Guy that did stuff, sometimes:\n Joel Ahlgren"));
+			credits.Add(new CreditItem("Developers: GOTO 01"));
 
 			Finished = false;
+			lastItem = null;
 
         }
 		public override void Update(GameTime passedTime)
@@ -54,10 +58,20 @@ namespace Recellection.Code.Views
 			// Stop doing shit if we have finished
 			if (Finished)
 				return;
+			float passed = (float)passedTime.ElapsedRealTime.Milliseconds;
+			CreditItem temp;
+			foreach(CreditItem c in credits)
+			{
+				
+				if (lastItem == null)
+					lastItem = c;
+				if (c.Visible)
+				{
+					c.YPosition = c.YPosition - passed * textMovementSpeed;
 
-			int passed = passedTime.ElapsedRealTime.Milliseconds;
-
-			
+				}
+				temp = c;
+			}
 		}
 		
 		public override void Draw(SpriteBatch sb)
