@@ -383,8 +383,15 @@ namespace Recellection.Code.Models
 					else if (BaseEntity is Building && ! ((Building)BaseEntity).IsAlive())
 					{
 						// If home just died, call the tile base of that home our home.
-						BaseEntity = world.GetMap().GetTile(BaseEntity.GetPosition());
-						IsAggressive = false; // free kills!
+                        if ((((Building)BaseEntity).Parent) != null)
+                        {
+                            BaseEntity = ((Building)BaseEntity).Parent;
+                        }
+                        else
+                        {
+                            BaseEntity = world.GetMap().GetTile(BaseEntity.GetPosition());
+                            IsAggressive = false; // free kills!
+                        }
 					}
 					else
 					{
