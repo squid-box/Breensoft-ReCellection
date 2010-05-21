@@ -42,7 +42,6 @@ namespace Recellection.Code.Controllers
         public static World GenerateWorld(int mapSeed)
         {
             myLogger = LoggerFactory.GetLogger();
-			myLogger.Active = true;
 
             Tile[,] tileMatrix = GenerateTileMatrixFromSeed(mapSeed);
 
