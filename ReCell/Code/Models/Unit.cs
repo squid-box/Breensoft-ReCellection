@@ -334,7 +334,7 @@ namespace Recellection.Code.Models
                 Unit.world.map.GetTile(afterX, afterY).MakeVisibleTo(this.owner);
 
 				// Let's update the fog of war!
-				for (int i = -3; i <= 3; i++)
+				/*for (int i = -3; i <= 3; i++)
 				{
 					for (int j = -3; j <= 3; j++)
 					{
@@ -346,7 +346,7 @@ namespace Recellection.Code.Models
 						{
 						}
 					}
-				}
+				}*/
 			}
 		}
 
