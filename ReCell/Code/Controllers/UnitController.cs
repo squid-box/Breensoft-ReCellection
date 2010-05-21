@@ -18,7 +18,7 @@ namespace Recellection.Code.Controllers
     public class UnitController
     {
 		private static Logger logger = LoggerFactory.GetLogger();
-		private static List<Unit> toBeKilled = new List<Unit>();
+        private static HashSet<Unit> toBeKilled = new HashSet<Unit>();
 		
         /// <summary>
         /// Move a set of units from one tile to another
