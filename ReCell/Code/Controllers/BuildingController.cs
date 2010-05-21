@@ -251,6 +251,7 @@ namespace Recellection.Code.Controllers
 			}
 
 			// Let's update the fog of war!
+			/*
 			for (int i = -3; i <= 3; i++)
 			{
 				for (int j = -3; j <= 3; j++)
@@ -264,6 +265,7 @@ namespace Recellection.Code.Controllers
 					}
 				}
 			}
+			 */
             return true;
         }
 

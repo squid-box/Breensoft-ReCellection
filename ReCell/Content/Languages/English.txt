@@ -103,3 +103,4 @@ ResourceCell=Resurce Cell
 hasWon=Congratulations!\n\nYou won the game.
 hasLost=You lost.\n\nBetter luck next time!
 isDraw=The game has ended.\nDid you win or lose?\n\n... I do not know.
+BackToMain=Go back to main menu.
