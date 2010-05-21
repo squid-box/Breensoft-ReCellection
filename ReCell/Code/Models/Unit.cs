@@ -99,7 +99,7 @@ namespace Recellection.Code.Models
 		{
 			get
 			{
-				return speedLevel;
+				return owner.SpeedLevel/(10*3) + speedLevel;
 			}
 			set
 			{
@@ -297,13 +297,17 @@ namespace Recellection.Code.Models
 			{
 				float distance = this.targetPosition.X - this.position.X;
 
-				if (Math.Abs(distance) < (movement_speed + speedLevel))
+				if (Math.Abs(distance) < (movement_speed + SpeedLevel))
 				{
 					position = new Vector2(targetPosition.X, position.Y);
 				}
                 else
                 {
-                    float newX = position.X + (movement_speed + speedLevel) * deltaTime * direction.X * direction.Length();
+					if ((movement_speed + SpeedLevel) > 0.1)
+					{
+						int a = 5;
+					}
+					float newX = position.X + (movement_speed + SpeedLevel) * deltaTime * direction.X * direction.Length();
                     position = new Vector2(newX, position.Y);
                 }
 			}
@@ -311,13 +315,13 @@ namespace Recellection.Code.Models
 			{
 				float distance = this.targetPosition.Y - this.position.Y;
 
-				if (Math.Abs(distance) < (movement_speed + (speedLevel * 0.1)))
+				if (Math.Abs(distance) < (movement_speed + SpeedLevel))
                 {
 					position = new Vector2(position.X, targetPosition.Y);
                 }
                 else
                 {
-					float newY = position.Y + (movement_speed + speedLevel) * deltaTime * direction.Y * direction.Length();
+					float newY = position.Y + (movement_speed + SpeedLevel) * deltaTime * direction.Y * direction.Length();
                     position = new Vector2(position.X, newY);
                 }
 			}
