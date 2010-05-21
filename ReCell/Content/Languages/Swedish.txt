@@ -21,6 +21,7 @@ Mute=Tystnad
 Volume=Volym
 Difficulty=Svårighetsgrad
 Language=Språk
+Credits=Erkännande
 ChooseLanguage=Välj Språk
 ChooseADifficulty=Välj svårighetsgrad
 

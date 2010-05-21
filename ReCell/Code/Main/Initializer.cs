@@ -48,9 +48,6 @@ namespace Recellection.Code.Main
 			new MenuController(TobiiController.GetInstance(this.windowHandle), mainMenu);
 			#endregion
 
-
-			//PlayCredits();
-
             ShowSplashScreen();
             
 			Cue backgroundSound = Sounds.Instance.LoadSound("Menu");
@@ -139,18 +136,5 @@ namespace Recellection.Code.Main
 				Thread.Sleep(10);
 			}
         }
-
-		private void PlayCredits()
-		{
-			CreditsView credits = new CreditsView();
-
-			Recellection.CurrentState = credits;
-			while (!credits.Finished)
-			{
-				Thread.Sleep(10);
-			}
-
-		}
-
 	}
 }

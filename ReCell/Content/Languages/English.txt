@@ -21,8 +21,10 @@ Mute=Mute
 Volume=Volume
 Difficulty=Difficulty
 Language=Language
+Credits=Credits
 ChooseLanguage=Choose Language
 ChooseADifficulty=Choose a difficulty
+
 
 MusicVolumeUp=Music volume up
 MusicVolumeDown=Music volume down

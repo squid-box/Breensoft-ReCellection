@@ -5,6 +5,9 @@ using System.Text;
 using Recellection.Code.Models;
 using Microsoft.Xna.Framework.Graphics;
 using Recellection.Code.Utility.Logger;
+using System.Threading;
+using Recellection.Code.Views;
+using Microsoft.Xna.Framework.Audio;
 
 namespace Recellection.Code.Controllers
 {
@@ -21,6 +24,7 @@ namespace Recellection.Code.Controllers
         private static MenuIcon difficulty;
         private static MenuIcon language;
         private static MenuIcon back;
+		private static MenuIcon credits;
         private static List<MenuIcon> iconList;
 
         static Configurator()
@@ -31,6 +35,7 @@ namespace Recellection.Code.Controllers
             volume = new MenuIcon(Language.Instance.GetString("Volume"));
             difficulty = new MenuIcon(Language.Instance.GetString("Difficulty"));
             language = new MenuIcon(Language.Instance.GetString("Language"));
+			credits = new MenuIcon(Language.Instance.GetString("Credits"));
             back = new MenuIcon(Language.Instance.GetString("Cancel"), Recellection.textureMap.GetTexture(Globals.TextureTypes.No));
             
             iconList = new List<MenuIcon>();
@@ -45,6 +50,7 @@ namespace Recellection.Code.Controllers
                 iconList.Add(difficulty);
                 iconList.Add(language);
                 iconList.Add(back);
+				iconList.Add(credits);
             }
             return new Menu(Globals.MenuLayout.NineMatrix, iconList, Language.Instance.GetString("Options"), Color.Black);
         }
@@ -91,6 +97,10 @@ namespace Recellection.Code.Controllers
                 {
                     notFinished = false;
                 }
+				else if (response == credits)
+				{
+					PlayCredits();
+				}
             }
             MenuController.UnloadMenu();
         }
@@ -174,6 +184,22 @@ namespace Recellection.Code.Controllers
 			}
             MenuController.UnloadMenu();
         }
+
+		private void PlayCredits()
+		{
+			CreditsView credits = new CreditsView();
+
+			IView temp = Recellection.CurrentState;
+			Recellection.CurrentState = credits;
+			
+			while (!credits.Finished)
+			{
+				Thread.Sleep(10);
+			}
+			Thread.Sleep(1000);
+			Recellection.CurrentState = temp;
+
+		}
 
         private void ChangeVolumeMenu()
         {
