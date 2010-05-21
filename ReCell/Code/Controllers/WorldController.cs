@@ -358,7 +358,7 @@ namespace Recellection.Code.Controllers
 				}
 				else
 				{
-                    SoundsController.playSound("Denied");
+                    //SoundsController.playSound("Denied");
                     tobii.SetFeedbackColor(Color.White);
 					return;
 				}
@@ -428,14 +428,14 @@ namespace Recellection.Code.Controllers
 			{
 				if (!playerInControll.unitAcc.PayAndUpgradeSpeed(building))
 				{
-					SoundsController.playSound("Denied");
+					//SoundsController.playSound("Denied");
 				}
 			}
 			else if (chosenMenu == power)
 			{
 				if (!playerInControll.unitAcc.PayAndUpgradePower(building))
 				{
-					SoundsController.playSound("Denied");
+					//SoundsController.playSound("Denied");
 				}
 			}
 		}
