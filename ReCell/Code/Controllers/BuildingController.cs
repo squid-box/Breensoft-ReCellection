@@ -124,7 +124,7 @@ namespace Recellection.Code.Controllers
                 if (!AddBuilding(building, sourceBuilding,
                         constructTile.position, theWorld, player))
                 {
-                    SoundsController.playSound("Denied");
+                    //SoundsController.playSound("Denied");
                 }
             }
             catch (BuildingOutOfRangeException bore)
