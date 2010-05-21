@@ -29,7 +29,7 @@ namespace Recellection.Code.Views
         private RenderTarget2D backgroundTarget;
 
         private bool doRenderThisPass = true;
-        public static bool doLights = true;
+        public static bool doLights = false;
         public static bool doGrain = true;
 
         private Texture2D activeTile;
