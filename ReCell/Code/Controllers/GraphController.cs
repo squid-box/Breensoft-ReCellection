@@ -113,6 +113,13 @@ namespace Recellection.Code.Controllers
                 Graph graph = GetGraph(sourceBuilding);
                 graph.baseBuilding = newBaseBuilding;
                 graph.Add(newBaseBuilding);
+                foreach (Building b in graph.GetBuildings())
+                {
+                    if (b is ResourceBuilding)
+                    {
+                        graph.baseBuilding.RateOfProduction += ((ResourceBuilding)b).RateOfProduction;
+                    }
+                }
                 return graph;
             }
 		}
