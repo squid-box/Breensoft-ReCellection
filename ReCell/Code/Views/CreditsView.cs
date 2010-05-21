@@ -50,7 +50,7 @@ namespace Recellection.Code.Views
             credits = new List<CreditItem>();
 			credits.Add(new CreditItem("Produced by:\nBreensoft"));
 			credits.Add(new CreditItem("\n"));
-            credits.Add(new CreditItem("Asserter of Impalement:\nMartin Nycander"));
+            credits.Add(new CreditItem("Bringer of Impalement:\nMartin Nycander"));
             credits.Add(new CreditItem("Lead Designer:\nJohn Forsberg"));
             credits.Add(new CreditItem("Dungeon Master:\nMattias Mikkola"));
             credits.Add(new CreditItem("Captain of Test fleet:\nLukas Mattsson"));

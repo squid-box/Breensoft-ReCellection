@@ -49,15 +49,15 @@ namespace Recellection.Code.Controllers
 
         public int GetUpgradeCost()
         {
-            if (owner.PowerLevel >= 0.1f*MAX_POWER_LEVEL_LEVELS)
+            if (owner.PowerLevel +  owner.SpeedLevel >= 0.1f*MAX_POWER_LEVEL_LEVELS)
             {
                 return (int)0x0C00FEE;
             }
-            if (owner.PowerLevel == 0.0f)
+            if (owner.PowerLevel+owner.SpeedLevel == 0.0f)
             {
                 return FIRST_POWER_LEVEL_COST;
             }
-            float level = (owner.PowerLevel * 10f);
+            float level = (owner.PowerLevel+owner.SpeedLevel * 10f);
             double exp = 1f / Math.Pow((level), 1f / ((float)MAX_POWER_LEVEL_LEVELS - 1f));
             double bas = 1f / ((float)MAX_POWER_LEVEL_LEVELS - 1f);
             double result = Math.Pow(bas, exp);

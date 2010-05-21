@@ -22,7 +22,7 @@ Volume=Volym
 Difficulty=Svårighetsgrad
 Language=Språk
 Credits=Erkännanden
-ChooseLanguage=Välj Språk
+ChooseLanguage=Välj språk
 ChooseADifficulty=Välj svårighetsgrad
 
 MusicVolumeUp=Höj musikvolym
@@ -33,7 +33,7 @@ EffectsVolumeDown=Sänk effektvolym
 
 ChooseBuilding=Välj den typ av cell du vill bygga
 SetWeight=Välj Prioritet
-BuildCell=Bygg Cell
+BuildCell=Bygg cell
 RemoveCell=Förstör denna cell
 UpgradeUnits=Uppgradera alla små celler
 UpgradeMenu=Välj önskad uppgradering
@@ -97,7 +97,7 @@ HighPriority=Hög prioritet
 [Game entities]
 BaseCell=Bascell
 DefensiveCell=Försvarscell
-AggressiveCell=Arg Cell
+AggressiveCell=Arg cell
 ResourceCell=Arbetscell
 
 [End game]
