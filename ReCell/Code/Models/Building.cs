@@ -318,6 +318,18 @@ namespace Recellection.Code.Models
         }
 
         /// <summary>
+        /// Makes sure this building is _really_ dead.
+        /// </summary>
+        public void Kill()
+        {
+            this.currentHealth = -1;
+            if (healthChanged != null)
+            {
+                healthChanged(this, new Event<Building>(this, EventType.REMOVE));
+            }
+        }
+
+        /// <summary>
         /// Increases health for a fromBuilding by the amount specified in the
         /// parameter. It can not heal it above max health.
         /// </summary>

@@ -32,10 +32,8 @@ namespace Recellection.Code.Views
         public static bool doLights = false;
         public static bool doGrain = true;
 
-        private Texture2D activeTile;
         private LightParticleSystem lps;
         private GrainSystem gs;
-        private Tile active;
         private Color[,] cMatrix;
 
 		private static int maxCols = (int)((float)Recellection.viewPort.Width / (float)Globals.TILE_SIZE);
@@ -114,7 +112,7 @@ namespace Recellection.Code.Views
                         }
                         catch (IndexOutOfRangeException e)
                         {
-                            myLogger.Fatal("OMG FAIL");
+                            myLogger.Fatal("OMG FAIL | " + e.GetType() + " : " +e.Message);
                         }
                     }
                 }

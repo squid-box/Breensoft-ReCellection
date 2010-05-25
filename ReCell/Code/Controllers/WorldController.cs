@@ -351,7 +351,7 @@ namespace Recellection.Code.Controllers
                         BuildingController.ConstructBuilding(playerInControll, selectedTile, building, theWorld);
                         tobii.SetFeedbackColor(Color.White);
                     }
-                    catch (BuildingController.BuildingOutOfRangeException bore)
+                    catch (BuildingController.BuildingOutOfRangeException)
                     {
 						logger.Debug("Caught BuildingOutOfRangeExcpetion");
                     }

@@ -184,7 +184,6 @@ namespace Recellection.Code.Controllers
             if (player.GetGraphs().Count == 0)
             {
                 return true;
-
             }
             else
             {
