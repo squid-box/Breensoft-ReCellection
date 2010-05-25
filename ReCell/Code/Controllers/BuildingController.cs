@@ -327,9 +327,15 @@ namespace Recellection.Code.Controllers
 				
 				lock (b.controlZone)
 				{
-					b.controlZone.First().RemoveBuilding();
+                    b.controlZone.First().RemoveBuilding();
 					GraphController.Instance.RemoveBuilding(b);
-					b.Damage(Math.Max(0, b.currentHealth)); // Kill it!
+					
+                    // How about I exchange this:
+                    //b.Damage(Math.Max(0, b.currentHealth+1)); // Kill it!
+                    //
+                    // With this:
+                    b.Kill();
+
                     SoundsController.playSound("buildingDeath",b.position);
 				}
             }

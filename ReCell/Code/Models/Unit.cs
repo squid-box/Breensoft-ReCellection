@@ -303,10 +303,6 @@ namespace Recellection.Code.Models
 				}
                 else
                 {
-					if ((movement_speed + SpeedLevel) > 0.1)
-					{
-						int a = 5;
-					}
 					float newX = position.X + (movement_speed + SpeedLevel) * deltaTime * direction.X * direction.Length();
                     position = new Vector2(newX, position.Y);
                 }
