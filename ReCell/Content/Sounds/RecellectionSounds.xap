@@ -1,7 +1,7 @@
 Signature = XACT3;
-Version = 17;
-Content Version = 45;
-Release = March 2009;
+Version = 18;
+Content Version = 46;
+Release = February 2010;
 
 Options
 {
@@ -16,8 +16,8 @@ Global Settings
     Header File = PlaySound.h;
     Exclude Category Names = 0;
     Exclude Variable Names = 0;
-    Last Modified Low = 493240616;
-    Last Modified High = 30076775;
+    Last Modified Low = 30076775;
+    Last Modified High = 493240616;
 
     Category
     {
@@ -264,7 +264,7 @@ Global Settings
 
         RPC Curve
         {
-            Name = Sound::f71c3d3d-a76b-4da6-9d3c-e503a7bd76f3;
+            Name = Sound::44ae9c51-c054-4c5e-8fbb-6d883df626c2;
             Property = 0;
             Sound = 1;
             Line Color = 4294528798;
@@ -319,6 +319,12 @@ Wave Bank
     Windows Bank Path Edited = 1;
     Seek Tables = 1;
     Compression Preset Name = <none>;
+    Xbox Bank Last Modified Low = 0;
+    Xbox Bank Last Modified High = 0;
+    PC Bank Last Modified Low = 0;
+    PC Bank Last Modified High = 0;
+    Header Last Modified Low = 0;
+    Header Last Modified High = 0;
     Bank Last Revised Low = 115149244;
     Bank Last Revised High = 30078636;
 
@@ -748,7 +754,7 @@ Sound Bank
                 Use Center Speaker = 1;
                 New Speaker Position On Loop = 1;
                 Speaker Position Angle = 0.000000;
-                Speaer Position Arc = 0.000000;
+                Speaker Position Arc = 0.000000;
 
                 Event Header
                 {
@@ -795,7 +801,7 @@ Sound Bank
                 Use Center Speaker = 1;
                 New Speaker Position On Loop = 1;
                 Speaker Position Angle = 0.000000;
-                Speaer Position Arc = 0.000000;
+                Speaker Position Arc = 0.000000;
 
                 Event Header
                 {
@@ -847,7 +853,7 @@ Sound Bank
                 Use Center Speaker = 1;
                 New Speaker Position On Loop = 1;
                 Speaker Position Angle = 0.000000;
-                Speaer Position Arc = 0.000000;
+                Speaker Position Arc = 0.000000;
 
                 Event Header
                 {
@@ -899,7 +905,7 @@ Sound Bank
                 Use Center Speaker = 1;
                 New Speaker Position On Loop = 1;
                 Speaker Position Angle = 0.000000;
-                Speaer Position Arc = 0.000000;
+                Speaker Position Arc = 0.000000;
 
                 Event Header
                 {
@@ -951,7 +957,7 @@ Sound Bank
                 Use Center Speaker = 1;
                 New Speaker Position On Loop = 1;
                 Speaker Position Angle = 0.000000;
-                Speaer Position Arc = 0.000000;
+                Speaker Position Arc = 0.000000;
 
                 Event Header
                 {
@@ -1003,7 +1009,7 @@ Sound Bank
                 Use Center Speaker = 1;
                 New Speaker Position On Loop = 1;
                 Speaker Position Angle = 0.000000;
-                Speaer Position Arc = 0.000000;
+                Speaker Position Arc = 0.000000;
 
                 Event Header
                 {
@@ -1055,7 +1061,7 @@ Sound Bank
                 Use Center Speaker = 1;
                 New Speaker Position On Loop = 1;
                 Speaker Position Angle = 0.000000;
-                Speaer Position Arc = 0.000000;
+                Speaker Position Arc = 0.000000;
 
                 Event Header
                 {
@@ -1102,7 +1108,7 @@ Sound Bank
                 Use Center Speaker = 1;
                 New Speaker Position On Loop = 1;
                 Speaker Position Angle = 0.000000;
-                Speaer Position Arc = 0.000000;
+                Speaker Position Arc = 0.000000;
 
                 Event Header
                 {
@@ -1149,7 +1155,7 @@ Sound Bank
                 Use Center Speaker = 1;
                 New Speaker Position On Loop = 1;
                 Speaker Position Angle = 0.000000;
-                Speaer Position Arc = 0.000000;
+                Speaker Position Arc = 0.000000;
 
                 Event Header
                 {
@@ -1201,7 +1207,7 @@ Sound Bank
                 Use Center Speaker = 1;
                 New Speaker Position On Loop = 1;
                 Speaker Position Angle = 0.000000;
-                Speaer Position Arc = 0.000000;
+                Speaker Position Arc = 0.000000;
 
                 Event Header
                 {
@@ -1253,7 +1259,7 @@ Sound Bank
                 Use Center Speaker = 1;
                 New Speaker Position On Loop = 1;
                 Speaker Position Angle = 0.000000;
-                Speaer Position Arc = 0.000000;
+                Speaker Position Arc = 0.000000;
 
                 Event Header
                 {
@@ -1301,7 +1307,7 @@ Sound Bank
                 Use Center Speaker = 1;
                 New Speaker Position On Loop = 1;
                 Speaker Position Angle = 0.000000;
-                Speaer Position Arc = 0.000000;
+                Speaker Position Arc = 0.000000;
 
                 Event Header
                 {
@@ -1353,7 +1359,7 @@ Sound Bank
                 Use Center Speaker = 1;
                 New Speaker Position On Loop = 1;
                 Speaker Position Angle = 0.000000;
-                Speaer Position Arc = 0.000000;
+                Speaker Position Arc = 0.000000;
 
                 Event Header
                 {
@@ -1400,7 +1406,7 @@ Sound Bank
                 Use Center Speaker = 1;
                 New Speaker Position On Loop = 1;
                 Speaker Position Angle = 0.000000;
-                Speaer Position Arc = 0.000000;
+                Speaker Position Arc = 0.000000;
 
                 Event Header
                 {
@@ -1447,7 +1453,7 @@ Sound Bank
                 Use Center Speaker = 1;
                 New Speaker Position On Loop = 1;
                 Speaker Position Angle = 0.000000;
-                Speaer Position Arc = 0.000000;
+                Speaker Position Arc = 0.000000;
 
                 Event Header
                 {
@@ -1495,7 +1501,7 @@ Sound Bank
                 Use Center Speaker = 1;
                 New Speaker Position On Loop = 1;
                 Speaker Position Angle = 0.000000;
-                Speaer Position Arc = 0.000000;
+                Speaker Position Arc = 0.000000;
 
                 Event Header
                 {
@@ -1543,7 +1549,7 @@ Sound Bank
                 Use Center Speaker = 1;
                 New Speaker Position On Loop = 1;
                 Speaker Position Angle = 0.000000;
-                Speaer Position Arc = 0.000000;
+                Speaker Position Arc = 0.000000;
 
                 Event Header
                 {
