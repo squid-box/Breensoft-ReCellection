@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Recellection.Code.Controllers;
-
-/**
+﻿/**
  * 
  * Author: co
  * 
@@ -12,17 +6,42 @@ using Recellection.Code.Controllers;
 
 namespace Recellection.Code.Models
 {
+    using System;
+
+    using global::Recellection.Code.Controllers;
+
     /// <summary>
     /// This model is used to save all the options choices.
     /// </summary>
     public sealed class GameOptions : IModel
     {
-
-        #region Singleton-stuff
-
         // from http://www.yoda.arachsys.com/csharp/singleton.html
-        static GameOptions instance = null;
+        #region Static Fields
+
         static readonly object padlock = new object();
+
+        static GameOptions instance;
+
+        #endregion
+
+        #region Fields
+
+        private readonly Localizer choosenLanguage;
+
+        #endregion
+
+        #region Constructors and Destructors
+
+        public GameOptions()
+        {
+            this.musicVolume = 1.0f;
+            this.sfxVolume = 1.0f;
+            this.choosenLanguage = new Localizer();
+        }
+
+        #endregion
+
+        #region Public Properties
 
         public static GameOptions Instance
         {
@@ -34,32 +53,31 @@ namespace Recellection.Code.Models
                     {
                         instance = new GameOptions();
                     }
+
                     return instance;
                 }
             }
         }
 
-        public GameOptions()
-        {
-            musicVolume = 1.0f;
-            sfxVolume = 1.0f;
-            this.choosenLanguage = new Localizer();
-        }
+        public Globals.Difficulty difficulty { get; set; }
+
+        public bool musicMuted { get; set; }
+
+        public float musicVolume { get; set; }
+
+        public bool sfxMuted { get; set; }
+
+        public float sfxVolume { get; set; }
 
         #endregion
 
-        public Globals.Difficulty difficulty { get; set; }
-        public float musicVolume { get; set; }
-        public bool musicMuted { get; set; }
+        #region Public Methods and Operators
 
-        public float sfxVolume { get; set; }
-        public bool sfxMuted { get; set; }
-
-        private Localizer choosenLanguage;
-
-        public void SetLanguage(String language)
+        public void SetLanguage(string language)
         {
-            choosenLanguage.SetLanguage(language);
+            this.choosenLanguage.SetLanguage(language);
         }
+
+        #endregion
     }
 }

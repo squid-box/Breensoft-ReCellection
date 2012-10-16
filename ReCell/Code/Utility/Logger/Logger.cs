@@ -1,26 +1,29 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Diagnostics;
-using System.IO;
-
-namespace Recellection.Code.Utility.Logger
+﻿namespace Recellection.Code.Utility.Logger
 {
-	/// <summary>
+    using System;
+    using System.IO;
+
+    /// <summary>
 	/// Provides a re-usable logging interface for the whole application.
 	/// 
 	/// Author: Martin Nycander
     /// Signature: John Forsberg (2010-05-07)
 	/// </summary>
 	public class Logger
-	{	
-		private string name;
-		private LogLevel threshold;
-		private TextWriter target;
-		public bool Active {get; set;}
-		
-		/// <summary>
+	{
+        #region Fields
+
+        private readonly string name;
+
+        private TextWriter target;
+
+        private LogLevel threshold;
+
+        #endregion
+
+        #region Constructors and Destructors
+
+        /// <summary>
 		/// Internal constructor, use GetLogger to get an instance.
 		/// </summary>
 		/// <param name="name">The name of the logger.</param>
@@ -33,115 +36,127 @@ namespace Recellection.Code.Utility.Logger
 			this.target = target;
 			this.Active = false;
 		}
-		
-		/// <returns>The name of the logger.</returns>
+
+        #endregion
+
+        #region Public Properties
+
+        public bool Active {get; set;}
+
+        #endregion
+
+        #region Public Methods and Operators
+
+        /// <summary>
+        /// Submits a debug log message to the logger.
+        /// A debug message is a less detailed and/or less frequent debugging messages
+        /// </summary>
+        /// <param name="message">The message to log.</param>
+        public void Debug(string message)
+        {
+            this.Log(message, LogLevel.DEBUG);
+        }
+
+        /// <summary>
+        /// Submits an error log message to the logger.
+        /// </summary>
+        /// <param name="message">The message to log.</param>
+        public void Error(string message)
+        {
+            this.Log(message, LogLevel.ERROR);
+        }
+
+        /// <summary>
+        /// Submits a fatal log message to the logger.
+        /// After a fatal error the application usually terminates.
+        /// </summary>
+        /// <param name="message">The message to log.</param>
+        public void Fatal(string message)
+        {
+            this.Log(message, LogLevel.FATAL);
+        }
+
+        /// <returns>The name of the logger.</returns>
 		public string GetName()
 		{
-			return name;
+			return this.name;
 		}
-		
-		/// <param name="threshold">The new logging threshold for the logger.</param>
-		public void SetThreshold(LogLevel threshold)
-		{
-			this.threshold = threshold;
-		}
-		
-		/// <returns>The current threshold for this logger.</returns>
+
+        /// <returns>The current threshold for this logger.</returns>
 		public LogLevel GetThreshold()
 		{
-			return threshold;
+			return this.threshold;
 		}
-		
-		/// <param name="newTarget">The new output baseEntity for this logger.</param>
+
+        /// <summary>
+        /// Submits an info log message to the logger.
+        /// An info message is an informal message.
+        /// </summary>
+        /// <param name="message">The message to log.</param>
+        public void Info(string message)
+        {
+            this.Log(message, LogLevel.INFO);
+        }
+
+        /// <param name="newTarget">The new output baseEntity for this logger.</param>
 		public void SetTarget(TextWriter newTarget)
 		{
 			this.target = newTarget;
 		}
 
-		/// <summary>
-		/// Logs a message to the baseEntity if it's above the threshold.
-		/// </summary>
-		/// <param name="message">The message to log.</param>
-		/// <param name="level">The level of importance.</param>
-		private void Log(string message, LogLevel level)
-		{
-#if DEBUG
-			if(!Active)
-				return;
+        /// <param name="threshold">The new logging threshold for the logger.</param>
+        public void SetThreshold(LogLevel threshold)
+        {
+            this.threshold = threshold;
+        }
 
-			if (level < this.threshold)
-				return;
-			
-			if (level < LoggerFactory.globalThreshold)
-				return;
-			
-			string time = DateTime.Now.ToString("HH:mm:ss");
-			
-			target.WriteLine(time+" "+name+"["+level+"]: "+message);
-#endif
-		}
-		
-		#region Logging methods
-
-		/// <summary>
+        /// <summary>
 		/// Submits a trace log message to the logger.
 		/// A trace message is a very detailed log messages, potentially of a high frequency and volume.
 		/// </summary>
 		/// <param name="message">The message to log.</param>
 		public void Trace(string message)
 		{
-			Log(message, LogLevel.TRACE);
+			this.Log(message, LogLevel.TRACE);
 		}
 
-		/// <summary>
-		/// Submits a debug log message to the logger.
-		/// A debug message is a less detailed and/or less frequent debugging messages
-		/// </summary>
-		/// <param name="message">The message to log.</param>
-		public void Debug(string message)
-		{
-			Log(message, LogLevel.DEBUG);
-		}
-
-		/// <summary>
-		/// Submits an info log message to the logger.
-		/// An info message is an informal message.
-		/// </summary>
-		/// <param name="message">The message to log.</param>
-		public void Info(string message)
-		{
-			Log(message, LogLevel.INFO);
-		}
-
-		/// <summary>
+        /// <summary>
 		/// Submits a warning log message to the logger.
 		/// A warning message is for warnings which doesn't appear to the user of the application.
 		/// </summary>
 		/// <param name="message">The message to log.</param>
 		public void Warn(string message)
 		{
-			Log(message, LogLevel.WARN);
+			this.Log(message, LogLevel.WARN);
 		}
 
+        #endregion
 
-		/// <summary>
-		/// Submits an error log message to the logger.
-		/// </summary>
-		/// <param name="message">The message to log.</param>
-		public void Error(string message)
-		{
-			Log(message, LogLevel.ERROR);
-		}
+        #region Methods
 
-		/// <summary>
-		/// Submits a fatal log message to the logger.
-		/// After a fatal error the application usually terminates.
-		/// </summary>
-		/// <param name="message">The message to log.</param>
-		public void Fatal(string message)
-		{
-			Log(message, LogLevel.FATAL);
-		}
-		#endregion
+        /// <summary>
+        /// Logs a message to the baseEntity if it's above the threshold.
+        /// </summary>
+        /// <param name="message">The message to log.</param>
+        /// <param name="level">The level of importance.</param>
+        private void Log(string message, LogLevel level)
+        {
+#if DEBUG
+            if(!this.Active)
+                return;
+
+            if (level < this.threshold)
+                return;
+			
+            if (level < LoggerFactory.globalThreshold)
+                return;
+			
+            string time = DateTime.Now.ToString("HH:mm:ss");
+			
+            this.target.WriteLine(time+" "+this.name+"["+level+"]: "+message);
+#endif
+        }
+
+        #endregion
 	}
 }

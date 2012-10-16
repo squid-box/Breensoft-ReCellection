@@ -1,12 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Microsoft.Xna.Framework;
-using Recellection.Code.Models;
-using Recellection.Code.Utility.Logger;
-
-/*
+﻿/*
  * The AI View keeps track of things relevant for the AI Player.
  * 
  * Author: Lukas Mattsson
@@ -14,34 +6,32 @@ using Recellection.Code.Utility.Logger;
 
 namespace Recellection.Code
 {
+    using System.Collections.Generic;
+
+    using Microsoft.Xna.Framework;
+
+    using global::Recellection.Code.Models;
+
+    using global::Recellection.Code.Utility.Logger;
+
     class AIView
     {
 
-        //############## Variables ##############//
+        // ############## Variables ##############//
+        #region Fields
 
-        private Player ai;
-        private Logger log;
-
-        //Threat levels
-        internal int THREATENED = 50;
         internal int CRITICAL = 100;
         internal int SAFE = 1;
 
+        internal int THREATENED = 50;
 
-        internal List<Vector2> resourcePoints { get; private set; }
-        internal List<Vector2> friendlyPoints { get; private set; }
+        private readonly Logger log;
 
-        internal World world { get; private set; }
-        internal List<Building> myBuildings { get; private set; }
-        internal List<Player> opponents { get; private set; }
+        private Player ai;
 
-        internal List<Vector2> enemyPoints { get; private set; }
-        internal int mapHeight { get; private set; }
-        internal int mapWidth { get; private set; }
+        #endregion
 
-
-
-        //############## Construction ##############//
+        #region Constructors and Destructors
 
         /// <summary>
         /// Constructor.
@@ -49,115 +39,58 @@ namespace Recellection.Code
         /// <param name="p_world"></param>
         public AIView(World p_world)
         {
-            log = Utility.Logger.LoggerFactory.GetLogger();
-            //LoggerFactory.globalThreshold = LogLevel.FATAL;
+            this.log = Utility.Logger.LoggerFactory.GetLogger();
 
-            world = p_world;
-            mapHeight = world.GetMap().map.GetLength(1);
-            mapWidth = world.GetMap().map.GetLength(0);
+            // LoggerFactory.globalThreshold = LogLevel.FATAL;
+            this.world = p_world;
+            this.mapHeight = this.world.GetMap().map.GetLength(1);
+            this.mapWidth = this.world.GetMap().map.GetLength(0);
 
-            myBuildings = new List<Building>();
+            this.myBuildings = new List<Building>();
 
-            opponents = world.players; //Remove the AI player when it has called RegisterPlayer
+            this.opponents = this.world.players; // Remove the AI player when it has called RegisterPlayer
 
-            friendlyPoints = new List<Vector2>();
-            resourcePoints = new List<Vector2>();
-            enemyPoints = new List<Vector2>();
+            this.friendlyPoints = new List<Vector2>();
+            this.resourcePoints = new List<Vector2>();
+            this.enemyPoints = new List<Vector2>();
         }
 
+        #endregion
+
+        #region Properties
+
+        internal List<Vector2> enemyPoints { get; private set; }
+
+        internal List<Vector2> friendlyPoints { get; private set; }
+
+        internal int mapHeight { get; private set; }
+        internal int mapWidth { get; private set; }
+
+        internal List<Building> myBuildings { get; private set; }
+        internal List<Player> opponents { get; private set; }
+
+        internal List<Vector2> resourcePoints { get; private set; }
+
+        internal World world { get; private set; }
+
+        #endregion
+
+        #region Methods
 
         /// <summary>
-        /// Internal function. Allows the AI Player to register itself so that this view can keep track
-        /// of who it is making calls for.
-        /// </summary>
-        /// <param name="p"></param>
-        internal void RegisterPlayer(Player p)
-        {
-            ai = p;
-            opponents.Remove(ai);
-        }
-
-
-        //############## Logic functions ##############//
-
-        /// <summary>
-        /// The AI takes a look at all the tiles it can see (everything as of2010-05-16) and
-        /// looks for enemy buildings and resource points.
-        /// </summary>
-        internal void LookAtScreen()
-        {
-            //First, clear all lists
-            enemyPoints.Clear();
-            friendlyPoints.Clear();
-            myBuildings.Clear();
-            resourcePoints.Clear();
-
-            for (int i = 0; i < mapWidth; i++)
-            {
-                for (int j = 0; j < mapHeight; j++)
-                {
-                    Tile temp = world.GetMap().GetTile(i,j);
-                    if (ContainsResourcePoint(temp))
-                    {
-                        resourcePoints.Add(temp.GetPosition());
-                    }
-                    if (ContainsEnemyBuilding(temp))
-                    {
-                        enemyPoints.Add(temp.GetPosition());
-                    }
-                    if (ContainsFriendlyBuilding(temp.GetPosition()))
-                    {
-                        myBuildings.Add(temp.GetBuilding());
-                        friendlyPoints.Add(temp.GetPosition());
-                    }
-                }
-            }
-        }
-
-
-        //############## Utility functions ##############//
-
-
-
-        /// <summary>
-        /// Checks whether or not there is a Resource Point at the given coordinates.
-        /// Overloaded function, also works with a tile.
-        /// </summary>
-        /// <param name="current"></param>
-        /// <returns></returns>
-        internal bool ContainsResourcePoint(Vector2 current, World world)
-        {
-            Tile tempTile = Util.GetTileAt(current, world);
-            return ContainsResourcePoint(tempTile);
-        }
-
-        /// <summary>
-        /// Checks whether or not there is a Resource Point on the given Tile.
-        /// </summary>
-        /// <param name="current"></param>
-        /// <returns></returns>
-        internal bool ContainsResourcePoint(Tile current)
-        {
-            if (current.GetTerrainType().GetEnum() == Globals.TerrainTypes.Mucus)
-            {
-                return true;
-            }
-            return false;
-        }
-       
-        /// <summary>
-        /// Checks whether or not the given coordinates contains a friendly building.
+        /// Causes the AIView to add the building at the given location to the list of buildings.
+        /// 
         /// </summary>
         /// <param name="point"></param>
-        /// <returns></returns>
-        internal bool ContainsFriendlyBuilding(Vector2 point)
+        internal void BuildingAddedAt(Vector2 point)
         {
-            Tile temp = Util.GetTileAt(point, world);
-            if (temp != null && temp.GetBuilding() != null && temp.GetBuilding().GetOwner() == ai)
+            Building b = Util.GetBuildingAt(point, this.world);
+            if (b != null)
             {
-                return true;
+                this.log.Info("Adding building " + b.name + " to the myBuildings list.");
+                this.myBuildings.Add(b);
+                this.friendlyPoints.Add(b.GetPosition());
             }
-            return false;
         }
 
         /// <summary>
@@ -171,25 +104,98 @@ namespace Recellection.Code
             {
                 return false;
             }
-            if (t.GetBuilding().GetOwner() != ai)
+
+            if (t.GetBuilding().GetOwner() != this.ai)
             {
                 return true;
             }
+
             return false;
         }
 
         /// <summary>
-        /// Returns true if the coordinates provided are within the maps boundaries
+        /// Checks whether or not the given coordinates contains a friendly building.
         /// </summary>
-        /// <param name="coords"></param>
+        /// <param name="point"></param>
         /// <returns></returns>
-        internal bool Valid(Vector2 coords)
+        internal bool ContainsFriendlyBuilding(Vector2 point)
         {
-            if (coords.X < mapWidth && coords.Y < mapHeight)
+            Tile temp = Util.GetTileAt(point, this.world);
+            if (temp != null && temp.GetBuilding() != null && temp.GetBuilding().GetOwner() == this.ai)
             {
                 return true;
             }
+
             return false;
+        }
+
+        // ############## Construction ##############//
+
+        // ############## Utility functions ##############//
+
+
+
+        /// <summary>
+        /// Checks whether or not there is a Resource Point at the given coordinates.
+        /// Overloaded function, also works with a tile.
+        /// </summary>
+        /// <param name="current"></param>
+        /// <returns></returns>
+        internal bool ContainsResourcePoint(Vector2 current, World world)
+        {
+            Tile tempTile = Util.GetTileAt(current, world);
+            return this.ContainsResourcePoint(tempTile);
+        }
+
+        /// <summary>
+        /// Checks whether or not there is a Resource Point on the given Tile.
+        /// </summary>
+        /// <param name="current"></param>
+        /// <returns></returns>
+        internal bool ContainsResourcePoint(Tile current)
+        {
+            if (current.GetTerrainType().GetEnum() == Globals.TerrainTypes.Mucus)
+            {
+                return true;
+            }
+
+            return false;
+        }
+
+        // ############## Getter functions ##############//
+
+
+        /// <summary>
+        /// Returns the coordinates of all the friendly buildings
+        /// </summary>
+        /// <returns></returns>
+        internal List<Vector2> GetFriendlyBuildings()
+        {
+            var coordinates = new List<Vector2>();
+            for (int i = 0; i < this.myBuildings.Count; i++)
+            {
+                coordinates.Add(this.myBuildings[i].position);
+            }
+
+            return coordinates;
+        }
+
+        /// <summary>
+        /// Returns a list of all the resource locations.
+        /// </summary>
+        /// <returns></returns>
+        internal List<Vector2> GetResourceLocations()
+        {
+            var result = new List<Vector2>();
+            for (int i = 0; i < this.myBuildings.Count; i++)
+            {
+                if (this.myBuildings[i].type == Globals.BuildingTypes.Resource)
+                {
+                    result.Add(this.myBuildings[i].GetPosition());
+                }
+            }
+ 
+            return result;
         }
 
         /// <summary>
@@ -199,7 +205,7 @@ namespace Recellection.Code
         /// <returns></returns>
         internal Player Harvesting(Vector2 point)
         {
-            Building tempBuilding = Util.GetBuildingAt(point, world);
+            Building tempBuilding = Util.GetBuildingAt(point, this.world);
 
             if (tempBuilding == null)
                 return null;
@@ -214,57 +220,68 @@ namespace Recellection.Code
             }
         }
 
-
-
-        //############## Getter functions ##############//
-
-
         /// <summary>
-        /// Returns the coordinates of all the friendly buildings
+        /// The AI takes a look at all the tiles it can see (everything as of2010-05-16) and
+        /// looks for enemy buildings and resource points.
         /// </summary>
-        /// <returns></returns>
-        internal List<Vector2> GetFriendlyBuildings()
+        internal void LookAtScreen()
         {
-            List<Vector2> coordinates = new List<Vector2>();
-            for (int i = 0; i < myBuildings.Count; i++)
-            {
-                coordinates.Add(myBuildings[i].position);
-            }
-            return coordinates;
-        }
+            // First, clear all lists
+            this.enemyPoints.Clear();
+            this.friendlyPoints.Clear();
+            this.myBuildings.Clear();
+            this.resourcePoints.Clear();
 
-        /// <summary>
-        /// Returns a list of all the resource locations.
-        /// </summary>
-        /// <returns></returns>
-        internal List<Vector2> GetResourceLocations()
-        {
-            List<Vector2> result = new List<Vector2>();
-            for (int i = 0; i < myBuildings.Count; i++)
+            for (int i = 0; i < this.mapWidth; i++)
             {
-                if (myBuildings[i].type == Globals.BuildingTypes.Resource)
+                for (int j = 0; j < this.mapHeight; j++)
                 {
-                    result.Add(myBuildings[i].GetPosition());
+                    Tile temp = this.world.GetMap().GetTile(i, j);
+                    if (this.ContainsResourcePoint(temp))
+                    {
+                        this.resourcePoints.Add(temp.GetPosition());
+                    }
+
+                    if (this.ContainsEnemyBuilding(temp))
+                    {
+                        this.enemyPoints.Add(temp.GetPosition());
+                    }
+
+                    if (this.ContainsFriendlyBuilding(temp.GetPosition()))
+                    {
+                        this.myBuildings.Add(temp.GetBuilding());
+                        this.friendlyPoints.Add(temp.GetPosition());
+                    }
                 }
-            } 
-            return result;
-        }
-
-
-        /// <summary>
-        /// Causes the AIView to add the building at the given location to the list of buildings.
-        /// 
-        /// </summary>
-        /// <param name="point"></param>
-        internal void BuildingAddedAt(Vector2 point)
-        {
-            Building b = Util.GetBuildingAt(point, world);
-            if (b != null)
-            {
-                log.Info("Adding building " + b.name + " to the myBuildings list.");
-                myBuildings.Add(b);
-                friendlyPoints.Add(b.GetPosition());
             }
         }
+
+        /// <summary>
+        /// Internal function. Allows the AI Player to register itself so that this view can keep track
+        /// of who it is making calls for.
+        /// </summary>
+        /// <param name="p"></param>
+        internal void RegisterPlayer(Player p)
+        {
+            this.ai = p;
+            this.opponents.Remove(this.ai);
+        }
+
+        /// <summary>
+        /// Returns true if the coordinates provided are within the maps boundaries
+        /// </summary>
+        /// <param name="coords"></param>
+        /// <returns></returns>
+        internal bool Valid(Vector2 coords)
+        {
+            if (coords.X < this.mapWidth && coords.Y < this.mapHeight)
+            {
+                return true;
+            }
+
+            return false;
+        }
+
+        #endregion
     }
 }

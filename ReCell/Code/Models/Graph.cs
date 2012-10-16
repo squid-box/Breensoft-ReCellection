@@ -1,15 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-
-using Recellection.Code.Utility.Logger;
-using Recellection.Code.Utility.Events;
-using Recellection.Code.Controllers;
-
-namespace Recellection.Code.Models
+﻿namespace Recellection.Code.Models
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
 
-	/// <summary>
+    using global::Recellection.Code.Controllers;
+
+    using global::Recellection.Code.Utility.Events;
+
+    using global::Recellection.Code.Utility.Logger;
+
+    /// <summary>
 	/// The Graph component is a storage class for buildings and their weights.
 	/// 
 	/// Author: Martin Nycander
@@ -18,32 +19,57 @@ namespace Recellection.Code.Models
 	/// </summary>
 	public class Graph : IModel
 	{
-		private static Logger logger = LoggerFactory.GetLogger();
+        #region Static Fields
+
+        private static readonly Logger logger = LoggerFactory.GetLogger();
 		private static int defaultWeight = 0;
-		
-		public event Publish<Building> weightChanged;
-        public BaseBuilding baseBuilding { get; set; }
-		private Dictionary<Building, int> buildings;
-		public int TotalWeight { get; private set; }
-		
-		private Graph()
-		{
-			logger.Trace("Constructing new graph.");
-			buildings = new Dictionary<Building, int>();
-			TotalWeight = 0;
-		}
-		
-		/// <summary>
+
+        #endregion
+
+        #region Fields
+
+        private readonly Dictionary<Building, int> buildings;
+
+        #endregion
+
+        #region Constructors and Destructors
+
+        /// <summary>
 		/// Constructs and initializes a graph with a single basebuilding.
 		/// </summary>
 		public Graph(BaseBuilding baseBuilding) : this()
 		{
-			buildings.Add(baseBuilding, defaultWeight);
+			this.buildings.Add(baseBuilding, defaultWeight);
             this.baseBuilding = baseBuilding;
-			TotalWeight += defaultWeight;
+			this.TotalWeight += defaultWeight;
 		}
 
-		/// <summary>
+        private Graph()
+        {
+            logger.Trace("Constructing new graph.");
+            this.buildings = new Dictionary<Building, int>();
+            this.TotalWeight = 0;
+        }
+
+        #endregion
+
+        #region Public Events
+
+        public event Publish<Building> weightChanged;
+
+        #endregion
+
+        #region Public Properties
+
+        public int TotalWeight { get; private set; }
+
+        public BaseBuilding baseBuilding { get; set; }
+
+        #endregion
+
+        #region Public Methods and Operators
+
+        /// <summary>
 		/// Adds a fromBuilding to the graph.
 		/// A fromBuilding that has already been added will be ignored.
 		/// </summary>
@@ -51,66 +77,48 @@ namespace Recellection.Code.Models
 		/// <exception cref="ArgumentException">If the fromBuilding is a base fromBuilding.</exception>
 		public void Add(Building building)
 		{
-			if (buildings.ContainsKey(building))
+			if (this.buildings.ContainsKey(building))
 			{
 				logger.Debug("Can not add building to graph. The building '" + building + "' already exists.");
 				throw new ArgumentException("The building '" + building + "' already exists in a graph.");
 			}
 			
-			lock(buildings)
+			lock(this.buildings)
 			{
-				buildings.Add(building, defaultWeight);
-				TotalWeight += defaultWeight;
+				this.buildings.Add(building, defaultWeight);
+				this.TotalWeight += defaultWeight;
 			}
-			Publish(building, defaultWeight, EventType.ADD);
+
+			this.Publish(building, defaultWeight, EventType.ADD);
 		}
 
-		/// <summary>
-		/// Removes a fromBuilding from the graph.
-		/// </summary>
-		/// <param name="fromBuilding">The fromBuilding to remove.</param>
-		public void Remove(Building building)
-		{
-			lock(buildings)
-			{
-				TotalWeight -= buildings[building];
-				buildings.Remove(building);
-			}
-			
-			Publish(building, 0, EventType.REMOVE);
-		}
+        /// <returns>The number of buildings in this graph.</returns>
+        public int CountBuildings()
+        {
+            return this.buildings.Count();
+        }
+		
 
-		/// <summary>
-		/// Sets the weight of a fromBuilding node in the graph.
-		/// </summary>
-		/// <param name="fromBuilding">The fromBuilding to set weight for.</param>
-		/// <param name="weight">The new weight.</param>
-		/// <exception cref="GraphLessBuildingException">If the fromBuilding does not exist in the graph.</exception>
-		public void SetWeight(Building building, int weight)
-		{
-			if (! buildings.ContainsKey(building))
-			{
-				throw new GraphLessBuildingException();
-			}
-			
-			lock(buildings)
-			{
-				TotalWeight -= buildings[building];
-				buildings[building] = weight;
-				TotalWeight += weight;
-			}
-			
-			Publish(building, weight, EventType.ALTER);
-		}
+        /// <returns>An enumerator for all buildings in the graph.</returns>
+        public IEnumerable<Building> GetBuildings()
+        {
+            lock(this.buildings)
+            {
+                foreach(KeyValuePair<Building, int> b in this.buildings)
+                {
+                    yield return b.Key;
+                }
+            }
+        }
 
-		/// <param name="fromBuilding">The fromBuilding to get weight for.</param>
+        /// <param name="fromBuilding">The fromBuilding to get weight for.</param>
 		/// <returns>the weight of the fromBuilding.</returns>
 		/// <exception cref="ArgumentException">if the fromBuilding is not a part of the graph.</exception>
 		public int GetWeight(Building building)
 		{
 			int weight;
 			
-			if (! buildings.TryGetValue(building, out weight))
+			if (! this.buildings.TryGetValue(building, out weight))
 			{
 				throw new ArgumentException("That building does not exist in this graph.");
 			}
@@ -118,6 +126,7 @@ namespace Recellection.Code.Models
 			return weight;
 		}
 		
+
 		/// <summary>
 		/// Returns the weight factor for a fromBuilding. 
 		/// It' pretty much weight / total weight.
@@ -126,10 +135,11 @@ namespace Recellection.Code.Models
 		/// <returns></returns>
 		public double GetWeightFactor(Building building)
 		{
-			double weight = GetWeight(building);
-			return weight / (double)TotalWeight;
+			double weight = this.GetWeight(building);
+			return weight / this.TotalWeight;
 		}
 		
+
 		/// <summary>
 		/// Checks if a fromBuilding exists in this graph.
 		/// </summary>
@@ -137,28 +147,52 @@ namespace Recellection.Code.Models
 		/// <returns>True if the fromBuilding exists, false if not.</returns>
 		public bool HasBuilding(Building b)
 		{
-			return buildings.ContainsKey(b);
+			return this.buildings.ContainsKey(b);
 		}
 
-		/// <returns>The number of buildings in this graph.</returns>
-		public int CountBuildings()
-		{
-			return buildings.Count();
-		}
-		
-		/// <returns>An enumerator for all buildings in the graph.</returns>
-		public IEnumerable<Building> GetBuildings()
-		{
-			lock(buildings)
-			{
-				foreach(KeyValuePair<Building,int> b in buildings)
-				{
-					yield return b.Key;
-				}
-			}
-		}
+        /// <summary>
+        /// Removes a fromBuilding from the graph.
+        /// </summary>
+        /// <param name="fromBuilding">The fromBuilding to remove.</param>
+        public void Remove(Building building)
+        {
+            lock(this.buildings)
+            {
+                this.TotalWeight -= this.buildings[building];
+                this.buildings.Remove(building);
+            }
+			
+            this.Publish(building, 0, EventType.REMOVE);
+        }
 
-		/// <summary>
+        /// <summary>
+        /// Sets the weight of a fromBuilding node in the graph.
+        /// </summary>
+        /// <param name="fromBuilding">The fromBuilding to set weight for.</param>
+        /// <param name="weight">The new weight.</param>
+        /// <exception cref="GraphLessBuildingException">If the fromBuilding does not exist in the graph.</exception>
+        public void SetWeight(Building building, int weight)
+        {
+            if (! this.buildings.ContainsKey(building))
+            {
+                throw new GraphLessBuildingException();
+            }
+			
+            lock(this.buildings)
+            {
+                this.TotalWeight -= this.buildings[building];
+                this.buildings[building] = weight;
+                this.TotalWeight += weight;
+            }
+			
+            this.Publish(building, weight, EventType.ALTER);
+        }
+
+        #endregion
+
+        #region Methods
+
+        /// <summary>
 		/// Publishes an event of change to all subscribers.
 		/// </summary>
 		/// <param name="fromBuilding">The fromBuilding that has changed.</param>
@@ -166,10 +200,12 @@ namespace Recellection.Code.Models
 		/// <param name="t">Type of event.</param>
 		private void Publish(Building building, int weight, EventType t)
 		{
-			if (weightChanged != null)
+			if (this.weightChanged != null)
 			{
-				weightChanged(this, new GraphEvent(building, weight, t));
+				this.weightChanged(this, new GraphEvent(building, weight, t));
 			}
 		}
+
+        #endregion
 	}
 }

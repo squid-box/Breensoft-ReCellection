@@ -1,17 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-using Recellection.Code.Models;
-using Recellection.Code.Controllers;
-using Recellection.Code.Main;
-using Recellection.Code.Utility.Logger;
-using Recellection.Code.Views;
-using Microsoft.Xna.Framework.Audio;
-
-namespace Recellection.Code.Controllers
+﻿namespace Recellection.Code.Controllers
 {
+    using System;
+    using System.Collections.Generic;
+
+    using Microsoft.Xna.Framework.Audio;
+
+    using global::Recellection.Code.Main;
+
+    using global::Recellection.Code.Models;
+
+    using global::Recellection.Code.Utility.Logger;
+
+    using global::Recellection.Code.Views;
+
     /// <summary>
     /// 
     /// 
@@ -20,20 +21,28 @@ namespace Recellection.Code.Controllers
     /// </summary>
     class VictorTurner
     {
-        private List<Player> players;
+        #region Fields
 
-        private World world;
+        private readonly Cue backgroundSound = Sounds.Instance.LoadSound("inGameMusic");
+
+        private readonly GraphController graphControl;
+
+        private readonly WorldController humanControl;
+
+        private readonly Logger logger = LoggerFactory.GetLogger();
+
+        private readonly List<Player> players;
+
+        private readonly World world;
+
+        bool finished;
 
         private GameInitializer gameInitializer;
-		private Logger logger = LoggerFactory.GetLogger();
 
-        private WorldController humanControl;
-        private GraphController graphControl;
-		
-        Boolean finished = false;
+        #endregion
 
-		private Cue backgroundSound = Sounds.Instance.LoadSound("inGameMusic");
-		
+        #region Constructors and Destructors
+
         /// <summary>
         /// The constructor used to initiate the Victor Turner
         /// </summary>
@@ -44,69 +53,77 @@ namespace Recellection.Code.Controllers
             this.gameInitializer = gameInitializer;
             this.players = gameInitializer.theWorld.players;
             this.world = gameInitializer.theWorld;
-            this.humanControl = new WorldController(players[0],world);
+            this.humanControl = new WorldController(this.players[0], this.world);
             this.graphControl = GraphController.Instance;
         }
 
+        #endregion
+
+        #region Public Methods and Operators
+
         public void Run()
 		{
-			backgroundSound.Play();
+			this.backgroundSound.Play();
 			
-            while (!finished)
+            while (!this.finished)
             {
                 
-				logger.Debug("Victor turner is turning the page!");
-                foreach (Player player in players)
+				this.logger.Debug("Victor turner is turning the page!");
+                foreach (Player player in this.players)
                 {
 					if (player is AIPlayer)
 					{
-						logger.Debug(player.color + " is a AIPlayer!");
+						this.logger.Debug(player.color + " is a AIPlayer!");
 						((AIPlayer)player).MakeMove();
 					}
 					else if (player is Player)
 					{
-						logger.Debug(player.color+" is human!");
-						//This only makes the grid of GUIRegions and scroll zones, remove later.
-                        humanControl.Run();
+					    this.logger.Debug(player.color + " is human!");
+
+					    // This only makes the grid of GUIRegions and scroll zones, remove later.
+					    this.humanControl.Run();
 					}
 					else
 					{
-						logger.Fatal("Could not identify "+player.color+" player!");
+						this.logger.Fatal("Could not identify "+player.color+" player!");
 					}
-                    if (CheckIfLostOrWon(players))
+
+                    if (this.CheckIfLostOrWon(this.players))
                     {
-                        finished = true;
-                        EndGame(players[0]);
+                        this.finished = true;
+                        this.EndGame(this.players[0]);
                         break;
                     }
                 }
-                if (finished)
+
+                if (this.finished)
                 {
                     break;
                 }
-				logger.Info("Weighting graphs!");
-                foreach (Player player in players)
+
+				this.logger.Info("Weighting graphs!");
+                foreach (Player player in this.players)
                 {
                     player.unitAcc.ProduceUnits();
                 }
 
-				graphControl.CalculateWeights();
+				this.graphControl.CalculateWeights();
 
                 // This is where we start "animating" all movement
                 // FIXME: This ain't okay, hombrey
                 // Let the units move!
-                logger.Info("Moving units!");
+                this.logger.Info("Moving units!");
 				
 				for(int u = 0; u < 5; u++)
 				{
-					foreach (Player p in players)
+					foreach (Player p in this.players)
 					{
 						BuildingController.AggressiveBuildingAct(p);
 					}
 					
 					for(int i = 0; i < 100; i++)
 					{
-						UnitController.Update(world.units, 1, world.GetMap());
+						UnitController.Update(this.world.units, 1, this.world.GetMap());
 						System.Threading.Thread.Sleep(10);
 					}
 				}
@@ -116,58 +133,58 @@ namespace Recellection.Code.Controllers
 
         }
 
-		private void EndGame(Player winner)
-		{
-			if (backgroundSound.IsPlaying)
-			{
-				backgroundSound.Pause();
-			}
-			
-			humanControl.Stop();
-			
-			// Build menu
-			
-			List<MenuIcon> options = new List<MenuIcon>(1);
-			MenuIcon cancel = new MenuIcon("");
-			cancel.region = new GUIRegion(Recellection.windowHandle, 
-				new System.Windows.Rect(0, Globals.VIEWPORT_HEIGHT - 100, Globals.VIEWPORT_WIDTH, 100));
-			options.Add(cancel);
-			Menu menu = new Menu(options);
-			MenuController.LoadMenu(menu);
-			
-			Recellection.CurrentState = new EndGameView(! (winner is AIPlayer));
-			
-			MenuController.GetInput();
+        #endregion
 
-            MenuController.UnloadMenu();
-            
-        }
+        #region Methods
 
-        private void updateFogOfWar(Player player)
+        private bool CheckIfLostOrWon(List<Player> players)
         {
-            lock (world)
+            var toBeRemoved = new List<Player>();
+            foreach(Player p in players)
             {
-                foreach (Tile t in world.GetMap().map)
+                if (this.HasLost(p))
                 {
-                    if (t.GetBuilding() == null)
-						continue;
-						
-                    for (int x = -2; x <= 2; x++)
-                    {
-                        for (int y = -2; y <= 2; y++)
-                        {
-                            if (! world.isWithinMap(x + (int)t.position.X, y + (int)t.position.Y))
-								continue;
-							
-                            //Get the tile and check if it is visible already else set it to visible.
-                            if (world.GetMap().GetTile(x + (int)t.position.X, y + (int)t.position.Y).IsVisible(t.GetBuilding().owner))
-								continue;
-
-                            // TODO: Do stuff.
-                        }
-                    }
+                    toBeRemoved.Add(p);
                 }
             }
+			
+            foreach(Player p in toBeRemoved)
+            {
+                this.world.players.Remove(p);
+            }
+			
+            if (this.HasWon())
+            {
+                return true;
+            }
+
+            return false;
+        }
+
+        private void EndGame(Player winner)
+        {
+            if (this.backgroundSound.IsPlaying)
+            {
+                this.backgroundSound.Pause();
+            }
+
+            this.humanControl.Stop();
+
+            // Build menu
+            var options = new List<MenuIcon>(1);
+            var cancel = new MenuIcon(string.Empty);
+            cancel.region = new GUIRegion(
+                Recellection.windowHandle, 
+                new System.Windows.Rect(0, Globals.VIEWPORT_HEIGHT - 100, Globals.VIEWPORT_WIDTH, 100));
+            options.Add(cancel);
+            var menu = new Menu(options);
+            MenuController.LoadMenu(menu);
+
+            Recellection.CurrentState = new EndGameView(! (winner is AIPlayer));
+
+            MenuController.GetInput();
+
+            MenuController.UnloadMenu();
         }
 
         /// <summary>
@@ -179,7 +196,7 @@ namespace Recellection.Code.Controllers
         /// </summary>
         /// <param name="player">The player which might have lost</param>
         /// <returns>True if the player has no graphs false other vice</returns>
-        private Boolean HasLost(Player player)
+        private bool HasLost(Player player)
         {
             if (player.GetGraphs().Count == 0)
             {
@@ -197,32 +214,44 @@ namespace Recellection.Code.Controllers
         /// </summary>
         /// <returns>Returns true if the length of currently active players 
         /// in the world is zero false other vice.</returns>
-        private Boolean HasWon()
+        private bool HasWon()
         {
-            return (world.players.Count == 1);
+            return this.world.players.Count == 1;
         }
 
-        private Boolean CheckIfLostOrWon(List<Player> players)
+        private void updateFogOfWar(Player player)
         {
-			List<Player> toBeRemoved = new List<Player>();
-			foreach(Player p in players)
-			{
-				if (HasLost(p))
-				{
-					toBeRemoved.Add(p);
-				}
-			}
-			
-			foreach(Player p in toBeRemoved)
-			{
-                world.players.Remove(p);
-			}
-			
-            if (HasWon())
+            lock (this.world)
             {
-                return true;
+                foreach (Tile t in this.world.GetMap().map)
+                {
+                    if (t.GetBuilding() == null)
+                        continue;
+						
+                    for (int x = -2; x <= 2; x++)
+                    {
+                        for (int y = -2; y <= 2; y++)
+                        {
+                            if (! this.world.isWithinMap(x + (int)t.position.X, y + (int)t.position.Y))
+                            {
+                                continue;
+                            }
+
+                            // Get the tile and check if it is visible already else set it to visible.
+                            if (
+                                this.world.GetMap().GetTile(x + (int)t.position.X, y + (int)t.position.Y).IsVisible(
+                                    t.GetBuilding().owner))
+                            {
+                                continue;
+                            }
+
+                            // TODO: Do stuff.
+                        }
+                    }
+                }
             }
-            return false;
         }
+
+        #endregion
     }
 }

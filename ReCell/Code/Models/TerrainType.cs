@@ -1,11 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Microsoft.Xna.Framework.Graphics;
-
-namespace Recellection.Code.Models
+﻿namespace Recellection.Code.Models
 {
+    using Microsoft.Xna.Framework.Graphics;
+
     /// <summary>
     /// Contains information about traits of different Terrain Types.
     /// 
@@ -19,19 +15,32 @@ namespace Recellection.Code.Models
     public class TerrainType : IModel
     {
         // Data
-        private int dmgMod; // Damage modifier
-        private int spdMod; // Speed modifier
-        private int rscMod; // Resource modifier
-        private Globals.TerrainTypes type;
+        #region Static Fields
+
+        private readonly static Texture2D INFECTED_TEXTURE = Recellection.textureMap.GetTexture(Globals.TextureTypes.tile2c);
 
         private readonly static Texture2D MEMBRANE_TEXTURE =    Recellection.textureMap.GetTexture(Globals.TextureTypes.tile2a);
-        private readonly static Texture2D MUCUS_TEXTURE = Recellection.textureMap.GetTexture(Globals.TextureTypes.tile2e); //resource
+        private readonly static Texture2D MUCUS_TEXTURE = Recellection.textureMap.GetTexture(Globals.TextureTypes.tile2e); // resource
         private readonly static Texture2D SLOW_TEXTURE = Recellection.textureMap.GetTexture(Globals.TextureTypes.tile2b);
-        private readonly static Texture2D INFECTED_TEXTURE = Recellection.textureMap.GetTexture(Globals.TextureTypes.tile2c);
-        private readonly static Texture2D WATER_TEXTURE = Recellection.textureMap.GetTexture(Globals.TextureTypes.tile2d);
-        // Methods
 
-        #region Constructors
+        private readonly static Texture2D WATER_TEXTURE = Recellection.textureMap.GetTexture(Globals.TextureTypes.tile2d);
+
+        #endregion
+
+        #region Fields
+
+        private readonly int dmgMod; // Damage modifier
+
+        private readonly int rscMod; // Resource modifier
+
+        private readonly int spdMod; // Speed modifier
+
+        private Globals.TerrainTypes type;
+
+        #endregion
+
+        // Methods
+        #region Constructors and Destructors
 
         /// <summary>
         /// Creates a TerrainType of the type Membrane.
@@ -40,6 +49,7 @@ namespace Recellection.Code.Models
         {
             
         }
+
         /// <summary>
         /// Creates a TerrainType of the type specified in t.
         /// </summary>
@@ -49,28 +59,31 @@ namespace Recellection.Code.Models
             this.type = t;
             switch (t)
             {
-                case (Globals.TerrainTypes.Membrane):
+                case Globals.TerrainTypes.Membrane:
                     {
                         this.dmgMod = 0;
                         this.spdMod = 10;
                         this.rscMod = 0;
                         break;
                     }
-                case (Globals.TerrainTypes.Mucus):
+
+                case Globals.TerrainTypes.Mucus:
                     {
                         this.dmgMod = 0;
                         this.spdMod = 8;
                         this.rscMod = 4;
                         break;
                     }
-                case (Globals.TerrainTypes.Slow):
+
+                case Globals.TerrainTypes.Slow:
                     {
                         this.dmgMod = 0;
                         this.spdMod = 5;
                         this.rscMod = 0;
                         break;
                     }
-                case (Globals.TerrainTypes.Infected):
+
+                case Globals.TerrainTypes.Infected:
                     {
                         this.dmgMod = 5;
                         this.spdMod = 10;
@@ -81,6 +94,8 @@ namespace Recellection.Code.Models
         }
 
         #endregion
+
+        #region Public Methods and Operators
 
         /// <summary>
         /// Gets the type of this TerrainType.
@@ -93,7 +108,7 @@ namespace Recellection.Code.Models
 
         public Texture2D GetTexture()
         {
-            switch (type)
+            switch (this.type)
             {
                 case Globals.TerrainTypes.Infected:
                     return INFECTED_TEXTURE;
@@ -107,14 +122,6 @@ namespace Recellection.Code.Models
                     return MEMBRANE_TEXTURE;
             }
         }
-        /// <summary>
-        /// Change the type of this TerrainType.
-        /// </summary>
-        /// <param name="newType">Enum of the new type of type.</param>
-        public void setType(Globals.TerrainTypes newType)
-        {
-            this.type = newType;
-        }
 
         /// <summary>
         /// Returns the damage modifier of this TerrainType.
@@ -124,14 +131,7 @@ namespace Recellection.Code.Models
         {
             return this.dmgMod;
         }
-        /// <summary>
-        /// Returns the speed modifier of this TerrainType.
-        /// </summary>
-        /// <returns>Integer-modifier</returns>
-        public int getSpeedModifier()
-        {
-            return this.spdMod;
-        }
+
         /// <summary>
         /// Returns the resource modifier of this TerrainType.
         /// </summary>
@@ -140,5 +140,25 @@ namespace Recellection.Code.Models
         {
             return this.rscMod;
         }
+
+        /// <summary>
+        /// Returns the speed modifier of this TerrainType.
+        /// </summary>
+        /// <returns>Integer-modifier</returns>
+        public int getSpeedModifier()
+        {
+            return this.spdMod;
+        }
+
+        /// <summary>
+        /// Change the type of this TerrainType.
+        /// </summary>
+        /// <param name="newType">Enum of the new type of type.</param>
+        public void setType(Globals.TerrainTypes newType)
+        {
+            this.type = newType;
+        }
+
+        #endregion
     }
 }

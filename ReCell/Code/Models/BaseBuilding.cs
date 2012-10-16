@@ -1,13 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Recellection.Code.Utility.Events;
-using Microsoft.Xna.Framework.Graphics;
-using Recellection.Code.Utility.Logger;
-
-namespace Recellection.Code.Models
+﻿namespace Recellection.Code.Models
 {
+    using System;
+    using System.Collections.Generic;
+
+    using Microsoft.Xna.Framework.Graphics;
+
+    using global::Recellection.Code.Utility.Events;
+
+    using global::Recellection.Code.Utility.Logger;
 
     /// <summary>
     /// The base fromBuilding class serves the purpose of keeping track of 
@@ -17,23 +17,23 @@ namespace Recellection.Code.Models
     /// Author: Viktor Eklund
     /// </summary>
     public class BaseBuilding : Building{
-		private Logger logger = LoggerFactory.GetLogger();
+        #region Constants
+
         private const int BASE_PRODUCTION = 5;
+
+        #endregion
+
+        #region Fields
+
+        private readonly LinkedList<Building> childBuildings;
+
+        private Logger logger = LoggerFactory.GetLogger();
 
         private int rateOfProduction;
 
-        public int RateOfProduction
-        {
-            get { return rateOfProduction; }
-            set { rateOfProduction = value; }
-        }
-        private LinkedList<Building> childBuildings;    
-        public LinkedList<Building>.Enumerator ChildBuildings
-        {
-            get { return childBuildings.GetEnumerator(); }            
-        }
+        #endregion
 
-		public event Publish<Building> buildingsChanged;
+        #region Constructors and Destructors
 
         /// <summary>
         /// Constructs a new base fromBuilding
@@ -42,26 +42,47 @@ namespace Recellection.Code.Models
         /// <param name="posX"></param>
         /// <param name="posY"></param>
         /// <param name="owner"></param>
-        public BaseBuilding(String name, int posX, int posY,Player owner,LinkedList<Tile> controlZone)
-               :base(name, posX, posY, BASE_BUILDING_HEALTH,owner,Globals.BuildingTypes.Base , null,controlZone)
+        public BaseBuilding(string name, int posX, int posY, Player owner, LinkedList<Tile> controlZone)
+               :base(name, posX, posY, BASE_BUILDING_HEALTH, owner, Globals.BuildingTypes.Base , null, controlZone)
         {
             this.type = Globals.BuildingTypes.Base;
-            childBuildings = new LinkedList<Building>();
-            baseBuilding = this;
+            this.childBuildings = new LinkedList<Building>();
+            this.baseBuilding = this;
             this.rateOfProduction = BASE_PRODUCTION;
         }
 
-        /// <summary>
-        /// Allows any fromBuilding except a BaseBuilding to add itself to this basebuildings list of buildings
-        /// </summary>
-        /// <param name="fromBuilding"></param>
-        public void Visit(Building building)
+        #endregion
+
+        #region Public Events
+
+        public event Publish<Building> buildingsChanged;
+
+        #endregion
+
+        #region Public Properties
+
+        public LinkedList<Building>.Enumerator ChildBuildings
         {
-            childBuildings.AddLast(building);
-            if (buildingsChanged != null)
-            {
-                buildingsChanged(this, new BuildingAddedEvent(building, EventType.ADD));
-            }
+            get { return this.childBuildings.GetEnumerator(); }            
+        }
+
+        public int RateOfProduction
+        {
+            get { return this.rateOfProduction; }
+            set { this.rateOfProduction = value; }
+        }
+
+        #endregion
+
+        #region Public Methods and Operators
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns>The sprite!</returns>
+        public override Texture2D GetSprite()
+        {
+            return Recellection.textureMap.GetTexture(Globals.TextureTypes.BaseBuilding);
         }
 
         /// <summary>
@@ -72,10 +93,24 @@ namespace Recellection.Code.Models
         {
             if (building.type == Globals.BuildingTypes.Resource)
             {
-                ResourceBuilding rb = (ResourceBuilding)building;
+                var rb = (ResourceBuilding)building;
                 this.rateOfProduction -= rb.RateOfProduction;
             }
-            return childBuildings.Remove(building);
+
+            return this.childBuildings.Remove(building);
+        }
+
+        /// <summary>
+        /// Allows any fromBuilding except a BaseBuilding to add itself to this basebuildings list of buildings
+        /// </summary>
+        /// <param name="fromBuilding"></param>
+        public void Visit(Building building)
+        {
+            this.childBuildings.AddLast(building);
+            if (this.buildingsChanged != null)
+            {
+                this.buildingsChanged(this, new BuildingAddedEvent(building, EventType.ADD));
+            }
         }
 
         /// <summary>
@@ -88,13 +123,6 @@ namespace Recellection.Code.Models
             throw new ArgumentException("A BaseBuilding should not be added as a child building to another BaseBuilding");
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <returns>The sprite!</returns>
-        public override Texture2D GetSprite()
-        {
-            return Recellection.textureMap.GetTexture(Globals.TextureTypes.BaseBuilding);
-        }
+        #endregion
     }
 }

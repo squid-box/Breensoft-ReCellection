@@ -1,16 +1,19 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using Recellection.Code.Controllers;
-
-namespace Recellection.Code.Models
+﻿namespace Recellection.Code.Models
 {
+    using Microsoft.Xna.Framework;
+    using Microsoft.Xna.Framework.Graphics;
+
+    using global::Recellection.Code.Controllers;
+
     class KamikazeUnit : Unit
     {
+        #region Static Fields
+
         private static readonly float MOVEMENT_SPEED = 0.03f;
+
+        #endregion
+
+        #region Constructors and Destructors
 
         public KamikazeUnit(Player owner, Vector2 position, Entity target)
             : base(owner, position)
@@ -19,44 +22,9 @@ namespace Recellection.Code.Models
             base.movement_speed = MOVEMENT_SPEED;
         }
 
-        override protected bool stopMovingIfGoalIsReached()
-        {
+        #endregion
 
-			// If we are reasonably close to baseEntity.
-			float distance = float.MaxValue;
-			Vector2 here = position;
-			Vector2 there = targetPosition;
-
-			Vector2.Distance(ref here, ref there, out distance);
-
-            if (distance == 0.0f)
-            {
-                if (MissionEntity != null)
-                {
-                    // If this is an enemy! KILL IT! OMG
-                    if (MissionEntity.owner != this.owner)
-                    {
-                        if (MissionEntity is Unit && !((Unit)MissionEntity).isDead)
-						{
-							this.Kill();
-							((Unit)MissionEntity).Kill();
-                            SoundsController.playSound("Celldeath", this.position);
-                        }
-                    }
-
-                    MissionEntity = null;
-                }
-            }
-            if(MissionEntity == null || MissionEntity is Unit && ((Unit)MissionEntity).isDead)
-			{
-				this.Kill();
-                SoundsController.playSound("Celldeath", this.position);
-                return true;
-            }
-
-            return false;
-        }
-/*
+        /*
         /// <summary>
         /// Internal move logic. Uses targetPosition.
         /// </summary>
@@ -109,9 +77,56 @@ namespace Recellection.Code.Models
             }
         }
         */
+        #region Public Methods and Operators
+
         public override Texture2D GetSprite()
         {
             return Recellection.textureMap.GetTexture(Globals.TextureTypes.Kamikaze);
         }
+
+        #endregion
+
+        #region Methods
+
+        override protected bool stopMovingIfGoalIsReached()
+        {
+
+            // If we are reasonably close to baseEntity.
+            float distance = float.MaxValue;
+            Vector2 here = this.position;
+            Vector2 there = this.targetPosition;
+
+            Vector2.Distance(ref here, ref there, out distance);
+
+            if (distance == 0.0f)
+            {
+                if (this.MissionEntity != null)
+                {
+                    // If this is an enemy! KILL IT! OMG
+                    if (this.MissionEntity.owner != this.owner)
+                    {
+                        if (this.MissionEntity is Unit && !((Unit)this.MissionEntity).isDead)
+                        {
+                            this.Kill();
+                            ((Unit)this.MissionEntity).Kill();
+                            SoundsController.playSound("Celldeath", this.position);
+                        }
+                    }
+
+                    this.MissionEntity = null;
+                }
+            }
+
+            if(this.MissionEntity == null || this.MissionEntity is Unit && ((Unit)this.MissionEntity).isDead)
+            {
+                this.Kill();
+                SoundsController.playSound("Celldeath", this.position);
+                return true;
+            }
+
+            return false;
+        }
+
+        #endregion
     }
 }

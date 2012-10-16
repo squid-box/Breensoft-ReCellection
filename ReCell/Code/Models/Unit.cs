@@ -1,14 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using Recellection.Code.Utility.Logger;
-using Recellection.Code.Controllers;
-
-namespace Recellection.Code.Models
+﻿namespace Recellection.Code.Models
 {
+    using System;
+
+    using Microsoft.Xna.Framework;
+    using Microsoft.Xna.Framework.Graphics;
+
+    using global::Recellection.Code.Controllers;
+
+    using global::Recellection.Code.Utility.Logger;
+
     /// <summary>
     /// The representation of a Unit in the game world.
     /// </summary>
@@ -16,125 +16,46 @@ namespace Recellection.Code.Models
     /// <date>2010-04-30</date>
     public class Unit : Entity, IModel
     {
-		private static Logger logger = LoggerFactory.GetLogger();
-		private static int id = 0; // Used for randomness
-		
-		protected Vector2 targetPosition = new Vector2(NO_TARGET, NO_TARGET);
-		
-        // DATA
-		private Entity targetEntity = null;   // Target entity
-        public Entity TargetEntity
-        {
-			get
-			{
-				return targetEntity;
-			}
-			set
-			{
-				targetEntity = value;
-			}
-        }
-		private Entity missionEntity = null;     // Mission entity
-		public Entity MissionEntity
-		{
-			get
-			{
-				return missionEntity;
-			}
-			set
-			{
-				callRainCheckOnTarget();
-				missionEntity = value;
-				if (missionEntity is Building && missionEntity.owner == this.owner)
-				{
-					((Building)missionEntity).incomingUnits.Add(this);
-				}
-			}
-		}
-		// Target to fall back to if the primary baseEntity disappears. Also acts as center of dispersion
-		private Entity baseEntity = null;
-        public Entity BaseEntity
-        {
-			get
-			{
-				return baseEntity;
-			}
-			set
-			{
-				baseEntity = value;
-			}
-		}
-		
-		private float disperseDistance = 1.5f;
-        public float DisperseDistance
-        { 
-			get
-			{
-				return (IsAggressive ? disperseDistance : 0.5f);
-			}
-			set
-			{
-				disperseDistance = value;
-			}
-        }
-        
-		public bool returnToBase { get; set; }         // Whether or not this unit should recieve a new baseEntity from the dispersion procedure
+        #region Constants
 
-		public bool isDead { get; set; }              // Status of unit
-		public float powerLevel;
-		public float PowerLevel
-		{
-			get
-			{
-				return powerLevel + owner.PowerLevel + Buff;
-			}
-			set
-			{
-				powerLevel = value;
-			}
-		}
+        private const float NO_TARGET = -1;
 
-		public float speedLevel;
-		public float SpeedLevel
-		{
-			get
-			{
-				return owner.SpeedLevel/(10*3) + speedLevel;
-			}
-			set
-			{
-				speedLevel = value;
-			}
-		}
-		
-		public float Buff { get; set; }
-		
-		public bool IsAggressive { get; set; }
-		
+        #endregion
+
+        #region Static Fields
+
         private readonly static Texture2D UNIT_TEXTURE = Recellection.textureMap.GetTexture(Globals.TextureTypes.Unit);
-		
+
+        private static int id; // Used for randomness
+
+        private static Logger logger = LoggerFactory.GetLogger();
+
         private static World world;
 
-		/// <summary>
-		/// Should be called when the course has been changed and the unit will not be able to reach a friendly building.
-		/// </summary>
-		private void callRainCheckOnTarget()
-		{
-			if (missionEntity is Building && missionEntity.owner == this.owner)
-			{
-				((Building)missionEntity).incomingUnits.Remove(this);
-			}
-		}
-		
-		private Random rand;
+        #endregion
 
-		// Did I mention that I hate floats? // Martin
+        // Status of unit
+        #region Fields
+
+        public float powerLevel;
+
+        public float speedLevel;
+
+        // Did I mention that I hate floats? // Martin
         protected float movement_speed = 0.01f;
-        private const float NO_TARGET = -1;
-        
-        // METHODS
 
-        #region Constructors
+        protected Vector2 targetPosition = new Vector2(NO_TARGET, NO_TARGET);
+
+        private readonly Random rand;
+
+        private float disperseDistance = 1.5f;
+
+        private Entity missionEntity;     // Mission entity
+
+        #endregion
+
+        // METHODS
+        #region Constructors and Destructors
 
         /// <summary>
         /// Creates a "default unit".
@@ -143,6 +64,7 @@ namespace Recellection.Code.Models
         {
         }
         
+
         /// <summary>
         /// Creates a unit.
         /// </summary>
@@ -169,7 +91,7 @@ namespace Recellection.Code.Models
         public Unit(Player owner, Vector2 position, Entity baseEntity) : base(position, owner)
         {
 			this.BaseEntity = baseEntity;
-			this.returnToBase = (baseEntity != null);
+			this.returnToBase = baseEntity != null;
 			
 			this.DisperseDistance = 1.5f;
             this.position = position;
@@ -186,6 +108,80 @@ namespace Recellection.Code.Models
 
         #endregion
 
+        #region Public Properties
+
+        public Entity BaseEntity { get; set; }
+
+        public float Buff { get; set; }
+
+        public float DisperseDistance
+        { 
+            get
+            {
+                return this.IsAggressive ? this.disperseDistance : 0.5f;
+            }
+
+            set
+            {
+                this.disperseDistance = value;
+            }
+        }
+
+        public bool IsAggressive { get; set; }
+
+        public Entity MissionEntity
+        {
+            get
+            {
+                return this.missionEntity;
+            }
+
+            set
+            {
+                this.callRainCheckOnTarget();
+                this.missionEntity = value;
+                if (this.missionEntity is Building && this.missionEntity.owner == this.owner)
+                {
+                    ((Building)this.missionEntity).incomingUnits.Add(this);
+                }
+            }
+        }
+
+        public float PowerLevel
+        {
+            get
+            {
+                return this.powerLevel + this.owner.PowerLevel + this.Buff;
+            }
+
+            set
+            {
+                this.powerLevel = value;
+            }
+        }
+
+        public float SpeedLevel
+        {
+            get
+            {
+                return this.owner.SpeedLevel/(10*3) + this.speedLevel;
+            }
+
+            set
+            {
+                this.speedLevel = value;
+            }
+        }
+
+        public Entity TargetEntity { get; set; }
+
+        public bool isDead { get; set; }
+
+        public bool returnToBase { get; set; }
+
+        #endregion
+
+        #region Public Methods and Operators
 
         public static void SetWorld(World w)
         {
@@ -203,10 +199,20 @@ namespace Recellection.Code.Models
         {
             return UNIT_TEXTURE;
         }
-        
+
+        public bool IsAtBase()
+        {
+            if (this.BaseEntity is Building && ! ((Building)this.BaseEntity).units.Contains(this))
+            {
+                return false;
+            }
+
+            return Vector2.Distance(this.BaseEntity.position, this.position) <= this.DisperseDistance;
+        }
+
         public void Kill()
         {
-			if (this.PowerLevel >= rand.NextDouble())
+			if (this.PowerLevel >= this.rand.NextDouble())
 			{
 				// We survive! WOO!
 				return;
@@ -220,12 +226,12 @@ namespace Recellection.Code.Models
         
         public void RemoveFromWorld()
 		{
-			world.GetMap().GetTile((int)position.X, (int)position.Y).RemoveUnit(owner, this);
+			world.GetMap().GetTile((int)this.position.X, (int)this.position.Y).RemoveUnit(this.owner, this);
 			world.RemoveUnit(this);
-			callRainCheckOnTarget();
-			if (BaseEntity != null && BaseEntity is Building)
+			this.callRainCheckOnTarget();
+			if (this.BaseEntity != null && this.BaseEntity is Building)
 			{
-				((Building)BaseEntity).RemoveUnit(this);
+				((Building)this.BaseEntity).RemoveUnit(this);
 			}
         }
 
@@ -237,168 +243,68 @@ namespace Recellection.Code.Models
         {
             if (! this.isDead)
             {
-				targetPosition = CalculateTargetPosition();
+				this.targetPosition = this.CalculateTargetPosition();
 				
 				this.Move(systemTime);
-				stopMovingIfGoalIsReached();
+				this.stopMovingIfGoalIsReached();
             }
 		}
 
-		private Vector2 CalculateTargetPosition()
-		{
-			if (TargetEntity != null)
-			{
-				return TargetEntity.position;
-			}
-			else if (MissionEntity != null)
-			{
-				// If we target a tile, we want to be in the middle of it.
-				return MissionEntity.position;
-			}
-			else if (BaseEntity != null && returnToBase)
-			{
-				returnToBase = false;
-				
-				if (Vector2.Distance(BaseEntity.position, this.position) > DisperseDistance)
-				{
-					// We are to far away from base! Return to base origo!
-					MissionEntity = BaseEntity;
-					return CalculateTargetPosition();
-				}
-				else
-				{
-					// Pick random point around base within DisperseDistance
-					double angle = rand.NextDouble() * 2 * Math.PI;
-					double distance = rand.NextDouble() * (double)DisperseDistance;
+        #endregion
 
-					return BaseEntity.position + (new Vector2((float)(Math.Cos(angle) * distance), 
-															  (float)(Math.Sin(angle) * distance)));
-				}
-			}
-			else
-			{
-				return targetPosition;
-			}
-		}
-		
-		/// <summary>
-		/// Internal move logic. Uses targetPosition.
-		/// </summary>
-		private void Move(float deltaTime)
-		{
-			int beforeX = (int)this.position.X;
-			int beforeY = (int)this.position.Y;
+        #region Methods
 
-            Vector2 direction = Vector2.Subtract(this.targetPosition, this.position);
-            direction.Normalize();
-
-			// Move unit towards baseEntity.
-			if (this.targetPosition.X != NO_TARGET)
-			{
-				float distance = this.targetPosition.X - this.position.X;
-
-				if (Math.Abs(distance) < (movement_speed + SpeedLevel))
-				{
-					position = new Vector2(targetPosition.X, position.Y);
-				}
-                else
-                {
-					float newX = position.X + (movement_speed + SpeedLevel) * deltaTime * direction.X * direction.Length();
-                    position = new Vector2(newX, position.Y);
-                }
-			}
-			if (this.targetPosition.Y != NO_TARGET)
-			{
-				float distance = this.targetPosition.Y - this.position.Y;
-
-				if (Math.Abs(distance) < (movement_speed + SpeedLevel))
-                {
-					position = new Vector2(position.X, targetPosition.Y);
-                }
-                else
-                {
-					float newY = position.Y + (movement_speed + SpeedLevel) * deltaTime * direction.Y * direction.Length();
-                    position = new Vector2(position.X, newY);
-                }
-			}
-			
-			int afterX = (int)this.position.X;
-			int afterY = (int)this.position.Y;
-
-			// Tile management!
-			if (afterX != beforeX || afterY != beforeY)
-			{
-				Unit.world.map.GetTile(beforeX, beforeY).RemoveUnit(this);
-				Unit.world.map.GetTile(afterX, afterY).AddUnit(this);
-                Unit.world.map.GetTile(afterX, afterY).MakeVisibleTo(this.owner);
-
-				// Let's update the fog of war!
-				/*for (int i = -3; i <= 3; i++)
-				{
-					for (int j = -3; j <= 3; j++)
-					{
-						try
-						{
-							Unit.world.map.GetTile(afterX + j, afterY + i).MakeVisibleTo(this.owner);
-						}
-						catch (IndexOutOfRangeException e)
-						{
-						}
-					}
-				}*/
-			}
-		}
-
-		virtual protected bool stopMovingIfGoalIsReached()
+        virtual protected bool stopMovingIfGoalIsReached()
 		{
 			float distance = float.MaxValue;
-			Vector2 here = position;
-			Vector2 there = targetPosition;
+			Vector2 here = this.position;
+			Vector2 there = this.targetPosition;
 			
 			Vector2.Distance(ref here, ref there, out distance);
 			
 			if (distance == 0)
 			{
-				if (TargetEntity != null)
+				if (this.TargetEntity != null)
 				{
-					ActOnEntity(TargetEntity);
-					TargetEntity = null;
+					this.ActOnEntity(this.TargetEntity);
+					this.TargetEntity = null;
 				}
-				else if (MissionEntity != null)
+				else if (this.MissionEntity != null)
 				{
-					ActOnEntity(MissionEntity);
-					MissionEntity = null;
+					this.ActOnEntity(this.MissionEntity);
+					this.MissionEntity = null;
 				}
 
 				// We neither have a target or a mission, return to base!
-				if (TargetEntity == null && MissionEntity == null)
+				if (this.TargetEntity == null && this.MissionEntity == null)
 				{
-					if (BaseEntity == null)
+					if (this.BaseEntity == null)
 					{
 						// If no home exists, call current tile home and turn passive.
-						BaseEntity = world.GetMap().GetTile(this.GetPosition());
-						IsAggressive = false; // free kills!
+						this.BaseEntity = world.GetMap().GetTile(this.GetPosition());
+						this.IsAggressive = false; // free kills!
 					}
-					else if (BaseEntity is Building && ! ((Building)BaseEntity).IsAlive())
+					else if (this.BaseEntity is Building && ! ((Building)this.BaseEntity).IsAlive())
 					{
 						// If home just died, call the tile base of that home our home.
-                        if ((((Building)BaseEntity).Parent) != null)
+                        if (((Building)this.BaseEntity).Parent != null)
                         {
-                            BaseEntity = ((Building)BaseEntity).Parent;
+                            this.BaseEntity = ((Building)this.BaseEntity).Parent;
                         }
                         else
                         {
-                            BaseEntity = world.GetMap().GetTile(BaseEntity.GetPosition());
-                            IsAggressive = false; // free kills!
+                            this.BaseEntity = world.GetMap().GetTile(this.BaseEntity.GetPosition());
+                            this.IsAggressive = false; // free kills!
                         }
 					}
 					else
 					{
-						DisperseDistance = 1.5f;
+						this.DisperseDistance = 1.5f;
 					}
 
-					returnToBase = true;
+					this.returnToBase = true;
 				}
+
 				return true;
 			}
 			else
@@ -407,6 +313,7 @@ namespace Recellection.Code.Models
 			}
 		}
         
+
         /// <summary>
         /// Should run when we have reached a target.
 		/// This method decides what to do with the target.
@@ -420,28 +327,30 @@ namespace Recellection.Code.Models
 
 			if (ent.owner == this.owner)
 			{
-				#region Friendly actions!
+				
 				if (ent is Building)
 				{
-					Building targetBuilding = (Building)ent;
+					var targetBuilding = (Building)ent;
 					
 					if (targetBuilding.IsAlive())
 					{
-						BaseEntity = targetBuilding;
-						
-						targetBuilding.AddUnit(this);
-						targetBuilding.incomingUnits.Remove(this);
-						// We will now recieve new positions within a radius of our secondary baseEntity.
+					    this.BaseEntity = targetBuilding;
+
+					    targetBuilding.AddUnit(this);
+					    targetBuilding.incomingUnits.Remove(this);
+
+					    // We will now recieve new positions within a radius of our secondary baseEntity.
 					}
 				}
-				#endregion
+				
 			}
-			else // If this is an enemy! KILL IT! OMG				
+			else
 			{
-				#region Try to kill enemies!
+			    // If this is an enemy! KILL IT! OMG				
+				
 				if (ent is Unit && !((Unit)ent).isDead)
 				{
-					Unit targetUnit = (Unit)ent;
+					var targetUnit = (Unit)ent;
 					if (! targetUnit.isDead)
 					{
 						this.Kill();
@@ -450,7 +359,7 @@ namespace Recellection.Code.Models
 				}
 				else if (ent is Building)
 				{
-					Building targetBuilding = (Building)ent;
+					var targetBuilding = (Building)ent;
 					
 					if (targetBuilding.IsAlive())
 					{
@@ -458,17 +367,128 @@ namespace Recellection.Code.Models
 						BuildingController.HurtBuilding((Building)ent);
 					}
 				}
-				#endregion
+				
 			}
         }
-        
-        public bool IsAtBase()
-		{
-			if (BaseEntity is Building && ! ((Building)BaseEntity).units.Contains(this))
-			{
-				return false;
-			}
-			return Vector2.Distance(BaseEntity.position, this.position) <= DisperseDistance;
+
+        private Vector2 CalculateTargetPosition()
+        {
+            if (this.TargetEntity != null)
+            {
+                return this.TargetEntity.position;
+            }
+            else if (this.MissionEntity != null)
+            {
+                // If we target a tile, we want to be in the middle of it.
+                return this.MissionEntity.position;
+            }
+            else if (this.BaseEntity != null && this.returnToBase)
+            {
+                this.returnToBase = false;
+				
+                if (Vector2.Distance(this.BaseEntity.position, this.position) > this.DisperseDistance)
+                {
+                    // We are to far away from base! Return to base origo!
+                    this.MissionEntity = this.BaseEntity;
+                    return this.CalculateTargetPosition();
+                }
+                else
+                {
+                    // Pick random point around base within DisperseDistance
+                    double angle = this.rand.NextDouble() * 2 * Math.PI;
+                    double distance = this.rand.NextDouble() * this.DisperseDistance;
+
+                    return this.BaseEntity.position + (new Vector2((float)(Math.Cos(angle) * distance), 
+                                                          (float)(Math.Sin(angle) * distance)));
+                }
+            }
+            else
+            {
+                return this.targetPosition;
+            }
         }
+		
+
+        /// <summary>
+        /// Internal move logic. Uses targetPosition.
+        /// </summary>
+        private void Move(float deltaTime)
+        {
+            var beforeX = (int)this.position.X;
+            var beforeY = (int)this.position.Y;
+
+            Vector2 direction = Vector2.Subtract(this.targetPosition, this.position);
+            direction.Normalize();
+
+            // Move unit towards baseEntity.
+            if (this.targetPosition.X != NO_TARGET)
+            {
+                float distance = this.targetPosition.X - this.position.X;
+
+                if (Math.Abs(distance) < (this.movement_speed + this.SpeedLevel))
+                {
+                    this.position = new Vector2(this.targetPosition.X, this.position.Y);
+                }
+                else
+                {
+                    float newX = this.position.X + (this.movement_speed + this.SpeedLevel) * deltaTime * direction.X * direction.Length();
+                    this.position = new Vector2(newX, this.position.Y);
+                }
+            }
+
+            if (this.targetPosition.Y != NO_TARGET)
+            {
+                float distance = this.targetPosition.Y - this.position.Y;
+
+                if (Math.Abs(distance) < (this.movement_speed + this.SpeedLevel))
+                {
+                    this.position = new Vector2(this.position.X, this.targetPosition.Y);
+                }
+                else
+                {
+                    float newY = this.position.Y + (this.movement_speed + this.SpeedLevel) * deltaTime * direction.Y * direction.Length();
+                    this.position = new Vector2(this.position.X, newY);
+                }
+            }
+			
+            var afterX = (int)this.position.X;
+            var afterY = (int)this.position.Y;
+
+            // Tile management!
+            if (afterX != beforeX || afterY != beforeY)
+            {
+                Unit.world.map.GetTile(beforeX, beforeY).RemoveUnit(this);
+                Unit.world.map.GetTile(afterX, afterY).AddUnit(this);
+                Unit.world.map.GetTile(afterX, afterY).MakeVisibleTo(this.owner);
+
+                // Let's update the fog of war!
+                /*for (int i = -3; i <= 3; i++)
+				{
+					for (int j = -3; j <= 3; j++)
+					{
+						try
+						{
+							Unit.world.map.GetTile(afterX + j, afterY + i).MakeVisibleTo(this.owner);
+						}
+						catch (IndexOutOfRangeException e)
+						{
+						}
+					}
+				}*/
+            }
+        }
+
+        /// <summary>
+        /// Should be called when the course has been changed and the unit will not be able to reach a friendly building.
+        /// </summary>
+        private void callRainCheckOnTarget()
+        {
+            if (this.missionEntity is Building && this.missionEntity.owner == this.owner)
+            {
+                ((Building)this.missionEntity).incomingUnits.Remove(this);
+            }
+        }
+
+        #endregion
     }
 }

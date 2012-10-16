@@ -1,14 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Microsoft.Xna.Framework.Content;
-
-namespace Recellection.Code.Views
+﻿namespace Recellection.Code.Views
 {
+    using System.Collections.Generic;
+
+    using Microsoft.Xna.Framework.Content;
+
     public interface IRenderable
 	{
-		[System.Obsolete("Use Draw instead!")]
+        #region Public Methods and Operators
+
+        [System.Obsolete("Use Draw instead!")]
         List<DrawData> GetDrawData(ContentManager content);
-    }
+
+        #endregion
+	}
 }

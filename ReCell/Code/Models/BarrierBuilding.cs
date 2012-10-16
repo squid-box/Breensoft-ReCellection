@@ -1,12 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Microsoft.Xna.Framework.Graphics;
-using Recellection.Code.Utility.Events;
-
-namespace Recellection.Code.Models
+﻿namespace Recellection.Code.Models
 {
+    using System;
+    using System.Collections.Generic;
+
+    using Microsoft.Xna.Framework.Graphics;
+
+    using global::Recellection.Code.Utility.Events;
+
     /// <summary>
     /// A BarrierBuilding improves upon an 
     /// ordinary fromBuilding by providing a defensive bonus
@@ -15,13 +15,14 @@ namespace Recellection.Code.Models
     /// </summary>
     public class BarrierBuilding : Building
     {
+        #region Fields
+
         private readonly float powerBonus = 0.1f;
 
-        public float PowerBonus
-        {
-            get { return powerBonus; }
-        }
-        
+        #endregion
+
+        #region Constructors and Destructors
+
         /// <summary>
         /// Constructs a new BarrierBuilding
         /// </summary>
@@ -30,22 +31,48 @@ namespace Recellection.Code.Models
         /// <param name="posY"></param>
         /// <param name="owner"></param>
         /// <param name="baseBuilding"></param>
-        public BarrierBuilding(String name, int posX, int posY,
+        public BarrierBuilding(string name, int posX, int posY, 
             Player owner, BaseBuilding baseBuilding, LinkedList<Tile> controlZone)
-            : base(name, posX, posY, BARRIER_BUILDING_HEALTH, owner, Globals.BuildingTypes.Barrier, baseBuilding,
+            : base(name, posX, posY, BARRIER_BUILDING_HEALTH, owner, Globals.BuildingTypes.Barrier, baseBuilding, 
             controlZone)
         {
 
             foreach(Tile t in controlZone)
             {
-                t.unitsChanged += BarrierBuilding_unitsChanged;
+                t.unitsChanged += this.BarrierBuilding_unitsChanged;
                 foreach(Unit u in t.GetUnits(owner))
                 {
-					u.Buff = powerBonus;
+					u.Buff = this.powerBonus;
                 }
             }
 
         }
+
+        #endregion
+
+        #region Public Properties
+
+        public float PowerBonus
+        {
+            get { return this.powerBonus; }
+        }
+
+        #endregion
+
+        #region Public Methods and Operators
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns>The sprite!</returns>
+        public override Texture2D GetSprite()
+        {
+            return Recellection.textureMap.GetTexture(Globals.TextureTypes.BarrierBuilding);
+        }
+
+        #endregion
+
+        #region Methods
 
         void BarrierBuilding_unitsChanged(object publisher, Event<IEnumerable<Unit>> ev)
         {
@@ -55,7 +82,7 @@ namespace Recellection.Code.Models
                 {
                     if (u.GetOwner() == this.owner)
                     {
-                        u.Buff = powerBonus;
+                        u.Buff = this.powerBonus;
                     }
                 }
             }
@@ -71,13 +98,6 @@ namespace Recellection.Code.Models
             }
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <returns>The sprite!</returns>
-        public override Texture2D GetSprite()
-        {
-            return Recellection.textureMap.GetTexture(Globals.TextureTypes.BarrierBuilding);
-        }
+        #endregion
     }
 }

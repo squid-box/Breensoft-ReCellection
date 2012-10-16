@@ -1,31 +1,50 @@
-
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using Recellection.Code.Models;
-using Recellection.Code.Utility.Events;
-using Recellection.Code.Views;
-using Microsoft.Xna.Framework.Content;
-
 namespace Recellection
 {
+    using System;
+    using System.Collections.Generic;
 
-	public class MenuView : IView
+    using Microsoft.Xna.Framework;
+    using Microsoft.Xna.Framework.Graphics;
+
+    using global::Recellection.Code.Models;
+
+    using global::Recellection.Code.Utility.Events;
+
+    using global::Recellection.Code.Views;
+
+    public class MenuView : IView
 	{
-		/// <summary>
-		/// author: co
-		/// </summary>
-	
-		//private SpriteBatch textDrawer = new SpriteBatch(Recellection.graphics.GraphicsDevice);
-        //private RenderTarget2D textRenderTex = new RenderTarget2D(Recellection.graphics.GraphicsDevice, Recellection.viewPort.Width, Recellection.viewPort.Height, 0, Recellection.graphics.GraphicsDevice.DisplayMode.Format);
-		List<DrawData> graphics;
+        #region Static Fields
+
         static readonly object padlock = new object();
-        static MenuView instance = null;
-        
-        private Menu currentMenu = null;
+        static MenuView instance;
+
+        #endregion
+
+        #region Fields
+
+        private Menu currentMenu;
+
+        /// <summary>
+        /// author: co
+        /// </summary>
+        // private SpriteBatch textDrawer = new SpriteBatch(Recellection.graphics.GraphicsDevice);
+        // private RenderTarget2D textRenderTex = new RenderTarget2D(Recellection.graphics.GraphicsDevice, Recellection.viewPort.Width, Recellection.viewPort.Height, 0, Recellection.graphics.GraphicsDevice.DisplayMode.Format);
+        List<DrawData> graphics;
+
+        #endregion
+
+        #region Constructors and Destructors
+
+        private MenuView()
+		{
+			MenuModel.Instance.MenuEvent += this.menuEventFunction;
+			this.graphics = new List<DrawData>();
+		}
+
+        #endregion
+
+        #region Public Properties
 
         public static MenuView Instance
         {
@@ -37,49 +56,48 @@ namespace Recellection
                     {
                         instance = new MenuView();
                     }
+
                     return instance;
                 }
             }
         }
 
+        #endregion
 
-		private MenuView()
-		{
-			MenuModel.Instance.MenuEvent += menuEventFunction;
-			graphics = new List<DrawData>();
-		}
-		
-		public void menuEventFunction(Object publisher, Event<Menu> ev)
-		{
-			currentMenu = ev.subject;
-		}
+        #region Public Methods and Operators
 
-		override public void Update(GameTime passedTime)
+        override public void Draw(SpriteBatch spriteBatch)
 		{
-		}
-		
-		override public void Draw(SpriteBatch spriteBatch)
-		{
-			Layer = 1.0f;
-			this.DrawTexture(spriteBatch, currentMenu.GetMenuPic(), new Rectangle(0, 0, Recellection.viewPort.Width, Recellection.viewPort.Height));
+			this.Layer = 1.0f;
+			this.DrawTexture(spriteBatch, this.currentMenu.GetMenuPic(), new Rectangle(0, 0, Recellection.viewPort.Width, Recellection.viewPort.Height));
 
-			Layer = 0.0f;
-            this.DrawCenteredString(spriteBatch, currentMenu.explanation, currentMenu.explanationDrawPos, currentMenu.explanationColor);
-			foreach (MenuIcon mi in currentMenu.GetIcons())
+			this.Layer = 0.0f;
+            this.DrawCenteredString(spriteBatch, this.currentMenu.explanation, this.currentMenu.explanationDrawPos, this.currentMenu.explanationColor);
+			foreach (MenuIcon mi in this.currentMenu.GetIcons())
 			{
 				if (mi.texture != null)
 				{
-					Layer = 0.5f;
+					this.Layer = 0.5f;
 					this.DrawTexture(spriteBatch, mi.texture, mi.targetTextureRectangle);
 				}
+
 				if (mi.label != null)
 				{
-					Layer = 0.25f;
+					this.Layer = 0.25f;
                     this.DrawCenteredString(spriteBatch, mi.label, new Vector2(mi.targetLabelRectangle.X, mi.targetLabelRectangle.Y), mi.labelColor);
 				}
 			}
 		}
 
-        
+        override public void Update(GameTime passedTime)
+        {
+        }
+
+        public void menuEventFunction(object publisher, Event<Menu> ev)
+        {
+            this.currentMenu = ev.subject;
+        }
+
+        #endregion
 	}
 }

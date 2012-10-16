@@ -1,18 +1,22 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Recellection.Code.Models;
-
-namespace Recellection.Code.Utility.Events
+﻿namespace Recellection.Code.Utility.Events
 {
-	public class GraphEvent : Event<Building>
+    using global::Recellection.Code.Models;
+
+    public class GraphEvent : Event<Building>
 	{
-		public int weight { get; private set; }
-		
-		public GraphEvent(Building building, int weight, EventType type) : base(building, type)
+        #region Constructors and Destructors
+
+        public GraphEvent(Building building, int weight, EventType type) : base(building, type)
 		{
 			this.weight = weight;
 		}
+
+        #endregion
+
+        #region Public Properties
+
+        public int weight { get; private set; }
+
+        #endregion
 	}
 }

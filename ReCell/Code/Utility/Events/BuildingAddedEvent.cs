@@ -1,20 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Recellection.Code.Models;
-
-namespace Recellection.Code.Utility.Events
+﻿namespace Recellection.Code.Utility.Events
 {
+    using global::Recellection.Code.Models;
+
     public class BuildingAddedEvent : Event<Building>
     {
-        Building newBuilding;
-
-        public Building NewBuilding
-        {
-            get { return newBuilding; }
-            set { newBuilding = value; }
-        }
+        #region Constructors and Destructors
 
         /// <summary>
         /// A fromBuilding added event
@@ -23,7 +13,15 @@ namespace Recellection.Code.Utility.Events
         /// <param name="type"></param>
         public BuildingAddedEvent(Building building, EventType type):base(building, type)
         {
-            this.newBuilding = building;
+            this.NewBuilding = building;
         }
+
+        #endregion
+
+        #region Public Properties
+
+        public Building NewBuilding { get; set; }
+
+        #endregion
     }
 }

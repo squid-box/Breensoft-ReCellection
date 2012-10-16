@@ -1,27 +1,34 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Windows;
-using Recellection.Code.Models;
-
-namespace Recellection.Code.Utility.Events
+﻿namespace Recellection.Code.Utility.Events
 {
+    using global::Recellection.Code.Models;
+
     class MapEvent : Event<World>
     {
-        public int x { get; private set;}
-        public int y { get; private set;}
+        #region Fields
 
-        World.Map map;
+        readonly World.Map map;
         Tile tile;
+
+        #endregion
+
+        #region Constructors and Destructors
 
         public MapEvent(World w, int x, int y, EventType type)
             : base(w, type)
         {
             this.x = x;
             this.y = y;
-            map = w.GetMap();
-            tile = map.GetTile(x, y);
+            this.map = w.GetMap();
+            this.tile = this.map.GetTile(x, y);
         }
+
+        #endregion
+
+        #region Public Properties
+
+        public int x { get; private set;}
+        public int y { get; private set;}
+
+        #endregion
     }
 }

@@ -1,30 +1,33 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-
 namespace Recellection
 {
+    using Microsoft.Xna.Framework;
+    using Microsoft.Xna.Framework.Graphics;
+
     public class DrawData
     {
-        Texture2D tex;
-        public Texture2D Texture { get { return tex; } }
+        #region Fields
 
-		private Rectangle targetRectangle;
-		public Rectangle TargetRectangle { get { return targetRectangle; } }
+        private readonly int curFrame;
 
-		private float rot = 0.0f;
-		public float Rotation { get { return rot; } }
+        readonly Vector2 position;
 
-		private int curFrame = 0;
-		public int CurrentFrame { get { return curFrame; } }
-		
-		private byte alpha = 255;
-		public byte Opacity { get { return alpha; } set { alpha = value; } }
-		
-		/// <summary>
+        private readonly float rot;
+
+        private readonly int spriteHeight;
+
+        private readonly int spriteWidth;
+
+        private readonly Rectangle targetRectangle;
+
+        readonly Texture2D tex;
+
+        private byte alpha = 255;
+
+        #endregion
+
+        #region Constructors and Destructors
+
+        /// <summary>
 		/// A Wrapper class that describes a drawable object for the Graphics Renderer.
 		/// </summary>
 		/// <param name="texture">The texture to draw.</param>
@@ -34,8 +37,8 @@ namespace Recellection
 		[System.Obsolete("You won't be using this no more!")]
 		public DrawData(Texture2D texture, Rectangle targetRectangle, float rotation, int currentFrame) : this(texture, targetRectangle)
 		{
-			rot = rotation;
-			curFrame = currentFrame;
+			this.rot = rotation;
+			this.curFrame = currentFrame;
 		}
 
 		/// <summary>
@@ -46,9 +49,9 @@ namespace Recellection
 		[System.Obsolete("You won't be using this no more!")]
 		public DrawData(Texture2D texture, Rectangle rect, byte opacity)
 		{
-			tex = texture;
-			targetRectangle = rect;
-			alpha = opacity;
+			this.tex = texture;
+			this.targetRectangle = rect;
+			this.alpha = opacity;
 		}
 
 		/// <summary>
@@ -59,23 +62,9 @@ namespace Recellection
 		[System.Obsolete("You won't be using this no more!")]
 		public DrawData(Texture2D texture, Rectangle rect)
 		{
-			tex = texture;
-			targetRectangle = rect;
+			this.tex = texture;
+			this.targetRectangle = rect;
 		}
-
-
-		[System.Obsolete("Use targetRectangle instead")]
-		public Vector2 Position { get { return position; } }
-		Vector2 position;
-
-		[System.Obsolete("Use targetRectangle instead")]
-		public int SpriteHeight { get { return spriteHeight; } }
-		private int spriteHeight;
-
-		[System.Obsolete("Use targetRectangle instead")]
-		public int SpriteWidth { get { return spriteWidth; } }
-		private int spriteWidth;
-
 
         /// <summary>
         /// A Wrapper class that describes a drawable object for the Graphics Renderer.
@@ -84,17 +73,41 @@ namespace Recellection
         /// <param name="texture">The texture sprite handle to draw.</param>
         /// <param name="rotation">The entity's rotation.</param>
         /// <param name="currentFrame">Which frame to animate. If the frame has no animation cycle, send 0.</param>
-		/// <param name="spriteSize">The sprites size in pixels. All sprites have to be n*n pixels in size.</param>
-		[System.Obsolete("Use targetRectangle instead")]
+        /// <param name="spriteSize">The sprites size in pixels. All sprites have to be n*n pixels in size.</param>
+        [System.Obsolete("Use targetRectangle instead")]
         public DrawData(Vector2 position2D, Texture2D texture, float rotation, int currentFrame, int spriteHeight, int spriteWidth)
         {
-            position = position2D;
-            tex = texture;
-            rot = rotation;
-            curFrame = currentFrame;
+            this.position = position2D;
+            this.tex = texture;
+            this.rot = rotation;
+            this.curFrame = currentFrame;
             this.spriteHeight = spriteHeight;
             this.spriteWidth = spriteWidth;
         }
 
+        #endregion
+
+        #region Public Properties
+
+        public int CurrentFrame { get { return this.curFrame; } }
+
+        public byte Opacity { get { return this.alpha; } set { this.alpha = value; } }
+
+        [System.Obsolete("Use targetRectangle instead")]
+		public Vector2 Position { get { return this.position; } }
+
+        public float Rotation { get { return this.rot; } }
+
+        [System.Obsolete("Use targetRectangle instead")]
+		public int SpriteHeight { get { return this.spriteHeight; } }
+
+        [System.Obsolete("Use targetRectangle instead")]
+		public int SpriteWidth { get { return this.spriteWidth; } }
+
+        public Rectangle TargetRectangle { get { return this.targetRectangle; } }
+
+        public Texture2D Texture { get { return this.tex; } }
+
+        #endregion
     }
 }

@@ -1,15 +1,3 @@
-using System;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Content;
-using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
-using Recellection.Code.Utility.Console;
-using Recellection.Code.Utility.Logger;
-using Recellection.Code.Views;
-using Recellection.Code.Models;
-using System.Threading;
-using Recellection.Code.Controllers;
-
 /*
  * BREENSOFT GAME OMG OMG OMG
  * 
@@ -19,63 +7,253 @@ using Recellection.Code.Controllers;
 
 namespace Recellection
 {
+    using System;
+    using System.Threading;
+
+    using Microsoft.Xna.Framework;
+    using Microsoft.Xna.Framework.Content;
+    using Microsoft.Xna.Framework.Graphics;
+    using Microsoft.Xna.Framework.Input;
+
+    using global::Recellection.Code.Controllers;
+
+    using global::Recellection.Code.Models;
+
+    using global::Recellection.Code.Utility.Console;
+
+    using global::Recellection.Code.Utility.Logger;
+
+    using global::Recellection.Code.Views;
+
     /// <summary>
     /// This is the main type for your game.
 	/// It's the SEX-na thread! / Joel
     /// </summary>
     public class Recellection : Microsoft.Xna.Framework.Game
     {
-        private static Logger logger = LoggerFactory.GetLogger("XNA");
+        #region Static Fields
+
+        public static Color breen = new Color(new Vector3(0.4f, 0.3f, 0.1f));
+
+        public static ContentManager contentMngr;
+
+        public static GraphicsDeviceManager graphics;
+
+        public static KeyboardState publicKeyBoardState;
+
+        public static SpriteFont screenFont;
 
         public static SpriteTextureMap textureMap;
-        public static IntPtr windowHandle;
+
         public static Viewport viewPort;
-        public static SpriteFont screenFont;
-        public static Color breen = new Color(new Vector3(0.4f, 0.3f, 0.1f));
-        public static GraphicsDeviceManager graphics;
-        public static ContentManager contentMngr;
-        public Thread LogicThread { get; set; }
 
-        //FPS
-        int frameRate;
-        int frameCounter;
-        TimeSpan elapsedTime;
-        
-        TobiiController tobiiController;
-        public static KeyboardState publicKeyBoardState;
-        SpriteBatch spriteBatch;
+        public static IntPtr windowHandle;
 
-		public static SpriteFont worldFont;
+        public static SpriteFont worldFont;
 
         // Current state!
         private static IView currentState;
-        public static IView CurrentState
-        { 
-			get { return currentState; }
-			set { currentState = value; }
-		}
-        
 
-        // Python console
-        SpriteFont consoleFont;
-        PythonInterpreter console;
+        private static Logger logger = LoggerFactory.GetLogger("XNA");
 
-        //Sounds and music
+        #endregion
+
+        #region Fields
+
+        readonly TobiiController tobiiController;
+
+        // Sounds and music
         AudioPlayer audioPlayer;
 
-        //Debug Input 
-        KeyboardState lastKBState, kBState;
-        MouseState lastMouseState, mouseState;
-       
+        PythonInterpreter console;
+
+        SpriteFont consoleFont;
+
+        TimeSpan elapsedTime;
+
+        int frameCounter;
+
+        int frameRate;
+
+        // Debug Input 
+        KeyboardState kBState;
+
+        KeyboardState lastKBState;
+
+        MouseState lastMouseState;
+
+        MouseState mouseState;
+
+        SpriteBatch spriteBatch;
+
+        #endregion
+
+        #region Constructors and Destructors
 
         public Recellection()
         {
-            tobiiController = TobiiController.GetInstance(this.Window.Handle);
-            tobiiController.Init();
+            this.tobiiController = TobiiController.GetInstance(this.Window.Handle);
+            this.tobiiController.Init();
             graphics = new GraphicsDeviceManager(this);            
-			Content.RootDirectory = "Content";
+			this.Content.RootDirectory = "Content";
 
-            contentMngr = Content;
+            contentMngr = this.Content;
+        }
+
+        #endregion
+
+        #region Public Properties
+
+        public static IView CurrentState
+        { 
+            get { return currentState; }
+            set { currentState = value; }
+        }
+
+        public Thread LogicThread { get; set; }
+
+        #endregion
+
+        #region Public Methods and Operators
+
+        public static void playBeethoven()
+        {
+            Console.Beep(659, 120);  // Treble E
+            Console.Beep(622, 120);  // Treble D#
+
+            Thread.Sleep(60);
+
+            Console.Beep(659, 120);  // Treble E
+            Console.Beep(622, 120);  // Treble D#
+            Console.Beep(659, 120);  // Treble E
+            Console.Beep(494, 120);  // Treble B
+            Console.Beep(587, 120);  // Treble D
+            Console.Beep(523, 120);  // Treble C
+
+            Thread.Sleep(70);
+
+            Console.Beep(440, 120);  // Treble A
+            Console.Beep(262, 120);  // Middle C
+            Console.Beep(330, 120);  // Treble E
+            Console.Beep(440, 120);  // Treble A
+
+            Thread.Sleep(70);
+
+            Console.Beep(494, 120);  // Treble B
+            Console.Beep(330, 120);  // Treble E
+            Console.Beep(415, 120);  // Treble G#
+            Console.Beep(494, 120);  // Treble B
+
+            Thread.Sleep(70);
+
+            Console.Beep(523, 120);  // Treble C
+            Console.Beep(330, 120);  // Treble E
+            Console.Beep(659, 120);  // Treble E
+            Console.Beep(622, 120);  // Treble D#
+
+            Thread.Sleep(70);
+
+            Console.Beep(659, 120);  // Treble E
+            Console.Beep(622, 120);  // Treble D#
+            Console.Beep(659, 120);  // Treble E
+            Console.Beep(494, 120);  // Treble B
+            Console.Beep(587, 120);  // Treble D
+            Console.Beep(523, 120);  // Treble C
+
+            Thread.Sleep(70);
+
+            Console.Beep(440, 120);  // Treble A
+            Console.Beep(262, 120);  // Middle C
+            Console.Beep(330, 120);  // Treble E
+            Console.Beep(440, 120);  // Treble A
+
+            Thread.Sleep(70);
+
+            Console.Beep(494, 120);  // Treble B
+            Console.Beep(330, 120);  // Treble E
+            Console.Beep(523, 120);  // Treble C
+            Console.Beep(494, 120);  // Treble B
+            Console.Beep(440, 120);  // Treble A
+        }
+
+        public void Help()
+        {
+            this.console.Console.WriteLine("M: Toggle music\nI: Turn SFX off\nO: Turn SFX on\nA: Acid sound\nB: Explosion sound\nF1: Toggle Console\nF: \"full\" screen");
+        }
+
+        public void ListLoggers()
+        {
+            this.console.Console.WriteLine(LoggerFactory.ListLoggers());
+        }
+
+        public void LogAI()
+        {
+            this.ToggleLogger("Recellection.Code.Controllers.AIPlayer");
+            this.ToggleLogger("Recellection.Code.AIView");
+        }
+
+        public void SetLoggers(int i)
+        {
+            bool active = false;
+            if (i != 0)
+                active = false;
+            LoggerFactory.SetAll(active);
+        }
+
+        public void ToggleLogger(string s)
+        {
+            if (LoggerFactory.HasLogger(s))
+            {
+                LoggerFactory.GetLogger(s).Active = !LoggerFactory.GetLogger(s).Active;
+            }
+            else
+            {
+                this.console.Console.WriteLine("Logger does not exist");
+            }
+
+        }
+
+        public void lawl(string sound)
+		{
+			this.audioPlayer.PlaySound(sound);
+        }
+
+        public void tudeloo()
+        {
+            playBeethoven();
+        }
+
+        #endregion
+
+        #region Methods
+
+        /// <summary>
+        /// This is called when the game should draw itself.
+        /// </summary>
+        /// <param name="gameTime">Provides a snapshot of timing values.</param>
+        protected override void Draw(GameTime gameTime)
+        {
+            if (currentState is WorldView)
+            {
+                WorldView.Instance.RenderToTex(this.spriteBatch, gameTime);
+            }
+
+            this.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend);
+
+            if (currentState != null)
+            {
+                currentState.Draw(this.spriteBatch);
+            }
+
+#if DEBUG
+            this.spriteBatch.DrawString(screenFont, this.frameRate.ToString(), Vector2.Zero, Color.Red);
+#endif
+            this.spriteBatch.End();
+
+            // Do the FPS dance
+            this.frameCounter++;
+
+            base.Draw(gameTime);
         }
 
         /// <summary>
@@ -86,23 +264,19 @@ namespace Recellection
             base.Initialize();
 
 #if DEBUG
+
             // Initialize the python console
-            console = new PythonInterpreter(this, consoleFont);
-			console.AddGlobal("game", this);
+            this.console = new PythonInterpreter(this, this.consoleFont);
+            this.console.AddGlobal("game", this);
 #endif
 
-			windowHandle = this.Window.Handle;
-            
-            IsFixedTimeStep = true;
-            TargetElapsedTime = new TimeSpan(10000000L / 30L);
-            
-            //graphics.ApplyChanges();
-            LogicThread.Start();
-        }
-        
-        public void lawl(string sound)
-		{
-			audioPlayer.PlaySound(sound);
+            windowHandle = this.Window.Handle;
+
+            this.IsFixedTimeStep = true;
+            this.TargetElapsedTime = new TimeSpan(10000000L / 30L);
+
+            // graphics.ApplyChanges();
+            this.LogicThread.Start();
         }
 
         /// <summary>
@@ -110,14 +284,14 @@ namespace Recellection
         /// </summary>
         protected override void LoadContent()
         {
-            spriteBatch = new SpriteBatch(GraphicsDevice);
+            this.spriteBatch = new SpriteBatch(this.GraphicsDevice);
 
-            screenFont = Content.Load<SpriteFont>("Fonts/ScreenFont");
-            consoleFont = Content.Load<SpriteFont>("Fonts/ConsoleFont");
-			worldFont = Content.Load<SpriteFont>("Fonts/WorldFont");
+            screenFont = this.Content.Load<SpriteFont>("Fonts/ScreenFont");
+            this.consoleFont = this.Content.Load<SpriteFont>("Fonts/ConsoleFont");
+			worldFont = this.Content.Load<SpriteFont>("Fonts/WorldFont");
 
-            audioPlayer = new AudioPlayer(Content);
-            audioPlayer.PlaySong(Globals.Songs.Theme);
+            this.audioPlayer = new AudioPlayer(this.Content);
+            this.audioPlayer.PlaySong(Globals.Songs.Theme);
 
             viewPort = graphics.GraphicsDevice.Viewport;
         }
@@ -140,17 +314,18 @@ namespace Recellection
 			{
 				currentState.Update(gameTime);
 			}
-            HandleDebugInput();
 
-            #region FPS Stuff
-            elapsedTime += gameTime.ElapsedGameTime;
-            if (elapsedTime > TimeSpan.FromSeconds(1))
+            this.HandleDebugInput();
+
+            
+            this.elapsedTime += gameTime.ElapsedGameTime;
+            if (this.elapsedTime > TimeSpan.FromSeconds(1))
             {
-                elapsedTime -= TimeSpan.FromSeconds(1);
-                frameRate = frameCounter;
-                frameCounter = 0;
+                this.elapsedTime -= TimeSpan.FromSeconds(1);
+                this.frameRate = this.frameCounter;
+                this.frameCounter = 0;
             }
-            #endregion
+            
 
             base.Update(gameTime);
         }
@@ -161,38 +336,36 @@ namespace Recellection
         private void HandleDebugInput()
         {
 #if DEBUG
+
             // If the console is open, we ignore input.
-            if (console.IsActive())
+            if (this.console.IsActive())
             {
                 return;
             }
+
 #endif
-            #region Update input states
 
-            lastKBState = kBState;
-            lastMouseState = mouseState;
+            this.lastKBState = this.kBState;
+            this.lastMouseState = this.mouseState;
             publicKeyBoardState = Keyboard.GetState();
-            kBState = publicKeyBoardState;
-            mouseState = Mouse.GetState();
+            this.kBState = publicKeyBoardState;
+            this.mouseState = Mouse.GetState();
 
-            #endregion
-
-			if (kBState.IsKeyDown(Keys.Escape))
-			{
-				this.Exit();
-			}
-			
-			if (kBState.IsKeyDown(Keys.End))
-			{
-				WorldController.finished = true;
-			}
-			
-            if (kBState.IsKeyDown(Keys.F) && lastKBState.IsKeyUp(Keys.F))
+            if (this.kBState.IsKeyDown(Keys.Escape))
             {
-                System.Windows.Forms.Form form = (System.Windows.Forms.Form)System.Windows.Forms.Control.FromHandle(this.Window.Handle);
+                this.Exit();
+            }
+
+            if (this.kBState.IsKeyDown(Keys.End))
+            {
+                WorldController.finished = true;
+            }
+
+            if (this.kBState.IsKeyDown(Keys.F) && this.lastKBState.IsKeyUp(Keys.F))
+            {
+                var form = (System.Windows.Forms.Form)System.Windows.Forms.Control.FromHandle(this.Window.Handle);
                 if (form.Width > 800)
                 {
-
                     form.Location = new System.Drawing.Point(0, 0);
                     form.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
                     form.TopMost = true;
@@ -201,142 +374,19 @@ namespace Recellection
                     Recellection.graphics.ApplyChanges();
                 }
                 else
-                {                    
+                {
                     form.Location = new System.Drawing.Point(0, 0);
                     form.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
                     form.TopMost = true;
-                    Recellection.graphics.PreferredBackBufferWidth = System.Windows.Forms.SystemInformation.PrimaryMonitorSize.Width;
-                    Recellection.graphics.PreferredBackBufferHeight = System.Windows.Forms.SystemInformation.PrimaryMonitorSize.Height;
+                    Recellection.graphics.PreferredBackBufferWidth =
+                        System.Windows.Forms.SystemInformation.PrimaryMonitorSize.Width;
+                    Recellection.graphics.PreferredBackBufferHeight =
+                        System.Windows.Forms.SystemInformation.PrimaryMonitorSize.Height;
                     Recellection.graphics.ApplyChanges();
                 }
             }
         }
 
-        /// <summary>
-        /// This is called when the game should draw itself.
-        /// </summary>
-        /// <param name="gameTime">Provides a snapshot of timing values.</param>
-        protected override void Draw(GameTime gameTime)
-        {
-            if (currentState is WorldView)
-                WorldView.Instance.RenderToTex(spriteBatch, gameTime);
-
-            spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend);
-
-            if (currentState != null)
-            {
-                currentState.Draw(spriteBatch);
-            }
-#if DEBUG
-            spriteBatch.DrawString(screenFont, frameRate.ToString(), Vector2.Zero, Color.Red);
-#endif
-            spriteBatch.End();
-            // Do the FPS dance
-            frameCounter++;
-
-            base.Draw(gameTime);
-        }
-
-		public void ToggleLogger(String s)
-		{
-			if (LoggerFactory.HasLogger(s))
-			{
-				LoggerFactory.GetLogger(s).Active = !LoggerFactory.GetLogger(s).Active;
-			}
-			else
-			{
-				console.Console.WriteLine("Logger does not exist");
-			}
-
-		}
-
-		public void ListLoggers()
-		{
-			console.Console.WriteLine(LoggerFactory.ListLoggers());
-		}
-
-		public void SetLoggers(int i)
-		{
-			bool active = false;
-			if (i != 0)
-				active = false;
-			LoggerFactory.SetAll(active);
-		}
-
-		public void LogAI()
-		{
-			ToggleLogger("Recellection.Code.Controllers.AIPlayer");
-			ToggleLogger("Recellection.Code.AIView");
-		}
-
-        public void Help()
-        {
-            console.Console.WriteLine("M: Toggle music\nI: Turn SFX off\nO: Turn SFX on\nA: Acid sound\nB: Explosion sound\nF1: Toggle Console\nF: \"full\" screen");
-        }
-		
-		public void tudeloo()
-		{
-			playBeethoven();
-		}
-
-		public static void playBeethoven()
-		{
-			Console.Beep(659, 120);  // Treble E
-			Console.Beep(622, 120);  // Treble D#
-
-			Thread.Sleep(60);
-
-			Console.Beep(659, 120);  // Treble E
-			Console.Beep(622, 120);  // Treble D#
-			Console.Beep(659, 120);  // Treble E
-			Console.Beep(494, 120);  // Treble B
-			Console.Beep(587, 120);  // Treble D
-			Console.Beep(523, 120);  // Treble C
-
-			Thread.Sleep(70);
-
-			Console.Beep(440, 120);  // Treble A
-			Console.Beep(262, 120);  // Middle C
-			Console.Beep(330, 120);  // Treble E
-			Console.Beep(440, 120);  // Treble A
-
-			Thread.Sleep(70);
-
-			Console.Beep(494, 120);  // Treble B
-			Console.Beep(330, 120);  // Treble E
-			Console.Beep(415, 120);  // Treble G#
-			Console.Beep(494, 120);  // Treble B
-
-			Thread.Sleep(70);
-
-			Console.Beep(523, 120);  // Treble C
-			Console.Beep(330, 120);  // Treble E
-			Console.Beep(659, 120);  // Treble E
-			Console.Beep(622, 120);  // Treble D#
-
-			Thread.Sleep(70);
-
-			Console.Beep(659, 120);  // Treble E
-			Console.Beep(622, 120);  // Treble D#
-			Console.Beep(659, 120);  // Treble E
-			Console.Beep(494, 120);  // Treble B
-			Console.Beep(587, 120);  // Treble D
-			Console.Beep(523, 120);  // Treble C
-
-			Thread.Sleep(70);
-
-			Console.Beep(440, 120);  // Treble A
-			Console.Beep(262, 120);  // Middle C
-			Console.Beep(330, 120);  // Treble E
-			Console.Beep(440, 120);  // Treble A
-
-			Thread.Sleep(70);
-
-			Console.Beep(494, 120);  // Treble B
-			Console.Beep(330, 120);  // Treble E
-			Console.Beep(523, 120);  // Treble C
-			Console.Beep(494, 120);  // Treble B
-			Console.Beep(440, 120);  // Treble A
-		}
+        #endregion
     }
 }

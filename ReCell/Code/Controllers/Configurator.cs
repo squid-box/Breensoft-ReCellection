@@ -1,13 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using Recellection.Code.Models;
-using Recellection.Code.Utility.Logger;
-using System.Threading;
-using Recellection.Code.Views;
-
-namespace Recellection.Code.Controllers
+﻿namespace Recellection.Code.Controllers
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Threading;
+
     using Microsoft.Xna.Framework;
+
+    using global::Recellection.Code.Models;
+
+    using global::Recellection.Code.Utility.Logger;
+
+    using global::Recellection.Code.Views;
 
     /// <summary>
     /// Handles state management for the GameOptions Model.
@@ -16,14 +19,23 @@ namespace Recellection.Code.Controllers
     /// </summary>
     public sealed class Configurator
     {
-        public static Configurator Instance { get; private set; }
-        private static MenuIcon mute;
-        private static MenuIcon volume;
-        private static MenuIcon difficulty;
-        private static MenuIcon language;
-        private static MenuIcon back;
-		private static MenuIcon credits;
-        private static List<MenuIcon> iconList;
+        #region Static Fields
+
+        private static readonly MenuIcon back;
+		private static readonly MenuIcon credits;
+
+        private static readonly MenuIcon difficulty;
+
+        private static readonly List<MenuIcon> iconList;
+
+        private static readonly MenuIcon language;
+
+        private static readonly MenuIcon mute;
+        private static readonly MenuIcon volume;
+
+        #endregion
+
+        #region Constructors and Destructors
 
         static Configurator()
         {
@@ -39,23 +51,19 @@ namespace Recellection.Code.Controllers
             iconList = new List<MenuIcon>();
         }
 
-        private Menu BuildMenu()
-        {
-            if (iconList.Count == 0)
-            {
-                iconList.Add(mute);
-                iconList.Add(volume);
-                iconList.Add(difficulty);
-                iconList.Add(language);
-                iconList.Add(back);
-				iconList.Add(credits);
-            }
-            return new Menu(Globals.MenuLayout.NineMatrix, iconList, Language.Instance.GetString("Options"), Color.Black);
-        }
+        #endregion
+
+        #region Public Properties
+
+        public static Configurator Instance { get; private set; }
+
+        #endregion
+
+        #region Public Methods and Operators
 
         public void ChangeOptions()
         {
-            Menu optionsMenu = BuildMenu();
+            Menu optionsMenu = this.BuildMenu();
             MenuController.LoadMenu(optionsMenu);
 
             Recellection.CurrentState = MenuView.Instance;
@@ -81,15 +89,15 @@ namespace Recellection.Code.Controllers
                 }
                 else if (response == volume)
                 {
-                    ChangeVolumeMenu();   
+                    this.ChangeVolumeMenu();   
                 }
                 else if (response == language)
                 {
-                    ChangeLanguageMenu();
+                    this.ChangeLanguageMenu();
                 }
                 else if (response == difficulty)
                 {
-                    ChangeDifficultyMenu();
+                    this.ChangeDifficultyMenu();
                 }
                 else if (response == back)
                 {
@@ -97,78 +105,56 @@ namespace Recellection.Code.Controllers
                 }
 				else if (response == credits)
 				{
-					PlayCredits();
+					this.PlayCredits();
 				}
             }
+
             MenuController.UnloadMenu();
         }
 
-        /// <summary>
-        /// Builds a Menu for changing languages and processes the result.
-        /// </summary>
-        private void ChangeLanguageMenu()
+        #endregion
+
+        #region Methods
+
+        private Menu BuildMenu()
         {
-            String[] availableLanguages = Language.Instance.GetAvailableLanguages();
-
-            #if DEBUG
-            LoggerFactory.GetLogger().Info("Available Languages:");
-            #endif
-
-            Dictionary<MenuIcon, String> languageDic = new Dictionary<MenuIcon, String>();
-
-            foreach (String lang in availableLanguages)
+            if (iconList.Count == 0)
             {
-                #if DEBUG
-                LoggerFactory.GetLogger().Info(lang);
-                #endif
-
-                MenuIcon aLanguage = new MenuIcon(lang);
-                languageDic.Add(aLanguage, lang);
+                iconList.Add(mute);
+                iconList.Add(volume);
+                iconList.Add(difficulty);
+                iconList.Add(language);
+                iconList.Add(back);
+                iconList.Add(credits);
             }
 
-			List<MenuIcon> iconList = new List<MenuIcon>(languageDic.Keys);
-			
-			MenuIcon cancel = new MenuIcon(Language.Instance.GetString("Cancel"), Recellection.textureMap.GetTexture(Globals.TextureTypes.No));
-			iconList.Add(cancel);
-			
-            Menu langMenu = new Menu(Globals.MenuLayout.NineMatrix, iconList, Language.Instance.GetString("ChooseLanguage"));
-
-            MenuController.LoadMenu(langMenu);
-            Recellection.CurrentState = MenuView.Instance;
-
-            MenuIcon choosenLang = MenuController.GetInput();
-			if (choosenLang != cancel)
-			{
-				Language.Instance.SetLanguage(languageDic[choosenLang]);
-				LoggerFactory.GetLogger().Info("Language set to " + languageDic[choosenLang]);
-			}
-            MenuController.UnloadMenu();
+            return new Menu(Globals.MenuLayout.NineMatrix, iconList, Language.Instance.GetString("Options"), Color.Black);
         }
 
         private void ChangeDifficultyMenu()
         {
-            Dictionary<MenuIcon, String> difficultyDic = new Dictionary<MenuIcon, String>();
+            var difficultyDic = new Dictionary<MenuIcon, string>();
 
             #if DEBUG
             LoggerFactory.GetLogger().Info("Available difficulties:");
             #endif
 
-            foreach(String diff in System.Enum.GetNames(typeof(Globals.Difficulty)))
+            foreach(string diff in System.Enum.GetNames(typeof(Globals.Difficulty)))
             {
                 #if DEBUG
                 LoggerFactory.GetLogger().Info(diff);
                 #endif
 
-                MenuIcon aDifficulty = new MenuIcon(diff);
+                var aDifficulty = new MenuIcon(diff);
                 difficultyDic.Add(aDifficulty, diff);
             }
 
-            List<MenuIcon> iconList = new List<MenuIcon>(difficultyDic.Keys);
+            var iconList = new List<MenuIcon>(difficultyDic.Keys);
             
-            MenuIcon cancel = new MenuIcon(Language.Instance.GetString("Cancel"), Recellection.textureMap.GetTexture(Globals.TextureTypes.No));
+            var cancel = new MenuIcon(Language.Instance.GetString("Cancel"), Recellection.textureMap.GetTexture(Globals.TextureTypes.No));
             iconList.Add(cancel);
             
-            Menu diffMenu = new Menu(Globals.MenuLayout.FourMatrix, iconList, Language.Instance.GetString("ChooseADifficulty"));
+            var diffMenu = new Menu(Globals.MenuLayout.FourMatrix, iconList, Language.Instance.GetString("ChooseADifficulty"));
 
             MenuController.LoadMenu(diffMenu);
             Recellection.CurrentState = MenuView.Instance;
@@ -180,36 +166,64 @@ namespace Recellection.Code.Controllers
 				GameOptions.Instance.difficulty = (Globals.Difficulty) Enum.Parse(typeof(Globals.Difficulty), difficultyDic[choosenDiff]);
 				LoggerFactory.GetLogger().Info("Difficulty set to " + difficultyDic[choosenDiff]);
 			}
+
             MenuController.UnloadMenu();
         }
 
-		private void PlayCredits()
-		{
-			CreditsView credits = new CreditsView();
+        /// <summary>
+        /// Builds a Menu for changing languages and processes the result.
+        /// </summary>
+        private void ChangeLanguageMenu()
+        {
+            string[] availableLanguages = Language.Instance.GetAvailableLanguages();
 
-			IView temp = Recellection.CurrentState;
-			Recellection.CurrentState = credits;
+#if DEBUG
+            LoggerFactory.GetLogger().Info("Available Languages:");
+#endif
+
+            var languageDic = new Dictionary<MenuIcon, string>();
+
+            foreach (string lang in availableLanguages)
+            {
+#if DEBUG
+                LoggerFactory.GetLogger().Info(lang);
+#endif
+
+                var aLanguage = new MenuIcon(lang);
+                languageDic.Add(aLanguage, lang);
+            }
+
+            var iconList = new List<MenuIcon>(languageDic.Keys);
 			
-			while (!credits.Finished)
-			{
-				Thread.Sleep(10);
-			}
-			Thread.Sleep(1000);
-			Recellection.CurrentState = temp;
+            var cancel = new MenuIcon(Language.Instance.GetString("Cancel"), Recellection.textureMap.GetTexture(Globals.TextureTypes.No));
+            iconList.Add(cancel);
+			
+            var langMenu = new Menu(Globals.MenuLayout.NineMatrix, iconList, Language.Instance.GetString("ChooseLanguage"));
 
-		}
+            MenuController.LoadMenu(langMenu);
+            Recellection.CurrentState = MenuView.Instance;
+
+            MenuIcon choosenLang = MenuController.GetInput();
+            if (choosenLang != cancel)
+            {
+                Language.Instance.SetLanguage(languageDic[choosenLang]);
+                LoggerFactory.GetLogger().Info("Language set to " + languageDic[choosenLang]);
+            }
+
+            MenuController.UnloadMenu();
+        }
 
         private void ChangeVolumeMenu()
         {
 
-            MenuIcon musicVolumeUp = new MenuIcon(Language.Instance.GetString("MusicVolumeUp"));
-            MenuIcon musicVolumeDown = new MenuIcon(Language.Instance.GetString("MusicVolumeDown"));
-            MenuIcon sfxVolumeUp = new MenuIcon(Language.Instance.GetString("EffectsVolumeUp"));
-            MenuIcon sfxVolumeDown = new MenuIcon(Language.Instance.GetString("EffectsVolumeDown"));
-            MenuIcon empty = new MenuIcon("");
-            MenuIcon done = new MenuIcon(Language.Instance.GetString("Cancel"), Recellection.textureMap.GetTexture(Globals.TextureTypes.No));
+            var musicVolumeUp = new MenuIcon(Language.Instance.GetString("MusicVolumeUp"));
+            var musicVolumeDown = new MenuIcon(Language.Instance.GetString("MusicVolumeDown"));
+            var sfxVolumeUp = new MenuIcon(Language.Instance.GetString("EffectsVolumeUp"));
+            var sfxVolumeDown = new MenuIcon(Language.Instance.GetString("EffectsVolumeDown"));
+            var empty = new MenuIcon(string.Empty);
+            var done = new MenuIcon(Language.Instance.GetString("Cancel"), Recellection.textureMap.GetTexture(Globals.TextureTypes.No));
 
-            List<MenuIcon> iconList = new List<MenuIcon>(); ;
+            var iconList = new List<MenuIcon>(); 
             iconList.Add(musicVolumeUp);
             iconList.Add(empty);
             iconList.Add(musicVolumeDown);
@@ -217,7 +231,7 @@ namespace Recellection.Code.Controllers
             iconList.Add(sfxVolumeDown);
             iconList.Add(done);
 
-            Menu volumeMenu = new Menu(Globals.MenuLayout.NineMatrix, iconList, "");
+            var volumeMenu = new Menu(Globals.MenuLayout.NineMatrix, iconList, string.Empty);
 
             MenuController.LoadMenu(volumeMenu);
 
@@ -254,8 +268,28 @@ namespace Recellection.Code.Controllers
                     notFinished = false;
                 }
             }
+
             MenuController.UnloadMenu();
         }
+
+        private void PlayCredits()
+        {
+            var credits = new CreditsView();
+
+            IView temp = Recellection.CurrentState;
+            Recellection.CurrentState = credits;
+			
+            while (!credits.Finished)
+            {
+                Thread.Sleep(10);
+            }
+
+            Thread.Sleep(1000);
+            Recellection.CurrentState = temp;
+
+        }
+
+        #endregion
     }
 
 }

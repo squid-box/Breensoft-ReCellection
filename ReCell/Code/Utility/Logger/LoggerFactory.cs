@@ -1,27 +1,31 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.IO;
-using System.Diagnostics;
-using Recellection.Code.Utility.Console;
-
-namespace Recellection.Code.Utility.Logger
+﻿namespace Recellection.Code.Utility.Logger
 {
-	/// <summary>
+    using System;
+    using System.Collections.Generic;
+    using System.Diagnostics;
+    using System.IO;
+
+    /// <summary>
 	/// Factory class, provides methods for supplying Loggers to the people.
 	/// Author: Martin Nycander
     /// Signature: John Forsberg (2010-05-07)
 	/// </summary>
 	public class LoggerFactory
 	{
-		//private static LinkedList<Logger> loggers = new LinkedList<Logger>();
-		private static Dictionary<String, Logger> loggers = new Dictionary<string,Logger>();
+		// private static LinkedList<Logger> loggers = new LinkedList<Logger>();
+        #region Static Fields
+
+        internal static LogLevel globalThreshold = LogLevel.TRACE;
+
+        private static readonly Dictionary<string, Logger> loggers = new Dictionary<string, Logger>();
 		
 		private static TextWriter globalTarget = System.Console.Out;
-		internal static LogLevel globalThreshold = LogLevel.TRACE;
 
-		/// <summary>
+        #endregion
+
+        #region Public Methods and Operators
+
+        /// <summary>
 		/// Retrieves a logger with the provided name.
 		/// Loggers are re-used and identified by name.
 		/// </summary>
@@ -57,38 +61,15 @@ namespace Recellection.Code.Utility.Logger
 			return GetLogger(className);
 		}
 
-		/// <summary>
-		/// Will change baseEntity of all current and new loggers.
-		/// </summary>
-		/// <param name="newTarget">The new baseEntity for all loggers.</param>
-		public static void SetGlobalTarget(TextWriter newTarget)
+        public static bool HasLogger(string name)
 		{
-			LoggerFactory.globalTarget = newTarget;
-
-			foreach (KeyValuePair<String, Logger> l in loggers)
-			{
-				l.Value.SetTarget(newTarget);
-			}
-		}
-
-		/// <summary>
-		/// Sets the global threshold. No logs will have a loglevel below this threshold.
-		/// </summary>
-		/// <param name="newThreshold">The new threshold for the application.</param>
-		public static void SetGlobalThreshold(LogLevel newThreshold)
-		{
-			LoggerFactory.globalThreshold = newThreshold;
-		}
-
-		public static bool HasLogger(string name)
-		{
-			//System.Console.WriteLine()
+			// System.Console.WriteLine()
 			return loggers.ContainsKey(name);
 		}
 
 		public static string ListLoggers()
 		{
-			string s = "";
+			string s = string.Empty;
 			foreach (string z in loggers.Keys)
 			{
 				Logger l = loggers[z];
@@ -100,11 +81,38 @@ namespace Recellection.Code.Utility.Logger
 				else
 					s += "[Disabled]\n";
 			}
+
 			return s;
 		}
 
+        /// <summary>
+        /// Will change baseEntity of all current and new loggers.
+        /// </summary>
+        /// <param name="newTarget">The new baseEntity for all loggers.</param>
+        public static void SetGlobalTarget(TextWriter newTarget)
+        {
+            LoggerFactory.globalTarget = newTarget;
 
-		internal static void SetAll(bool active)
+            foreach (KeyValuePair<string, Logger> l in loggers)
+            {
+                l.Value.SetTarget(newTarget);
+            }
+        }
+
+        /// <summary>
+        /// Sets the global threshold. No logs will have a loglevel below this threshold.
+        /// </summary>
+        /// <param name="newThreshold">The new threshold for the application.</param>
+        public static void SetGlobalThreshold(LogLevel newThreshold)
+        {
+            LoggerFactory.globalThreshold = newThreshold;
+        }
+
+        #endregion
+
+        #region Methods
+
+        internal static void SetAll(bool active)
 		{
 			foreach (Logger l in loggers.Values)
 			{
@@ -119,5 +127,7 @@ namespace Recellection.Code.Utility.Logger
 				l.Active = !l.Active;
 			}
 		}
+
+        #endregion
 	}
 }

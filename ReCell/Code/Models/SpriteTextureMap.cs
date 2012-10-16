@@ -1,14 +1,10 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Microsoft.Xna.Framework.Content;
-using Microsoft.Xna.Framework.Graphics;
-
-
 namespace Recellection.Code.Models
 {
-    
+    using System.Collections.Generic;
+
+    using Microsoft.Xna.Framework.Content;
+    using Microsoft.Xna.Framework.Graphics;
+
     /// <summary>
     /// This class should be instantiated once, preferably in the Initializer. 
     /// When constructed it will load all the image textures the game will use
@@ -20,9 +16,15 @@ namespace Recellection.Code.Models
     /// </summary>
     public class SpriteTextureMap : IModel
     {
-        private ContentManager content;
+        #region Fields
 
-        private Dictionary<Globals.TextureTypes, Texture2D> loadedTextures;
+        private readonly ContentManager content;
+
+        private readonly Dictionary<Globals.TextureTypes, Texture2D> loadedTextures;
+
+        #endregion
+
+        #region Constructors and Destructors
 
         /// <summary>
         /// Constructor for the SpriteTextureMap
@@ -34,7 +36,11 @@ namespace Recellection.Code.Models
             this.content = content;
             this.loadedTextures = new Dictionary<Globals.TextureTypes, Texture2D>();
         }
-        
+
+        #endregion
+
+        #region Public Methods and Operators
+
         /// <summary>
         /// This method returns the Texture2D specified by the enum
         /// Globals.TextureTypes.
@@ -44,11 +50,14 @@ namespace Recellection.Code.Models
         /// <returns>The requested Texture2D</returns>
         public Texture2D GetTexture(Globals.TextureTypes texture)
         {
-            if(loadedTextures.ContainsKey(texture))
+            if(this.loadedTextures.ContainsKey(texture))
             {
-                return loadedTextures[texture];
+                return this.loadedTextures[texture];
             }
-            return loadedTextures[texture] = content.Load<Texture2D>("Graphics/" + texture);
+
+            return this.loadedTextures[texture] = this.content.Load<Texture2D>("Graphics/" + texture);
         }
+
+        #endregion
     }
 }

@@ -1,12 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Microsoft.Xna.Framework.Audio;
-using Microsoft.Xna.Framework.Media;
-using Microsoft.Xna.Framework.Content;
-
-/* Handles sound effects and music in the game
+﻿/* Handles sound effects and music in the game
  * 
  * Author: Fredrik Lindh
  * Date: 30/3/2010
@@ -15,63 +7,79 @@ using Microsoft.Xna.Framework.Content;
 
 namespace Recellection
 {
+    using System;
+
+    using Microsoft.Xna.Framework.Audio;
+    using Microsoft.Xna.Framework.Content;
+    using Microsoft.Xna.Framework.Media;
+
     class AudioPlayer
     {
-        private AudioEngine engine;
-        private WaveBank waves;
-        private SoundBank sounds;
+        #region Fields
+
+        private readonly AudioEngine engine;
+
+        private readonly Song[] songs;
+
+        private readonly SoundBank sounds;
         private AudioCategory soundCategory;
 
         private float soundVolume;
-        private Song[] songs;
 
-		[System.Obsolete("NOOB!")]
+        private WaveBank waves;
+
+        #endregion
+
+        #region Constructors and Destructors
+
+        [System.Obsolete("NOOB!")]
         public AudioPlayer(ContentManager content)
         {
-            engine = new AudioEngine("Content/Sounds/RecellectionSounds.xgs");
-            waves = new WaveBank(engine, "Content/Sounds/Wave Bank.xwb");   
-            sounds = new SoundBank(engine, "Content/Sounds/Sound Bank.xsb");
-            soundCategory = engine.GetCategory("Default");
+            this.engine = new AudioEngine("Content/Sounds/RecellectionSounds.xgs");
+            this.waves = new WaveBank(this.engine, "Content/Sounds/Wave Bank.xwb");   
+            this.sounds = new SoundBank(this.engine, "Content/Sounds/Sound Bank.xsb");
+            this.soundCategory = this.engine.GetCategory("Default");
 
-            soundVolume = 1.0f;
-            songs = new Song[1];
-            songs[0] = content.Load<Song>("Sounds/Songs/Castlevania");
+            this.soundVolume = 1.0f;
+            this.songs = new Song[1];
+            this.songs[0] = content.Load<Song>("Sounds/Songs/Castlevania");
 
             MediaPlayer.IsMuted = true;
         }
 
-        public void Update()
+        #endregion
+
+        #region Public Methods and Operators
+
+        public float GetMusicVolume()
         {
-            engine.Update();
-        }
-
-
-
-        #region Sound methods
-
-        public void PlaySound(String sound)
-        {
-            sounds.PlayCue(sound);
-        }
-
-        public void SetSoundVolume(float volume)
-        {
-            soundVolume = volume;
-            soundCategory.SetVolume(soundVolume);
+            return MediaPlayer.Volume;
         }
 
         public float GetSoundVolume()
         {
-            return soundVolume;
+            return this.soundVolume;
         }
-
-        #endregion
-
-        #region Music methods
 
         public void PlaySong(Globals.Songs song)
         {
-            MediaPlayer.Play(songs[(int)song]);
+            MediaPlayer.Play(this.songs[(int)song]);
+        }
+
+        public void PlaySound(string sound)
+        {
+            this.sounds.PlayCue(sound);
+        }
+
+        public void SetMusicVolume(float volume)
+        {
+            MediaPlayer.Volume = volume;
+        }
+
+        public void SetSoundVolume(float volume)
+        {
+            this.soundVolume = volume;
+            this.soundCategory.SetVolume(this.soundVolume);
         }
 
         public void ToggleMusicMute()
@@ -82,14 +90,9 @@ namespace Recellection
                 MediaPlayer.IsMuted = true;
         }
 
-        public void SetMusicVolume(float volume)
+        public void Update()
         {
-            MediaPlayer.Volume = volume;
-        }
-
-        public float GetMusicVolume()
-        {
-            return MediaPlayer.Volume;
+            this.engine.Update();
         }
 
         #endregion

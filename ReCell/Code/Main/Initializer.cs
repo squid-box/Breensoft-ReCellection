@@ -1,53 +1,71 @@
-﻿using Recellection.Code.Views;
-using Recellection.Code.Utility.Logger;
-using Recellection.Code.Controllers;
-using Recellection.Code.Models;
-
-namespace Recellection.Code.Main
+﻿namespace Recellection.Code.Main
 {
     using System;
     using System.Collections.Generic;
-    using Microsoft.Xna.Framework.Audio;
     using System.Threading;
+
     using Microsoft.Xna.Framework;
+    using Microsoft.Xna.Framework.Audio;
 
-	public class Initializer
+    using global::Recellection.Code.Controllers;
+
+    using global::Recellection.Code.Models;
+
+    using global::Recellection.Code.Utility.Logger;
+
+    using global::Recellection.Code.Views;
+
+    public class Initializer
 	{
-		private static Logger logger = LoggerFactory.GetLogger();
+        #region Static Fields
 
-        private IntPtr windowHandle;
-		
-		public Initializer(IntPtr windowHandle)
+        private static readonly Logger logger = LoggerFactory.GetLogger();
+
+        #endregion
+
+        #region Fields
+
+        private readonly IntPtr windowHandle;
+
+        #endregion
+
+        #region Constructors and Destructors
+
+        public Initializer(IntPtr windowHandle)
 		{
 			logger.Debug("Initializer was instantiated.");
             this.windowHandle = windowHandle;
 		}
-		
-		public void Run()
+
+        #endregion
+
+        #region Public Methods and Operators
+
+        public void Run()
 		{
 			logger.Debug("Initializer is running.");
 			
-			#region Build main menu
-			MenuIcon newgame = new MenuIcon(Language.Instance.GetString("NewGame"), null, Color.Black);
-			MenuIcon options = new MenuIcon(Language.Instance.GetString("Options"), null, Color.Black);
-			MenuIcon help = new MenuIcon(Language.Instance.GetString("Help"), null, Color.Black);
-			MenuIcon quit = new MenuIcon(Language.Instance.GetString("Quit"), null, Color.Black);
+			
+			var newgame = new MenuIcon(Language.Instance.GetString("NewGame"), null, Color.Black);
+			var options = new MenuIcon(Language.Instance.GetString("Options"), null, Color.Black);
+			var help = new MenuIcon(Language.Instance.GetString("Help"), null, Color.Black);
+			var quit = new MenuIcon(Language.Instance.GetString("Quit"), null, Color.Black);
 
-			List<MenuIcon> menuOptions = new List<MenuIcon>();
+			var menuOptions = new List<MenuIcon>();
 			menuOptions.Add(newgame);
 			menuOptions.Add(options);
 			menuOptions.Add(help);
 			menuOptions.Add(quit);
 
-            Menu mainMenu = new Menu(Globals.MenuLayout.FourMatrix, menuOptions, "", Color.Black);
+            var mainMenu = new Menu(Globals.MenuLayout.FourMatrix, menuOptions, string.Empty, Color.Black);
 
-			MenuView view = MenuView.Instance;
+            MenuView view = MenuView.Instance;
 
-			// Just to make sure everything is in there...
+            // Just to make sure everything is in there...
 			new MenuController(TobiiController.GetInstance(this.windowHandle), mainMenu);
-			#endregion
+			
 
-            ShowSplashScreen();
+            this.ShowSplashScreen();
             
 			Cue backgroundSound = Sounds.Instance.LoadSound("Menu");
 			backgroundSound.Play();
@@ -62,21 +80,20 @@ namespace Recellection.Code.Main
 				logger.Info("Got input!");
 
 				if (response == newgame)
-				{	
-					// START THE GAME ALREADY!
-					
-					GameInitializer gameInit = new GameInitializer();
-					backgroundSound.Pause();
-					WorldView.Initiate(gameInit.theWorld);
-					Recellection.CurrentState = WorldView.Instance;// new WorldView(gameInit.theWorld);
-					VictorTurner vt = new VictorTurner(gameInit);
-					vt.Run();
+				{
+				    // START THE GAME ALREADY!
+				    var gameInit = new GameInitializer();
+				    backgroundSound.Pause();
+				    WorldView.Initiate(gameInit.theWorld);
+				    Recellection.CurrentState = WorldView.Instance; // new WorldView(gameInit.theWorld);
+				    var vt = new VictorTurner(gameInit);
+				    vt.Run();
 				}
 				else if (response == quit)
 				{
-					List<MenuIcon> promptOptions = new List<MenuIcon>(2);
-					MenuIcon yes = new MenuIcon(Language.Instance.GetString("Yes"), Recellection.textureMap.GetTexture(Globals.TextureTypes.Yes));
-					MenuIcon no = new MenuIcon(Language.Instance.GetString("No"), Recellection.textureMap.GetTexture(Globals.TextureTypes.No));
+					var promptOptions = new List<MenuIcon>(2);
+					var yes = new MenuIcon(Language.Instance.GetString("Yes"), Recellection.textureMap.GetTexture(Globals.TextureTypes.Yes));
+					var no = new MenuIcon(Language.Instance.GetString("No"), Recellection.textureMap.GetTexture(Globals.TextureTypes.No));
 					promptOptions.Add(yes);
 					promptOptions.Add(no);
 					MenuController.LoadMenu(new Menu(Globals.MenuLayout.Prompt, promptOptions, Language.Instance.GetString("AreYouSureYouWantToQuit")));
@@ -95,12 +112,12 @@ namespace Recellection.Code.Main
 				}
                 else if (response == help)
                 {
-                    List<MenuIcon> opt = new List<MenuIcon>(1);
-                    MenuIcon cancel = new MenuIcon("");
-                    cancel.region = new GUIRegion(Recellection.windowHandle,
+                    var opt = new List<MenuIcon>(1);
+                    var cancel = new MenuIcon(string.Empty);
+                    cancel.region = new GUIRegion(Recellection.windowHandle, 
                         new System.Windows.Rect(0, Globals.VIEWPORT_HEIGHT - 100, Globals.VIEWPORT_WIDTH, 100));
                     opt.Add(cancel);
-                    Menu menu = new Menu(opt);
+                    var menu = new Menu(opt);
                     MenuController.LoadMenu(menu);
 
                     Recellection.CurrentState = new HelpView();
@@ -116,6 +133,9 @@ namespace Recellection.Code.Main
 			}
 		}
 
+        #endregion
+
+        #region Methods
 
         /// <summary>
         /// Displays the breensoft logo for a given amount of time
@@ -124,7 +144,7 @@ namespace Recellection.Code.Main
         /// <param name="time"></param>
         private void ShowSplashScreen()
         {
-            SplashView splash = new SplashView();
+            var splash = new SplashView();
             
             Recellection.CurrentState = splash;
             
@@ -135,5 +155,7 @@ namespace Recellection.Code.Main
 				Thread.Sleep(10);
 			}
         }
+
+        #endregion
 	}
 }

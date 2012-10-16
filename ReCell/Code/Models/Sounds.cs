@@ -1,14 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Recellection.Code.Models;
-using Microsoft.Xna.Framework.Audio;
-using Microsoft.Xna.Framework.Media;
-using Microsoft.Xna.Framework.Content;
-
-namespace Recellection.Code.Models
+﻿namespace Recellection.Code.Models
 {
+    using System;
+
+    using Microsoft.Xna.Framework.Audio;
+
     /// <summary>
     /// The Sounds class is a Model that handles all sounds for the game.
     /// 
@@ -16,12 +11,15 @@ namespace Recellection.Code.Models
     /// </summary>
     public sealed class Sounds : IModel
     {
+        #region Static Fields
+
         private static AudioEngine audioEngine;
         private static SoundBank soundBank;
         private static WaveBank waveBank;
-        public bool isMuted { get; set; }
 
-        public static Sounds Instance { get; private set; }
+        #endregion
+
+        #region Constructors and Destructors
 
         /// <summary>
         /// Static constructor will initialize instance when referenced.
@@ -41,6 +39,28 @@ namespace Recellection.Code.Models
             waveBank = new WaveBank(audioEngine, "Content/Sounds/Wave Bank.xwb");
         }
 
+        #endregion
+
+        #region Public Properties
+
+        public static Sounds Instance { get; private set; }
+
+        public bool isMuted { get; set; }
+
+        #endregion
+
+        #region Public Methods and Operators
+
+        /// <summary>
+        /// Return a specific audio category from the AudioEngine object.
+        /// </summary>
+        /// <param name="category">The Category to retrieve</param>
+        /// <returns>The AudioCategory object corresponding to that category.</returns>
+        public AudioCategory GetCategory(string category)
+        {
+            return audioEngine.GetCategory(category);
+        }
+
         /// <summary>
         /// Loads a sound from the soundbank and returns the corresponding Cue object.
         /// </summary>
@@ -51,14 +71,6 @@ namespace Recellection.Code.Models
             return soundBank.GetCue(sound);
         }
 
-        /// <summary>
-        /// Return a specific audio category from the AudioEngine object.
-        /// </summary>
-        /// <param name="category">The Category to retrieve</param>
-        /// <returns>The AudioCategory object corresponding to that category.</returns>
-        public AudioCategory GetCategory(String category)
-        {
-            return audioEngine.GetCategory(category);
-        }
+        #endregion
     }
 }

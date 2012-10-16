@@ -1,119 +1,92 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-using Recellection.Code.Models;
-using Recellection.Code.Controllers;
-using Recellection.Code.Views;
-using Recellection.Code.Utility.Logger;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-
-namespace Recellection.Code.Main
+﻿namespace Recellection.Code.Main
 {
+    using System;
+    using System.Collections.Generic;
+
+    using Microsoft.Xna.Framework;
+
+    using global::Recellection.Code.Controllers;
+
+    using global::Recellection.Code.Models;
+
+    using global::Recellection.Code.Utility.Logger;
+
     public class GameInitializer
     {
-        public World theWorld { get; private set; }
+        #region Fields
+
         public Logger myLogger;
-        //public Dictionary<Player,UnitAccountant> suitGuys { get; private set; }
+
+        #endregion
+
+        // public Dictionary<Player,UnitAccountant> suitGuys { get; private set; }
+        #region Constructors and Destructors
 
         public GameInitializer()
         {
-            myLogger = LoggerFactory.GetLogger();
-            myLogger.Info("Beginning Game Initialization.");
-            CreateGameObjects(606);
+            this.myLogger = LoggerFactory.GetLogger();
+            this.myLogger.Info("Beginning Game Initialization.");
+            this.CreateGameObjects(606);
         }
+
+        #endregion
+
+        #region Public Properties
+
+        public World theWorld { get; private set; }
+
+        #endregion
+
+        #region Methods
 
         private bool CreateGameObjects(int seed)
         {
-            myLogger.Info("Generating world.");
-            theWorld = WorldGenerator.GenerateWorld(seed);
-            myLogger.Info("Done.");
-            
+            this.myLogger.Info("Generating world.");
+            this.theWorld = WorldGenerator.GenerateWorld(seed);
+            this.myLogger.Info("Done.");
+
             // Let all units belong to the world!
-            Unit.SetWorld(theWorld);
-            new SoundsController(theWorld);
+            Unit.SetWorld(this.theWorld);
+            new SoundsController(this.theWorld);
 
-            Random randomer = new Random(seed);
+            var randomer = new Random(seed);
 
-            myLogger.Info("Adding players.");
-            Player human = new Player(Color.Blue, "John");
-            theWorld.AddPlayer(human);
+            this.myLogger.Info("Adding players.");
+            var human = new Player(Color.Blue, "John");
+            this.theWorld.AddPlayer(human);
 
-            List<Player> temp2 = new List<Player>();
+            var temp2 = new List<Player>();
             temp2.Add(human);
-            AIPlayer ai = new AIPlayer(new AIView(theWorld),Color.Red);
-            theWorld.AddPlayer(ai);
-            
+            var ai = new AIPlayer(new AIView(this.theWorld), Color.Red);
+            this.theWorld.AddPlayer(ai);
+
             human.Enemy = ai;
             ai.Enemy = human;
 
-            myLogger.Info("Creating spawnpoints.");
-            SpawnPoints(theWorld.players, theWorld.map.width, theWorld.map.height, randomer);
+            this.myLogger.Info("Creating spawnpoints.");
+            this.SpawnPoints(this.theWorld.players, this.theWorld.map.width, this.theWorld.map.height, randomer);
 
-            myLogger.Info("Spawning units.");
-            foreach(Player p in theWorld.players)
+            this.myLogger.Info("Spawning units.");
+            foreach (Player p in this.theWorld.players)
             {
-				// We want 50 units!
-                for(int i = 0; i < 10; i++)
+                // We want 50 units!
+                for (int i = 0; i < 10; i++)
                 {
-					p.unitAcc.ProduceUnits();
-				}
-            }
-            
-            int xOffset = (Recellection.viewPort.Width/Globals.TILE_SIZE)/2;
-            int yOffset = (Recellection.viewPort.Height/Globals.TILE_SIZE)/2;
-
-            theWorld.LookingAt = new Point(
-                (int)(theWorld.players[0].GetGraphs()[0].baseBuilding.position.X-xOffset),
-                (int)(theWorld.players[0].GetGraphs()[0].baseBuilding.position.Y-yOffset));
-
-            myLogger.Info("Setting lookingAt to X: " + theWorld.LookingAt.X + "  y: " + theWorld.LookingAt.Y);
-            return true;
-        }
-        
-        /// <summary>
-        /// Random generates a spawn point for both players,
-        /// it makes sure that the distance between them is 
-        /// more then the MIN_DISTANCE_BETWEEN_PLAYERS constant.
-        /// </summary>
-        /// <param name="players">The players which the spawn point will be 
-        /// set for.</param>
-        /// <param name="width">The width of the map.</param>
-        /// <param name="heigth">The height of the map.</param>
-        /// <param name="randomer">The random generator to use.</param>
-        private void SpawnPoints(List<Player> players,
-            int width, int heigth, Random randomer)
-        {
-            int previousPlaceX = -1;
-            int previousPlaceY = -1;
-
-            int randomPlaceX;
-            int randomPlaceY;
-
-            foreach (Player player in players)
-            {
-                //Calculate the length of the vector between the new spawn
-                //point and the last one.
-
-                myLogger.Info("Create random spawn point?");
-                do
-                {
-                    randomPlaceX = randomer.Next(0, 2);
-                    randomPlaceY = randomer.Next(0, 2);
+                    p.unitAcc.ProduceUnits();
                 }
-                while (previousPlaceX == randomPlaceX && previousPlaceY == randomPlaceY);
-
-                int xCoordinate = randomPlaceX == 0 ? 5 : width - 5;
-                int yCoordinate = randomPlaceY == 0 ? 5 : heigth - 5;
-
-                SpawnGraph(xCoordinate, yCoordinate, player);
-
-                previousPlaceX = randomPlaceX;
-                previousPlaceY = randomPlaceY;
             }
 
+            int xOffset = (Recellection.viewPort.Width / Globals.TILE_SIZE) / 2;
+            int yOffset = (Recellection.viewPort.Height / Globals.TILE_SIZE) / 2;
+
+            this.theWorld.LookingAt =
+                new Point(
+                    (int)(this.theWorld.players[0].GetGraphs()[0].baseBuilding.position.X - xOffset), 
+                    (int)(this.theWorld.players[0].GetGraphs()[0].baseBuilding.position.Y - yOffset));
+
+            this.myLogger.Info(
+                "Setting lookingAt to X: " + this.theWorld.LookingAt.X + "  y: " + this.theWorld.LookingAt.Y);
+            return true;
         }
 
         /// <summary>
@@ -132,10 +105,56 @@ namespace Recellection.Code.Main
             /*BaseBuilding baseBuilding = new BaseBuilding("base", xCoord, yCoord, owner);
 
             theWorld.map.GetTile(xCoord, yCoord).SetBuilding(baseBuilding);*/
-            myLogger.Info("Creating graph for player: "+ owner +" at: "+xCoord+","+yCoord);
-            //owner.AddGraph(new Graph(baseBuilding));
-            BuildingController.AddBuilding(Globals.BuildingTypes.Base, null, new Vector2(xCoord, yCoord), theWorld,owner);
+            this.myLogger.Info("Creating graph for player: " + owner + " at: " + xCoord + "," + yCoord);
+
+            // owner.AddGraph(new Graph(baseBuilding));
+            BuildingController.AddBuilding(
+                Globals.BuildingTypes.Base, null, new Vector2(xCoord, yCoord), this.theWorld, owner);
         }
+
+        /// <summary>
+        /// Random generates a spawn point for both players,
+        /// it makes sure that the distance between them is 
+        /// more then the MIN_DISTANCE_BETWEEN_PLAYERS constant.
+        /// </summary>
+        /// <param name="players">The players which the spawn point will be 
+        /// set for.</param>
+        /// <param name="width">The width of the map.</param>
+        /// <param name="heigth">The height of the map.</param>
+        /// <param name="randomer">The random generator to use.</param>
+        private void SpawnPoints(List<Player> players, 
+                                 int width, int heigth, Random randomer)
+        {
+            int previousPlaceX = -1;
+            int previousPlaceY = -1;
+
+            int randomPlaceX;
+            int randomPlaceY;
+
+            foreach (Player player in players)
+            {
+                // Calculate the length of the vector between the new spawn
+                // point and the last one.
+                this.myLogger.Info("Create random spawn point?");
+                do
+                {
+                    randomPlaceX = randomer.Next(0, 2);
+                    randomPlaceY = randomer.Next(0, 2);
+                }
+                while (previousPlaceX == randomPlaceX && previousPlaceY == randomPlaceY);
+
+                int xCoordinate = randomPlaceX == 0 ? 5 : width - 5;
+                int yCoordinate = randomPlaceY == 0 ? 5 : heigth - 5;
+
+                this.SpawnGraph(xCoordinate, yCoordinate, player);
+
+                previousPlaceX = randomPlaceX;
+                previousPlaceY = randomPlaceY;
+            }
+
+        }
+
+        #endregion
     }
 
 }

@@ -1,23 +1,29 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Tobii.TecSDK.Client.Interaction.RegionImplementations;
-
-using Recellection.Code.Utility.Events;
-using Recellection.Code.Utility.Logger;
-
-namespace Recellection.Code.Models
+﻿namespace Recellection.Code.Models
 {
+    using System;
+    using System.Windows;
+
+    using global::Recellection.Code.Utility.Events;
+
+    using global::Recellection.Code.Utility.Logger;
+
+    using Tobii.TecSDK.Client.Interaction;
+    using Tobii.TecSDK.Client.Interaction.RegionImplementations;
+
     /// <summary>
     /// The GUIRegion class is a wrapper around a WindowBoundInteractionRegion
     /// to provide for our publisher-observer pattern.
     /// </summary>
     public class GUIRegion : WindowBoundInteractionRegion, IModel
     {
+        #region Static Fields
+
         public static Logger logger = LoggerFactory.GetLogger();
-        public event Publish<GUIRegion> regionActivated;
-        
+
+        #endregion
+
+        #region Constructors and Destructors
+
         /// <summary>
         /// General Constructor for GUIRegion.
         /// </summary>
@@ -26,8 +32,8 @@ namespace Recellection.Code.Models
             : base(id)
         {
             logger.Trace("Creating a new GUIRegion.");
-            Activate += new EventHandler<Tobii.TecSDK.Client.Interaction.ActivateEventArgs>(OnActivate);
-            Publish(this, EventType.ADD);
+            this.Activate += this.OnActivate;
+            this.Publish(this, EventType.ADD);
         }
 
         /// <summary>
@@ -35,22 +41,24 @@ namespace Recellection.Code.Models
         /// </summary>
         /// <param name="nativeHwnd">The window handle for the game window.</param>
         /// <param name="innerBounds">A Rect object to define where and how big the region will be.</param>
-        public GUIRegion(IntPtr nativeHwnd, System.Windows.Rect innerBounds)
+        public GUIRegion(IntPtr nativeHwnd, Rect innerBounds)
             : base(nativeHwnd, innerBounds)
         {
             logger.Trace("Creating a new GUIRegion.");
-            Publish(this, EventType.ADD);
-            Activate += new EventHandler<Tobii.TecSDK.Client.Interaction.ActivateEventArgs>(OnActivate);
+            this.Publish(this, EventType.ADD);
+            this.Activate += this.OnActivate;
         }
-        
-        /// <summary>
-        /// Internal method fired by the Tobii eventhandler.
-        /// </summar>
-        private void OnActivate(object sender, Tobii.TecSDK.Client.Interaction.ActivateEventArgs e)
-        {
-            Publish(this, EventType.ALTER);
-        }
-        
+
+        #endregion
+
+        #region Public Events
+
+        public event Publish<GUIRegion> regionActivated;
+
+        #endregion
+
+        #region Public Methods and Operators
+
         /// <summary>
         /// Publishes events.
         /// </summary>
@@ -58,10 +66,24 @@ namespace Recellection.Code.Models
         /// <param name="t">The type of event triggered.</param>
         public void Publish(GUIRegion guiregion, EventType t)
         {
-            if (regionActivated != null)
+            if (this.regionActivated != null)
             {
-               regionActivated(this, new GUIRegionEvent(this, t));
+               this.regionActivated(this, new GUIRegionEvent(this, t));
             }
         }
+
+        #endregion
+
+        #region Methods
+
+        /// <summary>
+        /// Internal method fired by the Tobii eventhandler.
+        /// </summar>
+        private void OnActivate(object sender, ActivateEventArgs e)
+        {
+            this.Publish(this, EventType.ALTER);
+        }
+
+        #endregion
     }
 }

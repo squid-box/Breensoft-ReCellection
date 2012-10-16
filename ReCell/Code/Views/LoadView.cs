@@ -1,26 +1,26 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Microsoft.Xna.Framework.Content;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using System.Drawing;
-
-namespace Recellection.Code.Views
+﻿namespace Recellection.Code.Views
 {
+    using System.Collections.Generic;
+
+    using Microsoft.Xna.Framework.Content;
+    using Microsoft.Xna.Framework.Graphics;
+
     public class LoadView : IRenderable
     {
+        #region Public Methods and Operators
+
         public List<DrawData> GetDrawData(ContentManager content)
         {
-            RenderTarget2D r2 = new RenderTarget2D(Recellection.graphics.GraphicsDevice, 500, 500, false, SurfaceFormat.Color, DepthFormat.Depth24);
-            SpriteFont derrp = content.Load<SpriteFont>("Fonts/ScreenFont");
+            var r2 = new RenderTarget2D(Recellection.graphics.GraphicsDevice, 500, 500, false, SurfaceFormat.Color, DepthFormat.Depth24);
+            var derrp = content.Load<SpriteFont>("Fonts/ScreenFont");
 
-            //DrawString
+            // DrawString
             
-            List<DrawData> ret = new List<DrawData>();
+            var ret = new List<DrawData>();
 
             return ret;
         }
+
+        #endregion
     }
 }

@@ -1,46 +1,56 @@
-using System.Linq;
-using System.Text;
-using Tobii.TecSDK.Client.Interaction.RegionImplementations;
-using System;
-using Recellection.Code.Models;
-using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework;
-
 namespace Recellection
 {
+    using System;
 
+    using Microsoft.Xna.Framework;
+    using Microsoft.Xna.Framework.Graphics;
 
-	public class MenuIcon
-	{
+    using global::Recellection.Code.Models;
 
-        public GUIRegion region { get; set; }
-        public String label { get; set; }
-        public Texture2D texture { get; private set; }
-        public Rectangle targetTextureRectangle { get; set; }
-        public Rectangle targetLabelRectangle { get; set; }
-        public Color labelColor { get; set; }
+    public class MenuIcon
+    {
+        #region Constructors and Destructors
 
-        public MenuIcon(String label)
-         : this(label, null, Color.Black)
+        public MenuIcon(string label)
+            : this(label, null, Color.Black)
         {
         }
-        
-        public MenuIcon(String label, Texture2D texture)
-         : this(label, texture, Color.Black)
+
+        public MenuIcon(string label, Texture2D texture)
+            : this(label, texture, Color.Black)
         {
         }
-        
-        public MenuIcon(String label, Texture2D texture, Color color)
-		{
-			region = null;
-			this.label = label;
-			this.texture = texture;
+
+        public MenuIcon(string label, Texture2D texture, Color color)
+        {
+            this.region = null;
+            this.label = label;
+            this.texture = texture;
             this.labelColor = color;
-		}
-        //use only with offscreenregion!
+        }
+
+        // use only with offscreenregion!
         public MenuIcon(GUIRegion region)
         {
             this.region = region;
         }
-	}
+
+        #endregion
+
+        #region Public Properties
+
+        public string label { get; set; }
+
+        public Color labelColor { get; set; }
+
+        public GUIRegion region { get; set; }
+
+        public Rectangle targetLabelRectangle { get; set; }
+
+        public Rectangle targetTextureRectangle { get; set; }
+
+        public Texture2D texture { get; private set; }
+
+        #endregion
+    }
 }

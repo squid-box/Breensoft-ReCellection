@@ -1,23 +1,36 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-
-namespace Recellection.Code.Models
+﻿namespace Recellection.Code.Models
 {
+    using Microsoft.Xna.Framework;
+    using Microsoft.Xna.Framework.Graphics;
+
     public abstract class Entity
     {
-        public Vector2 position { get; protected set; }
-        public Player owner { get; protected set; }
-        public int angle { get; protected set; }
+        #region Constructors and Destructors
 
         public Entity(Vector2 position, Player owner)
         {
             this.position = position;
             this.owner = owner;
             this.angle = 0;
+        }
+
+        #endregion
+
+        #region Public Properties
+
+        public int angle { get; protected set; }
+
+        public Player owner { get; protected set; }
+
+        public Vector2 position { get; protected set; }
+
+        #endregion
+
+        #region Public Methods and Operators
+
+        public Player GetOwner()
+        {
+            return this.owner;
         }
 
         /// <summary>
@@ -28,6 +41,14 @@ namespace Recellection.Code.Models
         {
             return this.position;
         }
+
+        public abstract Texture2D GetSprite();
+
+        public void SetOwner(Player owner)
+        {
+            this.owner = owner;
+        }
+
         /// <summary>
         /// Magically teleport this Unit somewhere.
         /// </summary>
@@ -36,8 +57,6 @@ namespace Recellection.Code.Models
         {
             this.position = newPos;
         }
-
-        public abstract Texture2D GetSprite();
 
         public int getAngle()
         {
@@ -49,15 +68,6 @@ namespace Recellection.Code.Models
             this.angle = a;
         }
 
-        public Player GetOwner()
-        {
-            return this.owner;
-        }
-
-        public void SetOwner(Player owner)
-        {
-            this.owner = owner;
-        }
-
+        #endregion
     }
 }

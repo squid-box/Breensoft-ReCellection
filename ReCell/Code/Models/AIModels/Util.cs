@@ -1,19 +1,93 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Microsoft.Xna.Framework;
-using Recellection.Code.Controllers;
-
-namespace Recellection.Code.Models
+﻿namespace Recellection.Code.Models
 {
-/*
+    using System;
+    using System.Collections.Generic;
+
+    using Microsoft.Xna.Framework;
+
+    using global::Recellection.Code.Controllers;
+
+    /*
  * Utility class for the AI.
  * Contains "tumor" code that perform simple tasks only requiring their parameters.
  * 
  **/
     public class Util
     {
+        #region Public Methods and Operators
+
+        /// <summary>
+        /// Converts a given tile interval to a matrix of tile coordinates.
+        /// </summary>
+        /// <param name="list"></param>
+        /// <returns></returns>
+        public static List<Vector2> CreateMatrixFromInterval(List<Point> list)
+        {
+            var result = new List<Vector2>();
+
+            for (int i = list[0].X; i <= list[1].X; i++)
+                for (int j = list[0].Y; j <= list[1].Y; j++)
+                {
+                    result.Add(new Vector2(i, j));
+                }
+
+            return result;
+        }
+
+        /// <summary>
+        /// Reuturns the first building from the given list tha has the given amount of
+        /// units or more. If none was found null is returned.
+        /// </summary>
+        /// <param name="units"></param>
+        /// <param name="buildings"></param>
+        public static Building FindBuildingWithUnitCount(int units, List<Building> buildings)
+        {
+            for (int i = 0; i < buildings.Count; i++)
+            {
+                Building b = buildings[i];
+                if (b.GetUnits().Count > units)
+                {
+                    return b;
+                }
+            }
+
+            return null;
+        }
+
+        /// <summary>
+        /// Generates a list of optimal building placements for connecting the two given points.
+        /// </summary>
+        /// <param name="resource"></param>
+        /// <param name="sourcePosition"></param>
+        /// <returns></returns>
+        public static List<Vector2> GenerateBuildPathBetween(Vector2 p_source, Vector2 p_dest, World world)
+        {
+            Vector2 source = p_source;
+            Vector2 dest = p_dest;
+
+            var path = new List<Vector2>();
+            do
+            {
+                source = Util.GetClosestPointFromList(dest, CreateMatrixFromInterval(BuildingController.GetValidBuildingInterval(source, world)));
+                path.Add(source);
+            }
+ while (!WithinBuildRangeOf(source, dest, world));
+            if (source != dest) // safeguard for double add
+                path.Add(p_dest);
+
+            return path;
+        }
+
+        /// <summary>
+        /// Returns the fromBuilding at the given coordinates provided that it is visible.
+        /// </summary>
+        /// <param name="point"></param>
+        /// <param name="world"></param>
+        /// <returns></returns>
+        public static Building GetBuildingAt(Vector2 point, World world)
+        {
+            return GetTileAt(point, world).GetBuilding();
+        }
 
         /// <summary>
         /// Returns the point in the given list that is closest to the given point.
@@ -33,45 +107,50 @@ namespace Recellection.Code.Models
                     best = temp;
                 }
             }
+
             return best;
         }
 
-
         /// <summary>
-        /// Reuturns the first building from the given list tha has the given amount of
-        /// units or more. If none was found null is returned.
-        /// </summary>
-        /// <param name="units"></param>
-        /// <param name="buildings"></param>
-        public static Building FindBuildingWithUnitCount(int units, List<Building> buildings)
-        {
-            for (int i = 0; i < buildings.Count; i++)
-            {
-                Building b = buildings[i];
-                if (b.GetUnits().Count > units)
-                {
-                    return b;
-                }
-            }
-            return null;
-        }
-
-
-        /// <summary>
-        /// Converts a given tile interval to a matrix of tile coordinates.
+        /// Returns a valid build point randomly chosen from the given choices.
         /// </summary>
         /// <param name="list"></param>
+        /// <param name="world"></param>
         /// <returns></returns>
-        public static List<Vector2> CreateMatrixFromInterval(List<Point> list)
+        public static Vector2 GetRandomBuildPointFrom(List<Vector2> list, World world)
         {
-            List<Vector2> result = new List<Vector2>();
-
-            for (int i = list[0].X; i <= list[1].X; i++)
-                for (int j = list[0].Y; j <= list[1].Y; j++)
-                {
-                    result.Add(new Vector2(i, j));
+            var valids = new List<Vector2>();
+            for (int i = 0; i < list.Count; i++)
+            {
+                Vector2 temp = list[i];
+                if (GetBuildingAt(temp, world) == null)
+                { // The spot is free!
+                    valids.Add(temp);
                 }
-            return result;
+            }
+
+            var randomFactory = new Random();
+            return valids[randomFactory.Next(valids.Count)];
+        }
+
+        /// <summary>
+        /// Returns the Tile located in the given coordinates provided that it is visible.
+        /// If it is not visible, null is returned.
+        /// </summary>
+        /// <param name="coords"></param>
+        /// <param name="world"></param>
+        /// <returns></returns>
+        public static Tile GetTileAt(Vector2 coords, World world)
+        {
+            // log.Fatal("Accessing Tile at "+coords.X+","+coords.Y);
+            Tile tempTile = world.GetMap().GetTile((int)coords.X, (int)coords.Y);
+
+            ///* Uncomment when fog of war is properly implemented
+            // if (tempTile.IsVisible(ai))
+            // {
+            // return tempTile;
+            // }
+            return tempTile;
         }
 
         /// <summary>
@@ -86,6 +165,7 @@ namespace Recellection.Code.Models
             {
                 uSum += b[i].GetUnits().Count;
             }
+
             return uSum;
         }
 
@@ -106,88 +186,10 @@ namespace Recellection.Code.Models
             {
                 return false;
             }
+
             return true;
         }
 
-        /// <summary>
-        /// Generates a list of optimal building placements for connecting the two given points.
-        /// </summary>
-        /// <param name="resource"></param>
-        /// <param name="sourcePosition"></param>
-        /// <returns></returns>
-        public static List<Vector2> GenerateBuildPathBetween(Vector2 p_source, Vector2 p_dest, World world)
-        {
-            Vector2 source = p_source;
-            Vector2 dest = p_dest;
-
-            List<Vector2> path = new List<Vector2>();
-            do
-            {
-                source = Util.GetClosestPointFromList(dest, CreateMatrixFromInterval(BuildingController.GetValidBuildingInterval(source, world)));
-                path.Add(source);
-            } while (!WithinBuildRangeOf(source, dest, world));
-            if (source != dest) //safeguard for double add
-                path.Add(p_dest);
-
-            return path;
-        }
-
-
-
-        /// <summary>
-        /// Returns the Tile located in the given coordinates provided that it is visible.
-        /// If it is not visible, null is returned.
-        /// </summary>
-        /// <param name="coords"></param>
-        /// <param name="world"></param>
-        /// <returns></returns>
-        public static Tile GetTileAt(Vector2 coords, World world)
-        {
-            //log.Fatal("Accessing Tile at "+coords.X+","+coords.Y);
-            Tile tempTile = world.GetMap().GetTile((int)coords.X, (int)coords.Y);
-
-            ///* Uncomment when fog of war is properly implemented
-            //if (tempTile.IsVisible(ai))
-            //{
-            //    return tempTile;
-            //}
-
-            return tempTile;
-        }
-
-
-        /// <summary>
-        /// Returns the fromBuilding at the given coordinates provided that it is visible.
-        /// </summary>
-        /// <param name="point"></param>
-        /// <param name="world"></param>
-        /// <returns></returns>
-        public static Building GetBuildingAt(Vector2 point, World world)
-        {
-            return GetTileAt(point, world).GetBuilding();
-        }
-
-
-
-        /// <summary>
-        /// Returns a valid build point randomly chosen from the given choices.
-        /// </summary>
-        /// <param name="list"></param>
-        /// <param name="world"></param>
-        /// <returns></returns>
-        public static Vector2 GetRandomBuildPointFrom(List<Vector2> list, World world)
-        {
-            List<Vector2> valids = new List<Vector2>();
-            for (int i = 0; i < list.Count; i++)
-            {
-                Vector2 temp = list[i];
-                if (GetBuildingAt(temp, world) == null)
-                { //The spot is free!
-                    valids.Add(temp);
-                }
-            }
-            Random randomFactory = new Random();
-            return valids[randomFactory.Next(valids.Count)];
-        }
+        #endregion
     }
 }

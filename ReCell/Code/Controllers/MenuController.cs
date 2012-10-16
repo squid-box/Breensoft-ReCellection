@@ -1,25 +1,33 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Recellection.Code.Models;
-using Recellection.Code.Utility.Logger;
-
-namespace Recellection.Code.Controllers
+﻿namespace Recellection.Code.Controllers
 {
-	/// <summary>
+    using System;
+    using System.Collections.Generic;
+
+    using global::Recellection.Code.Models;
+
+    using global::Recellection.Code.Utility.Logger;
+
+    /// <summary>
 	/// Provides functionality to other controllers to access a menu.
 	/// 
 	/// Author: Martin Nycander
 	/// </summary>
 	public class MenuController
     {
-        private static Logger logger = LoggerFactory.GetLogger();
-		private static MenuModel menuModel;
+        #region Static Fields
+
+        private static readonly Logger logger = LoggerFactory.GetLogger();
+
+        private static bool initiated;
+
+        private static MenuModel menuModel;
 		private static TobiiController tobiiController;
-		private static bool initiated = false;
-		
-		/// <summary>
+
+        #endregion
+
+        #region Constructors and Destructors
+
+        /// <summary>
 		/// Initiates the MenuController with an empty menu model and the provided tobii controller.
 		/// </summary>
 		/// <param name="tobii">The tobii controller associated with the application.</param>
@@ -31,6 +39,7 @@ namespace Recellection.Code.Controllers
 			{
 				throw new InvalidOperationException("The MenuController has already been initiated.");
 			}
+
             logger.Info("Initializing MenuController.");
 			menuModel = MenuModel.Instance;
             logger.Info("Got " + tobii +" from constructor.");
@@ -40,41 +49,17 @@ namespace Recellection.Code.Controllers
 			
 			LoadMenu(initialMenu);
 		}
-		
-		/// <summary>
-		/// Opens up and loads a specified menu.
-		/// </summary>
-		/// <param name="m">The menu to load.</param>
-		public static void LoadMenu(Menu m)
-		{
-            //for the case where there is nothing on the stack yet
-            if (menuModel.Peek() != null)
-            {
-                tobiiController.UnloadMenu(menuModel.Peek());
-            }
-			menuModel.Push(m);
-			tobiiController.LoadMenu(m);
-		}
-		
-		public static void DisableMenuInput()
+
+        #endregion
+
+        #region Public Methods and Operators
+
+        public static void DisableMenuInput()
 		{
 			tobiiController.SetRegionsEnabled(false);
 		}
 
-		/// <summary>
-		/// Removes the currently opened menu, and reveals the one below.
-		/// </summary>
-		public static void UnloadMenu()
-		{
-            tobiiController.UnloadMenu(menuModel.Pop());
-            
-            if (menuModel.Peek() != null)
-            {			
-				tobiiController.LoadMenu(menuModel.Peek());
-			}
-		}
-
-		/// <summary>
+        /// <summary>
 		/// Gets input from the Tobii controller.
 		/// </summary>
 		/// <returns>An activated Region in the current menu</returns>
@@ -87,7 +72,7 @@ namespace Recellection.Code.Controllers
 				GUIRegion activated = tobiiController.GetActivatedRegion();
 				tobiiController.SetRegionsEnabled(false);
 
-				//tobiiController.UnloadMenu(menuModel.Peek());
+				// tobiiController.UnloadMenu(menuModel.Peek());
 				Menu m = menuModel.Peek();
 				List<MenuIcon> options = m.GetIcons();
 				foreach (MenuIcon mi in options)
@@ -95,6 +80,7 @@ namespace Recellection.Code.Controllers
 					if (mi.region.RegionIdentifier == activated.RegionIdentifier)
 						return mi;
 				}
+
 				if (m.leftOff != null && m.leftOff.region.RegionIdentifier == activated.RegionIdentifier)
 				{
 					return m.leftOff;
@@ -113,7 +99,38 @@ namespace Recellection.Code.Controllers
 				}
 			}
 		}
-	}
+
+        /// <summary>
+        /// Opens up and loads a specified menu.
+        /// </summary>
+        /// <param name="m">The menu to load.</param>
+        public static void LoadMenu(Menu m)
+        {
+            // for the case where there is nothing on the stack yet
+            if (menuModel.Peek() != null)
+            {
+                tobiiController.UnloadMenu(menuModel.Peek());
+            }
+
+            menuModel.Push(m);
+            tobiiController.LoadMenu(m);
+        }
+
+        /// <summary>
+        /// Removes the currently opened menu, and reveals the one below.
+        /// </summary>
+        public static void UnloadMenu()
+        {
+            tobiiController.UnloadMenu(menuModel.Pop());
+            
+            if (menuModel.Peek() != null)
+            {			
+                tobiiController.LoadMenu(menuModel.Peek());
+            }
+        }
+
+        #endregion
+    }
 	
 	public class NonExistantInputException : Exception
 	{

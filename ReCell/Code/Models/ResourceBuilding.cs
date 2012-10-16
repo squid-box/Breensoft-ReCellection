@@ -1,11 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Microsoft.Xna.Framework.Graphics;
-
-namespace Recellection.Code.Models
+﻿namespace Recellection.Code.Models
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+
+    using Microsoft.Xna.Framework.Graphics;
+
     /// <summary>
     /// A resource fromBuilding improves upon an ordinary fromBuilding by also having a certain
     /// rate of unit production
@@ -14,15 +14,19 @@ namespace Recellection.Code.Models
     /// </summary>
     public class ResourceBuilding : Building
     {
-        private int rateOfProduction;
-        
+        #region Constants
+
         private const int DEFAULT_PRODUCTION = 1;
 
-        public int RateOfProduction
-        {
-            get { return rateOfProduction; }
-            set { rateOfProduction = value; }
-        }
+        #endregion
+
+        #region Fields
+
+        private int rateOfProduction;
+
+        #endregion
+
+        #region Constructors and Destructors
 
         /// <summary>
         /// Constructs a new ResourceBuilding
@@ -33,9 +37,9 @@ namespace Recellection.Code.Models
         /// <param name="maxHealth"></param>
         /// <param name="owner"></param>
         /// <param name="baseBuilding"></param>
-        public ResourceBuilding(String name, int posX, int posY,
+        public ResourceBuilding(string name, int posX, int posY, 
             Player owner, BaseBuilding baseBuilding, LinkedList<Tile> controlZone)
-            : base(name, posX, posY, RESOURCE_BUILDING_HEALTH, owner, Globals.BuildingTypes.Resource, baseBuilding,controlZone)
+            : base(name, posX, posY, RESOURCE_BUILDING_HEALTH, owner, Globals.BuildingTypes.Resource, baseBuilding, controlZone)
         {
             this.rateOfProduction = controlZone.First().GetTerrainType().getResourceModifier() + DEFAULT_PRODUCTION;
             if (baseBuilding != null)
@@ -43,6 +47,20 @@ namespace Recellection.Code.Models
                 baseBuilding.RateOfProduction += this.rateOfProduction;
             }
         }
+
+        #endregion
+
+        #region Public Properties
+
+        public int RateOfProduction
+        {
+            get { return this.rateOfProduction; }
+            set { this.rateOfProduction = value; }
+        }
+
+        #endregion
+
+        #region Public Methods and Operators
 
         /// <summary>
         /// 
@@ -52,5 +70,7 @@ namespace Recellection.Code.Models
         {
             return Recellection.textureMap.GetTexture(Globals.TextureTypes.ResourceBuilding);
         }
+
+        #endregion
     }
 }
