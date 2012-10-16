@@ -1,13 +1,10 @@
-﻿using System;
-using System.Collections.ObjectModel;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Microsoft.Xna.Framework.Graphics;
-using Recellection.Code.Controllers;
-
-namespace Recellection.Code.Models
+﻿namespace Recellection.Code.Models
 {
+    using System.Collections.Generic;
+    using Microsoft.Xna.Framework;
+
+    using global::Recellection.Code.Controllers;
+
     /// <summary>
     /// Enum with available player colors
     /// </summary>

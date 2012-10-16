@@ -107,7 +107,7 @@ namespace Recellection
                     TecClient.ClientSettings.ApplySettings();
                     TecClient.SettingsManager.ApplySettings();
 
-                    SetFeedbackColor(Microsoft.Xna.Framework.Graphics.Color.White);
+                    SetFeedbackColor(Microsoft.Xna.Framework.Color.White);
 
                     #endregion
                 }
@@ -334,7 +334,7 @@ namespace Recellection
         /// change color of the dwell indicator
         /// </summary>
         /// <param name="color">Microsoft.Xna.Framework.Graphics.Color</param>
-        public void SetFeedbackColor(Microsoft.Xna.Framework.Graphics.Color color)
+        public void SetFeedbackColor(Microsoft.Xna.Framework.Color color)
         {
             System.Windows.Media.Color col = new System.Windows.Media.Color();
             col.A = color.A;

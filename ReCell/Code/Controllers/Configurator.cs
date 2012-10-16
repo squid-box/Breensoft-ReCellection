@@ -1,16 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using Recellection.Code.Models;
-using Microsoft.Xna.Framework.Graphics;
 using Recellection.Code.Utility.Logger;
 using System.Threading;
 using Recellection.Code.Views;
-using Microsoft.Xna.Framework.Audio;
 
 namespace Recellection.Code.Controllers
 {
+    using Microsoft.Xna.Framework;
+
     /// <summary>
     /// Handles state management for the GameOptions Model.
     /// 

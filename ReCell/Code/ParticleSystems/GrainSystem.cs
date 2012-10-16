@@ -30,7 +30,7 @@ namespace Recellection
         {
             backgrounds = new Texture2D[NUMOFTEX];
             random = new Random();
-            Texture2D workTex = new Texture2D(Recellection.graphics.GraphicsDevice, Recellection.viewPort.Width / 2, Recellection.viewPort.Height / 2, 1, TextureUsage.None, SurfaceFormat.Color);
+            Texture2D workTex = new Texture2D(Recellection.graphics.GraphicsDevice, Recellection.viewPort.Width / 2, Recellection.viewPort.Height / 2, true, SurfaceFormat.Color);
             Color[] workColors = new Color[(Recellection.viewPort.Width / 2) * (Recellection.viewPort.Height / 2)];
 
             alphaBlend = visibility;
@@ -41,7 +41,7 @@ namespace Recellection
 
             for (int i = 0; i < NUMOFTEX; i++)
             {
-                workTex = new Texture2D(Recellection.graphics.GraphicsDevice, Recellection.viewPort.Width / 2, Recellection.viewPort.Height / 2, 1, TextureUsage.None, SurfaceFormat.Color);
+                workTex = new Texture2D(Recellection.graphics.GraphicsDevice, Recellection.viewPort.Width / 2, Recellection.viewPort.Height / 2, true, SurfaceFormat.Color);
 
                 for (int x = 0; x < Recellection.viewPort.Width / 2; x++)
                 {
@@ -51,7 +51,7 @@ namespace Recellection
                         if (roll > 0.5f)
                             workColors[x + y * (Recellection.viewPort.Width / 2)] = new Color(roll * lumency, roll * lumency, roll * lumency, 1f);
                         else
-                            workColors[x + y * (Recellection.viewPort.Width / 2)] = Color.TransparentBlack;
+                            workColors[x + y * (Recellection.viewPort.Width / 2)] = Color.Transparent;
                     }
                 }
 

@@ -153,8 +153,11 @@ namespace Recellection.Code.Utility.Console
             device = game.GraphicsDevice;
             spriteBatch = new SpriteBatch(device);
             this.font = font;
-            background = new Texture2D(device, 1, 1, 1, TextureUsage.None,
-                SurfaceFormat.Color);
+
+            /// TODO: Just a guess to fix this stuff...
+            //background = new Texture2D(device, 1, 1, 1, TextureUsage.None, SurfaceFormat.Color);
+            background = new Texture2D(device,1,1,true,SurfaceFormat.Color);
+            
             background.SetData<Color>(new Color[1] { new Color(0, 0, 0, 125) });
 			
             InputBuffer = "";
@@ -355,7 +358,7 @@ namespace Recellection.Code.Utility.Console
 
         public override void Update(GameTime gameTime)
         {
-            double now = gameTime.TotalRealTime.TotalSeconds;
+            double now = gameTime.TotalGameTime.TotalSeconds;
             double elapsedTime = gameTime.ElapsedGameTime.TotalMilliseconds; //time since last update call
 
             //get keyboard state
@@ -528,7 +531,7 @@ namespace Recellection.Code.Utility.Console
                 return;
             }
 
-            double now = gameTime.TotalRealTime.TotalSeconds;
+            double now = gameTime.TotalGameTime.TotalSeconds;
 
             #region Console size & dimension management
 
@@ -559,7 +562,7 @@ namespace Recellection.Code.Utility.Console
 
             #endregion
 
-            spriteBatch.Begin(SpriteBlendMode.AlphaBlend);
+            spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend);
 
             #region Background Drawing
 
@@ -586,7 +589,8 @@ namespace Recellection.Code.Utility.Console
             spriteBatch.End();
             
             //reset depth buffer to normal status, so as not to mess up 3d code
-            game.GraphicsDevice.RenderState.DepthBufferEnable = true; 
+            game.GraphicsDevice.BlendState = BlendState.Additive;
+            game.GraphicsDevice.DepthStencilState = DepthStencilState.Default;
         }
     }
 }

@@ -1,17 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using Recellection.Code.Views;
 using Recellection.Code.Utility.Logger;
 using Recellection.Code.Controllers;
 using Recellection.Code.Models;
-using Microsoft.Xna.Framework.Audio;
-using System.Threading;
-using Recellection.Code.Views;
-using Microsoft.Xna.Framework.Graphics;
 
 namespace Recellection.Code.Main
 {
+    using System;
+    using System.Collections.Generic;
+    using Microsoft.Xna.Framework.Audio;
+    using System.Threading;
+    using Microsoft.Xna.Framework;
+
 	public class Initializer
 	{
 		private static Logger logger = LoggerFactory.GetLogger();

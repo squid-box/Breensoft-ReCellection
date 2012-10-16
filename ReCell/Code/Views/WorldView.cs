@@ -66,7 +66,7 @@ namespace Recellection.Code.Views
         private WorldView()
         {
             backgroundTex = Recellection.textureMap.GetTexture(Globals.TextureTypes.white);
-            backgroundTarget = new RenderTarget2D(Recellection.graphics.GraphicsDevice, Recellection.viewPort.Width, Recellection.viewPort.Height, 1, Recellection.graphics.GraphicsDevice.DisplayMode.Format);
+            backgroundTarget = new RenderTarget2D(Recellection.graphics.GraphicsDevice, Recellection.viewPort.Width, Recellection.viewPort.Height, true, SurfaceFormat.Color, DepthFormat.Depth24); //TODO: Double check this, might be wrong.
             lps = new LightParticleSystem(0.05f, Recellection.textureMap.GetTexture(Globals.TextureTypes.Light));
             gs = new GrainSystem(0.01f, 0.2f, 0.3f, Recellection.contentMngr);
 
@@ -199,7 +199,7 @@ namespace Recellection.Code.Views
 								
 								myLogger.Info("Drawing line between "+bb+" and "+b+".");
 								DrawLine(spriteBatch, TileToPixels(drawFrom-lookAt), TileToPixels(b.position-lookAt), 
-											new Color(b.owner.color, 80), 10);
+											new Color(b.owner.color.R, b.owner.color.G, b.owner.color.B, 80), 10);
 							}
 						}
 					}
@@ -370,10 +370,11 @@ namespace Recellection.Code.Views
         {
             if (doRenderThisPass)
             {
-                Recellection.graphics.GraphicsDevice.SetRenderTarget(0, backgroundTarget);
+                Recellection.graphics.GraphicsDevice.SetRenderTarget(backgroundTarget);
                 Recellection.graphics.GraphicsDevice.Clear(Color.Black);
 
-                spriteBatch.Begin(SpriteBlendMode.AlphaBlend, SpriteSortMode.Immediate, SaveStateMode.None);
+                spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend);
+
                 lock (tileCollection)
                 {
                     foreach (Tile t in tileCollection)
@@ -399,8 +400,8 @@ namespace Recellection.Code.Views
 
                     spriteBatch.End();
 
-                    Recellection.graphics.GraphicsDevice.SetRenderTarget(0, null);
-                    backgroundTex = backgroundTarget.GetTexture();
+                    Recellection.graphics.GraphicsDevice.SetRenderTarget(null);
+                    backgroundTex = backgroundTarget;
 
                     doRenderThisPass = false;
                 }
