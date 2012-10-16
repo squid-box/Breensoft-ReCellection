@@ -73,19 +73,19 @@
                 {
 					if (player is AIPlayer)
 					{
-						this.logger.Debug(player.color + " is a AIPlayer!");
+						this.logger.Debug(player.Color + " is a AIPlayer!");
 						((AIPlayer)player).MakeMove();
 					}
 					else if (player is Player)
 					{
-					    this.logger.Debug(player.color + " is human!");
+					    this.logger.Debug(player.Color + " is human!");
 
 					    // This only makes the grid of GUIRegions and scroll zones, remove later.
 					    this.humanControl.Run();
 					}
 					else
 					{
-						this.logger.Fatal("Could not identify "+player.color+" player!");
+						this.logger.Fatal("Could not identify "+player.Color+" player!");
 					}
 
                     if (this.CheckIfLostOrWon(this.players))
@@ -104,7 +104,7 @@
 				this.logger.Info("Weighting graphs!");
                 foreach (Player player in this.players)
                 {
-                    player.unitAcc.ProduceUnits();
+                    player.UnitAcc.ProduceUnits();
                 }
 
 				this.graphControl.CalculateWeights();

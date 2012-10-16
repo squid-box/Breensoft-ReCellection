@@ -248,7 +248,7 @@
             var setWeight = new MenuIcon(Language.Instance.GetString("SetWeight"));
             var buildCell = new MenuIcon(Language.Instance.GetString("BuildCell"));
             var removeCell = new MenuIcon(Language.Instance.GetString("RemoveCell"));
-			var upgradeUnits = new MenuIcon(Language.Instance.GetString("UpgradeUnits") + " (" + this.playerInControll.unitAcc.GetUpgradeCost() + ")");
+			var upgradeUnits = new MenuIcon(Language.Instance.GetString("UpgradeUnits") + " (" + this.playerInControll.UnitAcc.GetUpgradeCost() + ")");
             var moveUnits = new MenuIcon(Language.Instance.GetString("MoveUnits"));
             var repairCell = new MenuIcon(Language.Instance.GetString("RepairCell") + " (" + toHeal + ")");
             var setAggro = new MenuIcon(Language.Instance.GetString("SetAggro"));
@@ -334,7 +334,7 @@
             }
             else if (choosenMenu.Equals(repairCell))
             {
-                this.playerInControll.unitAcc.DestroyUnits(building.units, toHeal);
+                this.playerInControll.UnitAcc.DestroyUnits(building.units, toHeal);
                 building.Repair(toHeal);
             }
             else if (choosenMenu.Equals(setAggro))
@@ -702,14 +702,14 @@
 
             if (chosenMenu == speed)
             {
-                if (!this.playerInControll.unitAcc.PayAndUpgradeSpeed(building))
+                if (!this.playerInControll.UnitAcc.PayAndUpgradeSpeed(building))
                 {
                     // SoundsController.playSound("Denied");
                 }
             }
             else if (chosenMenu == power)
             {
-                if (!this.playerInControll.unitAcc.PayAndUpgradePower(building))
+                if (!this.playerInControll.UnitAcc.PayAndUpgradePower(building))
                 {
                     // SoundsController.playSound("Denied");
                 }

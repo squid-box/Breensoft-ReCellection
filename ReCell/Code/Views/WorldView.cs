@@ -160,7 +160,7 @@
                                     spriteBatch, 
                                     this.TileToPixels(drawFrom - lookAt), 
                                     this.TileToPixels(b.position - lookAt), 
-                                    new Color(b.owner.color.R, b.owner.color.G, b.owner.color.B, 80), 
+                                    new Color(b.owner.Color.R, b.owner.Color.G, b.owner.Color.B, 80), 
                                     10);
                             }
                         }
@@ -188,7 +188,7 @@
                                 spr, 
                                 new Rectangle(
                                     bx, by, (int)Math.Round(spr.Width * size), (int)Math.Round(spr.Height * size)), 
-                                b.owner.color);
+                                b.owner.Color);
 
                             var xyhpr1 =
                                 new Vector2(
@@ -282,7 +282,7 @@
                                 float amount = 0.3f + (u.PowerLevel * 0.7f);
 
                                 // c = Color.Lerp(c, Color.HotPink, 0.3f + u.PowerLevel * 0.5f);
-                                Color c = Color.Lerp(u.GetOwner().color, Color.White, amount);
+                                Color c = Color.Lerp(u.GetOwner().Color, Color.White, amount);
 
                                 this.DrawTexture(spriteBatch, spr, new Rectangle(ux, uy, spr.Width, spr.Height), c);
 

@@ -45,7 +45,7 @@
                 throw new BuildingOutOfRangeException();
             }
 
-            uint price = owner.unitAcc.CalculateBuildingCostInflation(buildingType);
+            uint price = owner.UnitAcc.CalculateBuildingCostInflation(buildingType);
             if (sourceBuilding != null && (uint)sourceBuilding.CountUnits() < price)
             {
                 logger.Debug("Building too expensive");
@@ -117,7 +117,7 @@
                     && world.map.GetTile((int)targetCoordinate.X, (int)targetCoordinate.Y).GetBuilding() != null)
                 {
                     logger.Info("The building has " + sourceBuilding.CountUnits() + " and the building costs " + price);
-                    owner.unitAcc.DestroyUnits(sourceBuilding.units, (int)price);
+                    owner.UnitAcc.DestroyUnits(sourceBuilding.units, (int)price);
                     logger.Info("The source building only got " + sourceBuilding.CountUnits() + " units left.");
                 }
                 else if (world.map.GetTile((int)targetCoordinate.X, (int)targetCoordinate.Y).GetBuilding() == null)
@@ -181,28 +181,28 @@
             var baseCell =
                 new MenuIcon(
                     Language.Instance.GetString("BaseCell") + " ("
-                    + player.unitAcc.CalculateBuildingCostInflation(Globals.BuildingTypes.Base) + ")", 
+                    + player.UnitAcc.CalculateBuildingCostInflation(Globals.BuildingTypes.Base) + ")", 
                     Recellection.textureMap.GetTexture(Globals.TextureTypes.BaseBuilding), 
                     Color.Black);
 
             var resourceCell =
                 new MenuIcon(
                     Language.Instance.GetString("ResourceCell") + " ("
-                    + player.unitAcc.CalculateBuildingCostInflation(Globals.BuildingTypes.Resource) + ")", 
+                    + player.UnitAcc.CalculateBuildingCostInflation(Globals.BuildingTypes.Resource) + ")", 
                     Recellection.textureMap.GetTexture(Globals.TextureTypes.ResourceBuilding), 
                     Color.Black);
 
             var defensiveCell =
                 new MenuIcon(
                     Language.Instance.GetString("DefensiveCell") + " ("
-                    + player.unitAcc.CalculateBuildingCostInflation(Globals.BuildingTypes.Barrier) + ")", 
+                    + player.UnitAcc.CalculateBuildingCostInflation(Globals.BuildingTypes.Barrier) + ")", 
                     Recellection.textureMap.GetTexture(Globals.TextureTypes.BarrierBuilding), 
                     Color.Black);
 
             var aggressiveCell =
                 new MenuIcon(
                     Language.Instance.GetString("AggressiveCell") + " ("
-                    + player.unitAcc.CalculateBuildingCostInflation(Globals.BuildingTypes.Aggressive) + ")", 
+                    + player.UnitAcc.CalculateBuildingCostInflation(Globals.BuildingTypes.Aggressive) + ")", 
                     Recellection.textureMap.GetTexture(Globals.TextureTypes.AggressiveBuilding), 
                     Color.Black);
             var cancel = new MenuIcon(

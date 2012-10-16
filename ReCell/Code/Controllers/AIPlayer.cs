@@ -84,7 +84,7 @@
 
             if (this.GetGraphs()[0].baseBuilding == null)
             { // Our base building has been destroyed! Create a new one from where we can afford it.
-                Building relay = Util.FindBuildingWithUnitCount((int)this.unitAcc.CalculateBuildingCostInflation(Globals.BuildingTypes.Base), this.m_view.myBuildings);
+                Building relay = Util.FindBuildingWithUnitCount((int)this.UnitAcc.CalculateBuildingCostInflation(Globals.BuildingTypes.Base), this.m_view.myBuildings);
                 if (relay == null)
                     return;
                 this.IssueBuildOrder(Util.GetRandomBuildPointFrom(Util.CreateMatrixFromInterval(BuildingController.GetValidBuildingInterval(relay.GetPosition(), this.m_view.world)), this.m_view.world), relay, Globals.BuildingTypes.Base);
@@ -474,14 +474,14 @@
         /// </summary>
         private void UpgradeUnits()
         {
-            int cost = this.unitAcc.GetUpgradeCost();
+            int cost = this.UnitAcc.GetUpgradeCost();
             
             List<Building> buildings = this.m_view.myBuildings;
             Building b = Util.FindBuildingWithUnitCount(cost, buildings);
             if (b != null)
             {
                 this.log.Info("Found a suitable building at " + b.GetPosition().X + ";" + b.GetPosition().Y + ", upgrading units.");
-                this.unitAcc.PayAndUpgradePower(b);
+                this.UnitAcc.PayAndUpgradePower(b);
                 return;
             }
 
