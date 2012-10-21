@@ -1,13 +1,7 @@
-/*
- * BREENSOFT GAME OMG OMG OMG
- * 
- * Authors:
- */
-
-
 namespace Recellection
 {
     using System;
+    using System.Globalization;
     using System.Threading;
 
     using Microsoft.Xna.Framework;
@@ -16,24 +10,22 @@ namespace Recellection
     using Microsoft.Xna.Framework.Input;
 
     using global::Recellection.Code.Controllers;
-
     using global::Recellection.Code.Models;
-
     using global::Recellection.Code.Utility.Console;
-
     using global::Recellection.Code.Utility.Logger;
-
     using global::Recellection.Code.Views;
 
     /// <summary>
     /// This is the main type for your game.
-	/// It's the SEX-na thread! / Joel
     /// </summary>
-    public class Recellection : Microsoft.Xna.Framework.Game
+    public class Recellection : Game
     {
         #region Static Fields
 
-        public static Color breen = new Color(new Vector3(0.4f, 0.3f, 0.1f));
+        /// <summary>
+        /// The color Breen.
+        /// </summary>
+        public static Color Breen = new Color(new Vector3(0.4f, 0.3f, 0.1f));
 
         public static ContentManager contentMngr;
 
@@ -60,25 +52,25 @@ namespace Recellection
 
         #region Fields
 
-        readonly TobiiController tobiiController;
+        private readonly TobiiController tobiiController;
 
         // Sounds and music
-        AudioPlayer audioPlayer;
+        private AudioPlayer audioPlayer;
 
-        PythonInterpreter console;
+        private PythonInterpreter console;
 
-        SpriteFont consoleFont;
+        private SpriteFont consoleFont;
 
-        TimeSpan elapsedTime;
+        private TimeSpan elapsedTime;
 
-        int frameCounter;
+        private int frameCounter;
 
-        int frameRate;
+        private int frameRate;
 
         // Debug Input 
-        KeyboardState kBState;
+        KeyboardState keyboardState;
 
-        KeyboardState lastKBState;
+        KeyboardState lastKeyboardState;
 
         MouseState lastMouseState;
 
@@ -90,12 +82,15 @@ namespace Recellection
 
         #region Constructors and Destructors
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Recellection"/> class.
+        /// </summary>
         public Recellection()
         {
             this.tobiiController = TobiiController.GetInstance(this.Window.Handle);
             this.tobiiController.Init();
             graphics = new GraphicsDeviceManager(this);            
-			this.Content.RootDirectory = "Content";
+            this.Content.RootDirectory = "Content";
 
             contentMngr = this.Content;
         }
@@ -116,7 +111,10 @@ namespace Recellection
 
         #region Public Methods and Operators
 
-        public static void playBeethoven()
+        /// <summary>
+        /// Plays a section from Beethoven's |which one was it now..?|.
+        /// </summary>
+        public static void PlayBeethoven()
         {
             Console.Beep(659, 120);  // Treble E
             Console.Beep(622, 120);  // Treble D#
@@ -176,16 +174,25 @@ namespace Recellection
             Console.Beep(440, 120);  // Treble A
         }
 
+        /// <summary>
+        /// Prints key shortcuts to the console.
+        /// </summary>
         public void Help()
         {
             this.console.Console.WriteLine("M: Toggle music\nI: Turn SFX off\nO: Turn SFX on\nA: Acid sound\nB: Explosion sound\nF1: Toggle Console\nF: \"full\" screen");
         }
 
+        /// <summary>
+        /// Prints a list of available loggers to the console.
+        /// </summary>
         public void ListLoggers()
         {
             this.console.Console.WriteLine(LoggerFactory.ListLoggers());
         }
 
+        /// <summary>
+        /// Enables logging of the AI.
+        /// </summary>
         public void LogAI()
         {
             this.ToggleLogger("Recellection.Code.Controllers.AIPlayer");
@@ -220,7 +227,7 @@ namespace Recellection
 
         public void tudeloo()
         {
-            playBeethoven();
+            PlayBeethoven();
         }
 
         #endregion
@@ -246,7 +253,7 @@ namespace Recellection
             }
 
 #if DEBUG
-            this.spriteBatch.DrawString(screenFont, this.frameRate.ToString(), Vector2.Zero, Color.Red);
+            this.spriteBatch.DrawString(screenFont, this.frameRate.ToString(CultureInfo.InvariantCulture), Vector2.Zero, Color.Red);
 #endif
             this.spriteBatch.End();
 
@@ -288,7 +295,7 @@ namespace Recellection
 
             screenFont = this.Content.Load<SpriteFont>("Fonts/ScreenFont");
             this.consoleFont = this.Content.Load<SpriteFont>("Fonts/ConsoleFont");
-			worldFont = this.Content.Load<SpriteFont>("Fonts/WorldFont");
+            worldFont = this.Content.Load<SpriteFont>("Fonts/WorldFont");
 
             this.audioPlayer = new AudioPlayer(this.Content);
             this.audioPlayer.PlaySong(Globals.Songs.Theme);
@@ -309,15 +316,14 @@ namespace Recellection
         /// </summary>
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Update(GameTime gameTime)
-		{
-			if (currentState != null)
-			{
-				currentState.Update(gameTime);
-			}
+        {
+            if (currentState != null)
+            {
+                currentState.Update(gameTime);
+            }
 
             this.HandleDebugInput();
 
-            
             this.elapsedTime += gameTime.ElapsedGameTime;
             if (this.elapsedTime > TimeSpan.FromSeconds(1))
             {
@@ -326,7 +332,6 @@ namespace Recellection
                 this.frameCounter = 0;
             }
             
-
             base.Update(gameTime);
         }
 
@@ -345,23 +350,23 @@ namespace Recellection
 
 #endif
 
-            this.lastKBState = this.kBState;
+            this.lastKeyboardState = this.keyboardState;
             this.lastMouseState = this.mouseState;
             publicKeyBoardState = Keyboard.GetState();
-            this.kBState = publicKeyBoardState;
+            this.keyboardState = publicKeyBoardState;
             this.mouseState = Mouse.GetState();
 
-            if (this.kBState.IsKeyDown(Keys.Escape))
+            if (this.keyboardState.IsKeyDown(Keys.Escape))
             {
                 this.Exit();
             }
 
-            if (this.kBState.IsKeyDown(Keys.End))
+            if (this.keyboardState.IsKeyDown(Keys.End))
             {
                 WorldController.finished = true;
             }
 
-            if (this.kBState.IsKeyDown(Keys.F) && this.lastKBState.IsKeyUp(Keys.F))
+            if (this.keyboardState.IsKeyDown(Keys.F) && this.lastKeyboardState.IsKeyUp(Keys.F))
             {
                 var form = (System.Windows.Forms.Form)System.Windows.Forms.Control.FromHandle(this.Window.Handle);
                 if (form.Width > 800)
@@ -369,20 +374,18 @@ namespace Recellection
                     form.Location = new System.Drawing.Point(0, 0);
                     form.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
                     form.TopMost = true;
-                    Recellection.graphics.PreferredBackBufferWidth = 800;
-                    Recellection.graphics.PreferredBackBufferHeight = 600;
-                    Recellection.graphics.ApplyChanges();
+                    graphics.PreferredBackBufferWidth = 800;
+                    graphics.PreferredBackBufferHeight = 600;
+                    graphics.ApplyChanges();
                 }
                 else
                 {
                     form.Location = new System.Drawing.Point(0, 0);
                     form.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
                     form.TopMost = true;
-                    Recellection.graphics.PreferredBackBufferWidth =
-                        System.Windows.Forms.SystemInformation.PrimaryMonitorSize.Width;
-                    Recellection.graphics.PreferredBackBufferHeight =
-                        System.Windows.Forms.SystemInformation.PrimaryMonitorSize.Height;
-                    Recellection.graphics.ApplyChanges();
+                    graphics.PreferredBackBufferWidth = System.Windows.Forms.SystemInformation.PrimaryMonitorSize.Width;
+                    graphics.PreferredBackBufferHeight = System.Windows.Forms.SystemInformation.PrimaryMonitorSize.Height;
+                    graphics.ApplyChanges();
                 }
             }
         }

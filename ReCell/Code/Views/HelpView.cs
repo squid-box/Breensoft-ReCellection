@@ -11,7 +11,7 @@
 
         public override void Draw(SpriteBatch sb)
         {
-            sb.GraphicsDevice.Clear(Recellection.breen);
+            sb.GraphicsDevice.Clear(Recellection.Breen);
 
             Globals.TextureTypes type;
 
