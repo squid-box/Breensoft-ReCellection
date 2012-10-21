@@ -2,17 +2,15 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Globalization;
 
     using Microsoft.Xna.Framework;
     using Microsoft.Xna.Framework.Graphics;
     using Microsoft.Xna.Framework.Input;
 
     using global::Recellection.Code.Controllers;
-
     using global::Recellection.Code.Models;
-
     using global::Recellection.Code.Utility.Events;
-
     using global::Recellection.Code.Utility.Logger;
 
     /// <summary>
@@ -25,18 +23,31 @@
     {
         #region Static Fields
 
-        public static bool doGrain = true;
+        /// <summary>
+        /// Perform some kind of grain on the world graphics.
+        /// </summary>
+        private const bool DoGrain = true;
 
-        public static bool doLights = false;
+        /// <summary>
+        /// Perform some kind of lights on the world graphics.
+        /// </summary>
+        private const bool DoLights = false;
 
-        private static readonly int maxCols = (int)(Recellection.viewPort.Width / (float)Globals.TILE_SIZE);
-        private static readonly int maxRows = (int)(Recellection.viewPort.Height / (float)Globals.TILE_SIZE);
+        /// <summary>
+        /// Maximum number of columns that can be shown on screen.
+        /// </summary>
+        private static readonly int MaxCols = (int)(Recellection.viewPort.Width / (float)Globals.TILE_SIZE);
+
+        /// <summary>
+        /// Maximum number of rows that can be shown on screen.
+        /// </summary>
+        private static readonly int MaxRows = (int)(Recellection.viewPort.Height / (float)Globals.TILE_SIZE);
 
         #endregion
 
         #region Fields
 
-        public Logger myLogger;
+        private readonly Logger myLogger;
 
         private readonly RenderTarget2D backgroundTarget;
 
@@ -56,6 +67,9 @@
 
         #region Constructors and Destructors
 
+        /// <summary>
+        /// Prevents a default instance of the <see cref="WorldView"/> class from being created.
+        /// </summary>
         private WorldView()
         {
             this.backgroundTex = Recellection.textureMap.GetTexture(Globals.TextureTypes.white);
@@ -85,42 +99,57 @@
 
         #region Public Properties
 
-        public static WorldView Instance { get;	set; }
+        /// <summary>
+        /// Gets or sets the (singleton) instance of the world view.
+        /// </summary>
+        public static WorldView Instance { get; set; }
 
+        /// <summary>
+        /// Gets the game world.
+        /// </summary>
         public World World { get; private set; }
 
         #endregion
 
         #region Public Methods and Operators
 
+        /// <summary>
+        /// Initiates the world view.
+        /// </summary>
+        /// <param name="world">
+        /// The world to be viewed.
+        /// </param>
         public static void Initiate(World world)
-		{
-			if (Instance == null)
-			{
-				Instance = new WorldView();
-			}
+        {
+            if (Instance == null)
+            {
+                Instance = new WorldView();
+            }
 
-			Instance.World = world;
-			world.lookingAtEvent += Instance.UpdateBg;
-			world.lookingAtEvent += Instance.CreateCurrentView;
-			Instance.CreateCurrentView(Instance, new Event<Point>(world.LookingAt, EventType.ALTER));
-			Instance.alignViewport();
-
+            Instance.World = world;
+            world.lookingAtEvent += Instance.UpdateBg;
+            world.lookingAtEvent += Instance.CreateCurrentView;
+            Instance.CreateCurrentView(Instance, new Event<Point>(world.LookingAt, EventType.ALTER));
+            Instance.AlignViewport();
 
             // Color c1 = new Color(0xb2, 0xc9, 0x9f);
             // Color c2 = new Color(0x9f, 0xc4, 0xc9);
-            Color c1 = Color.HotPink;// new Color(0xac, 0x33, 0x2d);
-            Color c2 = Color.Crimson;// new Color(0xea, 0xe4, 0x7c);
-            Instance.cMatrix = Instance.generateColorMatrix(c1, c2);
-		}
+            Color c1 = Color.HotPink; // new Color(0xac, 0x33, 0x2d);
+            Color c2 = Color.Crimson; // new Color(0xea, 0xe4, 0x7c);
+            Instance.cMatrix = Instance.GenerateColorMatrix(c1, c2);
+        }
 
-        override public void Draw(SpriteBatch spriteBatch)
+        /// <summary>
+        /// Called by the main program, draws the world in the specified spritebatch.
+        /// </summary>
+        /// <param name="spriteBatch">
+        /// The sprite batch used for drawing the world.
+        /// </param>
+        public override void Draw(SpriteBatch spriteBatch)
         {
-            
-			this.Layer = 1.0f;
-			this.DrawTexture(spriteBatch, this.backgroundTex, new Rectangle(0, 0, Recellection.viewPort.Width, Recellection.viewPort.Height));
-            
-			
+            this.Layer = 1.0f;
+            this.DrawTexture(spriteBatch, this.backgroundTex, new Rectangle(0, 0, Recellection.viewPort.Width, Recellection.viewPort.Height));
+
             lock (this.tileCollection)
             {
                 this.Layer = 0.75f;
@@ -178,11 +207,9 @@
                             this.myLogger.Info("Found a building on the tile.");
                             this.Layer = 0.1f;
                             Texture2D spr = b.GetSprite();
-                            float size = 0.75f + 0.75f * Math.Min(100f, GraphController.Instance.GetWeight(b)) / 100f;
-                            int bx = (int)Math.Round((b.position.X - this.World.LookingAt.X) * Globals.TILE_SIZE)
-                                     - (int)Math.Round(spr.Width * size) / 2;
-                            int by = (int)Math.Round((b.position.Y - this.World.LookingAt.Y) * Globals.TILE_SIZE)
-                                     - (int)Math.Round(spr.Height * size) / 2;
+                            var size = 0.75f + 0.75f * Math.Min(100f, GraphController.Instance.GetWeight(b)) / 100f;
+                            var bx = (int)Math.Round((b.position.X - this.World.LookingAt.X) * Globals.TILE_SIZE) - (int)Math.Round(spr.Width * size) / 2;
+                            var by = (int)Math.Round((b.position.Y - this.World.LookingAt.Y) * Globals.TILE_SIZE) - (int)Math.Round(spr.Height * size) / 2;
                             this.DrawTexture(
                                 spriteBatch, 
                                 spr, 
@@ -193,26 +220,22 @@
                             var xyhpr1 =
                                 new Vector2(
                                     ((b.position.X - this.World.LookingAt.X) * Globals.TILE_SIZE) + 14 - 64, 
-                                    (float)Math.Round((b.position.Y - this.World.LookingAt.Y) * Globals.TILE_SIZE) + 100
-                                    - 64);
+                                    (float)Math.Round((b.position.Y - this.World.LookingAt.Y) * Globals.TILE_SIZE) + 100 - 64);
                             var xyhpr2 =
                                 new Vector2(
                                     ((b.position.X - this.World.LookingAt.X) * Globals.TILE_SIZE) + 114 - 64, 
-                                    (float)Math.Round((b.position.Y - this.World.LookingAt.Y) * Globals.TILE_SIZE) + 100
-                                    - 64);
+                                    (float)Math.Round((b.position.Y - this.World.LookingAt.Y) * Globals.TILE_SIZE) + 100 - 64);
                             var xyhpg2 =
                                 new Vector2(
                                     ((b.position.X - this.World.LookingAt.X) * Globals.TILE_SIZE) + 14
                                     + b.GetHealthPercentage() - 64, 
-                                    (float)Math.Round((b.position.Y - this.World.LookingAt.Y) * Globals.TILE_SIZE) + 100
-                                    - 64);
+                                    (float)Math.Round((b.position.Y - this.World.LookingAt.Y) * Globals.TILE_SIZE) + 100 - 64);
                             this.Layer = 0.102f;
                             this.DrawLine(spriteBatch, xyhpr1, xyhpr2, Color.Red, 8);
                             this.Layer = 0.101f;
                             this.DrawLine(spriteBatch, xyhpr1, xyhpg2, Color.Green, 8);
                             this.Layer = 0.103f;
-                            this.DrawLine(
-                                spriteBatch, xyhpr1 - new Vector2(1, 0), xyhpr2 + new Vector2(1, 0), Color.Black, 10);
+                            this.DrawLine(spriteBatch, xyhpr1 - new Vector2(1, 0), xyhpr2 + new Vector2(1, 0), Color.Black, 10);
 
                             // Number of units drawage
                             var x = (int)(t.position.X - this.World.LookingAt.X);
@@ -225,7 +248,7 @@
 
                             this.Layer = 0.11f;
 
-                            infosz = b.GetUnits().Count.ToString();
+                            infosz = b.GetUnits().Count.ToString(CultureInfo.InvariantCulture);
                             if (b.incomingUnits.Count > 0)
                             {
                                 infosz += " (" + b.incomingUnits.Count + ")";
@@ -245,7 +268,7 @@
                                 SpriteEffects.None, 
                                 this.Layer);
 #if DEBUG
-                            infosz = GraphController.Instance.GetWeight(b).ToString();
+                            infosz = GraphController.Instance.GetWeight(b).ToString(CultureInfo.InvariantCulture);
                             stringSize = Recellection.worldFont.MeasureString(infosz);
                             fontX = (r.X + r.Width / 2) - stringSize.X / 2;
                             fontY = r.Y + r.Height - stringSize.Y;
@@ -274,10 +297,8 @@
                             {
                                 this.Layer = 0.5f;
                                 Texture2D spr = u.GetSprite();
-                                int ux = (int)Math.Round((u.position.X - this.World.LookingAt.X) * Globals.TILE_SIZE)
-                                         - spr.Width / 2;
-                                int uy = (int)Math.Round((u.position.Y - this.World.LookingAt.Y) * Globals.TILE_SIZE)
-                                         - spr.Height / 2;
+                                int ux = (int)Math.Round((u.position.X - this.World.LookingAt.X) * Globals.TILE_SIZE) - spr.Width / 2;
+                                int uy = (int)Math.Round((u.position.Y - this.World.LookingAt.Y) * Globals.TILE_SIZE) - spr.Height / 2;
 
                                 float amount = 0.3f + (u.PowerLevel * 0.7f);
 
@@ -314,25 +335,26 @@
             // Draw scrollregions
             this.Layer = 0.0f;
             
-            this.DrawTexture(spriteBatch, Recellection.textureMap.GetTexture(Globals.TextureTypes.ScrollUp), 
-				new Rectangle(128, 0, Globals.VIEWPORT_WIDTH - 256, 128));
-			this.DrawTexture(spriteBatch, Recellection.textureMap.GetTexture(Globals.TextureTypes.ScrollDown), 
-				new Rectangle(128, Globals.VIEWPORT_HEIGHT - 128, Globals.VIEWPORT_WIDTH - 256, 128));
-			this.DrawTexture(spriteBatch, Recellection.textureMap.GetTexture(Globals.TextureTypes.ScrollLeft), 
-				new Rectangle(0, 128, 128, Globals.VIEWPORT_HEIGHT - 256));
-			this.DrawTexture(spriteBatch, Recellection.textureMap.GetTexture(Globals.TextureTypes.ScrollRight), 
-				new Rectangle(Globals.VIEWPORT_WIDTH - 128, 128, 128, Globals.VIEWPORT_HEIGHT - 256));
+            this.DrawTexture(spriteBatch, Recellection.textureMap.GetTexture(Globals.TextureTypes.ScrollUp), new Rectangle(128, 0, Globals.VIEWPORT_WIDTH - 256, 128));
+            this.DrawTexture(spriteBatch, Recellection.textureMap.GetTexture(Globals.TextureTypes.ScrollDown), new Rectangle(128, Globals.VIEWPORT_HEIGHT - 128, Globals.VIEWPORT_WIDTH - 256, 128));
+            this.DrawTexture(spriteBatch, Recellection.textureMap.GetTexture(Globals.TextureTypes.ScrollLeft), new Rectangle(0, 128, 128, Globals.VIEWPORT_HEIGHT - 256));
+            this.DrawTexture(spriteBatch, Recellection.textureMap.GetTexture(Globals.TextureTypes.ScrollRight), new Rectangle(Globals.VIEWPORT_WIDTH - 128, 128, 128, Globals.VIEWPORT_HEIGHT - 256));
 
-			this.DrawTexture(spriteBatch, Recellection.textureMap.GetTexture(Globals.TextureTypes.ScrollUpLeft), 
-				new Rectangle(0, 0, 128, 128));
-			this.DrawTexture(spriteBatch, Recellection.textureMap.GetTexture(Globals.TextureTypes.ScrollUpRight), 
-				new Rectangle(Globals.VIEWPORT_WIDTH - 128, 0, 128, 128));
-			this.DrawTexture(spriteBatch, Recellection.textureMap.GetTexture(Globals.TextureTypes.ScrollDownLeft), 
-				new Rectangle(0, Globals.VIEWPORT_HEIGHT - 128, 128, 128));
-			this.DrawTexture(spriteBatch, Recellection.textureMap.GetTexture(Globals.TextureTypes.ScrollDownRight), 
-				new Rectangle(Globals.VIEWPORT_WIDTH - 128, Globals.VIEWPORT_HEIGHT - 128, 128, 128));
-		}
+            this.DrawTexture(spriteBatch, Recellection.textureMap.GetTexture(Globals.TextureTypes.ScrollUpLeft), new Rectangle(0, 0, 128, 128));
+            this.DrawTexture(spriteBatch, Recellection.textureMap.GetTexture(Globals.TextureTypes.ScrollUpRight), new Rectangle(Globals.VIEWPORT_WIDTH - 128, 0, 128, 128));
+            this.DrawTexture(spriteBatch, Recellection.textureMap.GetTexture(Globals.TextureTypes.ScrollDownLeft), new Rectangle(0, Globals.VIEWPORT_HEIGHT - 128, 128, 128));
+            this.DrawTexture(spriteBatch, Recellection.textureMap.GetTexture(Globals.TextureTypes.ScrollDownRight), new Rectangle(Globals.VIEWPORT_WIDTH - 128, Globals.VIEWPORT_HEIGHT - 128, 128, 128));
+        }
 
+        /// <summary>
+        /// Graphical black magic, courtesy of Fredrik.
+        /// </summary>
+        /// <param name="spriteBatch">
+        /// The sprite batch.
+        /// </param>
+        /// <param name="gameTime">
+        /// The current game time.
+        /// </param>
         public void RenderToTex(SpriteBatch spriteBatch, GameTime gameTime)
         {
             if (this.doRenderThisPass)
@@ -359,11 +381,15 @@
                         }
                     }
 
-                    if (doLights)
+                    if (DoLights)
+                    {
                         this.lps.UpdateAndDraw(gameTime, spriteBatch);
+                    }
 
-                    if (doGrain)
+                    if (DoGrain)
+                    {
                         this.gs.UpdateAndDraw(gameTime, spriteBatch);
+                    }
 
                     spriteBatch.End();
 
@@ -375,66 +401,79 @@
             }
         }
 
-        override public void Update(GameTime passedTime)
+        /// <summary>
+        /// Called from the main program, updates logic.
+        /// </summary>
+        /// <param name="passedTime">
+        /// The passed time.
+        /// </param>
+        public override void Update(GameTime passedTime)
         {
             KeyboardState ks = Keyboard.GetState();
 
-            int f = 1;
+            const int F = 1;
 
             if (ks.IsKeyDown(Keys.X))
             {
-                this.World.LookingAt = new Point(
-						(int)this.World.players[0].GetGraphs()[0].baseBuilding.position.X, 
-						(int)this.World.players[0].GetGraphs()[0].baseBuilding.position.Y);
+                this.World.LookingAt = new Point((int)this.World.players[0].GetGraphs()[0].baseBuilding.position.X, (int)this.World.players[0].GetGraphs()[0].baseBuilding.position.Y);
             }
 
-			int x = this.World.LookingAt.X;
-			int y = this.World.LookingAt.Y;
+            var x = this.World.LookingAt.X;
+            var y = this.World.LookingAt.Y;
 
-			if (ks.IsKeyDown(Keys.Left))
-			{
-				x -= f;
+            if (ks.IsKeyDown(Keys.Left))
+            {
+                x -= F;
             }
 
             if (ks.IsKeyDown(Keys.Right))
-			{
-				x += f;
-			}
+            {
+                x += F;
+            }
 
-			if (ks.IsKeyDown(Keys.Up))
-			{
-				y -= f;
-			}
+            if (ks.IsKeyDown(Keys.Up))
+            {
+                y -= F;
+            }
 
             if (ks.IsKeyDown(Keys.Down))
-			{
-				y += f;
+            {
+                y += F;
             }
             
-            x = (int)MathHelper.Clamp(x, 0, this.World.map.width - maxCols);
-            y = (int)MathHelper.Clamp(y, 0, this.World.map.height - maxRows);
+            x = (int)MathHelper.Clamp(x, 0, this.World.map.width - MaxCols);
+            y = (int)MathHelper.Clamp(y, 0, this.World.map.height - MaxRows);
             
-			this.World.LookingAt = new Point(x, y);
-        }
-
-        public void UpdateBg(object publisher, Event<Point> ev)
-        {
-            this.doRenderThisPass = true;
+            this.World.LookingAt = new Point(x, y);
         }
 
         /// <summary>
-        /// I have no idea what this is supposed to do.
+        /// Update background. (?)
         /// </summary>
-        [Obsolete]
-        public void UpdateMapMatrix()
+        /// <param name="publisher">
+        /// The publisher of this event.
+        /// </param>
+        /// <param name="ev">
+        /// The event.
+        /// </param>
+        public void UpdateBg(object publisher, Event<Point> ev)
         {
-            throw new NotImplementedException();
+            this.doRenderThisPass = true;
         }
 
         #endregion
 
         #region Methods
 
+        /// <summary>
+        /// Creates the current view.
+        /// </summary>
+        /// <param name="o">
+        /// Some kind of object.
+        /// </param>
+        /// <param name="ev">
+        /// The event.
+        /// </param>
         private void CreateCurrentView(object o, Event<Point> ev)
         {
             // First, add all tiles from the map:
@@ -450,41 +489,54 @@
                 int currentY = this.World.LookingAt.Y;
 
                 this.myLogger.Info("Rendering for X:" + currentX + " and Y:" + currentY + ".");
-                this.myLogger.Info("Width:" + maxCols + " and Height:" + maxRows + ".");
-                for (int x = currentX; x < currentX + maxCols; x++)
+                this.myLogger.Info("Width:" + MaxCols + " and Height:" + MaxRows + ".");
+                for (int x = currentX; x < currentX + MaxCols; x++)
                 {
-                    for (int y = currentY; y < currentY + maxRows; y++)
+                    for (int y = currentY; y < currentY + MaxRows; y++)
                     {
                         // if (! tiles[x, y].IsVisible(this.World.players[0]))
-                        // 	continue;
+                        // continue;
                         try
                         {
                             this.tileCollection.Add(tiles[x, y]);
                         }
                         catch (IndexOutOfRangeException e)
                         {
-                            this.myLogger.Fatal("OMG FAIL | " + e.GetType() + " : " +e.Message);
+                            this.myLogger.Fatal("OMG FAIL | " + e.GetType() + " : " + e.Message);
                         }
                     }
                 }
             }
         }
 
+        /// <summary>
+        /// Convert tile coordinate to pixel coordinates.
+        /// </summary>
+        /// <param name="tileCoords">
+        /// The tile coordinates.
+        /// </param>
+        /// <returns>
+        /// Translated coordinates.
+        /// </returns>
         private Vector2 TileToPixels(Vector2 tileCoords)
         {
-            var pixelCoords = new Vector2();
+            Vector2 pixelCoords;
             Vector2.Multiply(ref tileCoords, Globals.TILE_SIZE, out pixelCoords);
+            
             return pixelCoords;
         }
 
-        private void alignViewport()
+        /// <summary>
+        /// Aligns the viewport.
+        /// </summary>
+        private void AlignViewport()
         {
             if (this.World.LookingAt.X < 0)
             {
                 this.World.LookingAt = new Point(0, this.World.LookingAt.Y);
             }
 
-            if (this.World.LookingAt.X >= this.World.map.width - (Recellection.viewPort.Width / Globals.TILE_SIZE) -1)
+            if (this.World.LookingAt.X >= this.World.map.width - (Recellection.viewPort.Width / Globals.TILE_SIZE) - 1)
             {
                 this.World.LookingAt = new Point(
                     this.World.map.height - (Recellection.viewPort.Width / Globals.TILE_SIZE) - 1, 
@@ -493,8 +545,7 @@
 
             if (this.World.LookingAt.Y >= this.World.map.width - (Recellection.viewPort.Height / Globals.TILE_SIZE) - 1)
             {
-                this.World.LookingAt = new Point(this.World.LookingAt.X, 
-                    this.World.map.width - (Recellection.viewPort.Height / Globals.TILE_SIZE) - 1);
+                this.World.LookingAt = new Point(this.World.LookingAt.X, this.World.map.width - (Recellection.viewPort.Height / Globals.TILE_SIZE) - 1);
             }
 
             if (this.World.LookingAt.Y < 0)
@@ -504,12 +555,12 @@
         }
 
         /// <summary>
-        /// takes two colors and blens them for each tile.
+        /// Takes two colors and blends them for each tile.
         /// </summary>
-        /// <param name="c1"></param>
-        /// <param name="c2"></param>
-        /// <returns></returns>
-        private Color[,] generateColorMatrix(Color c1, Color c2)
+        /// <param name="c1">First color.</param>
+        /// <param name="c2">Second color.</param>
+        /// <returns>Blended color.</returns>
+        private Color[,] GenerateColorMatrix(Color c1, Color c2)
         {
             var rnd = new Random();
             var colorM = new Color[this.World.map.width, this.World.map.height];
@@ -517,7 +568,7 @@
             {
                 for (int iy = 0; iy < this.World.map.height; iy++)
                 {
-                   colorM[ix, iy] = Color.Lerp(c1, c2, (float) rnd.NextDouble());
+                    colorM[ix, iy] = Color.Lerp(c1, c2, (float)rnd.NextDouble());
                 }
             }
 

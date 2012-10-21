@@ -4,9 +4,9 @@
     using System.Collections.Generic;
 
     using Microsoft.Xna.Framework;
+    using Microsoft.Xna.Framework.Graphics;
 
     using global::Recellection.Code.Utility.Events;
-
     using global::Recellection.Code.Utility.Logger;
 
     /// <summary>
@@ -37,7 +37,6 @@
 
         #endregion
 
-        // Simple valuesa
         #region Static Fields
 
         private static readonly Logger logger = LoggerFactory.GetLogger();
@@ -50,14 +49,12 @@
 
         #endregion
 
-        // Events
         #region Constructors and Destructors
 
         /// <summary>
         /// Creates an unusable fromBuilding with everything set at default values.
         /// </summary>
-        public Building():this("noName", -1, -1, 1, null, 
-            Globals.BuildingTypes.NoType, null, new LinkedList<Tile>())
+        protected Building():this("noName", -1, -1, 1, null, Globals.BuildingTypes.NoType, null, new LinkedList<Tile>())
         {
             logger.Trace("Constructing new Building with default values");   
         }
@@ -68,26 +65,21 @@
         /// Regarding the controlZone the first tile should be the 
         /// tile the fromBuilding is standing on.
         /// </summary>
-        /// <param name="name">The name for the fromBuilding TODO Decide if this is
-        /// needded</param>
+        /// <param name="name">The name for the fromBuilding TODO Decide if this is needed.</param>
         /// <param name="posX">The x tile coordinate</param>
         /// <param name="posY">The y tile coordinate</param>
         /// <param name="maxHealth">The max health of this fromBuilding</param>
         /// <param name="owner">The player that owns the fromBuilding</param>
-        /// <param name="type">The </param>
-        /// <param name="baseBuilding">The Base Building this fromBuilding belongs
-        /// <param name="controlZone">The nine tiles around the fromBuilding
-        /// and the tile the fromBuilding is on.</param>
-        /// to</param>
-        public Building(string name, int posX, int posY, int maxHealth, 
+        /// <param name="type">The type of building.</param>
+        /// <param name="baseBuilding">The Base Building this fromBuilding belongs to.</param>
+        /// <param name="controlZone">The nine tiles around the fromBuilding and the tile the fromBuilding is on.</param>
+        protected Building(string name, int posX, int posY, int maxHealth, 
             Player owner, Globals.BuildingTypes type, BaseBuilding baseBuilding, 
             LinkedList<Tile> controlZone) : base(new Vector2(posX + 0.5f, posY + 0.5f), owner)
         {
             if (maxHealth <= 0)
             {
-                throw new ArgumentOutOfRangeException("maxHealth", 
-                    "The max of health may not be zero or less");
-
+                throw new ArgumentOutOfRangeException("maxHealth", "The max of health may not be zero or less");
             }
 
             logger.Trace("Constructing new Building with choosen values");
@@ -166,8 +158,10 @@
 
         #region Public Methods and Operators
 
-        /// <returns>Returns the buy price for a fromBuilding, it is set
-        /// at its health divided by 10. Upkeep should be added elsewhere.</returns>
+        /// <returns>
+        /// Returns the buy price for a fromBuilding, it is set
+        /// at its health divided by 10. Upkeep should be added elsewhere.
+        /// </returns>
         public static uint GetBuyPrice(Globals.BuildingTypes type)
         {
             switch (type)
@@ -180,7 +174,6 @@
                     return BARRIER_BUILDING_COST;
                 case Globals.BuildingTypes.Resource:
                     return RESOURCE_BUILDING_COST;
-
             }
 
             return 0;
@@ -188,16 +181,13 @@
 
         /// <summary>
         /// Part of visitor pattern
-       /// </summary>
-       /// <param name="visitor">The Base Building this fromBuilding belongs to
-       /// </param>
-
+        /// </summary>
+        /// <param name="visitor">The Base Building this fromBuilding belongs to
+        /// </param>
         public void Accept(BaseBuilding visitor)
         {
             visitor.Visit(this);
         }
-
-        // public abstract Texture2D GetSprite();
 
         /// <summary>
         /// Add one unit to the unit list if the fromBuilding is alive
@@ -209,10 +199,9 @@
         /// The fromBuilding is dead</exception>
         public void AddUnit(Unit unit)
         {
-            if(unit == null)
+            if (unit == null)
             {
-                throw new ArgumentNullException("unit", 
-                    "The given parameter unit was null");
+                throw new ArgumentNullException("unit", "The given parameter unit was null");
             }
 
             if (this.IsAlive())
@@ -223,8 +212,7 @@
                     // I'm sorry for this ugly hax - John
                     var temp = new List<Unit>();
                     temp.Add(unit);
-                    this.unitsChanged(this, new BuildingEvent(this, temp, 
-                        EventType.ADD));
+                    this.unitsChanged(this, new BuildingEvent(this, temp, EventType.ADD));
                 }
             }
             else
@@ -239,15 +227,13 @@
         /// <param name="units">The collection of units to add</param>
         public void AddUnits(IEnumerable<Unit> units)
         {
-            
             if (this.IsAlive())
             {
                 this.units.AddRange(units);
 
                 if (this.unitsChanged != null)
                 {
-                    this.unitsChanged(this, new BuildingEvent(this, units, 
-                        EventType.ADD));
+                    this.unitsChanged(this, new BuildingEvent(this, units, EventType.ADD));
                 }
             }
 		}

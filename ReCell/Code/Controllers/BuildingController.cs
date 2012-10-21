@@ -7,53 +7,66 @@
     using Microsoft.Xna.Framework;
 
     using global::Recellection.Code.Models;
-
     using global::Recellection.Code.Utility.Logger;
-
     using global::Recellection.Code.Views;
 
-    class BuildingController
+    /// <summary>
+    /// Controls the buildings.
+    /// </summary>
+    public class BuildingController
     {
         #region Constants
 
-        public const int MAX_BUILDING_RANGE = 3;
+        public const int MaxBuildingRange = 3;
 
         #endregion
 
         #region Static Fields
 
-        private static readonly Logger logger = LoggerFactory.GetLogger();
+        private static readonly Logger Logger = LoggerFactory.GetLogger();
 
         #endregion
 
         #region Public Methods and Operators
 
         /// <summary>
-        /// Add a fromBuilding to the source buildings owners graph, 
-        /// the source fromBuilding will be used to find the correct graph.
+        /// Add a fromBuilding to the source buildings owners graph, the source fromBuilding will be used to find the correct graph.
         /// </summary>
-        /// <param name="buildingType">The type of fromBuilding to build.</param>
-        /// <param name="sourceBuilding">The fromBuilding used to build this fromBuilding.</param>
-        /// <param name="targetCoordinate">The tile coordinates where the fromBuilding will be built.</param>
-        /// <param name="world">The world to build the fromBuilding in.</param>
-        public static bool AddBuilding(Globals.BuildingTypes buildingType, 
-                                       Building sourceBuilding, Vector2 targetCoordinate, World world, Player owner)
+        /// <param name="buildingType">
+        /// The type of fromBuilding to build.
+        /// </param>
+        /// <param name="sourceBuilding">
+        /// The fromBuilding used to build this fromBuilding.
+        /// </param>
+        /// <param name="targetCoordinate">
+        /// The tile coordinates where the fromBuilding will be built.
+        /// </param>
+        /// <param name="world">
+        /// The world to build the fromBuilding in.
+        /// </param>
+        /// <param name="owner">
+        /// The owner.
+        /// </param>
+        /// <returns>
+        /// True if building was added, false if not.
+        /// </returns>
+        public static bool AddBuilding(Globals.BuildingTypes buildingType, Building sourceBuilding, Vector2 targetCoordinate, World world, Player owner)
         {
-            if (sourceBuilding != null && buildingType != Globals.BuildingTypes.Base && (Math.Abs(((int)sourceBuilding.position.X) - (int)targetCoordinate.X) > MAX_BUILDING_RANGE || (Math.Abs(((int)sourceBuilding.position.Y) - (int)targetCoordinate.Y) > MAX_BUILDING_RANGE)))
+            if (sourceBuilding != null && buildingType != Globals.BuildingTypes.Base && (Math.Abs(((int)sourceBuilding.position.X) - (int)targetCoordinate.X) > MaxBuildingRange || (Math.Abs(((int)sourceBuilding.position.Y) - (int)targetCoordinate.Y) > MaxBuildingRange)))
             {
-                logger.Debug("Building position out of range");
+                Logger.Debug("Building position out of range");
                 throw new BuildingOutOfRangeException();
             }
 
             uint price = owner.UnitAcc.CalculateBuildingCostInflation(buildingType);
             if (sourceBuilding != null && (uint)sourceBuilding.CountUnits() < price)
             {
-                logger.Debug("Building too expensive");
+                Logger.Debug("Building too expensive");
                 return false;
             }
-            
-            logger.Info("Building a building at position "+targetCoordinate+" of "+buildingType+".");
-            
+
+            Logger.Info("Building a building at position " + targetCoordinate + " of " + buildingType + ".");
+
             lock (owner.GetGraphs())
             {
                 LinkedList<Tile> controlZone = CreateControlZone(targetCoordinate, world);
@@ -61,7 +74,7 @@
                 // The Base building is handled in another way due to it's nature.
                 if (buildingType == Globals.BuildingTypes.Base)
                 {
-                    logger.Trace("Adding a Base Building and also constructing a new graph");
+                    Logger.Trace("Adding a Base Building and also constructing a new graph");
                     var baseBuilding = new BaseBuilding(
                         "Base Buidling", (int)targetCoordinate.X, (int)targetCoordinate.Y, owner, controlZone);
 
@@ -77,7 +90,7 @@
                     switch (buildingType)
                     {
                         case Globals.BuildingTypes.Aggressive:
-                            logger.Trace("Building a new Aggressive building");
+                            Logger.Trace("Building a new Aggressive building");
                             newBuilding = new AggressiveBuilding(
                                 "Aggresive Building", 
                                 (int)targetCoordinate.X, 
@@ -87,7 +100,7 @@
                                 controlZone);
                             break;
                         case Globals.BuildingTypes.Barrier:
-                            logger.Trace("Building a new Barrier building");
+                            Logger.Trace("Building a new Barrier building");
                             newBuilding = new BarrierBuilding(
                                 "Barrier Building", 
                                 (int)targetCoordinate.X, 
@@ -97,7 +110,7 @@
                                 controlZone);
                             break;
                         case Globals.BuildingTypes.Resource:
-                            logger.Trace("Building a new Resource building");
+                            Logger.Trace("Building a new Resource building");
                             newBuilding = new ResourceBuilding(
                                 "Resource Building", 
                                 (int)targetCoordinate.X, 
@@ -109,16 +122,22 @@
                     }
 
                     world.map.GetTile((int)targetCoordinate.X, (int)targetCoordinate.Y).SetBuilding(newBuilding);
-                    newBuilding.Parent = sourceBuilding;
-                    GraphController.Instance.AddBuilding(sourceBuilding, newBuilding);
+                    if (newBuilding == null)
+                    {
+                        return false;
+                    }
+                    else
+                    {
+                        newBuilding.Parent = sourceBuilding;
+                        GraphController.Instance.AddBuilding(sourceBuilding, newBuilding);
+                    }
                 }
 
-                if (sourceBuilding != null
-                    && world.map.GetTile((int)targetCoordinate.X, (int)targetCoordinate.Y).GetBuilding() != null)
+                if (sourceBuilding != null && world.map.GetTile((int)targetCoordinate.X, (int)targetCoordinate.Y).GetBuilding() != null)
                 {
-                    logger.Info("The building has " + sourceBuilding.CountUnits() + " and the building costs " + price);
+                    Logger.Info("The building has " + sourceBuilding.CountUnits() + " and the building costs " + price);
                     owner.UnitAcc.DestroyUnits(sourceBuilding.units, (int)price);
-                    logger.Info("The source building only got " + sourceBuilding.CountUnits() + " units left.");
+                    Logger.Info("The source building only got " + sourceBuilding.CountUnits() + " units left.");
                 }
                 else if (world.map.GetTile((int)targetCoordinate.X, (int)targetCoordinate.Y).GetBuilding() == null)
                 {
@@ -128,22 +147,6 @@
                 SoundsController.playSound("buildingPlacement");
             }
 
-            // Let's update the fog of war!
-            /*
-			for (int i = -3; i <= 3; i++)
-			{
-				for (int j = -3; j <= 3; j++)
-				{
-					try
-					{
-						world.map.GetTile((int)targetCoordinate.X + j, (int)targetCoordinate.Y + i).MakeVisibleTo(owner);
-					}
-					catch(IndexOutOfRangeException e)
-					{
-					}
-				}
-			}
-			 */
             return true;
         }
 
@@ -153,28 +156,37 @@
         /// <param name="player">The Player</param>
         public static void AggressiveBuildingAct(Player player)
         {
-            logger.Trace("Searching for aggressive buildings");
+            Logger.Trace("Searching for aggressive buildings");
             foreach (Graph g in player.GetGraphs())
             {
                 foreach (Building b in g.GetBuildings())
                 {
-
                     if (b.type == Globals.BuildingTypes.Aggressive)
                     {
                         AttackTargets((AggressiveBuilding)b);
                     }
                 }
             }
-
         }
 
         /// <summary>
-        /// 
+        /// Builds a building.
         /// </summary>
-        /// <param name="player"></param>
+        /// <param name="player">
+        /// Player building the building.
+        /// </param>
+        /// <param name="constructTile">
+        /// The tile to construct the building in.
+        /// </param>
+        /// <param name="sourceBuilding">
+        /// The source building.
+        /// </param>
+        /// <param name="theWorld">
+        /// The World the building exists in.
+        /// </param>
         public static void ConstructBuilding(Player player, Tile constructTile, Building sourceBuilding, World theWorld)
         {
-            logger.Trace("Constructing a building for a player");
+            Logger.Trace("Constructing a building for a player");
 
             // TODO Somehow present a menu to the player, and then 
             // use the information to ADD (not the document) the fromBuilding.
@@ -213,9 +225,9 @@
             menuIcons.Add(defensiveCell);
             menuIcons.Add(aggressiveCell);
             menuIcons.Add(cancel);
-            var ConstructBuildingMenu = new Menu(
+            var constructBuildingMenu = new Menu(
                 Globals.MenuLayout.NineMatrix, menuIcons, Language.Instance.GetString("ChooseBuilding"), Color.Black);
-            MenuController.LoadMenu(ConstructBuildingMenu);
+            MenuController.LoadMenu(constructBuildingMenu);
             Recellection.CurrentState = MenuView.Instance;
             Globals.BuildingTypes building;
 
@@ -243,7 +255,7 @@
                 return;
             }
 
-            // If we have selected a tile, and we can place a building at the selected tile...					
+            // If we have selected a tile, and we can place a building at the selected tile...
             try
             {
                 if (!AddBuilding(building, sourceBuilding, constructTile.position, theWorld, player))
@@ -258,12 +270,11 @@
         }
 
         /// <summary>
-        /// Create the list of tiles that the fromBuilding is surrounded with and the
-        /// tile it is placed on.
+        /// Create the list of tiles that the fromBuilding is surrounded with and the tile it is placed on.
         /// </summary>
         /// <param name="middleTile">The coordinates for the tile the fromBuilding is built on.</param>
         /// <param name="world">The world the fromBuilding is being built in.</param>
-        /// <returns></returns>
+        /// <returns>Tiles around the tile.</returns>
         public static LinkedList<Tile> CreateControlZone(Vector2 middleTile, World world)
         {
             var retur = new LinkedList<Tile>();
@@ -273,23 +284,21 @@
             {
                 for (int dy = -1; dy <= 1; dy++)
                 {
-                    // The tile the fromBuilding is standing on shall be first in the
-                    // linked list.
+                    // The tile the fromBuilding is standing on shall be first in the linked list.
                     if (dx == 0 && dy == 0)
                     {
                         retur.AddFirst(world.GetMap().GetTile(dx + (int)middleTile.X, dy + (int)middleTile.Y));
                     }
-                        
-                        // The other tiles shall be appended to the list
                     else
                     {
+                        // The other tiles shall be appended to the list
                         try
                         {
                             retur.AddLast(world.GetMap().GetTile(dx + (int)middleTile.X, dy + (int)middleTile.Y));
                         }
                         catch (IndexOutOfRangeException e)
                         {
-                            logger.Error(e.Message);
+                            Logger.Error(e.Message);
 
                             // The fromBuilding is being built close to an edge
                             // the exception is not handled.
@@ -302,21 +311,23 @@
         }
 
         /// <summary>
-        /// Returns two points with the interval of wich the building can be built in.
+        /// Returns two points with the interval of which the building can be built in.
         /// The points is returned inclusively, both points are valid coordinates. 
         /// </summary>
-        /// <param name="sourceBuildingPosition"></param>
-        /// <param name="world"></param>
+        /// <param name="sourceBuildingPosition">Position of the source building.</param>
+        /// <param name="world">World to check in.</param>
         /// <returns>First in the list is the upperLeft point and the last is the lowerRight point.</returns>
         public static List<Point> GetValidBuildingInterval(Vector2 sourceBuildingPosition, World world)
         {
             var retur = new List<Point>(2);
-            var upperLeft = new Point(
-                (int)MathHelper.Clamp(sourceBuildingPosition.X - MAX_BUILDING_RANGE, 1, world.GetMap().width-2), 
-                (int)MathHelper.Clamp(sourceBuildingPosition.Y - MAX_BUILDING_RANGE, 1, world.GetMap().height-2));
-            var lowerRight = new Point(
-                (int)MathHelper.Clamp(sourceBuildingPosition.X + MAX_BUILDING_RANGE, 1, world.GetMap().width-2), 
-                (int)MathHelper.Clamp(sourceBuildingPosition.Y + MAX_BUILDING_RANGE, 1, world.GetMap().height-2));
+            var upperLeft =
+                new Point(
+                    (int)MathHelper.Clamp(sourceBuildingPosition.X - MaxBuildingRange, 1, world.GetMap().width - 2),
+                    (int)MathHelper.Clamp(sourceBuildingPosition.Y - MaxBuildingRange, 1, world.GetMap().height - 2));
+            var lowerRight =
+                new Point(
+                    (int)MathHelper.Clamp(sourceBuildingPosition.X + MaxBuildingRange, 1, world.GetMap().width - 2),
+                    (int)MathHelper.Clamp(sourceBuildingPosition.Y + MaxBuildingRange, 1, world.GetMap().height - 2));
 
             retur.Add(upperLeft);
             retur.Add(lowerRight);
@@ -324,6 +335,12 @@
             return retur;
         }
 
+        /// <summary>
+        /// Damages the specified building.
+        /// </summary>
+        /// <param name="toHurt">
+        /// The building to hurt.
+        /// </param>
         public static void HurtBuilding(Building toHurt)
         {
             toHurt.Damage(1);
@@ -332,7 +349,6 @@
             {
                 RemoveBuilding(toHurt);
             }
-            
         }
 
         /// <summary>
@@ -347,17 +363,13 @@
                 {
                     GraphController.Instance.GetGraph(b).baseBuilding.RateOfProduction -= ((ResourceBuilding)b).RateOfProduction;
                 }
-				
+
                 lock (b.controlZone)
                 {
                     b.controlZone.First().RemoveBuilding();
                     GraphController.Instance.RemoveBuilding(b);
 
-                    // How about I exchange this:
-                    // b.Damage(Math.Max(0, b.currentHealth+1)); // Kill it!
-                    // With this:
                     b.Kill();
-
                     SoundsController.playSound("buildingDeath", b.position);
                 }
             }
@@ -371,16 +383,16 @@
         /// Search all the controlZone tiles for enemy units,
         /// then set them as a Target for the AggressiveBuilding.
         /// </summary>
-        /// <param name="b"></param>
+        /// <param name="b">Target building.</param>
         private static void AttackTargets(AggressiveBuilding b)
         {
-            logger.Trace("Attacking targets around a aggressive building at x: " + b.position.X + " y: " + b.position.Y);
+            Logger.Trace("Attacking targets around a aggressive building at x: " + b.position.X + " y: " + b.position.Y);
             foreach (Unit u in b.currentTargets)
             {
                 new KamikazeUnit(b.owner, b.position, u);
             }
 
-            logger.Trace("Killing " + b.currentTargets.Count + " units.");
+            Logger.Trace("Killing " + b.currentTargets.Count + " units.");
 
             // UnitController.MarkUnitsAsDead(b.currentTargets, b.currentTargets.Count);
             b.currentTargets.Clear();
@@ -388,18 +400,26 @@
 
         #endregion
 
+        /// <summary>
+        /// Exception thrown when source building is out of range.
+        /// </summary>
         public class BuildingOutOfRangeException : Exception
         {
             #region Static Fields
 
-            private static string msg = "Your source building is out of range";
+            /// <summary>
+            /// Message included in error.
+            /// </summary>
+            private const string Msg = "Your source building is out of range";
 
             #endregion
 
             #region Constructors and Destructors
 
-            public BuildingOutOfRangeException()
-                : base(msg)
+            /// <summary>
+            /// Initializes a new instance of the <see cref="BuildingOutOfRangeException"/> class.
+            /// </summary>
+            public BuildingOutOfRangeException() : base(Msg)
             {
             }
 
