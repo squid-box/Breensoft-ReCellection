@@ -7,13 +7,11 @@
 
 namespace Recellection
 {
-    using System;
-
     using Microsoft.Xna.Framework.Audio;
     using Microsoft.Xna.Framework.Content;
     using Microsoft.Xna.Framework.Media;
 
-    class AudioPlayer
+    public class AudioPlayer
     {
         #region Fields
 
@@ -32,7 +30,12 @@ namespace Recellection
 
         #region Constructors and Destructors
 
-        [System.Obsolete("NOOB!")]
+        /// <summary>
+        /// Initializes a new instance of the <see cref="AudioPlayer"/> class.
+        /// </summary>
+        /// <param name="content">
+        /// The content manager to load sounds from.
+        /// </param>
         public AudioPlayer(ContentManager content)
         {
             this.engine = new AudioEngine("Content/Sounds/RecellectionSounds.xgs");
