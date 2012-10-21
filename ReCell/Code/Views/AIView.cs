@@ -11,13 +11,10 @@ namespace Recellection.Code
     using Microsoft.Xna.Framework;
 
     using global::Recellection.Code.Models;
-
     using global::Recellection.Code.Utility.Logger;
 
-    class AIView
+    public class AIView
     {
-
-        // ############## Variables ##############//
         #region Fields
 
         internal int CRITICAL = 100;
@@ -34,44 +31,48 @@ namespace Recellection.Code
         #region Constructors and Destructors
 
         /// <summary>
-        /// Constructor.
+        /// Initializes a new instance of the <see cref="AIView"/> class. 
         /// </summary>
-        /// <param name="p_world"></param>
+        /// <param name="p_world">
+        /// World this player exists in.
+        /// </param>
         public AIView(World p_world)
         {
             this.log = Utility.Logger.LoggerFactory.GetLogger();
 
             // LoggerFactory.globalThreshold = LogLevel.FATAL;
-            this.world = p_world;
-            this.mapHeight = this.world.GetMap().map.GetLength(1);
-            this.mapWidth = this.world.GetMap().map.GetLength(0);
+            this.World = p_world;
+            this.MapHeight = this.World.GetMap().map.GetLength(1);
+            this.MapWidth = this.World.GetMap().map.GetLength(0);
 
-            this.myBuildings = new List<Building>();
+            this.MyBuildings = new List<Building>();
 
-            this.opponents = this.world.players; // Remove the AI player when it has called RegisterPlayer
+            this.Opponents = this.World.players; // Remove the AI player when it has called RegisterPlayer
 
-            this.friendlyPoints = new List<Vector2>();
-            this.resourcePoints = new List<Vector2>();
-            this.enemyPoints = new List<Vector2>();
+            this.FriendlyPoints = new List<Vector2>();
+            this.ResourcePoints = new List<Vector2>();
+            this.EnemyPoints = new List<Vector2>();
         }
 
         #endregion
 
         #region Properties
 
-        internal List<Vector2> enemyPoints { get; private set; }
+        internal List<Vector2> EnemyPoints { get; private set; }
 
-        internal List<Vector2> friendlyPoints { get; private set; }
+        internal List<Vector2> FriendlyPoints { get; private set; }
 
-        internal int mapHeight { get; private set; }
-        internal int mapWidth { get; private set; }
+        internal int MapHeight { get; private set; }
+        
+        internal int MapWidth { get; private set; }
 
-        internal List<Building> myBuildings { get; private set; }
-        internal List<Player> opponents { get; private set; }
+        internal List<Building> MyBuildings { get; private set; }
+        
+        internal List<Player> Opponents { get; private set; }
 
-        internal List<Vector2> resourcePoints { get; private set; }
+        internal List<Vector2> ResourcePoints { get; private set; }
 
-        internal World world { get; private set; }
+        internal World World { get; private set; }
 
         #endregion
 
@@ -81,23 +82,25 @@ namespace Recellection.Code
         /// Causes the AIView to add the building at the given location to the list of buildings.
         /// 
         /// </summary>
-        /// <param name="point"></param>
+        /// <param name="point">
+        /// 
+        /// </param>
         internal void BuildingAddedAt(Vector2 point)
         {
-            Building b = Util.GetBuildingAt(point, this.world);
+            Building b = Util.GetBuildingAt(point, this.World);
             if (b != null)
             {
                 this.log.Info("Adding building " + b.name + " to the myBuildings list.");
-                this.myBuildings.Add(b);
-                this.friendlyPoints.Add(b.GetPosition());
+                this.MyBuildings.Add(b);
+                this.FriendlyPoints.Add(b.GetPosition());
             }
         }
 
         /// <summary>
         /// Checks whether or not the given tile contains an enemy building.
         /// </summary>
-        /// <param name="t"></param>
-        /// <returns></returns>
+        /// <param name="t">Tile to check.</param>
+        /// <returns>Value indicating whether or not the given tile contains an enemy building.</returns>
         internal bool ContainsEnemyBuilding(Tile t)
         {
             if (t.GetBuilding() == null)
@@ -117,10 +120,10 @@ namespace Recellection.Code
         /// Checks whether or not the given coordinates contains a friendly building.
         /// </summary>
         /// <param name="point"></param>
-        /// <returns></returns>
+        /// <returns>Value indicating whether or not the given coordinates contains a friendly building.</returns>
         internal bool ContainsFriendlyBuilding(Vector2 point)
         {
-            Tile temp = Util.GetTileAt(point, this.world);
+            Tile temp = Util.GetTileAt(point, this.World);
             if (temp != null && temp.GetBuilding() != null && temp.GetBuilding().GetOwner() == this.ai)
             {
                 return true;
@@ -128,12 +131,6 @@ namespace Recellection.Code
 
             return false;
         }
-
-        // ############## Construction ##############//
-
-        // ############## Utility functions ##############//
-
-
 
         /// <summary>
         /// Checks whether or not there is a Resource Point at the given coordinates.
@@ -172,9 +169,9 @@ namespace Recellection.Code
         internal List<Vector2> GetFriendlyBuildings()
         {
             var coordinates = new List<Vector2>();
-            for (int i = 0; i < this.myBuildings.Count; i++)
+            for (int i = 0; i < this.MyBuildings.Count; i++)
             {
-                coordinates.Add(this.myBuildings[i].position);
+                coordinates.Add(this.MyBuildings[i].position);
             }
 
             return coordinates;
@@ -187,11 +184,11 @@ namespace Recellection.Code
         internal List<Vector2> GetResourceLocations()
         {
             var result = new List<Vector2>();
-            for (int i = 0; i < this.myBuildings.Count; i++)
+            for (int i = 0; i < this.MyBuildings.Count; i++)
             {
-                if (this.myBuildings[i].type == Globals.BuildingTypes.Resource)
+                if (this.MyBuildings[i].type == Globals.BuildingTypes.Resource)
                 {
-                    result.Add(this.myBuildings[i].GetPosition());
+                    result.Add(this.MyBuildings[i].GetPosition());
                 }
             }
  
@@ -205,10 +202,12 @@ namespace Recellection.Code
         /// <returns></returns>
         internal Player Harvesting(Vector2 point)
         {
-            Building tempBuilding = Util.GetBuildingAt(point, this.world);
+            Building tempBuilding = Util.GetBuildingAt(point, this.World);
 
             if (tempBuilding == null)
+            {
                 return null;
+            }
 
             if (tempBuilding.type == Globals.BuildingTypes.Resource)
             {
@@ -227,30 +226,30 @@ namespace Recellection.Code
         internal void LookAtScreen()
         {
             // First, clear all lists
-            this.enemyPoints.Clear();
-            this.friendlyPoints.Clear();
-            this.myBuildings.Clear();
-            this.resourcePoints.Clear();
+            this.EnemyPoints.Clear();
+            this.FriendlyPoints.Clear();
+            this.MyBuildings.Clear();
+            this.ResourcePoints.Clear();
 
-            for (int i = 0; i < this.mapWidth; i++)
+            for (int i = 0; i < this.MapWidth; i++)
             {
-                for (int j = 0; j < this.mapHeight; j++)
+                for (int j = 0; j < this.MapHeight; j++)
                 {
-                    Tile temp = this.world.GetMap().GetTile(i, j);
+                    Tile temp = this.World.GetMap().GetTile(i, j);
                     if (this.ContainsResourcePoint(temp))
                     {
-                        this.resourcePoints.Add(temp.GetPosition());
+                        this.ResourcePoints.Add(temp.GetPosition());
                     }
 
                     if (this.ContainsEnemyBuilding(temp))
                     {
-                        this.enemyPoints.Add(temp.GetPosition());
+                        this.EnemyPoints.Add(temp.GetPosition());
                     }
 
                     if (this.ContainsFriendlyBuilding(temp.GetPosition()))
                     {
-                        this.myBuildings.Add(temp.GetBuilding());
-                        this.friendlyPoints.Add(temp.GetPosition());
+                        this.MyBuildings.Add(temp.GetBuilding());
+                        this.FriendlyPoints.Add(temp.GetPosition());
                     }
                 }
             }
@@ -260,21 +259,27 @@ namespace Recellection.Code
         /// Internal function. Allows the AI Player to register itself so that this view can keep track
         /// of who it is making calls for.
         /// </summary>
-        /// <param name="p"></param>
+        /// <param name="p">
+        /// 
+        /// </param>
         internal void RegisterPlayer(Player p)
         {
             this.ai = p;
-            this.opponents.Remove(this.ai);
+            this.Opponents.Remove(this.ai);
         }
 
         /// <summary>
         /// Returns true if the coordinates provided are within the maps boundaries
         /// </summary>
-        /// <param name="coords"></param>
-        /// <returns></returns>
+        /// <param name="coords">
+        /// 
+        /// </param>
+        /// <returns>
+        /// 
+        /// </returns>
         internal bool Valid(Vector2 coords)
         {
-            if (coords.X < this.mapWidth && coords.Y < this.mapHeight)
+            if (coords.X < this.MapWidth && coords.Y < this.MapHeight)
             {
                 return true;
             }

@@ -23,3 +23,5 @@ _ReSharper.*
 *.VisualState.xml
 
 #*.sln
+
+StyleCop.*
