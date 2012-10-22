@@ -1,22 +1,22 @@
 ﻿namespace Recellection.Code.Controllers
 {
-    using System;
-
     using global::Recellection.Code.Models;
 
     /// <summary>
     /// The purpose of the Localizer is to load the translations into the 
     /// Language model, it will also set the current language for the application.
-	/// 
-	/// Signature: Martin Nycander (2010-05-05)
+    ///
+    /// Signature: Martin Nycander (2010-05-05)
     /// </summary>
     /// <author>Joel Ahlgren</author>
     /// <date>2010-05-04</date>
     public class Localizer
     {
-        // Keeps track of languages
         #region Fields
 
+        /// <summary>
+        /// The object containing the translation data.
+        /// </summary>
         private readonly Language languageModel;
 
         #endregion
@@ -24,7 +24,7 @@
         #region Constructors and Destructors
 
         /// <summary>
-        /// Constructs a Localizer.
+        /// Initializes a new instance of the <see cref="Localizer"/> class. 
         /// </summary>
         public Localizer()
         {
@@ -36,7 +36,7 @@
         #region Public Methods and Operators
 
         /// <summary>
-        /// Changes the language
+        /// Changes the language.
         /// </summary>
         /// <param name="language">New language to set.</param>
         public void SetLanguage(string language)

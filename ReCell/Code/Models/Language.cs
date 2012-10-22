@@ -11,31 +11,48 @@ namespace Recellection.Code.Models
     /// functionality for getting strings in the correct language. It does this 
     /// by providing a static function for every other component which handles 
     /// strings in the application.
-	/// 
-	/// Author: Joel Ahlgren
-	/// Signed: Martin Nycander (2010-05-04)
+    /// 
+    /// Author: Joel Ahlgren
+    /// Signed: Martin Nycander (2010-05-04)
     /// </summary>
     /// <date>2010-05-04</date>
     public sealed class Language : IModel
     {
-        // from http://www.yoda.arachsys.com/csharp/singleton.html
         #region Constants
 
-        private const string EXTENSION = "txt";
+        /// <summary>
+        /// Extension of the language file.
+        /// </summary>
+        private const string Extension = "txt";
 
         #endregion
 
         #region Static Fields
 
-        static readonly object padlock = new object();
+        /// <summary>
+        /// Used for Singleton implementation.
+        /// From http://www.yoda.arachsys.com/csharp/singleton.html
+        /// </summary>
+        private static readonly object Padlock = new object();
 
-        static Language instance;
+        /// <summary>
+        /// Singleton instance of this language.
+        /// From http://www.yoda.arachsys.com/csharp/singleton.html
+        /// </summary>
+        private static Language instance;
 
         #endregion
 
         #region Fields
 
+        /// <summary>
+        /// Current language in use.
+        /// </summary>
         private string currentLanguage;
+
+        /// <summary>
+        /// Dictionary containing translations.
+        /// </summary>
         private Dictionary<string, Dictionary<string, string>> translations;
 
         #endregion
@@ -43,11 +60,12 @@ namespace Recellection.Code.Models
         #region Constructors and Destructors
 
         /// <summary>
-        /// Create a Language object. Defaults to English.
+        /// Prevents a default instance of the <see cref="Language"/> class from being created. 
+        /// Creates a Language object. Defaults to English.
         /// </summary>
         private Language()
         {
-            this.currentLanguage = "Swedish";
+            this.currentLanguage = "English";
             this.translations = new Dictionary<string, Dictionary<string, string>>();
             this.ReadLanguagesFromFile();
         }
@@ -56,11 +74,14 @@ namespace Recellection.Code.Models
 
         #region Public Properties
 
+        /// <summary>
+        /// Gets the singleton instance of the Language object.
+        /// </summary>
         public static Language Instance
         {
             get
             {
-                lock (padlock)
+                lock (Padlock)
                 {
                     if (instance == null)
                     {
@@ -76,13 +97,23 @@ namespace Recellection.Code.Models
 
         #region Public Methods and Operators
 
-        /// <returns>A list of currently available languages.</returns>
+        /// <summary>
+        /// Get the available languages.
+        /// </summary>
+        /// <returns>
+        /// A list of currently available languages.
+        /// </returns>
         public string[] GetAvailableLanguages()
         {
             return this.translations.Keys.ToArray();
         }
 
-        /// <returns>The language current in use.</returns>
+        /// <summary>
+        /// Retrieves the current language.
+        /// </summary>
+        /// <returns>
+        /// The language current in use.
+        /// </returns>
         public string GetLanguage()
         {
             return this.currentLanguage;
@@ -110,6 +141,9 @@ namespace Recellection.Code.Models
         /// <summary>
         /// Set a new active language.
         /// </summary>
+        /// <param name="newLanguage">
+        /// The new language.
+        /// </param>
         public void SetLanguage(string newLanguage)
         {
             if (!this.GetAvailableLanguages().Contains(newLanguage))
@@ -136,7 +170,7 @@ namespace Recellection.Code.Models
 
             // Get list of language-files in Content directory.
             var di = new DirectoryInfo("Content/Languages");
-            FileInfo[] fi = di.GetFiles("*." + EXTENSION);
+            FileInfo[] fi = di.GetFiles("*." + Extension);
 
             Console.Error.WriteLine(fi[0].Name);
 
