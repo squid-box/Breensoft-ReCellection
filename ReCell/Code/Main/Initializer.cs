@@ -62,7 +62,7 @@
             MenuView view = MenuView.Instance;
 
             // Just to make sure everything is in there...
-			new MenuController(TobiiController.GetInstance(this.windowHandle), mainMenu);
+			new MenuController(TobiiController.GetInstance(), mainMenu);
 			
 
             this.ShowSplashScreen();

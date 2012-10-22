@@ -41,7 +41,7 @@
 
         private readonly World theWorld;
 
-        readonly TobiiController tobii = TobiiController.GetInstance(Recellection.windowHandle);
+        readonly TobiiController tobii = TobiiController.GetInstance();
 
         MenuIcon botOff;
         MenuIcon leftOff;

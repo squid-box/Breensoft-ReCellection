@@ -87,7 +87,7 @@ namespace Recellection
         /// </summary>
         public Recellection()
         {
-            this.tobiiController = TobiiController.GetInstance(this.Window.Handle);
+            this.tobiiController = TobiiController.GetInstance();
             this.tobiiController.Init();
             graphics = new GraphicsDeviceManager(this);            
             this.Content.RootDirectory = "Content";
