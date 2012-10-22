@@ -1,6 +1,9 @@
 ﻿namespace Recellection.Code.Models
 {
-	public interface IModel
-	{
-	}
+    /// <summary>
+    /// Interface used for all models.
+    /// </summary>
+    public interface IModel
+    {
+    }
 }
