@@ -5,14 +5,12 @@
     using Microsoft.Xna.Framework;
     using Microsoft.Xna.Framework.Input;
 
-    using global::Recellection.Code.Models;
-    using global::Recellection.Code.Utility.Events;
-    using global::Recellection.Code.Utility.Logger;
+    using Code.Models;
+    using Code.Utility.Events;
+    using Code.Utility.Logger;
 
+    using Tobii.TecSDK.Client;
     using Tobii.TecSDK.Client.Interaction;
-    using Tobii.TecSDK.Client.Interaction.RegionImplementations;
-    using Tobii.TecSDK.Client.Utilities;
-    using Tobii.TecSDK.Core.Utilities;
 
     /// <summary>
     /// The TobiiController serves the purpose of simplifying region creation and handling
@@ -152,6 +150,7 @@
                 {
                     TecClient.Init("ReCellection");
 
+                    /*
                     var newProfile = new Tobii.TecSDK.Core.Interaction.Contracts.UserProfileProperties("RecellectionProfile");
                     UserProfile.Add("RecellectionProfile", "RecellectionProfile");
                     UserProfile.SetCurrent("RecellectionProfile");
@@ -179,6 +178,7 @@
                     TecClient.SettingsManager.ApplySettings();
 
                     this.SetFeedbackColor(Color.White);
+                     */
                 }
                 catch (Exception)
                 {
@@ -236,6 +236,7 @@
         /// <param name="color">Eye tracking feedback point color.</param>
         public void SetFeedbackColor(Color color)
         {
+            /*
             var col = new System.Windows.Media.Color();
             col.A = color.A;
             col.B = color.B;
@@ -243,6 +244,7 @@
             col.R = color.R;
             TecClient.CurrentApplicationProfile.FeedbackSettings.DwellFeedbackColor = col;
             TecClient.UpdateApplicationProfile();
+            */
         }
 
         /// <summary>
@@ -253,8 +255,10 @@
         /// </param>
         public void SetRegionsEnabled(bool value)
         {
-            foreach (IInteractionRegion region in Interaction.Regions.Values)
+            return;
+            foreach (IInteractionRegion region in Regions.RegisteredRegions)
             {
+                region.CanActivate = value;
                 region.Enabled = value;
             }        
         }
@@ -268,27 +272,27 @@
         {            
             foreach (GUIRegion region in menu.GetRegions())
             {
-                Interaction.RemoveRegion(region.RegionIdentifier);
+                Regions.Remove(region.RegionIdentifier);
             }
 
             if (menu.leftOff != null)
             {
-                Interaction.RemoveRegion(menu.leftOff.region.RegionIdentifier);
+                Regions.Remove(menu.leftOff.region.RegionIdentifier);
             }
 
             if (menu.rightOff != null)
             {
-                Interaction.RemoveRegion(menu.rightOff.region.RegionIdentifier);
+                Regions.Remove(menu.rightOff.region.RegionIdentifier);
             }
 
             if (menu.botOff != null)
             {
-                Interaction.RemoveRegion(menu.botOff.region.RegionIdentifier);
+                Regions.Remove(menu.botOff.region.RegionIdentifier);
             }
 
             if (menu.topOff != null)
             {
-                Interaction.RemoveRegion(menu.topOff.region.RegionIdentifier);
+                Regions.Remove(menu.topOff.region.RegionIdentifier);
             }
         }
 
@@ -339,7 +343,7 @@
             try
             {
                 Logger.Info("about to add a new region");
-                Interaction.AddRegion(newRegion); // this is what actually makes tobii start tracking our region
+                Regions.Add(newRegion); // this is what actually makes tobii start tracking our region
             }
             catch (Exception)
             {

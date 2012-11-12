@@ -1,15 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Windows;
-using System.Text;
-using NUnit.Framework;
-using Recellection.Code.Models;
-using Recellection.Code.Controllers;
-using Tobii.TecSDK.Client.Interaction.RegionImplementations;
-
-namespace Recellection
+﻿namespace Recellection
 {
+    using NUnit.Framework;
+
     [TestFixture]
     class TobiiControllerTest
     {

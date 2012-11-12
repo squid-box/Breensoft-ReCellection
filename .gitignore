@@ -8,6 +8,8 @@ TestResult.xml
 *.user
 *.suo
 _ReSharper.*
+_UpgradeReport*
+UpgradeLog.XML
 *.sln.cache
 *.Debug.cachefile
 *.VisualState.xml

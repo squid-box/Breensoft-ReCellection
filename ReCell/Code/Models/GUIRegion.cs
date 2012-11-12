@@ -3,12 +3,10 @@
     using System;
     using System.Windows;
 
-    using global::Recellection.Code.Utility.Events;
-
-    using global::Recellection.Code.Utility.Logger;
+    using Utility.Events;
+    using Utility.Logger;
 
     using Tobii.TecSDK.Client.Interaction;
-    using Tobii.TecSDK.Client.Interaction.RegionImplementations;
 
     /// <summary>
     /// The GUIRegion class is a wrapper around a WindowBoundInteractionRegion
